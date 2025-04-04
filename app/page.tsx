@@ -1,10 +1,53 @@
-export default function Home() {
+
+"use client"; 
+
+import { useState } from 'react';
+import SearchBar from '../components/SearchBar';
+import Map from '../components/Map';
+import { supabase } from '../lib/supabase';
+
+
+
+
+const Home = () => {
+  const [location, setLocation] = useState(null);
+  const [events, setEvents] = useState([]);
+
+  const handleLocationChange = async (newLocation) => {
+    if (!newLocation || !newLocation.latitude || !newLocation.longitude) {
+      console.error("Invalid location:", newLocation);
+      return;
+    }
+    setLocation(newLocation);
+    
+    try {
+
+      const { data, error } = await supabase
+        .from("full_convention_table")
+        .select("*")
+        .gte("latitude", newLocation.latitude - 1)
+        .lte("latitude", newLocation.latitude + 1)
+        .gte("longitude", newLocation.longitude - 1)
+        .lte("longitude", newLocation.longitude + 1);
+  
+      if (error) throw error;
+  
+      console.log("Fetched events:", data);  
+      setEvents(data);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <div>
-        <h1>Hey</h1>
-        <p>Main Page</p>
-      </div>
+    <div>
+      <h1>Event Map</h1>
+      <SearchBar onLocationChange={handleLocationChange} />
+      <Map location={location} events={events} />
     </div>
   );
-}
+};
+
+export default Home;
+
+// app/page.tsx
