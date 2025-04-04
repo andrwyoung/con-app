@@ -13,14 +13,22 @@ export default function Map({
   events: EventInfo[];
 }) {
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
+  const [centeredAt, setCenteredAt] = useState<[number, number]>([
+    -122.4194, 37.7749,
+  ]);
 
   useEffect(() => {
+    if (location) {
+      setCenteredAt([location.latitude, location.longitude]);
+    }
+
     const initializeMap = () => {
       const map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/andrwyoung/cm933j195002s01r94jdh85yj",
-        center: [-122.4194, 37.7749],
+        center: centeredAt,
         zoom: 9,
+        attributionControl: false,
       });
 
       // navigation controls
@@ -59,5 +67,15 @@ export default function Map({
     }
   }, [map, events]);
 
-  return <div id="map" style={{ width: "100%", height: "1080px" }} />;
+  return (
+    <div
+      id="map"
+      className="w-screen h-screen -z-10"
+      style={{
+        padding: 0,
+        margin: 0,
+        overflow: "hidden",
+      }}
+    />
+  );
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Raleway, Mulish, Pattaya } from "next/font/google";
 import "./globals.css";
+import NavBar from "@/components/NavBar";
+import Sidebar from "@/components/sidebar/Sidebar";
 
 const raleway = Raleway({
   variable: "--font-header",
@@ -33,6 +35,8 @@ export default function RootLayout({
       <body
         className={`${pattaya.variable} ${mulish.variable} ${raleway.variable} antialiased`}
       >
+        <NavBar />
+        <Sidebar />
         {children}
       </body>
     </html>

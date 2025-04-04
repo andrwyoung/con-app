@@ -1,11 +1,11 @@
 import { ConLocation } from "@/types/types";
 import { useState } from "react";
 
-const SearchBar = ({
+export default function SearchBar({
   onLocationChange,
 }: {
   onLocationChange: (loc: ConLocation) => void;
-}) => {
+}) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = async (e: { preventDefault: () => void }) => {
@@ -38,6 +38,4 @@ const SearchBar = ({
       <button type="submit">Search</button>
     </form>
   );
-};
-
-export default SearchBar;
+}
