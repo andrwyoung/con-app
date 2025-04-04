@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-label": "^2.1.2",
@@ -23,15 +24,22 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.6.3",
     "lucide-react": "^0.487.0",
+=======
+    "@supabase/supabase-js": "^2.49.4",
+>>>>>>> fdb5117... added mapbox and supabase support
     "mapbox-gl": "^3.11.0",
     "next": "^15.2.4",
     "postcss": "^8.5.3",
     "react": "^19.1.0",
+<<<<<<< HEAD
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "tailwind-merge": "^3.1.0",
     "tw-animate-css": "^1.2.5",
     "zustand": "^5.0.3"
+=======
+    "react-dom": "^19.1.0"
+>>>>>>> fdb5117... added mapbox and supabase support
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
