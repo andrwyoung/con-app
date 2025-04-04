@@ -13,8 +13,8 @@ const Map = ({ location, events }) => {
     const initializeMap = () => {
       const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: location || [-74.5, 40],
+        style: 'mapbox://styles/andrwyoung/cm933j195002s01r94jdh85yj',
+        center: [-122.4194, 37.7749],
         zoom: 9,
       });
 
@@ -47,7 +47,7 @@ const Map = ({ location, events }) => {
     }
   }, [map, events]);
 
-  return <div id="map" style={{ width: '100%', height: '500px' }} />;
+  return <div id="map" style={{ width: '100%', height: '1000px' }} />;
 };
 
 export default Map;

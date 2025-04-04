@@ -1,39 +1,40 @@
+"use client";
 
-"use client"; 
+import { useState } from "react";
+import SearchBar from "../components/SearchBar";
+import Map from "../components/Map";
+import { supabase } from "../lib/supabase";
 
-import { useState } from 'react';
-import SearchBar from '../components/SearchBar';
-import Map from '../components/Map';
-import { supabase } from '../lib/supabase';
-
-
-
+type Location = {
+  latitude: number;
+  longitude: number;
+};
 
 const Home = () => {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState<Location | null>(null);
   const [events, setEvents] = useState([]);
 
-  const handleLocationChange = async (newLocation) => {
+  const handleLocationChange = async (newLocation: Location) => {
     if (!newLocation || !newLocation.latitude || !newLocation.longitude) {
       console.error("Invalid location:", newLocation);
       return;
     }
     setLocation(newLocation);
-    
-    try {
 
+    try {
       const { data, error } = await supabase
         .from("full_convention_table")
         .select("*")
-        .gte("latitude", newLocation.latitude - 1)
-        .lte("latitude", newLocation.latitude + 1)
-        .gte("longitude", newLocation.longitude - 1)
-        .lte("longitude", newLocation.longitude + 1);
-  
+        .limit(3);
+      // .gte("latitude", newLocation.latitude - 1)
+      // .lte("latitude", newLocation.latitude + 1)
+      // .gte("longitude", newLocation.longitude - 1)
+      // .lte("longitude", newLocation.longitude + 1);
+
       if (error) throw error;
-  
-      console.log("Fetched events:", data);  
-      setEvents(data);
+
+      console.log("Fetched events:", data);
+      // setEvents(data);
     } catch (err) {
       console.error("Error fetching events:", err);
     }
