@@ -16,7 +16,7 @@ export default function Toggler() {
     tabs.find((tab) => pathname.startsWith(tab.link))?.label || "Explore";
 
   return (
-    <div className="relative flex items-center bg-white rounded-lg px-4 py-2 gap-4 shadow-md w-fit">
+    <div className="relative flex items-center bg-white rounded-lg px-3 py-1.5 gap-4 shadow-md w-fit">
       {tabs.map((tab) => (
         <button
           key={tab.label}
