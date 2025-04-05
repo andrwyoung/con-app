@@ -1,9 +1,15 @@
 import React from "react";
+import SearchBar from "./sidebar/SearchBar";
+import { ConLocation } from "@/types/types";
 
-export default function Sidebar() {
+export default function Sidebar({
+  searchHandler,
+}: {
+  searchHandler: (loc: ConLocation) => void;
+}) {
   return (
-    <div className="absolute left-4 z-10 top-20 w-80 rounded-lg bg-green-600 p-30">
-      Sidebar
+    <div className="absolute  z-10 top-36 left-8 w-80 h-180 rounded-lg shadow-lg bg-white p-8">
+      <SearchBar onLocationChange={searchHandler} />
     </div>
   );
 }

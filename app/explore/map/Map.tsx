@@ -25,7 +25,7 @@ export default function Map({
     const initializeMap = () => {
       const map = new mapboxgl.Map({
         container: "map",
-        style: "mapbox://styles/andrwyoung/cm933j195002s01r94jdh85yj",
+        style: "mapbox://styles/andrwyoung/cm93lxid4003c01rihwc1844d",
         center: centeredAt,
         zoom: 9,
         attributionControl: false,

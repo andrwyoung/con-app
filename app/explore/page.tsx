@@ -12,7 +12,7 @@ export default function ExplorePage() {
     <div className="font-extrabold">
       {/* <h1>Event Map</h1>
       <SearchBar onLocationChange={updateLocation} /> */}
-      <Sidebar />
+      <Sidebar searchHandler={updateLocation} />
       <Map location={location} events={events} />
     </div>
   );

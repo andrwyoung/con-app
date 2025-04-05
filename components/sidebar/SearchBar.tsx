@@ -1,5 +1,6 @@
 import { ConLocation } from "@/types/types";
 import { useState } from "react";
+import { Input } from "../ui/input";
 
 export default function SearchBar({
   onLocationChange,
@@ -29,13 +30,13 @@ export default function SearchBar({
 
   return (
     <form onSubmit={handleSearch}>
-      <input
+      <Input
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search for location"
+        placeholder="Search for Conventions"
       />
-      <button type="submit">Search</button>
+      {/* <button type="submit">Search</button> */}
     </form>
   );
 }
