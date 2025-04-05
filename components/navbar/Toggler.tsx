@@ -21,7 +21,7 @@ export default function Toggler() {
         <button
           key={tab.label}
           onClick={() => router.push(tab.link)}
-          className={`flex items-center gap-2 px-2 py-1 font-sans-header rounded-lg text-md font-semibold transition-all active:scale-95 duration-200           ${
+          className={`flex items-center gap-2 px-2 py-1 font-sans-header cursor-pointer rounded-lg text-md font-semibold transition-all active:scale-95 duration-200           ${
             activeTab == tab.label
               ? "bg-primary"
               : "hover:bg-primary-lightest hover:scale-105 "

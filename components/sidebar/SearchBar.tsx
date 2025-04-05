@@ -1,6 +1,6 @@
 import { ConLocation } from "@/types/types";
 import { useState } from "react";
-import { Input } from "../ui/input";
+import { Input } from "../ui/Input";
 
 export default function SearchBar({
   onLocationChange,
