@@ -14,7 +14,7 @@ const fireConfettiFromClick = (e: React.MouseEvent) => {
     particleCount: 100,
     spread: 360,
 
-    origin: { x, y }, // 🔥 where the click happened
+    origin: { x, y },
   });
 };
 

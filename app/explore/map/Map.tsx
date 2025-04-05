@@ -49,7 +49,7 @@ export default function Map({
         essential: true,
       });
     }
-  }, [location, map]);
+  }, [location, map, centeredAt]);
 
   useEffect(() => {
     // Add event markers to the map
