@@ -5,9 +5,8 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { fireConfettiFromClick } from "@/lib/utils";
-import { AuthFormLayout, PasswordToggleButton } from "./extras";
+import { AuthFormLayout, PasswordToggleButton } from "./Extras";
 import { Label } from "../ui/label";
-import { signup } from "./actions";
 import { createClient } from "@/lib/supabase/client";
 
 export type authStep = "email" | "login" | "signup";
