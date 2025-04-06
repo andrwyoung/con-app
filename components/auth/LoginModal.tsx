@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogDescription,
@@ -10,45 +10,71 @@ import {
 } from "../ui/Dialog";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
-import { FiArrowLeft } from "react-icons/fi";
 import { ToggleGroup, ToggleGroupItem } from "../ui/ToggleGroup";
 import { fireConfettiFromClick } from "@/lib/utils";
+import { AuthBackFooterButton } from "./Extras";
 
-type Step = "email" | "login" | "signup";
-type StepProps = {
-  setStep: (step: Step) => void;
-};
+export type authStep = "email" | "login" | "signup";
+type SetStepFn = (step: authStep) => void;
+type SetEmailFn = (email: string) => void;
 
-function AuthBackFooterButton({ setStep }: StepProps) {
-  return (
-    <button
-      type="button"
-      onClick={() => setStep("email")}
-      className="flex flex-row items-center opacity-40 gap-1 cursor-pointer transform-colors hover:opacity-70"
-    >
-      <FiArrowLeft />
-      <p className="transform -translate-y-[1px]">back</p>
-    </button>
-  );
-}
+const isValidEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-function EmailStep({ setStep }: StepProps) {
+function EmailStep({
+  setStep,
+  email,
+  setEmail,
+}: {
+  setStep: SetStepFn;
+  email: string;
+  setEmail: SetEmailFn;
+}) {
+  const [error, setError] = useState("");
+  const [shake, setShake] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isValidEmail(email)) {
+      setError("Please Enter a valid Email.");
+
+      setShake(true);
+      setTimeout(() => setShake(false), 400);
+      return;
+    }
+
+    setError("");
+    setStep("login");
+  };
+
   return (
     <>
       <DialogHeader>
         <DialogTitle>Enter Email to Continue</DialogTitle>
       </DialogHeader>
-      <div className="flex flex-col gap-4 mt-4">
-        <Input placeholder="Enter Email" className="w-full" />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
+        <div className="flex flex-col gap-1">
+          <Input
+            value={email}
+            placeholder={"Enter Email"}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`w-full ${shake && "animate-shake"}`}
+            aria-invalid={!!error}
+            aria-describedby={error ? "email-error" : undefined}
+          />
+          {error && (
+            <span id="email-error" className="text-sm text-red-500">
+              {error}
+            </span>
+          )}
+        </div>
+
         <div className="flex items-baseline gap-4">
-          <Button
-            onClick={() => setStep("login")}
-            className="font-semibold font-sans-header"
-          >
+          <Button type="submit" className="font-semibold font-sans-header">
             Continue to Login
           </Button>
           <p className="text-sm">or</p>
-
           <button
             onClick={() => setStep("signup")}
             type="button"
@@ -57,22 +83,34 @@ function EmailStep({ setStep }: StepProps) {
             Create Account
           </button>
         </div>
-      </div>
+      </form>
     </>
   );
 }
 
-function LoginStep({ setStep }: StepProps) {
+function LoginStep({ setStep, email }: { setStep: SetStepFn; email: string }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // focus on (in this case it's the password form) on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <>
       <DialogHeader>
         <DialogTitle>Welcome Back!</DialogTitle>
-        {/* <DialogDescription>Welcome Back!</DialogDescription> */}
+        <DialogDescription>Logging in as: {email}</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-sm mt-4">
           <p>Password:</p>
-          <Input placeholder="Enter Email" className="w-full" />
+          <Input
+            placeholder="Enter Password"
+            ref={inputRef}
+            className="w-full"
+            required
+          />
         </div>
         <div className="flex justify-between gap-4">
           <Button
@@ -96,21 +134,31 @@ function LoginStep({ setStep }: StepProps) {
   );
 }
 
-function SignupStep({ setStep }: StepProps) {
+function SignupStep({ setStep, email }: { setStep: SetStepFn; email: string }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <>
       <DialogHeader>
         <DialogTitle>Welcome!</DialogTitle>
-        <DialogDescription>Help us get to know you a bit.</DialogDescription>
+        <DialogDescription></DialogDescription>
+        <DialogDescription>
+          Help us get to know you a bit. <br />
+          Signing up as: {email}
+        </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-sm mt-4 w-full">
           <p>Username:</p>
-          <Input placeholder="Pick a Unique Handle" />
+          <Input ref={inputRef} placeholder="Pick a Unique Handle" required />
         </div>
         <div className="flex flex-col gap-2 text-sm">
           <p>Password:</p>
-          <Input placeholder="Pick a Strong Password" />
+          <Input placeholder="Pick a Strong Password" required />
         </div>
         <p className="self-center text-sm">I am a:</p>
         <ToggleGroup type="single">
@@ -139,7 +187,8 @@ function SignupStep({ setStep }: StepProps) {
 }
 
 export default function LoginModal() {
-  const [step, setStep] = useState<Step>("email");
+  const [step, setStep] = useState<authStep>("email");
+  const [email, setEmail] = useState<string>("");
 
   return (
     <Dialog
@@ -153,9 +202,11 @@ export default function LoginModal() {
         </h1>
       </DialogTrigger>
       <DialogContent>
-        {step === "email" && <EmailStep setStep={setStep} />}
-        {step === "login" && <LoginStep setStep={setStep} />}
-        {step === "signup" && <SignupStep setStep={setStep} />}
+        {step === "email" && (
+          <EmailStep setStep={setStep} email={email} setEmail={setEmail} />
+        )}
+        {step === "login" && <LoginStep setStep={setStep} email={email} />}
+        {step === "signup" && <SignupStep setStep={setStep} email={email} />}
       </DialogContent>
     </Dialog>
   );
