@@ -38,7 +38,7 @@ export default function NavBar() {
           </Link>
         </div>
         <div
-          className="hidden lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
+          className="hidden select-none lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
           onClick={fireConfettiFromClick}
         >
           ConCaly
