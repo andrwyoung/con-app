@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
-import LoginModal from "./auth/LoginModal";
+import LoginModal from "./auth/login-modal";
 import { fireConfettiFromClick } from "@/lib/utils";
 
 export default function NavBar() {
