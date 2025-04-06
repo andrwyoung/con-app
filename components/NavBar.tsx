@@ -3,21 +3,10 @@ import React from "react";
 import Toggler from "./navbar/Toggler";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import confetti from "canvas-confetti";
+
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import LoginModal from "./auth/LoginModal";
-
-const fireConfettiFromClick = (e: React.MouseEvent) => {
-  const x = e.clientX / window.innerWidth;
-  const y = e.clientY / window.innerHeight;
-
-  confetti({
-    particleCount: 100,
-    spread: 360,
-
-    origin: { x, y },
-  });
-};
+import { fireConfettiFromClick } from "@/lib/utils";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -44,12 +33,12 @@ export default function NavBar() {
         >
           ConCaly
         </div>
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-6 items-center">
           <LoginModal />
-          <Avatar>
+          {/* <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
         </div>
       </div>
     </div>

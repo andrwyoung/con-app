@@ -12,6 +12,7 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { FiArrowLeft } from "react-icons/fi";
 import { ToggleGroup, ToggleGroupItem } from "../ui/ToggleGroup";
+import { fireConfettiFromClick } from "@/lib/utils";
 
 type Step = "email" | "login" | "signup";
 type StepProps = {
@@ -119,7 +120,10 @@ function SignupStep({ setStep }: StepProps) {
         </ToggleGroup>
         <div className="flex items-baseline gap-4">
           <Button
-            onClick={() => setStep("signup")}
+            onClick={(e) => {
+              setStep("signup");
+              fireConfettiFromClick(e);
+            }}
             className="font-semibold font-sans-header"
           >
             Signup!
@@ -144,7 +148,7 @@ export default function LoginModal() {
       }}
     >
       <DialogTrigger>
-        <h1 className="text-white font-bold text-lg cursor-pointer">
+        <h1 className="text-white font-bold text-lg cursor-pointer transform-all duration-200 hover:scale-105 hover:text-primary">
           Login/Signup
         </h1>
       </DialogTrigger>
