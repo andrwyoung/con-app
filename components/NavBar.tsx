@@ -4,7 +4,8 @@ import Toggler from "./navbar/Toggler";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import confetti from "canvas-confetti";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
+import LoginModal from "./auth/LoginModal";
 
 const fireConfettiFromClick = (e: React.MouseEvent) => {
   const x = e.clientX / window.innerWidth;
@@ -44,7 +45,7 @@ export default function NavBar() {
           ConCaly
         </div>
         <div className="flex flex-row gap-4 items-center">
-          <h1 className="text-white font-bold text-lg">Login</h1>
+          <LoginModal />
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
