@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/Input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/Button";
-import { fireConfettiFromClick } from "@/lib/utils";
+import { fireConfetti } from "@/lib/utils";
 import { authStep } from "../login-modal";
 import React from "react";
 import useShakeError from "@/hooks/useShakeError";
@@ -82,7 +82,12 @@ export default function SignupStep({
     e.preventDefault();
     setIsSubmitting(true);
 
-    // validate the fields
+    // handle frontend checks here
+    if (username.length < 3) {
+      triggerError("Please choose a longer username.");
+      setIsSubmitting(false);
+      return;
+    }
     if (!usernameAvailable) {
       triggerError("That username is already taken.");
       setIsSubmitting(false);
@@ -98,54 +103,21 @@ export default function SignupStep({
       setIsSubmitting(false);
       return;
     }
+
+    // this is the function that actually signs them up
+    // as well as further check some things
     const res = await signupUser({ email, password, username, persona });
 
     if (res.error) {
-      triggerError(res.error);
+      triggerError(res.error.toString());
       setIsSubmitting(false);
       return;
     }
-    // const { data, error } = await supabaseClient.auth.signUp({
-    //   email,
-    //   password,
-    // });
 
-    // if (error) {
-    //   if (/Email address\s+"[^"]+"\s+is invalid/i.test(error.message)) {
-    //     triggerError("Please enter a valid email address.");
-    //   } else if (error.message.includes("already registered")) {
-    //     triggerError("This email is already in use.");
-    //   } else {
-    //     console.log(error);
-    //     triggerError(error.message);
-    //   }
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
-    // if (!error && data?.user) {
-    //   const userId = data.user.id;
-    //   console.log(user);
-
-    //   const { error: profileError } = await supabaseClient
-    //     .from("user_profiles")
-    //     .insert({
-    //       user_id: userId,
-    //       username: username,
-    //       persona: persona,
-    //       role: "FREE",
-    //     });
-
-    //   if (profileError) {
-    //     triggerError("Error saving user profile. Please try again.");
-    //     console.log(profileError);
-    //     setIsSubmitting(false);
-    //     return;
-    //   }
-    // }
-
-    fireConfettiFromClick();
+    fireConfetti();
     setIsSubmitting(false);
+
+    changeStep("check-email");
   };
 
   return (
@@ -158,11 +130,12 @@ export default function SignupStep({
           Signing up as: <strong>{email}</strong>
         </>
       }
+      haveBackButton={true}
     >
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6 py-8">
           <div className="flex flex-col gap-2 text-sm">
-            <Label>Choose a Username:</Label>
+            <Label>Username:</Label>
             <div className="relative">
               <Input
                 ref={inputRef}
@@ -189,7 +162,7 @@ export default function SignupStep({
             </div>
           </div>
           <div className="flex flex-col gap-2 text-sm">
-            <Label>Choose a Password:</Label>
+            <Label>Password:</Label>
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
@@ -242,7 +215,7 @@ export default function SignupStep({
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mt-6">
           <Button
             type="submit"
             disabled={isSubmitting}

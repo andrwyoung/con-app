@@ -56,6 +56,7 @@ export default function LoginStep({
           Logging in as: <strong>{email}</strong>
         </span>
       }
+      haveBackButton={true}
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-sm">

@@ -10,12 +10,12 @@ import {
 export function AuthFormLayout({
   title,
   description,
-  onBack,
+  haveBackButton = false,
   children,
 }: {
   title: string;
   description?: React.ReactElement;
-  onBack?: (step: authStep) => void;
+  haveBackButton?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -25,9 +25,7 @@ export function AuthFormLayout({
         {description && <DialogDescription>{description}</DialogDescription>}
       </DialogHeader>
       <div className="flex flex-col gap-4 mt-4 w-full">{children}</div>
-      <DialogFooter>
-        {onBack && <AuthBackFooterButton setStep={onBack} />}
-      </DialogFooter>
+      <DialogFooter>{haveBackButton && <AuthBackFooterButton />}</DialogFooter>
     </>
   );
 }
@@ -50,15 +48,11 @@ export function PasswordToggleButton({
   );
 }
 
-export function AuthBackFooterButton({
-  setStep,
-}: {
-  setStep: (step: authStep) => void;
-}) {
+export function AuthBackFooterButton() {
   return (
     <button
       type="button"
-      onClick={() => setStep("email")}
+      onClick={() => window.history.back()}
       className="flex flex-row items-center opacity-40 gap-1 cursor-pointer transform-colors hover:opacity-70"
     >
       <FiArrowLeft />

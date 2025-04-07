@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const fireConfettiFromClick = (e?: React.MouseEvent) => {
+export const fireConfetti = (e?: React.MouseEvent) => {
   const x = e ? e.clientX / window.innerWidth : .5;
   const y = e ? e.clientY / window.innerHeight: .5;
 

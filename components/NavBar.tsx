@@ -7,7 +7,7 @@ import { supabaseClient } from "@/lib/supabase/client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import LoginModal from "./auth/login-modal";
-import { fireConfettiFromClick } from "@/lib/utils";
+import { fireConfetti } from "@/lib/utils";
 import { useUser } from "@/hooks/useUser";
 
 export default function NavBar() {
@@ -33,7 +33,7 @@ export default function NavBar() {
         </div>
         <div
           className="hidden select-none lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
-          onClick={fireConfettiFromClick}
+          onClick={fireConfetti}
         >
           ConCaly
         </div>
@@ -43,7 +43,7 @@ export default function NavBar() {
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          {user ? user.email : "logged out"}
+          {user ? user.id : "logged out"}
         </div>
       </div>
     </div>
