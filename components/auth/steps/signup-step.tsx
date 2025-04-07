@@ -9,7 +9,6 @@ import { fireConfetti } from "@/lib/utils";
 import { authStep } from "../login-modal";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
-import { useUser } from "@/hooks/use-user";
 import { signupUser } from "@/lib/actions/signup";
 
 export const PERSONA = ["ATTENDEE", "ARTIST", "ORGANIZER"] as const;
@@ -29,7 +28,7 @@ export default function SignupStep({
   );
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { error, setError, shake, triggerError } = useShakeError();
+  const { error, shake, triggerError } = useShakeError();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -41,8 +40,6 @@ export default function SignupStep({
   const hasNumber = /[0-9]/.test(password);
   const isStrongPassword =
     hasMinLength && hasLowercase && hasUppercase && hasNumber;
-
-  const user = useUser();
 
   // focus on Username field intially
   useEffect(() => {
@@ -59,7 +56,7 @@ export default function SignupStep({
 
       setCheckingUsername(true);
 
-      const { data, error } = await supabaseClient
+      const { error } = await supabaseClient
         .from("user_profiles")
         .select("user_id")
         .eq("username", username)

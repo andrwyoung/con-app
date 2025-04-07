@@ -3,7 +3,6 @@ import React from "react";
 import Toggler from "./toggler";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { supabaseClient } from "@/lib/supabase/client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import LoginModal from "../auth/login-modal";

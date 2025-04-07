@@ -8,7 +8,6 @@ import { supabaseClient } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
 import { fireConfetti } from "@/lib/utils";
-import { translateAuthError } from "@/lib/translate-auth-errors";
 
 export default function LoginStep({
   changeStep,
