@@ -117,6 +117,7 @@ export default function SignupStep({
     fireConfetti();
     setIsSubmitting(false);
 
+    window.history.pushState({}, "", window.location.pathname);
     changeStep("check-email");
   };
 
@@ -130,7 +131,7 @@ export default function SignupStep({
           Signing up as: <strong>{email}</strong>
         </>
       }
-      haveBackButton={true}
+      onBack={changeStep}
     >
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6 py-8">

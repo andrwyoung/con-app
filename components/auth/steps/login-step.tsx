@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { supabaseClient } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/useShakeError";
+import { fireConfetti } from "@/lib/utils";
+import { translateAuthError } from "@/lib/translateAuthErrors";
 
 export default function LoginStep({
   changeStep,
@@ -21,6 +23,8 @@ export default function LoginStep({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { error, setError, shake, triggerError } = useShakeError();
+
+  const [isSendingPasswordReset, setIsSendingPasswordReset] = useState(false);
 
   // focus on (in this case it's the password form) on mount
   useEffect(() => {
@@ -46,6 +50,24 @@ export default function LoginStep({
     console.log(data);
     console.log(supabaseClient.auth.getSession);
     setIsSubmitting(false);
+
+    fireConfetti();
+    changeStep("closed");
+  };
+
+  const handleResetPassword = async () => {
+    setIsSendingPasswordReset(true);
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    if (error) {
+      console.error(error);
+      setError(error.message);
+      setIsSendingPasswordReset(false);
+      return;
+    }
+
+    setIsSendingPasswordReset(false);
+    window.history.pushState({}, "", window.location.pathname);
+    changeStep("reset-password");
   };
 
   return (
@@ -56,7 +78,7 @@ export default function LoginStep({
           Logging in as: <strong>{email}</strong>
         </span>
       }
-      haveBackButton={true}
+      onBack={changeStep}
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-sm">
@@ -96,8 +118,9 @@ export default function LoginStep({
             <button
               className="text-xs text-primary-text underline cursor-pointer hover:text-primary-muted"
               type="button"
+              onClick={handleResetPassword}
             >
-              Forgot Password
+              {isSendingPasswordReset ? "Sending Email..." : "Forgot Password"}
             </button>
             <button
               type="button"
