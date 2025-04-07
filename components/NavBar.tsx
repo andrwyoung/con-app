@@ -3,13 +3,17 @@ import React from "react";
 import Toggler from "./navbar/Toggler";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { supabaseClient } from "@/lib/supabase/client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import LoginModal from "./auth/login-modal";
 import { fireConfettiFromClick } from "@/lib/utils";
+import { useUser } from "@/hooks/useUser";
 
 export default function NavBar() {
   const pathname = usePathname();
+  const user = useUser();
+  console.log(user);
 
   return (
     <div
@@ -35,10 +39,11 @@ export default function NavBar() {
         </div>
         <div className="flex flex-row gap-6 items-center">
           <LoginModal />
-          {/* <Avatar>
+          <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar> */}
+          </Avatar>
+          {user ? user.email : "logged out"}
         </div>
       </div>
     </div>
