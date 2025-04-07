@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { AuthFormLayout, PasswordToggleButton } from "../extras";
 import { supabaseClient } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { fireConfetti } from "@/lib/utils";
 import { authStep } from "../login-modal";
 import React from "react";
-import useShakeError from "@/hooks/useShakeError";
-import { useUser } from "@/hooks/useUser";
+import useShakeError from "@/hooks/use-shake-error";
+import { useUser } from "@/hooks/use-user";
 import { signupUser } from "@/lib/actions/signup";
 
 export const PERSONA = ["ATTENDEE", "ARTIST", "ORGANIZER"] as const;

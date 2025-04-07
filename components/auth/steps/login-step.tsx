@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { authStep } from "../login-modal";
 import { AuthFormLayout, PasswordToggleButton } from "../extras";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { supabaseClient } from "@/lib/supabase/client";
 import React from "react";
-import useShakeError from "@/hooks/useShakeError";
+import useShakeError from "@/hooks/use-shake-error";
 import { fireConfetti } from "@/lib/utils";
-import { translateAuthError } from "@/lib/translateAuthErrors";
+import { translateAuthError } from "@/lib/translate-auth-errors";
 
 export default function LoginStep({
   changeStep,

@@ -1,8 +1,8 @@
 "use client";
 
-import Map from "@/app/explore/map/Map";
-import { useExploreEvents } from "@/hooks/useExploreEvents";
-import Sidebar from "@/components/Sidebar";
+import Map from "@/app/explore/map/map";
+import { useExploreEvents } from "@/hooks/use-explore-events";
+import Sidebar from "@/components/sidebar/sidebar";
 
 export default function ExplorePage() {
   const { location, events, updateLocation } = useExploreEvents();

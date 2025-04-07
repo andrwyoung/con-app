@@ -2,7 +2,7 @@
 
 import { Persona } from "@/types/enums";
 import { createClient } from "../supabase/server";
-import { translateAuthError } from "../translateAuthErrors";
+import { translateAuthError } from "../translate-auth-errors";
 
 export async function signupUser({
   email,

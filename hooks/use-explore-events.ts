@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ConLocation, EventInfo } from "@/types/types";
-import { supabase } from "@/lib/Supabase";
+import { supabase } from "@/lib/supabase";
 
 export function useExploreEvents() {
   const [location, setLocation] = useState<ConLocation | null>(null);

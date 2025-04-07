@@ -1,7 +1,7 @@
 // login-modal is the modal itself. logic for each step is in ./steps
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import SignupStep from "./steps/signup-step";
 import LoginStep from "./steps/login-step";
 import EmailStep from "./steps/email-step";

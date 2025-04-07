@@ -5,7 +5,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/Dialog";
+} from "../ui/dialog";
 
 export function AuthFormLayout({
   title,

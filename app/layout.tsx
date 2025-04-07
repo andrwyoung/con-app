@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Raleway, Mulish, Pattaya } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/navbar/navbar";
 
 const raleway = Raleway({
   variable: "--font-header",
