@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "../ui/input";
 
-export default function searchbar() {
+export default function Searchbar() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = async (e: { preventDefault: () => void }) => {

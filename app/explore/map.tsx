@@ -6,7 +6,14 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { EventInfo } from "@/types/types";
 import { supabaseAnon } from "@/lib/supabase/client";
 
-export default function MapboxExample() {
+// different colored maps
+// const mapStyles = [
+//   { id: "dataviz-light", name: "Monochrome" },
+//   { id: "bright", name: "Classic" },
+//   { id: "basic", name: "Greener" },
+// ];
+
+export default function Map() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
 
