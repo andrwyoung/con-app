@@ -17,3 +17,13 @@ export const fireConfetti = (e?: React.MouseEvent) => {
     origin: { x, y },
   });
 };
+
+export const miniConfetti = () => {
+  confetti({
+    particleCount: 50,
+    spread: 180,
+    startVelocity: 40,
+    origin: {x: 0.5, y: 0.45},
+
+  });
+}

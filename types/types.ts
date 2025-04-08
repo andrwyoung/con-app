@@ -1,3 +1,4 @@
+// TODO: Get rid of ./supabase.ts deprecates this
 export type ConLocation = {
   latitude: number;
   longitude: number;

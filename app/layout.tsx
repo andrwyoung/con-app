@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Raleway, Mulish, Pattaya } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
+import UserProvider from "@/components/user-provider";
 
 const raleway = Raleway({
   variable: "--font-header",
@@ -34,8 +35,10 @@ export default function RootLayout({
       <body
         className={`${pattaya.variable} ${mulish.variable} ${raleway.variable} antialiased`}
       >
-        <NavBar />
-        {children}
+        <UserProvider>
+          <NavBar />
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

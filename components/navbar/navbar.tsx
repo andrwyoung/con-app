@@ -4,14 +4,37 @@ import Toggler from "./toggler";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import LoginModal from "../auth/login-modal";
 import { fireConfetti } from "@/lib/utils";
-import { useUser } from "@/hooks/use-user";
+import { FiFile, FiGrid, FiLock } from "react-icons/fi";
+import { supabaseClient } from "@/lib/supabase/client";
+import { useUserStore } from "@/stores/user-store";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import WelcomeModal from "../onboarding/welcome-modal";
+
+function DropdownButton({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex flex-row gap-2 text-left px-2 py-1 hover:bg-gray-100 cursor-pointer rounded items-center"
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function NavBar() {
   const pathname = usePathname();
-  const user = useUser();
+  const user = useUserStore((s) => s.user);
+  const profile = useUserStore((s) => s.profile);
   console.log(user);
 
   return (
@@ -36,15 +59,56 @@ export default function NavBar() {
         >
           ConCaly
         </div>
-        <div className="flex flex-row gap-6 items-center">
+
+        {user ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="flex cursor-pointer flex-row gap-2 items-center group transition-all duration-200 hover:scale-105">
+                <button
+                  type="button"
+                  className="text-white font-bold cursor-pointer text-lg group-hover:text-primary"
+                >
+                  {profile?.username}
+                </button>
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/andrwyoung.png"
+                    className="shadow-inner shadow-black/20"
+                  />
+                </Avatar>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-32 p-2 text-sm bg-white shadow-lg rounded-md"
+            >
+              <DropdownButton>
+                <FiFile />
+                Profile
+              </DropdownButton>
+              <DropdownButton>
+                <FiGrid />
+                Settings
+              </DropdownButton>
+              <DropdownButton
+                onClick={async () => {
+                  // TODO: toast saying logged out
+                  await supabaseClient.auth.signOut();
+                }}
+              >
+                <FiLock />
+                Log out
+              </DropdownButton>
+              {/* Add more options here later, like "Profile", "Settings", etc */}
+            </PopoverContent>
+          </Popover>
+        ) : (
+          // if user is not logged in
           <LoginModal />
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          {user ? user.id : "logged out"}
-        </div>
+        )}
       </div>
+      {/* gotta put the welcome modal somewhere... */}
+      {profile && <WelcomeModal />}
     </div>
   );
 }

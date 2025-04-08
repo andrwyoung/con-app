@@ -1,12 +1,13 @@
 import { FiArrowLeft } from "react-icons/fi";
-import { authStep } from "./login-modal";
+import { authStep } from "./auth/login-modal";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "./ui/dialog";
 
+// wrapper for Dialog. with an optional back button
 export function AuthFormLayout({
   title,
   description,

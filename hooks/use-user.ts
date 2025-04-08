@@ -1,22 +1,54 @@
+"use client";
 import { supabaseClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useUserStore } from "@/stores/user-store";
+import { useEffect } from "react";
 
 export function useUser() {
-    const [user, setUser] = useState<User | null | undefined>(undefined);
+  const { user, setUser, setProfile } = useUserStore();
   
     useEffect(() => {
+      // helper function: fetch data from user_profiles given auth.user.id
+      const fetchProfile = async (userId: string) => {
+        const { data, error } = await supabaseClient
+        .from("user_profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .single();
+        
+        if (error) {
+          console.error("Failed to fetch user profile:", error);
+          setProfile(null);
+          return;
+        }
+
+        setProfile(data);
+      }
+
+      // if authentication changes, then reflect that on the store
       const { data: listener } = supabaseClient.auth.onAuthStateChange((event, session) => {
-        console.log(event, session)
-        setUser(session?.user ?? null);
+        const user = session?.user ?? null;
+        setUser(user);
+
+        if(user) {
+          fetchProfile(user.id);
+        } else {
+          setProfile(null);
+        }
       });
   
-      supabaseClient.auth.getUser().then(({ data }) => setUser(data.user));
+      // on init, set the user
+      supabaseClient.auth.getUser().then(({ data }) => {
+        const user = data.user;
+        setUser(user);
+        if (user) {
+          fetchProfile(user.id);
+        }
+      });
   
       return () => {
         listener.subscription.unsubscribe();
       };
-    }, []);
+    }, [setUser, setProfile]);
   
     return user;
   }

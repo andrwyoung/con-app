@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { authStep } from "../login-modal";
-import { AuthFormLayout, PasswordToggleButton } from "../extras";
+import { AuthFormLayout, PasswordToggleButton } from "../../extras";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabaseClient } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
-import { fireConfetti } from "@/lib/utils";
 
 export default function LoginStep({
   changeStep,
@@ -25,35 +24,33 @@ export default function LoginStep({
 
   const [isSendingPasswordReset, setIsSendingPasswordReset] = useState(false);
 
-  // focus on (in this case it's the password form) on mount
+  // focus on password form on mount
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
+  // what happens when you submit the login form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      //   console.log(error);
       triggerError(error.message);
       setIsSubmitting(false);
       return;
     }
 
     setError("");
-    console.log(data);
-    console.log(supabaseClient.auth.getSession);
     setIsSubmitting(false);
-
-    fireConfetti();
+    // TODO: toast logged in
     changeStep("closed");
   };
 
+  // when reseting password: sends an email before going to next "page"
   const handleResetPassword = async () => {
     setIsSendingPasswordReset(true);
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
@@ -65,6 +62,7 @@ export default function LoginStep({
     }
 
     setIsSendingPasswordReset(false);
+    // clear history so that you can't go backwards
     window.history.pushState({}, "", window.location.pathname);
     changeStep("reset-password");
   };

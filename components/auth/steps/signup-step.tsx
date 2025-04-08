@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AuthFormLayout, PasswordToggleButton } from "../extras";
+import { AuthFormLayout, PasswordToggleButton } from "../../extras";
 import { supabaseClient } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,7 @@ export default function SignupStep({
     inputRef.current?.focus();
   }, []);
 
-  // checking username
+  // check if username is taken after user types in that field
   useEffect(() => {
     const delay = setTimeout(async () => {
       if (!username || username.length < 3) {
@@ -101,7 +101,7 @@ export default function SignupStep({
       return;
     }
 
-    // this is the function that actually signs them up
+    // this is the server action that actually signs them up
     // as well as further check some things
     const res = await signupUser({ email, password, username, persona });
 
@@ -113,7 +113,7 @@ export default function SignupStep({
 
     fireConfetti();
     setIsSubmitting(false);
-
+    // after signing up, don't let them press the back button
     window.history.pushState({}, "", window.location.pathname);
     changeStep("check-email");
   };

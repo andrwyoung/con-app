@@ -1,7 +1,7 @@
 "use server";
 
 import { Persona } from "@/types/enums";
-import { createClient } from "../supabase/server";
+import { createClientSudo } from "../supabase/server";
 
 export async function signupUser({
   email,
@@ -14,7 +14,8 @@ export async function signupUser({
   username: string;
   persona: Persona;
 }) {
-  const supabase = await createClient();
+  const supabase = await createClientSudo();
+  email = email.toLowerCase().trim();
 
   // check if email already exists in user_profile. this is our own manual check
   const { data: existingUsers, error: userCheckError } = await supabase
