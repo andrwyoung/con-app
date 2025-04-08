@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 
-// wrapper for Dialog. with an optional back button
+// wrapper for Dialog with an optional back button
 export function AuthFormLayout({
   title,
   description,
