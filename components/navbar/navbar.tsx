@@ -8,7 +8,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 import LoginModal from "../auth/login-modal";
 import { fireConfetti } from "@/lib/utils";
 import { FiFile, FiGrid, FiLock } from "react-icons/fi";
-import { supabaseClient } from "@/lib/supabase/client";
+import { supabaseAnon } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import WelcomeModal from "../onboarding/welcome-modal";
@@ -93,7 +93,7 @@ export default function NavBar() {
               <DropdownButton
                 onClick={async () => {
                   // TODO: toast saying logged out
-                  await supabaseClient.auth.signOut();
+                  await supabaseAnon.auth.signOut();
                 }}
               >
                 <FiLock />

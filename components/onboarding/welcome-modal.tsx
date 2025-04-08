@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { FiMapPin } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { miniConfetti } from "@/lib/utils";
-import { supabaseClient } from "@/lib/supabase/client";
+import { supabaseAnon } from "@/lib/supabase/client";
 
 export default function WelcomeModal() {
   const [open, setOpen] = useState(false);
@@ -28,7 +28,7 @@ export default function WelcomeModal() {
       });
 
       // sync to actual database
-      const { error } = await supabaseClient
+      const { error } = await supabaseAnon
         .from("user_profiles")
         .update({ has_never_logged_in: false })
         .eq("user_id", profile.user_id);

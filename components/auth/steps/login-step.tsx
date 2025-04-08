@@ -4,7 +4,7 @@ import { AuthFormLayout, PasswordToggleButton } from "../../extras";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabaseClient } from "@/lib/supabase/client";
+import { supabaseAnon } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
 
@@ -33,7 +33,7 @@ export default function LoginStep({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const { error } = await supabaseClient.auth.signInWithPassword({
+    const { error } = await supabaseAnon.auth.signInWithPassword({
       email,
       password,
     });
@@ -53,7 +53,7 @@ export default function LoginStep({
   // when reseting password: sends an email before going to next "page"
   const handleResetPassword = async () => {
     setIsSendingPasswordReset(true);
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    const { error } = await supabaseAnon.auth.resetPasswordForEmail(email);
     if (error) {
       console.error(error);
       setError(error.message);

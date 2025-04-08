@@ -2,7 +2,7 @@
 
 import { useExploreEvents } from "@/hooks/use-explore-events";
 import Sidebar from "@/components/sidebar/sidebar";
-import MapboxExample from "./mapt";
+import MapboxExample from "./map";
 
 export default function ExplorePage() {
   const { location, events, updateLocation } = useExploreEvents();
@@ -10,7 +10,7 @@ export default function ExplorePage() {
   return (
     <div className="w-screen h-screen font-extrabold">
       <Sidebar searchHandler={updateLocation} />
-      <MapboxExample events={events} />
+      <MapboxExample />
     </div>
   );
 }

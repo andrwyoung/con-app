@@ -1,35 +1,11 @@
-// searchbar is responsible for
-// 1: displaying the search bar + dealing with interactions
-// 2: accepting a single string
-// 3: geocoding it and then sending it over to onLocationChange
-import { ConLocation } from "@/types/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 
-export default function SearchBar({
-  onLocationChange,
-}: {
-  onLocationChange: (loc: ConLocation) => void;
-}) {
+export default function searchbar() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
-    const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-      searchQuery
-    )}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_KEY}`;
-
-    const response = await fetch(geocodeUrl);
-    const data = await response.json();
-
-    if (data.features && data.features.length > 0) {
-      const { center } = data.features[0]; // Get the first feature's center (longitude, latitude)
-      const [longitude, latitude] = center;
-
-      // Call the parent function with the new location
-      onLocationChange({ latitude, longitude });
-    }
   };
 
   return (
@@ -40,7 +16,6 @@ export default function SearchBar({
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search for Conventions"
       />
-      {/* <button type="submit">Search</button> */}
     </form>
   );
 }

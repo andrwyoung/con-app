@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ConLocation, EventInfo } from "@/types/types";
-import { supabase } from "@/lib/supabase";
+import { supabaseAnon } from "@/lib/supabase/client";
 
 export function useExploreEvents() {
   const [location, setLocation] = useState<ConLocation | null>(null);
@@ -15,7 +15,7 @@ export function useExploreEvents() {
     setLocation(newLocation);
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAnon
         .from("full_convention_table")
         .select("*")
         .gte("latitude", newLocation.latitude - 1)

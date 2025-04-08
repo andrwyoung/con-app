@@ -1,5 +1,5 @@
 import React from "react";
-import SearchBar from "./searchbar";
+import SearchBar from "./searchbar-old";
 import { ConLocation } from "@/types/types";
 
 export default function Sidebar({

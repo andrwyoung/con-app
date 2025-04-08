@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AuthFormLayout, PasswordToggleButton } from "../../extras";
-import { supabaseClient } from "@/lib/supabase/client";
+import { supabaseAnon } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -56,7 +56,7 @@ export default function SignupStep({
 
       setCheckingUsername(true);
 
-      const { error } = await supabaseClient
+      const { error } = await supabaseAnon
         .from("user_profiles")
         .select("user_id")
         .eq("username", username)

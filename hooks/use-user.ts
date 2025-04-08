@@ -1,5 +1,5 @@
 "use client";
-import { supabaseClient } from "@/lib/supabase/client";
+import { supabaseAnon } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect } from "react";
 
@@ -9,7 +9,7 @@ export function useUser() {
     useEffect(() => {
       // helper function: fetch data from user_profiles given auth.user.id
       const fetchProfile = async (userId: string) => {
-        const { data, error } = await supabaseClient
+        const { data, error } = await supabaseAnon
         .from("user_profiles")
         .select("*")
         .eq("user_id", userId)
@@ -25,7 +25,7 @@ export function useUser() {
       }
 
       // if authentication changes, then reflect that on the store
-      const { data: listener } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      const { data: listener } = supabaseAnon.auth.onAuthStateChange((event, session) => {
         const user = session?.user ?? null;
         setUser(user);
 
@@ -37,7 +37,7 @@ export function useUser() {
       });
   
       // on init, set the user
-      supabaseClient.auth.getUser().then(({ data }) => {
+      supabaseAnon.auth.getUser().then(({ data }) => {
         const user = data.user;
         setUser(user);
         if (user) {
