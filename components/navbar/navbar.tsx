@@ -39,7 +39,7 @@ export default function NavBar() {
 
   return (
     <div
-      className={`absolute left-0 top-0 w-screen bg-gradient-to-b from-gray-600 to-transparent pt-4 pb-6 px-8 ${
+      className={`absolute left-0 top-0 w-screen bg-gradient-to-b from-gray-600 to-transparent pt-4 pb-6 px-8 z-10 ${
         pathname?.startsWith("/about") ? "hidden" : "block"
       }`}
     >

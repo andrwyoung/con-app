@@ -34,6 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${pattaya.variable} ${mulish.variable} ${raleway.variable} antialiased`}
+        style={{ margin: 0, padding: 0 }}
       >
         <UserProvider>
           <NavBar />

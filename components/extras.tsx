@@ -60,7 +60,7 @@ export function AuthBackFooterButton({
     <button
       type="button"
       onClick={() => onBack("email")}
-      className="flex flex-row items-center opacity-40 gap-1 cursor-pointer transform-colors hover:opacity-70"
+      className="flex flex-row items-center opacity-40 gap-1 cursor-pointer transform-colors hover:opacity-70 mt-4"
     >
       <FiArrowLeft />
       <p className="transform -translate-y-[1px]">back to enter email</p>

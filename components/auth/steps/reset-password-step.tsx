@@ -5,7 +5,7 @@ export default function ResetPasswordStep({ email }: { email: string }) {
     <AuthFormLayout title="Password Reset">
       <p>
         We just sent an email to <strong>{email}</strong>
-        <br /> Follow it for instructions!
+        <br /> Check your inbox and follow the steps to create a new password.
       </p>
     </AuthFormLayout>
   );

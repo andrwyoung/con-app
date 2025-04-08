@@ -120,10 +120,10 @@ export default function SignupStep({
 
   return (
     <AuthFormLayout
-      title="Welcome!"
+      title="Hey there!"
       description={
         <>
-          Help us get to know you a bit.
+          Good to have you—help us get to know you a bit.
           <br />
           Signing up as: <strong>{email}</strong>
         </>

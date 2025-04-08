@@ -1,3 +1,7 @@
+// searchbar is responsible for
+// 1: displaying the search bar + dealing with interactions
+// 2: accepting a single string
+// 3: geocoding it and then sending it over to onLocationChange
 import { ConLocation } from "@/types/types";
 import { useState } from "react";
 import { Input } from "../ui/input";
