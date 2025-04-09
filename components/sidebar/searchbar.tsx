@@ -2,10 +2,36 @@ import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { useMapStore } from "@/stores/map-store";
 import { searchConventions } from "@/lib/searching/search-conventions";
-import { ConLocation, EventInfo } from "@/types/types";
+import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
-import { MAX_SEARCH_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
-import { FiX } from "react-icons/fi";
+import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
+import { FiMapPin, FiUser, FiX } from "react-icons/fi";
+
+type DropdownItem = {
+  id: string;
+  type: "result" | "action" | "message";
+  label: React.ReactNode;
+  data?: EventInfo;
+  className?: string;
+  onClick?: () => void;
+};
+
+function getDropdownItemClass(item: DropdownItem, isHighlighted: boolean) {
+  let base = "px-4 py-2 truncate";
+
+  if (item.type === "message") {
+    base += " text-primary-muted cursor-default";
+  } else if (item.type === "action") {
+    base += " text-primary-muted cursor-pointer";
+  } else {
+    base += " cursor-pointer";
+  }
+
+  if (isHighlighted) {
+    base += " bg-primary-lightest";
+  }
+  return base;
+}
 
 export default function Searchbar({
   setSidebarResults,
@@ -14,18 +40,18 @@ export default function Searchbar({
 }) {
   const [searchbarText, setSearchbarText] = useState("");
   const [suggestionResults, setSuggestionResults] = useState<EventInfo[]>([]);
-  const [showDropdown, setDropdown] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(true);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const items: DropdownItem[] = [];
 
-  const totalOptions =
-    suggestionResults.length +
-    (suggestionResults.length >= MAX_SEARCH_RESULTS ? 1 : 0);
   const flyTo = useMapStore((s) => s.flyTo);
 
   const clearSearch = () => {
     setSearchbarText("");
     setHighlightedIndex(-1);
     setSuggestionResults([]);
+    setShowDropdown(false);
+    inputRef.current?.blur();
   };
 
   // put cursor into search bar on load
@@ -42,7 +68,7 @@ export default function Searchbar({
         wrapperRef.current &&
         !wrapperRef.current.contains(e.target as Node)
       ) {
-        setDropdown(false);
+        setShowDropdown(false);
         setHighlightedIndex(-1);
       }
     };
@@ -51,31 +77,6 @@ export default function Searchbar({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // when there is no single convention selected
-  // we want to pass the results up to sidebar for it to show results
-  const handleFinalSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchbarText.trim()) return; // do nothing if empty search
-
-    const res = await searchConventions(searchbarText);
-    setHighlightedIndex(-1);
-    setSidebarResults(res); // pass back search results to Sidebar
-    setSuggestionResults([]);
-    if (flyTo) flyTo({ latitude: -30, longitude: 100 }, 5);
-  };
-
-  // if an event is selected on the search bar
-  // then we want to just fly immediately to it
-  // TODO: we should probably show more info. where?
-  const handleDropdownEnter = (s: EventInfo) => {
-    if (s.id === -1) return;
-    setHighlightedIndex(-1);
-    setSearchbarText(s.name);
-    console.log("flying to:", s);
-    flyTo?.({ latitude: s.latitude, longitude: s.longitude }, 10);
-    setSuggestionResults([]);
-  };
 
   const handleDropdownSuggestionItems = useDebouncedCallback(
     async (query: string) => {
@@ -103,39 +104,130 @@ export default function Searchbar({
     300
   );
 
-  // keyboard controls
+  // SECTION: handlers
+  //
+
+  // when they want to see all results
+  const onShowAllItems = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchbarText.trim()) return; // do nothing if empty search
+
+    const res = await searchConventions(searchbarText);
+    setHighlightedIndex(-1);
+    setSidebarResults(res); // pass back search results to Sidebar
+    setSuggestionResults([]);
+    if (flyTo) flyTo({ latitude: -30, longitude: 100 }, 5);
+  };
+
+  // if an event is selected on the search bar
+  const onResultSelect = (s: EventInfo) => {
+    if (s.id === -1) return;
+    setHighlightedIndex(-1);
+    setSearchbarText(s.name);
+    console.log("flying to:", s);
+    flyTo?.({ latitude: s.latitude, longitude: s.longitude }, 10);
+    setSuggestionResults([]);
+  };
+
+  // TODO
+  const onSearchHere = () => console.log("TODO: search current location");
+  const onSearchNearMe = () => console.log("TODO: search near me");
+
+  // SECTION: keyboard controls
+  //
+
   const handleKeyBoardControls = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
-      if (highlightedIndex < 0) {
-        // don't highlight "No results found"
-        if (suggestionResults.length && suggestionResults[0].id !== -1) {
-          setHighlightedIndex(0);
-        }
-      } else {
-        setHighlightedIndex((prev) => Math.min(prev + 1, totalOptions - 1));
-      }
+      if (items.length === 0) return;
+
+      setHighlightedIndex((prev) => {
+        if (prev < 0) return 0;
+        return Math.min(prev + 1, items.length - 1);
+      });
     } else if (e.key === "ArrowUp") {
       setHighlightedIndex((prev) => (prev <= 0 ? -1 : Math.max(prev - 1, 0)));
     } else if (e.key === "Enter" && highlightedIndex >= 0) {
       e.preventDefault();
-
-      if (
-        suggestionResults.length >= MAX_SEARCH_RESULTS &&
-        highlightedIndex === suggestionResults.length
-      ) {
-        // if "See all results" then use Final Search
-        handleFinalSearch(new Event("submit") as unknown as React.FormEvent);
-      } else {
-        // else it is a
-        handleDropdownEnter(suggestionResults[highlightedIndex]);
-      }
+      items[highlightedIndex]?.onClick?.();
     } else if (e.key === "Escape") {
       clearSearch();
     }
   };
 
+  // SECTION: here we build the dropdown list
+  //
+
+  const nothingTyped = !searchbarText.trim();
+  const nothingFound =
+    suggestionResults.length === 1 &&
+    suggestionResults[0].id === SPECIAL_CON_ID.NO_RESULTS;
+  const tooManyResults =
+    suggestionResults.length >= DROPDOWN_RESULTS && !nothingFound;
+
+  const SEARCH_NEAR_ME_ITEM = () => ({
+    id: "search-near-me",
+    type: "action" as const,
+    label: (
+      <span className="flex items-center gap-2">
+        <FiUser className="text-primary" />
+        <span>Search near me</span>
+      </span>
+    ),
+    onClick: onSearchNearMe,
+  });
+  const SEARCH_NEAR_HERE_ITEM = () => ({
+    id: "search-current-location",
+    type: "action" as const,
+    label: (
+      <span className="flex items-center gap-2">
+        <FiMapPin className="text-primary" />
+        <span>Search current location</span>
+      </span>
+    ),
+    onClick: onSearchHere,
+  });
+
+  if (nothingTyped) {
+    items.push(SEARCH_NEAR_HERE_ITEM(), SEARCH_NEAR_ME_ITEM());
+  } else if (nothingFound) {
+    items.push(
+      {
+        id: "no-results",
+        type: "message",
+        label: (
+          <span className="flex items-center gap-2">
+            {/* <FiX className="text-primary" /> */}
+            <span>No results for &quot;{searchbarText}&quot;</span>
+          </span>
+        ),
+      },
+      SEARCH_NEAR_HERE_ITEM()
+    );
+  } else {
+    // actual results
+    suggestionResults.slice(0, DROPDOWN_RESULTS).forEach((res) => {
+      items.push({
+        id: `result-${res.id}`,
+        type: "result",
+        label: res.name,
+        data: res,
+        onClick: () => onResultSelect(res),
+      });
+    });
+
+    if (tooManyResults) {
+      items.push({
+        id: "see-all",
+        type: "action",
+        label: "See all results...",
+        onClick: () =>
+          onShowAllItems(new Event("submit") as unknown as React.FormEvent),
+      });
+    }
+  }
+
   return (
-    <form onSubmit={handleFinalSearch} ref={wrapperRef}>
+    <form onSubmit={onShowAllItems} ref={wrapperRef}>
       <div className="relative">
         <Input
           type="text"
@@ -148,7 +240,8 @@ export default function Searchbar({
           onKeyDown={(e) => handleKeyBoardControls(e)}
           placeholder="Search for Conventions"
           onFocus={() => {
-            if (suggestionResults.length > 0) setDropdown(true);
+            if (items.length > 0) setShowDropdown(true);
+            setHighlightedIndex(-1);
           }}
           className="pr-8"
         />
@@ -162,45 +255,18 @@ export default function Searchbar({
           </button>
         )}
       </div>
-
-      {suggestionResults.length > 0 && showDropdown && (
+      {showDropdown && (
         <ul className="z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-64 overflow-y-auto">
-          {suggestionResults.map((s, i) => (
+          {items.map((item, i) => (
             <li
-              key={s.id}
-              className={`px-4 py-2 truncate 
-                ${highlightedIndex === i ? "bg-primary-lightest" : ""}
-                ${
-                  s.id === SPECIAL_CON_ID.NO_RESULTS
-                    ? "text-primary-muted cursor-default"
-                    : "cursor-pointer"
-                }`}
-              onClick={() => {
-                handleDropdownEnter(s);
-              }}
+              key={item.id}
+              className={getDropdownItemClass(item, highlightedIndex === i)}
+              onClick={() => item.onClick?.()}
               onMouseEnter={() => setHighlightedIndex(i)}
             >
-              {s.name}
+              {item.label}
             </li>
           ))}
-
-          {suggestionResults.length >= MAX_SEARCH_RESULTS && (
-            <li
-              className={`px-4 py-2 text-primary-muted hover:underline cursor-pointer font-medium ${
-                highlightedIndex === suggestionResults.length
-                  ? "bg-primary-lightest"
-                  : ""
-              }`}
-              onClick={() =>
-                handleFinalSearch({
-                  preventDefault: () => {},
-                } as React.FormEvent)
-              }
-              onMouseEnter={() => setHighlightedIndex(suggestionResults.length)}
-            >
-              See all results
-            </li>
-          )}
         </ul>
       )}
     </form>

@@ -1,4 +1,4 @@
-export const MAX_SEARCH_RESULTS = 5;
+export const DROPDOWN_RESULTS = 5;
 
 export const SPECIAL_CON_ID = {
     NO_RESULTS: -1,
