@@ -33,7 +33,7 @@ export default function Map({
     mapRef.current = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/andrwyoung/cm93lxid4003c01rihwc1844d",
-      center: [initLocation.latitude, initLocation.longitude],
+      center: [initLocation.longitude, initLocation.latitude],
       zoom: 8,
     });
 
@@ -59,7 +59,7 @@ export default function Map({
     if (!mapRef.current) return;
 
     mapRef.current.flyTo({
-      center: [location.latitude, location.longitude],
+      center: [location.longitude, location.latitude],
       zoom,
       speed: 1.2,
       curve: 1,

@@ -1,3 +1,4 @@
+import { DEFAULT_LOCATION } from "@/lib/constants";
 import { ConLocation } from "@/types/types";
 
 export default async function getInitialLocation(): Promise<ConLocation> {
@@ -19,9 +20,9 @@ export default async function getInitialLocation(): Promise<ConLocation> {
     const res = await fetch("https://ipapi.co/json");
     const data = await res.json();
     console.log("Trying to IP address loc", data);
-    return { latitude: data.longitude, longitude: data.latitude };
+    return { latitude: data.latitude, longitude: data.longitude };
   } catch {
     // 3 if none of those work, just default to showing SF lol
-    return { latitude: -122.4194, longitude: 37.7749 };
+    return DEFAULT_LOCATION;
   }
 }
