@@ -38,16 +38,17 @@ export async function signupUser({
     password,
   });
 
-  // supabase give some dummy data that we can handle
-  if(!signUpData?.user) {
-    return { error: "Signup failed. Please try again."}
-  }
+
   // they also have more in depth email checks
   if (signUpError) {
     if (/Email address\s+"[^"]+"\s+is invalid/i.test(signUpError.message)) {
           return { error: "Please enter a valid email address."};
     }
     return { error: signUpError };
+  }
+  // supabase give some dummy data that we can handle
+  if(!signUpData?.user) {
+    return { error: "Signup failed. Please try again."}
   }
 
   // inserting into our personal user_profile table
