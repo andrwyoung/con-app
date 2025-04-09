@@ -6,6 +6,8 @@ export default function addMarkersToMap(
   map: mapboxgl.Map,
   events: EventInfo[]
 ) {
+  let hoveredId: string | number | null = null;
+
   map.on("load", () => {
     console.log("events length?", events.length);
 
@@ -18,6 +20,7 @@ export default function addMarkersToMap(
           coordinates: [event.longitude, event.latitude],
         },
         properties: {
+          id: event.id,
           name: event.name,
           date: event.date,
           fancons_link: event.url,
@@ -67,8 +70,22 @@ export default function addMarkersToMap(
         source: "events",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#11b4da",
+          "circle-color": "#FFD79E",
           "circle-radius": 6,
+        },
+      });
+      map.addLayer({
+        id: "unclustered-point-hover",
+        type: "circle",
+        source: "events",
+        filter: ["==", ["get", "id"], ""], // empty until hover
+        paint: {
+          "circle-color": "#EDAE77", // e.g. orange-500
+          "circle-radius": 7,
+          "circle-stroke-color": "#000",
+          // "circle-stroke-width": 1,
+          "circle-radius-transition": { duration: 200 },
+          "circle-color-transition": { duration: 200 },
         },
       });
 
@@ -92,5 +109,24 @@ export default function addMarkersToMap(
       //   },
       // });
     }
+
+    map.on("mousemove", "unclustered-point", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+
+      if (e.features?.length) {
+        hoveredId = e.features[0].properties?.id;
+        map.setFilter("unclustered-point-hover", [
+          "==",
+          ["get", "id"],
+          hoveredId,
+        ]);
+      }
+    });
+
+    map.on("mouseleave", "unclustered-point", () => {
+      map.getCanvas().style.cursor = "";
+      hoveredId = null;
+      map.setFilter("unclustered-point-hover", ["==", ["get", "id"], ""]);
+    });
   });
 }

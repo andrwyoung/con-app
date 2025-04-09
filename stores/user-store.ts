@@ -1,3 +1,4 @@
+// storing user profile info globally
 import { create } from "zustand";
 import { User } from "@supabase/supabase-js";
 

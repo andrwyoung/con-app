@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation, EventInfo } from "@/types/types";
 import addMarkersToMap from "./map/markers";
+import { useMapStore } from "@/stores/map-store";
 
 // different colored maps
 // const mapStyles = [
@@ -52,6 +53,23 @@ export default function Map({
     if (!mapRef.current || !eventsLoaded) return;
     addMarkersToMap(mapRef.current, events);
   }, [events, eventsLoaded]);
+
+  // utility function to fly to where-ever
+  const flyTo = (location: ConLocation, zoom = 10) => {
+    if (!mapRef.current) return;
+
+    mapRef.current.flyTo({
+      center: [location.latitude, location.longitude],
+      zoom,
+      speed: 1.2,
+      curve: 1,
+      essential: true,
+    });
+  };
+
+  useEffect(() => {
+    useMapStore.getState().setFlyTo(flyTo);
+  });
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
 }
