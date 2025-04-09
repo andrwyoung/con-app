@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation, EventInfo } from "@/types/types";
-import { supabaseAnon } from "@/lib/supabase/client";
 import addMarkersToMap from "./map/markers";
 
 // different colored maps
@@ -46,13 +45,13 @@ export default function Map({
       .addTo(mapRef.current);
 
     return () => mapRef.current?.remove();
-  }, []);
+  }, [initLocation.latitude, initLocation.longitude]);
 
   // render all the markers once fetched
   useEffect(() => {
     if (!mapRef.current || !eventsLoaded) return;
     addMarkersToMap(mapRef.current, events);
-  }, [eventsLoaded]);
+  }, [events, eventsLoaded]);
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
 }
