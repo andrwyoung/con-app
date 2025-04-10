@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { useMapStore } from "@/stores/map-store";
 import { searchConventions } from "@/lib/searching/search-conventions";
 import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
@@ -40,25 +39,19 @@ export default function Searchbar({
 }) {
   const [searchbarText, setSearchbarText] = useState("");
   const [suggestionResults, setSuggestionResults] = useState<EventInfo[]>([]);
-  const [showDropdown, setShowDropdown] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const items: DropdownItem[] = [];
 
-  const flyTo = useMapStore((s) => s.flyTo);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const clearSearch = () => {
-    setSearchbarText("");
     setHighlightedIndex(-1);
     setSuggestionResults([]);
     setShowDropdown(false);
+    setSearchbarText("");
     inputRef.current?.blur();
   };
-
-  // put cursor into search bar on load
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
 
   // if we click out of the search bar, close the suggestions list
   const wrapperRef = useRef<HTMLFormElement>(null);
@@ -110,13 +103,11 @@ export default function Searchbar({
   // when they want to see all results
   const onShowAllItems = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchbarText.trim()) return; // do nothing if empty search
+    if (!searchbarText.trim()) return;
 
     const res = await searchConventions(searchbarText);
-    setHighlightedIndex(-1);
-    setSidebarResults(res); // pass back search results to Sidebar
-    setSuggestionResults([]);
-    if (flyTo) flyTo({ latitude: -30, longitude: 100 }, 5);
+    clearSearch();
+    setSidebarResults(res);
   };
 
   // if an event is selected on the search bar
@@ -124,9 +115,8 @@ export default function Searchbar({
     if (s.id === -1) return;
     setHighlightedIndex(-1);
     setSearchbarText(s.name);
-    console.log("flying to:", s);
-    flyTo?.({ latitude: s.latitude, longitude: s.longitude }, 10);
     setSuggestionResults([]);
+    setSidebarResults([s]); // Sidebar will fly if it's just 1
   };
 
   // TODO
@@ -227,7 +217,7 @@ export default function Searchbar({
   }
 
   return (
-    <form onSubmit={onShowAllItems} ref={wrapperRef}>
+    <form onSubmit={onShowAllItems} ref={wrapperRef} className="relative">
       <div className="relative">
         <Input
           type="text"
@@ -235,12 +225,13 @@ export default function Searchbar({
           value={searchbarText}
           onChange={(e) => {
             setSearchbarText(e.target.value);
+            setShowDropdown(true);
             handleDropdownSuggestionItems(e.target.value);
           }}
           onKeyDown={(e) => handleKeyBoardControls(e)}
           placeholder="Search for Conventions"
           onFocus={() => {
-            if (items.length > 0) setShowDropdown(true);
+            setShowDropdown(true);
             setHighlightedIndex(-1);
           }}
           className="pr-8"
@@ -250,13 +241,14 @@ export default function Searchbar({
             type="button"
             onClick={clearSearch}
             className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+            aria-label="clear search text"
           >
             <FiX />
           </button>
         )}
       </div>
       {showDropdown && (
-        <ul className="z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-64 overflow-y-auto">
+        <ul className="absolute z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-64 overflow-y-auto">
           {items.map((item, i) => (
             <li
               key={item.id}

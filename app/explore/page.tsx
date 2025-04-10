@@ -36,7 +36,7 @@ export default function ExplorePage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMap(true);
-    }, 600);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);
@@ -44,14 +44,14 @@ export default function ExplorePage() {
   return (
     <div className="w-screen h-screen font-extrabold">
       <Sidebar />
-      <div
+      {/* <div
         className={`flex flex-row gap-4 items-center justify-center -z-10 absolute inset-0`}
       >
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-4 border-primary-muted" />
         <div className="text-lg  text-primary-muted">
           Loading Conventions...
         </div>
-      </div>
+      </div> */}
       <div
         className={`transition-opacity duration-800 h-full ${
           showMap ? "opacity-100" : "opacity-0"

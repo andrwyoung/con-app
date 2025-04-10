@@ -5,6 +5,6 @@ export const SPECIAL_CON_ID = {
     UNKNOWN_CON: -999,
 }
 
-export const DEFAULT_LOCATION: { latitude: number; longitude: number } = {
-    latitude: -122.4194, longitude: 37.7749 
+export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
+    latitude: 37.7749, longitude: -122.4194
 };

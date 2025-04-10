@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* @import "@tailwindcss/line-clamp"; */
+@plugin 'tailwind-scrollbar';
 
 :root {
   --radius: 0.625rem;
