@@ -15,7 +15,7 @@ export default function Card({
       onClick={onClick}
       className={`relative flex flex-row cursor-pointer items-center w-full h-16 rounded-lg 
     bg-primary-lightest px-4 py-1 overflow-hidden shadow-x transition-all duration-200 transform
-    hover:scale-[1.01] hover:shadow-[0_0_2px_2px_theme('colors.primary-light.DEFAULT')] group
+    hover:scale-[1.01] hover:shadow-[0_0_2px_2px_theme('colors.primary-light.DEFAULT')] group select-none
     ${selected ? "outline-2 outline-primary" : "hover:scale-[1.01]"}
       bg-primary-lightest`}
     >

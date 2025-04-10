@@ -5,6 +5,11 @@ import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiMapPin, FiUser, FiX } from "react-icons/fi";
+import { sidebarModes } from "./sidebar";
+import {
+  useSearchStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 
 type DropdownItem = {
   id: string;
@@ -32,25 +37,27 @@ function getDropdownItemClass(item: DropdownItem, isHighlighted: boolean) {
   return base;
 }
 
-export default function Searchbar({
-  setSidebarResults,
-}: {
-  setSidebarResults: (s: EventInfo[]) => void;
-}) {
+export default function Searchbar() {
   const [searchbarText, setSearchbarText] = useState("");
   const [suggestionResults, setSuggestionResults] = useState<EventInfo[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const items: DropdownItem[] = [];
 
+  const { sidebarMode, setSidebarMode } = useSidebarStore();
+  const { setResults } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const clearSearch = () => {
+  const clearSearchBar = () => {
     setHighlightedIndex(-1);
     setSuggestionResults([]);
     setShowDropdown(false);
     setSearchbarText("");
     inputRef.current?.blur();
+
+    if (sidebarMode === "search") {
+      setSidebarMode("filter");
+    }
   };
 
   // if we click out of the search bar, close the suggestions list
@@ -101,25 +108,38 @@ export default function Searchbar({
   //
 
   // when they want to see all results
-  const onShowAllItems = async (e: React.FormEvent) => {
+  const onShowAllItems = (e: React.FormEvent) => {
     e.preventDefault();
+    runFullSearch();
+  };
+  const runFullSearch = async () => {
     if (!searchbarText.trim()) return;
 
     const res = await searchConventions(searchbarText);
-    clearSearch();
-    setSidebarResults(res);
+
+    setResults(res);
+    setHighlightedIndex(-1);
+    setShowDropdown(false);
+    setSidebarMode("search");
+
+    // ux decision
+    if (res.length != 0) {
+      inputRef.current?.blur();
+    }
   };
 
   // if an event is selected on the search bar
   const onResultSelect = (s: EventInfo) => {
-    if (s.id === -1) return;
+    if (s.id === -1) return; // should never happen
     setHighlightedIndex(-1);
-    setSearchbarText(s.name);
     setSuggestionResults([]);
-    setSidebarResults([s]); // Sidebar will fly if it's just 1
+
+    setSidebarMode("search");
+    setSearchbarText(s.name);
+    setResults([s]); // Sidebar will fly if it's just 1
   };
 
-  // TODO
+  // TODO these. remember to add setIsSearchMode
   const onSearchHere = () => console.log("TODO: search current location");
   const onSearchNearMe = () => console.log("TODO: search near me");
 
@@ -140,7 +160,7 @@ export default function Searchbar({
       e.preventDefault();
       items[highlightedIndex]?.onClick?.();
     } else if (e.key === "Escape") {
-      clearSearch();
+      clearSearchBar();
     }
   };
 
@@ -210,8 +230,7 @@ export default function Searchbar({
         id: "see-all",
         type: "action",
         label: "See all results...",
-        onClick: () =>
-          onShowAllItems(new Event("submit") as unknown as React.FormEvent),
+        onClick: runFullSearch,
       });
     }
   }
@@ -239,7 +258,9 @@ export default function Searchbar({
         {searchbarText && (
           <button
             type="button"
-            onClick={clearSearch}
+            onClick={() => {
+              clearSearchBar();
+            }}
             className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
             aria-label="clear search text"
           >
