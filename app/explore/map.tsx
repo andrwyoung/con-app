@@ -6,13 +6,6 @@ import { ConLocation, EventInfo } from "@/types/types";
 import addMarkersToMap from "./map/markers";
 import { useMapStore } from "@/stores/map-store";
 
-// different colored maps
-// const mapStyles = [
-//   { id: "dataviz-light", name: "Monochrome" },
-//   { id: "bright", name: "Classic" },
-//   { id: "basic", name: "Greener" },
-// ];
-
 export default function Map({
   initLocation,
   events,
@@ -67,6 +60,7 @@ export default function Map({
     });
   };
 
+  // add flyTo to zustand so we can access it anywhere
   useEffect(() => {
     useMapStore.getState().setFlyTo(flyTo);
   });

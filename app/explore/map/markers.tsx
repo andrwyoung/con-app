@@ -128,5 +128,73 @@ export default function addMarkersToMap(
       hoveredId = null;
       map.setFilter("unclustered-point-hover", ["==", ["get", "id"], ""]);
     });
+
+    map.on("click", "unclustered-point", (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ["unclustered-point"],
+      });
+
+      if (features.length) {
+        const props = features[0].properties;
+        console.log("You clicked on:", props);
+
+        // You can do something like:
+        // setSelectedCon({
+        //   id: props.id,
+        //   name: props.name,
+        //   ...
+        // });
+      }
+    });
+
+    map.on("click", "clusters", (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ["clusters"],
+      });
+
+      const clusterId = features[0].properties?.cluster_id;
+
+      const source = map.getSource("events") as mapboxgl.GeoJSONSource;
+
+      if (!clusterId || !source) return;
+
+      // // First, zoom into the cluster
+      // source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+      //   if (err || !zoom) return;
+
+      //   const point = features[0].geometry as GeoJSON.Point;
+      //   map.easeTo({
+      //     center: point.coordinates as [number, number],
+      //     zoom,
+      //   });
+      // });
+
+      // Then, get all the individual points in that cluster
+      source.getClusterLeaves(clusterId, 100, 0, (err, leaves) => {
+        if (err) {
+          console.error("Failed to get cluster leaves", err);
+          return;
+        }
+        const conList = leaves?.map((f) => {
+          const geometry = f.geometry as GeoJSON.Point;
+          const [longitude, latitude] = geometry.coordinates;
+
+          return {
+            id: f.properties?.id,
+            name: f.properties?.name,
+            date: f.properties?.date,
+            url: f.properties?.fancons_link,
+            latitude,
+            longitude,
+          };
+        });
+
+        console.log("Cluster contains:", conList);
+
+        // Optional: send to Zustand, callback, or panel
+        // useSidebarStore.getState().setClusterCons(conList);
+        // useSidebarStore.getState().setSidebarMode("cluster");
+      });
+    });
   });
 }

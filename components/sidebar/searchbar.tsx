@@ -5,7 +5,6 @@ import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiMapPin, FiUser, FiX } from "react-icons/fi";
-import { sidebarModes } from "./sidebar";
 import {
   useSearchStore,
   useSidebarStore,
