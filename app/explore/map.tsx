@@ -48,16 +48,23 @@ export default function Map({
   }, [events, eventsLoaded]);
 
   // utility function to fly to where-ever
-  const flyTo = (location: ConLocation, zoom = 10) => {
+  const flyTo = (location: ConLocation, zoom?: number) => {
     if (!mapRef.current) return;
 
-    mapRef.current.flyTo({
-      center: [location.longitude, location.latitude],
-      zoom,
-      speed: 1.2,
-      curve: 1,
-      essential: true,
-    });
+    if (zoom !== undefined) {
+      mapRef.current.flyTo({
+        center: [location.longitude, location.latitude],
+        speed: 1.2,
+        zoom,
+        curve: 1,
+        essential: true,
+      });
+    } else {
+      mapRef.current.flyTo({
+        center: [location.longitude, location.latitude],
+        essential: true,
+      });
+    }
   };
 
   // add flyTo to zustand so we can access it anywhere

@@ -27,7 +27,7 @@ export default function SearchMode({
     ) {
       flyTo?.({ latitude: loc.latitude, longitude: loc.longitude }, 10);
     } else if (results.length > 1) {
-      flyTo?.(DEFAULT_LOCATION, 5);
+      flyTo?.(DEFAULT_LOCATION);
     }
   }, [results]);
 
