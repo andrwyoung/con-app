@@ -1,27 +1,28 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { EventInfo } from "@/types/types";
 import { FiMenu } from "react-icons/fi";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 
-export default function Card({
-  info,
-  selected = false,
-  onClick,
-}: {
-  info: EventInfo;
-  selected?: boolean;
-  onClick?: () => void;
-}) {
+const Card = forwardRef<
+  HTMLDivElement,
+  {
+    info: EventInfo;
+    selected?: boolean;
+    onClick?: () => void;
+    onDoubleClick?: () => void;
+  }
+>(({ info, selected = false, onClick, onDoubleClick }, ref) => {
   const flyTo = useMapStore((s) => s.flyTo);
 
   return (
     <div
+      ref={ref}
       onClick={onClick}
       className={`relative flex flex-row cursor-pointer items-center w-full h-16 rounded-lg 
-    bg-primary-lightest px-4 py-1 overflow-hidden shadow-x transition-all duration-200 transform
+    bg-primary-lightest px-4 py-1 overflow-hidden shadow-x transition-all transform
      hover:shadow-[0_0_2px_2px_theme('colors.primary-light.DEFAULT')] group select-none
-    ${selected ? "outline-2 outline-primary" : "hover:scale-[1.01]"}
+    ${selected ? "outline-2 outline-secondary" : "hover:scale-[1.01]"}
       bg-primary-lightest`}
     >
       <div className="absolute top-0 left-0 bg-primary-light h-16 w-16" />
@@ -45,4 +46,7 @@ export default function Card({
       </div>
     </div>
   );
-}
+});
+Card.displayName = "Card"; // Required when using forwardRef
+
+export default Card;

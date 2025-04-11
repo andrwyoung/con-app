@@ -1,19 +1,12 @@
-import { EventInfo } from "@/types/types";
 import Card from "../card";
 import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEffect } from "react";
 import { DEFAULT_LOCATION, MAX_CARDS } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
-import CardWrapper from "../card-wrapper";
+import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
 
-export default function SearchMode({
-  selectedCon,
-  setSelectedCon,
-}: {
-  selectedCon: EventInfo | null;
-  setSelectedCon: (c: EventInfo | null) => void;
-}) {
+export default function SearchMode() {
   const { results } = useSearchStore();
   const flyTo = useMapStore((s) => s.flyTo);
 
@@ -41,18 +34,7 @@ export default function SearchMode({
           Try refining your search.
         </div>
       ) : (
-        <CardWrapper>
-          {results.slice(0, MAX_CARDS).map((con, i) => (
-            <Card
-              key={con.id || i}
-              info={con}
-              selected={selectedCon?.id === con.id}
-              onClick={() =>
-                setSelectedCon(selectedCon?.id === con.id ? null : con)
-              }
-            />
-          ))}
-        </CardWrapper>
+        <NavigatableCardList items={results.slice(0, MAX_CARDS)} />
       )}
     </ModeWrapper>
   );

@@ -161,6 +161,9 @@ export default function Searchbar() {
       e.preventDefault();
       items[highlightedIndex]?.onClick?.();
     } else if (e.key === "Escape") {
+      if (searchbarText === "") {
+        inputRef.current?.blur();
+      }
       clearSearchBar();
     }
   };

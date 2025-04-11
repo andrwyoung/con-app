@@ -1,5 +1,5 @@
 // add all the event markers to the map
-import { SidebarMode } from "@/stores/explore-sidebar-store";
+import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { EventInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
@@ -44,21 +44,6 @@ export default function addMarkersToMap(
     27,
   ] as DataDrivenPropertyValueSpecification<number>;
 
-  // SECTION: reusable functions
-  //
-
-  const clearSelectedPointHighlight = () => {
-    map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], ""]);
-  };
-  useMapStore
-    .getState()
-    .setClearSelectedPointHighlight(clearSelectedPointHighlight);
-
-  const highlightPointOnMap = (id: string | number) => {
-    map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], id]);
-  };
-  useMapStore.getState().setHighlightPointOnMap(highlightPointOnMap);
-
   // SECTION: Initialize Map
   //
 
@@ -77,6 +62,13 @@ export default function addMarkersToMap(
         properties: {
           id: event.id,
           name: event.name,
+          length: event.days_length,
+          iconType:
+            event.days_length <= 1
+              ? "marker-short"
+              : event.days_length <= 3
+              ? "marker-medium"
+              : "marker-long",
         },
       })),
     };
@@ -91,7 +83,7 @@ export default function addMarkersToMap(
         type: "geojson",
         data: geoJsonData,
         cluster: true,
-        clusterRadius: 50,
+        clusterRadius: 40,
         clusterMaxZoom: 14,
       });
 
@@ -133,6 +125,33 @@ export default function addMarkersToMap(
           "text-size": 12,
         },
       });
+
+      // map.loadImage("/pin.png", (error, image) => {
+      //   if (error || !image) {
+      //     console.error("Failed to load marker image", error);
+      //     return;
+      //   }
+
+      //   if (!map.hasImage("custom-marker")) {
+      //     map.addImage("custom-marker", image);
+      //   }
+
+      //   map.addLayer({
+      //     id: "unclustered-point",
+      //     type: "symbol",
+      //     source: "events",
+      //     filter: ["!", ["has", "point_count"]],
+      //     layout: {
+      //       "icon-image": "custom-marker",
+      //       "icon-size": 0.5,
+      //       "icon-allow-overlap": true,
+      //     },
+      //     paint: {
+      //       "circle-color": POINT_COLOR,
+      //       //     "circle-radius": POINT_SIZE,
+      //     },
+      //   });
+      // });
 
       map.addLayer({
         id: "unclustered-point",
@@ -180,6 +199,21 @@ export default function addMarkersToMap(
         },
       });
     }
+
+    // SECTION: reusable functions
+    //
+
+    const clearSelectedPointHighlight = () => {
+      map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], ""]);
+    };
+    useMapStore
+      .getState()
+      .setClearSelectedPointHighlight(clearSelectedPointHighlight);
+
+    const highlightPointOnMap = (id: string | number) => {
+      map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], id]);
+    };
+    useMapStore.getState().setHighlightPointOnMap(highlightPointOnMap);
 
     // SECTION: Hovering Behavior
     //
@@ -279,22 +313,28 @@ export default function addMarkersToMap(
       const clickedId = props?.id;
 
       if (clickedId) {
-        // highlight point
-        highlightPointOnMap(clickedId);
+        const selectedCon = useSidebarStore.getState().selectedCon;
+        if (!selectedCon || selectedCon.id !== clickedId) {
+          // highlight point
+          highlightPointOnMap(clickedId);
 
-        // pan to it
-        map.easeTo({
-          center: point.coordinates as [number, number],
-          speed: 0.5,
-          duration: 900,
-        });
+          // pan to it
+          map.easeTo({
+            center: point.coordinates as [number, number],
+            speed: 0.5,
+            duration: 900,
+          });
 
-        // TODO: set zustand
-        console.log("Convention clicked:", props);
+          // TODO: set zustand
+          console.log("Convention clicked:", props);
 
-        setSidebarMode("map");
-        setFocusedEvents([eventDict[clickedId]]);
-        setSelectedCon(eventDict[clickedId]);
+          setSidebarMode("map");
+          setFocusedEvents([eventDict[clickedId]]);
+          setSelectedCon(eventDict[clickedId]);
+        } else {
+          clearSelectedPointHighlight();
+          setSelectedCon(null);
+        }
       }
 
       // const popup = new mapboxgl.Popup({

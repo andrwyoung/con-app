@@ -13,12 +13,7 @@ export default function Sidebar() {
     <div className="absolute z-10 top-36 left-8">
       <div className="flex flex-col gap-2 w-80 max-h-180 h-full rounded-lg shadow-lg bg-white px-5 py-6">
         <SearchBar key={mode} />
-        {mode === "search" && (
-          <SearchMode
-            selectedCon={selectedCon}
-            setSelectedCon={setSelectedCon}
-          />
-        )}
+        {mode === "search" && <SearchMode />}
         {mode === "filter" && <div>filter mode</div>}
         {mode === "map" && <MapMode />}
       </div>

@@ -16,7 +16,8 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { isLoading: eventsStillLoading, allEvents: eventDict } =
     useEventStore();
-  const { setSelectedCon, setSidebarModeAndDeselectCon } = useSidebarStore();
+  const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
+    useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
 
   // initial mount of map
@@ -30,14 +31,6 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       center: [initLocation.longitude, initLocation.latitude],
       zoom: 8,
     });
-
-    new mapboxgl.Marker()
-      .setLngLat([12.554729, 55.70651])
-      .addTo(mapRef.current);
-
-    new mapboxgl.Marker({ color: "black", rotation: 45 })
-      .setLngLat([12.65147, 55.608166])
-      .addTo(mapRef.current);
 
     return () => mapRef.current?.remove();
   }, [initLocation.latitude, initLocation.longitude]);
@@ -89,22 +82,27 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     useMapStore.getState().setFlyTo(flyTo);
   }, []);
 
-  const { selectedCon } = useSidebarStore();
   useEffect(() => {
     if (!mapRef.current) return;
     if (!selectedCon) {
       useMapStore.getState().clearSelectedPointHighlight?.();
     } else {
       useMapStore.getState().highlightPointOnMap?.(selectedCon.id);
+
+      const el = document.createElement("div");
+      el.className = "custom-marker";
+
+      const marker = new mapboxgl.Marker({
+        // element: el,
+        color: "#7976D9",
+        offset: [0, -20],
+      })
+        .setLngLat([selectedCon.longitude, selectedCon.latitude])
+        .addTo(mapRef.current);
+      return () => {
+        if (marker) marker.remove();
+      };
     }
-
-    // const marker = new mapboxgl.Marker()
-    //   .setLngLat([selectedCon.longitude, selectedCon.latitude])
-    //   .addTo(mapRef.current);
-
-    // return () => {
-    //   if (marker) marker.remove();
-    // };
   }, [selectedCon]);
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
