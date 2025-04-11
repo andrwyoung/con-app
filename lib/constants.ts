@@ -1,4 +1,5 @@
 export const DROPDOWN_RESULTS = 5;
+export const MAX_CARDS = 50;
 
 export const SPECIAL_CON_ID = {
     NO_RESULTS: -1,

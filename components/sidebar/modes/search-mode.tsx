@@ -2,8 +2,11 @@ import { EventInfo } from "@/types/types";
 import Card from "../card";
 import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEffect } from "react";
-import { DEFAULT_LOCATION } from "@/lib/constants";
+import { DEFAULT_LOCATION, MAX_CARDS } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
+import { Button } from "@/components/ui/button";
+import CardWrapper from "../card-wrapper";
+import ModeWrapper from "./mode-wrapper";
 
 export default function SearchMode({
   selectedCon,
@@ -32,18 +35,15 @@ export default function SearchMode({
   }, [results]);
 
   return (
-    <div className="flex flex-col gap-3 pr-1 m-1">
+    <ModeWrapper title="Search Results">
       {results.length === 0 ? (
         <div className="text-sm text-center text-primary-muted px-2">
           No results found. <br />
           Try refining your search.
         </div>
       ) : (
-        <>
-          <div className="text-xs uppercase tracking-wide text-primary-muted px-1">
-            Search results
-          </div>
-          {results.map((con, i) => (
+        <CardWrapper>
+          {results.slice(0, MAX_CARDS).map((con, i) => (
             <Card
               key={con.id || i}
               info={con}
@@ -53,8 +53,8 @@ export default function SearchMode({
               }
             />
           ))}
-        </>
+        </CardWrapper>
       )}
-    </div>
+    </ModeWrapper>
   );
 }

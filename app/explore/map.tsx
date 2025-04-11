@@ -5,18 +5,19 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation, EventInfo } from "@/types/types";
 import addMarkersToMap from "./map/markers";
 import { useMapStore } from "@/stores/map-store";
+import { useEventStore } from "@/stores/all-events-store";
+import {
+  useMapCardsStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 
-export default function Map({
-  initLocation,
-  events,
-  eventsLoaded,
-}: {
-  initLocation: ConLocation;
-  events: EventInfo[];
-  eventsLoaded: boolean;
-}) {
+export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const { isLoading: eventsStillLoading, allEvents: eventDict } =
+    useEventStore();
+  const { setSelectedCon, setSidebarMode } = useSidebarStore();
+  const { setFocusedEvents } = useMapCardsStore();
 
   // initial mount of map
   useEffect(() => {
@@ -43,9 +44,23 @@ export default function Map({
 
   // render all the markers once fetched
   useEffect(() => {
-    if (!mapRef.current || !eventsLoaded) return;
-    addMarkersToMap(mapRef.current, events);
-  }, [events, eventsLoaded]);
+    console.log("dict2", eventDict, eventsStillLoading, mapRef.current);
+    if (
+      !mapRef.current ||
+      eventsStillLoading ||
+      !eventDict ||
+      Object.keys(eventDict).length === 0
+    )
+      return;
+
+    addMarkersToMap(
+      mapRef.current,
+      eventDict,
+      setSelectedCon,
+      setSidebarMode,
+      setFocusedEvents
+    );
+  }, [eventsStillLoading, eventDict]);
 
   // utility function to fly to where-ever
   const flyTo = (location: ConLocation, zoom?: number) => {
@@ -60,8 +75,10 @@ export default function Map({
         essential: true,
       });
     } else {
-      mapRef.current.flyTo({
+      mapRef.current.easeTo({
         center: [location.longitude, location.latitude],
+        speed: 0.5,
+        curve: 1,
         essential: true,
       });
     }
@@ -70,7 +87,20 @@ export default function Map({
   // add flyTo to zustand so we can access it anywhere
   useEffect(() => {
     useMapStore.getState().setFlyTo(flyTo);
-  });
+  }, []);
+
+  // const { selectedCon } = useSidebarStore();
+  // useEffect(() => {
+  //   if (!mapRef.current || !selectedCon) return;
+
+  //   const marker = new mapboxgl.Marker()
+  //     .setLngLat([selectedCon.longitude, selectedCon.latitude])
+  //     .addTo(mapRef.current);
+
+  //   return () => {
+  //     if (marker) marker.remove();
+  //   };
+  // }, [selectedCon]);
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
 }

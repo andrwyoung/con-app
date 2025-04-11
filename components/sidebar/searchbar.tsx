@@ -9,6 +9,7 @@ import {
   useSearchStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
+import { useEventStore } from "@/stores/all-events-store";
 
 type DropdownItem = {
   id: string;
@@ -43,6 +44,7 @@ export default function Searchbar() {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const items: DropdownItem[] = [];
 
+  const { allEvents } = useEventStore();
   const { sidebarMode, setSidebarMode } = useSidebarStore();
   const { setResults } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,9 +56,15 @@ export default function Searchbar() {
     setSearchbarText("");
     inputRef.current?.blur();
 
-    if (sidebarMode === "search") {
-      setSidebarMode("filter");
-    }
+    // if (sidebarMode === "search") {
+    //   setSidebarMode("filter");
+    // }
+  };
+
+  const grabConventions = (text: string) => {
+    return Object.values(allEvents).filter((event) =>
+      event.name.toLowerCase().includes(text.toLowerCase())
+    );
   };
 
   // if we click out of the search bar, close the suggestions list
@@ -84,7 +92,7 @@ export default function Searchbar() {
         return;
       }
 
-      const res = await searchConventions(searchbarText);
+      const res = grabConventions(searchbarText);
       console.log(res);
 
       if (res.length === 0) {
@@ -114,7 +122,7 @@ export default function Searchbar() {
   const runFullSearch = async () => {
     if (!searchbarText.trim()) return;
 
-    const res = await searchConventions(searchbarText);
+    const res = grabConventions(searchbarText);
 
     setResults(res);
     setHighlightedIndex(-1);

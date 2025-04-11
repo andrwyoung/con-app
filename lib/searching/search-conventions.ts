@@ -1,3 +1,4 @@
+// DEPRECATED: using zustland to grab conventions
 import { EventInfo } from "@/types/types";
 import { supabaseAnon } from "../supabase/client"
 

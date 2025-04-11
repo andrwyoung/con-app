@@ -1,12 +1,56 @@
 // add all the event markers to the map
+import { useEventStore } from "@/stores/all-events-store";
+import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
+import { useMapStore } from "@/stores/map-store";
 import { EventInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
+import mapboxgl, { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
-  events: EventInfo[]
+  eventDict: Record<string, EventInfo>,
+  setSelectedCon: (c: EventInfo | null) => void,
+  setSidebarMode: (mode: SidebarMode) => void,
+  setFocusedEvents: (e: EventInfo[]) => void
 ) {
-  let hoveredId: string | number | null = null;
+  let hoveredPointId: string | number | null = null;
+  let hoveredClusterId: number | null = null;
+
+  console.log("dict", eventDict);
+  const events = Object?.values(eventDict);
+
+  const POINT_COLOR = "#FFD79E";
+  const HOVER_COLOR = "#EDAE77";
+  const OUTLINE_COLOR = "#CF803B";
+  const TRANSITION_TIME = 300;
+
+  const POINT_SIZE = 8;
+
+  const CLUSTER_STEP = [
+    "step",
+    ["get", "point_count"],
+    15,
+    10,
+    20,
+    50,
+    25,
+  ] as DataDrivenPropertyValueSpecification<number>;
+  const CLUSTER_HOVER_STEP = [
+    "step",
+    ["get", "point_count"],
+    17,
+    10,
+    22,
+    50,
+    27,
+  ] as DataDrivenPropertyValueSpecification<number>;
+
+  const clearSelectedPointHighlight = () => {
+    map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], ""]);
+  };
+  useMapStore
+    .getState()
+    .setClearSelectedPointHighlight(clearSelectedPointHighlight);
 
   map.on("load", () => {
     console.log("events length?", events.length);
@@ -15,6 +59,7 @@ export default function addMarkersToMap(
       type: "FeatureCollection",
       features: events.map((event) => ({
         type: "Feature",
+        id: event.id,
         geometry: {
           type: "Point",
           coordinates: [event.longitude, event.latitude],
@@ -22,8 +67,6 @@ export default function addMarkersToMap(
         properties: {
           id: event.id,
           name: event.name,
-          date: event.date,
-          fancons_link: event.url,
         },
       })),
     };
@@ -48,8 +91,24 @@ export default function addMarkersToMap(
         source: "events",
         filter: ["has", "point_count"],
         paint: {
-          "circle-color": "#FFD79E",
-          "circle-radius": ["step", ["get", "point_count"], 15, 10, 20, 50, 25],
+          "circle-color": POINT_COLOR,
+          "circle-radius": CLUSTER_STEP,
+        },
+      });
+      map.addLayer({
+        id: "clusters-hover",
+        type: "circle",
+        source: "events",
+        filter: ["==", ["get", "cluster_id"], -1], // default: nothing hovered
+        paint: {
+          "circle-color": HOVER_COLOR,
+          "circle-radius": CLUSTER_HOVER_STEP,
+          "circle-color-transition": {
+            duration: TRANSITION_TIME,
+          },
+          "circle-radius-transition": {
+            duration: TRANSITION_TIME,
+          },
         },
       });
 
@@ -64,28 +123,50 @@ export default function addMarkersToMap(
           "text-size": 12,
         },
       });
+
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
         source: "events",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#FFD79E",
-          "circle-radius": 6,
+          "circle-color": POINT_COLOR,
+          "circle-radius": POINT_SIZE,
         },
       });
       map.addLayer({
         id: "unclustered-point-hover",
         type: "circle",
         source: "events",
-        filter: ["==", ["get", "id"], ""], // empty until hover
+        filter: ["==", ["get", "id"], ""], // default: nothing hovered
         paint: {
-          "circle-color": "#EDAE77", // e.g. orange-500
-          "circle-radius": 7,
-          "circle-stroke-color": "#000",
-          // "circle-stroke-width": 1,
-          "circle-radius-transition": { duration: 200 },
-          "circle-color-transition": { duration: 200 },
+          "circle-color": HOVER_COLOR, // hover color
+          "circle-radius": POINT_SIZE,
+          "circle-color-transition": {
+            duration: TRANSITION_TIME,
+          },
+          "circle-radius-transition": {
+            duration: TRANSITION_TIME,
+          },
+        },
+      });
+
+      map.addLayer({
+        id: "unclustered-point-clicked",
+        type: "circle",
+        source: "events",
+        filter: ["==", ["get", "id"], ""], // no point selected initially
+        paint: {
+          "circle-color": HOVER_COLOR,
+          "circle-radius": POINT_SIZE,
+          "circle-stroke-color": OUTLINE_COLOR,
+          "circle-stroke-width": 2,
+          "circle-color-transition": {
+            duration: TRANSITION_TIME,
+          },
+          "circle-radius-transition": {
+            duration: TRANSITION_TIME,
+          },
         },
       });
 
@@ -114,19 +195,76 @@ export default function addMarkersToMap(
       map.getCanvas().style.cursor = "pointer";
 
       if (e.features?.length) {
-        hoveredId = e.features[0].properties?.id;
-        map.setFilter("unclustered-point-hover", [
-          "==",
-          ["get", "id"],
-          hoveredId,
-        ]);
+        hoveredPointId = e.features[0].properties?.id;
+        if (
+          typeof hoveredPointId === "string" ||
+          typeof hoveredPointId === "number"
+        ) {
+          map.setFilter("unclustered-point-hover", [
+            "==",
+            ["get", "id"],
+            hoveredPointId,
+          ]);
+        }
       }
+      map.setPaintProperty(
+        "unclustered-point-hover",
+        "circle-color",
+        HOVER_COLOR
+      );
+      map.setPaintProperty(
+        "unclustered-point-hover",
+        "circle-radius",
+        POINT_SIZE + 2
+      );
     });
 
     map.on("mouseleave", "unclustered-point", () => {
       map.getCanvas().style.cursor = "";
-      hoveredId = null;
       map.setFilter("unclustered-point-hover", ["==", ["get", "id"], ""]);
+      hoveredPointId = null;
+
+      map.setPaintProperty(
+        "unclustered-point-hover",
+        "circle-color",
+        POINT_COLOR
+      );
+      map.setPaintProperty(
+        "unclustered-point-hover",
+        "circle-radius",
+        POINT_SIZE
+      );
+    });
+
+    map.on("mousemove", "clusters", (e) => {
+      map.getCanvas().style.cursor = "pointer";
+
+      if (e.features?.length) {
+        const clusterId = e.features[0].properties?.cluster_id;
+
+        if (clusterId !== undefined && clusterId !== hoveredClusterId) {
+          hoveredClusterId = clusterId;
+
+          map.setFilter("clusters-hover", [
+            "==",
+            ["get", "cluster_id"],
+            hoveredClusterId,
+          ]);
+        }
+      }
+      map.setPaintProperty("clusters-hover", "circle-color", HOVER_COLOR);
+      map.setPaintProperty(
+        "clusters-hover",
+        "circle-radius",
+        CLUSTER_HOVER_STEP
+      );
+    });
+    map.on("mouseleave", "clusters", () => {
+      map.getCanvas().style.cursor = "";
+      hoveredClusterId = null;
+      map.setFilter("clusters-hover", ["==", ["get", "cluster_id"], -1]);
+      map.setPaintProperty("clusters-hover", "circle-color", POINT_COLOR);
+      map.setPaintProperty("clusters-hover", "circle-radius", CLUSTER_STEP);
     });
 
     map.on("click", "unclustered-point", (e) => {
@@ -134,17 +272,50 @@ export default function addMarkersToMap(
         layers: ["unclustered-point"],
       });
 
-      if (features.length) {
-        const props = features[0].properties;
-        console.log("You clicked on:", props);
+      if (!features.length) return;
 
-        // You can do something like:
-        // setSelectedCon({
-        //   id: props.id,
-        //   name: props.name,
-        //   ...
-        // });
+      const props = features[0].properties;
+      const point = features[0].geometry as GeoJSON.Point;
+      const clickedId = props?.id;
+
+      if (clickedId) {
+        // highlight point
+        map.setFilter("unclustered-point-clicked", [
+          "==",
+          ["get", "id"],
+          clickedId,
+        ]);
+
+        // pan to it
+        map.easeTo({
+          center: point.coordinates as [number, number],
+          speed: 0.5,
+          duration: 900,
+        });
+
+        // TODO: set zustand
+        console.log("Convention clicked:", props);
+
+        setSidebarMode("map");
+        setFocusedEvents([eventDict[clickedId]]);
+        setSelectedCon(eventDict[clickedId]);
       }
+
+      // const popup = new mapboxgl.Popup({
+      //   closeButton: false,
+      //   closeOnClick: false,
+      //   offset: 12,
+      // });
+      // popup
+      //   .setLngLat(point.coordinates as [number, number])
+      //   .setHTML(
+      //     `
+      //     <div class="mapbox-popup">
+      //       <strong>${props?.name}</strong><br />
+      //     </div>
+      //   `
+      //   )
+      //   .addTo(map);
     });
 
     map.on("click", "clusters", (e) => {
@@ -153,21 +324,19 @@ export default function addMarkersToMap(
       });
 
       const clusterId = features[0].properties?.cluster_id;
-
       const source = map.getSource("events") as mapboxgl.GeoJSONSource;
-
       if (!clusterId || !source) return;
 
-      // // First, zoom into the cluster
-      // source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-      //   if (err || !zoom) return;
+      // first center the point
+      const point = features[0].geometry as GeoJSON.Point;
+      map.easeTo({
+        center: point.coordinates as [number, number],
+        speed: 0.5,
+        duration: 900,
+      });
 
-      //   const point = features[0].geometry as GeoJSON.Point;
-      //   map.easeTo({
-      //     center: point.coordinates as [number, number],
-      //     zoom,
-      //   });
-      // });
+      // clear any clicked currently clicked points
+      clearSelectedPointHighlight();
 
       // Then, get all the individual points in that cluster
       source.getClusterLeaves(clusterId, 100, 0, (err, leaves) => {
@@ -175,26 +344,20 @@ export default function addMarkersToMap(
           console.error("Failed to get cluster leaves", err);
           return;
         }
-        const conList = leaves?.map((f) => {
-          const geometry = f.geometry as GeoJSON.Point;
-          const [longitude, latitude] = geometry.coordinates;
 
-          return {
-            id: f.properties?.id,
-            name: f.properties?.name,
-            date: f.properties?.date,
-            url: f.properties?.fancons_link,
-            latitude,
-            longitude,
-          };
-        });
-
+        const conList =
+          leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
         console.log("Cluster contains:", conList);
 
-        // Optional: send to Zustand, callback, or panel
-        // useSidebarStore.getState().setClusterCons(conList);
-        // useSidebarStore.getState().setSidebarMode("cluster");
+        const fullCons = conList
+          .map((id) => eventDict[id])
+          .filter((c): c is EventInfo => !!c);
+
+        console.log("EventInfo: ", fullCons);
+        setFocusedEvents(fullCons);
       });
+      setSidebarMode("map");
+      setSelectedCon(null);
     });
   });
 }

@@ -102,3 +102,11 @@
     animation: shake 0.3s ease-in-out;
   }
 }
+
+.mapboxgl-popup-content {
+  @apply bg-primary cursor-pointer rounded-3xl;
+}
+
+.mapboxgl-popup-tip {
+  @apply mb-2;
+}

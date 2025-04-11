@@ -5,38 +5,63 @@ import { useEffect, useState } from "react";
 import { ConLocation, EventInfo } from "@/types/types";
 import getInitialLocation from "./map/get-initial-location";
 import getAllEvents from "./map/get-all-events";
+import { useEventStore } from "@/stores/all-events-store";
+import { useSidebarStore } from "@/stores/explore-sidebar-store";
+import { useMapStore } from "@/stores/map-store";
 
 export default function ExplorePage() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
-
-  const [events, setEvents] = useState<EventInfo[]>([]);
-  const [eventsLoaded, setEventsLoaded] = useState(false);
-
   const [showMap, setShowMap] = useState(false);
+
+  const { setSelectedCon } = useSidebarStore();
 
   // initialization
   // 1: initial coordinates to center the map
   // 2: load all events in the background
   // TODO memoize events
+  // inside useEffect
   useEffect(() => {
     const init = async () => {
       const coords = await getInitialLocation();
-      if (coords) setInitLocation(coords); // ⏱ update map fast
+      if (coords) setInitLocation(coords);
 
-      getAllEvents().then((events) => {
-        setEvents(events);
-        setEventsLoaded(true);
-      });
+      await useEventStore.getState().fetchAllEvents();
     };
 
     init();
+  }, []);
+
+  // if escape key is pressed then close details panel
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        const active = document.activeElement;
+        // but check if we're currently in an input
+        const isInputFocused =
+          active &&
+          (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+
+        // TODO: maybe also check if a modal is open
+        if (!isInputFocused) {
+          setSelectedCon(null);
+
+          const clearHighlight =
+            useMapStore.getState().clearSelectedPointHighlight;
+          if (clearHighlight) {
+            clearHighlight();
+          }
+        }
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
   // manual timer for a spinner lol
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMap(true);
-    }, 100);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, []);
@@ -57,13 +82,7 @@ export default function ExplorePage() {
           showMap ? "opacity-100" : "opacity-0"
         }`}
       >
-        {initLocation && (
-          <Map
-            initLocation={initLocation}
-            events={events}
-            eventsLoaded={eventsLoaded}
-          />
-        )}
+        {initLocation && <Map initLocation={initLocation} />}
       </div>
     </div>
   );
