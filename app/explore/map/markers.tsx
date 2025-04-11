@@ -14,13 +14,14 @@ export default function addMarkersToMap(
 ) {
   let hoveredPointId: string | number | null = null;
   let hoveredClusterId: number | null = null;
+  let clickedClusterId: number | null = null;
 
   console.log("dict", eventDict);
   const events = Object?.values(eventDict);
 
   const POINT_COLOR = "#FFD79E";
   const HOVER_COLOR = "#EDAE77";
-  const OUTLINE_COLOR = "#CF803B";
+  // const OUTLINE_COLOR = "#CF803B";
   const TRANSITION_TIME = 300;
 
   const POINT_SIZE = 8;
@@ -83,7 +84,7 @@ export default function addMarkersToMap(
         type: "geojson",
         data: geoJsonData,
         cluster: true,
-        clusterRadius: 40,
+        clusterRadius: 50,
         clusterMaxZoom: 14,
       });
 
@@ -105,6 +106,23 @@ export default function addMarkersToMap(
         paint: {
           "circle-color": HOVER_COLOR,
           "circle-radius": CLUSTER_HOVER_STEP,
+          "circle-color-transition": {
+            duration: TRANSITION_TIME,
+          },
+          "circle-radius-transition": {
+            duration: TRANSITION_TIME,
+          },
+        },
+      });
+
+      map.addLayer({
+        id: "clusters-clicked",
+        type: "circle",
+        source: "events",
+        filter: ["==", ["get", "cluster_id"], -1], // default: nothing clicked
+        paint: {
+          "circle-color": HOVER_COLOR, // or something distinct from hover
+          "circle-radius": CLUSTER_STEP, // slightly larger for emphasis
           "circle-color-transition": {
             duration: TRANSITION_TIME,
           },
@@ -169,7 +187,7 @@ export default function addMarkersToMap(
         source: "events",
         filter: ["==", ["get", "id"], ""], // default: nothing hovered
         paint: {
-          "circle-color": HOVER_COLOR, // hover color
+          "circle-color": HOVER_COLOR,
           "circle-radius": POINT_SIZE,
           "circle-color-transition": {
             duration: TRANSITION_TIME,
@@ -188,8 +206,8 @@ export default function addMarkersToMap(
         paint: {
           "circle-color": HOVER_COLOR,
           "circle-radius": POINT_SIZE,
-          "circle-stroke-color": OUTLINE_COLOR,
-          "circle-stroke-width": 2,
+          // "circle-stroke-color": OUTLINE_COLOR,
+          // "circle-stroke-width": 2,
           "circle-color-transition": {
             duration: TRANSITION_TIME,
           },
@@ -212,8 +230,17 @@ export default function addMarkersToMap(
 
     const highlightPointOnMap = (id: string | number) => {
       map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], id]);
+      clearClickedClusterHighlight();
     };
     useMapStore.getState().setHighlightPointOnMap(highlightPointOnMap);
+
+    const clearClickedClusterHighlight = () => {
+      clickedClusterId = null;
+      map.setFilter("clusters-clicked", ["==", ["get", "cluster_id"], -1]);
+    };
+    useMapStore
+      .getState()
+      .setClearClickedClusterHighlight(clearClickedClusterHighlight);
 
     // SECTION: Hovering Behavior
     //
@@ -373,6 +400,14 @@ export default function addMarkersToMap(
 
       // clear any clicked currently clicked points
       clearSelectedPointHighlight();
+
+      // Highlight clicked cluster
+      clickedClusterId = clusterId;
+      map.setFilter("clusters-clicked", [
+        "==",
+        ["get", "cluster_id"],
+        clickedClusterId,
+      ]);
 
       // Then, get all the individual points in that cluster
       source.getClusterLeaves(clusterId, 100, 0, (err, leaves) => {

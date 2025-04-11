@@ -7,6 +7,7 @@ import getInitialLocation from "./map/get-initial-location";
 import { useEventStore } from "@/stores/all-events-store";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
+import { useUIStore } from "@/stores/ui-store";
 
 export default function ExplorePage() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
@@ -29,8 +30,10 @@ export default function ExplorePage() {
   }, []);
 
   // if escape key is pressed then close details panel
+  const isModalOpen = useUIStore.getState().anyModalOpen();
   useEffect(() => {
     const handleShortcuts = (e: KeyboardEvent) => {
+      if (isModalOpen) return;
       if (e.key === "Escape") {
         const active = document.activeElement;
         const isInputFocused =
@@ -64,7 +67,7 @@ export default function ExplorePage() {
     };
     window.addEventListener("keydown", handleShortcuts);
     return () => window.removeEventListener("keydown", handleShortcuts);
-  }, []);
+  }, [isModalOpen]);
 
   // manual timer for a spinner lol
   useEffect(() => {

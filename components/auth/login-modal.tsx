@@ -8,6 +8,7 @@ import EmailStep from "./steps/email-step";
 import { AnimatePresence, motion } from "framer-motion";
 import ResetPasswordStep from "./steps/reset-password-step";
 import CheckEmailStep from "./steps/check-email-step";
+import { useUIStore } from "@/stores/ui-store";
 
 export type authStep =
   | "email"
@@ -21,6 +22,8 @@ export default function LoginModal() {
   const [step, setStep] = useState<authStep>("closed"); // which step to show?
   const [email, setEmail] = useState<string>(""); // keep track of email throughout flow
   const isOpen = step !== "closed";
+  // const isOpen = useUIStore((s) => s.loginOpen);
+  const { setLoginOpen } = useUIStore();
 
   // function to push browser history when changing steps
   const changeStep = (newStep: authStep) => {
@@ -42,6 +45,7 @@ export default function LoginModal() {
       // if there's no more steps to go back to, then just close the modal
       if (!newStep) {
         setStep("closed");
+        setLoginOpen(false);
         return;
       }
 
@@ -50,7 +54,7 @@ export default function LoginModal() {
 
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [step]);
+  }, [step, setLoginOpen]);
 
   return (
     <Dialog
@@ -61,6 +65,7 @@ export default function LoginModal() {
           setStep("closed"); // reset when closed
           window.history.replaceState({}, "", window.location.pathname); // reset history when closed
         }
+        setLoginOpen(open);
       }}
     >
       <DialogTrigger

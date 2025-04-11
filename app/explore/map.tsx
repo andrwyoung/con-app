@@ -10,7 +10,11 @@ import {
   useMapCardsStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
-import { DEFAULT_ZOOM, ZOOM_USE_DEFAULT } from "@/lib/constants";
+import {
+  DEFAULT_ZOOM,
+  DEFAULT_ZOOM_FAR,
+  ZOOM_USE_DEFAULT,
+} from "@/lib/constants";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -54,22 +58,49 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       setSidebarModeAndDeselectCon,
       setFocusedEvents
     );
-  }, [eventsStillLoading, eventDict]);
+  }, [
+    eventsStillLoading,
+    eventDict,
+    setFocusedEvents,
+    setSelectedCon,
+    setSidebarModeAndDeselectCon,
+  ]);
+
+  function getDistance(a: [number, number], b: [number, number]) {
+    const dx = a[0] - b[0];
+    const dy = a[1] - b[1];
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
   // utility function to fly to whereever
   const flyTo = (location: ConLocation, zoom?: number) => {
     if (!mapRef.current) return;
 
     const center = [location.longitude, location.latitude] as [number, number];
+    const currentCenter = mapRef.current.getCenter().toArray() as [
+      number,
+      number
+    ];
+    const distance = getDistance(center, currentCenter);
 
     if (zoom === ZOOM_USE_DEFAULT) {
-      mapRef.current.flyTo({
-        center,
-        zoom: DEFAULT_ZOOM,
-        speed: 1.2,
-        curve: 1,
-        essential: true,
-      });
+      if (distance > 30) {
+        mapRef.current.easeTo({
+          center,
+          zoom: DEFAULT_ZOOM_FAR,
+          speed: 2.5,
+          curve: 1,
+          essential: true,
+        });
+      } else {
+        mapRef.current.flyTo({
+          center,
+          zoom: DEFAULT_ZOOM,
+          speed: 1.2,
+          curve: 1,
+          essential: true,
+        });
+      }
     } else if (typeof zoom === "number") {
       mapRef.current.flyTo({
         center,
@@ -93,6 +124,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     useMapStore.getState().setFlyTo(flyTo);
   }, []);
 
+  // clear points on map whenever a con is selected
   useEffect(() => {
     if (!mapRef.current) return;
     if (!selectedCon) {

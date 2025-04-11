@@ -12,6 +12,9 @@ type MapStore = {
 
   highlightPointOnMap?: (id: string | number) => void;
   setHighlightPointOnMap: (fn: (id: string | number) => void) => void;
+
+  clearClickedClusterHighlight?: () => void;
+  setClearClickedClusterHighlight: (fn: () => void) => void;
 };
 
 export const useMapStore = create<MapStore>((set) => ({
@@ -23,4 +26,7 @@ export const useMapStore = create<MapStore>((set) => ({
   
   highlightPointOnMap: undefined,
   setHighlightPointOnMap: (fn) => set({ highlightPointOnMap: fn }),
+
+  clearClickedClusterHighlight: undefined,
+  setClearClickedClusterHighlight: (fn) => set({ clearClickedClusterHighlight: fn }),
 }))

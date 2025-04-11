@@ -3,6 +3,7 @@ import { EventInfo } from "@/types/types";
 import React, { useEffect, useRef, useState } from "react";
 import Card from "./card";
 import { useMapStore } from "@/stores/map-store";
+import { useUIStore } from "@/stores/ui-store";
 
 export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
   const { setSelectedCon, selectedCon } = useSidebarStore();
@@ -10,6 +11,7 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+  const anyModalOpen = useUIStore((s) => s.anyModalOpen());
 
   // initialize refs for all cards for scrolling into view
   useEffect(() => {
@@ -20,6 +22,18 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      if (
+        tag === "input" ||
+        tag === "textarea" ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return;
+      }
+
+      console.log("is any modal open:", anyModalOpen);
+      if (anyModalOpen) return;
+
       if (!["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) return;
       e.preventDefault(); // prevent page scroll
 
@@ -57,7 +71,7 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [items, selectedCon, selectedIndex, setSelectedCon, flyTo]);
+  }, [items, selectedCon, selectedIndex, setSelectedCon, flyTo, anyModalOpen]);
 
   return (
     <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">

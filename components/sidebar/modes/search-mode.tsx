@@ -1,12 +1,16 @@
-import { useSearchStore } from "@/stores/explore-sidebar-store";
+import {
+  useSearchStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 import { useEffect } from "react";
-import { DEFAULT_LOCATION, MAX_CARDS } from "@/lib/constants";
+import { MAX_CARDS, ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
 import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
 
 export default function SearchMode() {
   const { results } = useSearchStore();
+  const { setSelectedCon } = useSidebarStore();
   const flyTo = useMapStore((s) => s.flyTo);
 
   // process the results of a search
@@ -14,16 +18,23 @@ export default function SearchMode() {
     const loc = results.at(0);
     if (!loc) return;
 
+    console.log("searchbar results: ", results);
+
     if (
       results.length === 1 &&
       loc.latitude !== undefined &&
       loc.longitude !== undefined
     ) {
-      flyTo?.({ latitude: loc.latitude, longitude: loc.longitude }, 10);
+      setSelectedCon(loc);
+      flyTo?.(
+        { latitude: loc.latitude, longitude: loc.longitude },
+        ZOOM_USE_DEFAULT
+      );
     } else if (results.length > 1) {
-      flyTo?.(DEFAULT_LOCATION);
+      // flyTo?.(DEFAULT_LOCATION);
+      console.log("search resulted in more than 1 entry. nice");
     }
-  }, [results]);
+  }, [results, flyTo, setSelectedCon]);
 
   return (
     <ModeWrapper title="Search Results">

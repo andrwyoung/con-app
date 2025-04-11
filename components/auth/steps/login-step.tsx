@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { supabaseAnon } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
+import { useUIStore } from "@/stores/ui-store";
 
 export default function LoginStep({
   changeStep,
@@ -47,6 +48,7 @@ export default function LoginStep({
     setError("");
     setIsSubmitting(false);
     // TODO: toast logged in
+    useUIStore.getState().setLoginOpen(false);
     changeStep("closed");
   };
 

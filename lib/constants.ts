@@ -2,7 +2,8 @@ export const DROPDOWN_RESULTS = 5;
 export const MAX_CARDS = 50;
 
 export const ZOOM_USE_DEFAULT = -1;
-export const DEFAULT_ZOOM = 10;
+export const DEFAULT_ZOOM = 8;
+export const DEFAULT_ZOOM_FAR = 5;
 
 export const SPECIAL_CON_ID = {
     NO_RESULTS: -1,

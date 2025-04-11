@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useUserStore } from "@/stores/user-store";
 import { Button } from "../ui/button";
@@ -7,11 +7,13 @@ import { FiMapPin } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { miniConfetti } from "@/lib/utils";
 import { supabaseAnon } from "@/lib/supabase/client";
+import { useUIStore } from "@/stores/ui-store";
 
 export default function WelcomeModal() {
-  const [open, setOpen] = useState(false);
   const profile = useUserStore((s) => s.profile);
   const setProfile = useUserStore((s) => s.setProfile);
+
+  const { setOnboardingOpen, onboardingOpen } = useUIStore();
 
   useEffect(() => {
     if (!profile || profile.has_never_logged_in === false) return;
@@ -19,7 +21,7 @@ export default function WelcomeModal() {
     // delay so login isn't so jarring
     const timeout = setTimeout(async () => {
       miniConfetti();
-      setOpen(true);
+      setOnboardingOpen(true);
 
       // set local store to not show the welcome message again
       setProfile({
@@ -39,10 +41,10 @@ export default function WelcomeModal() {
     }, 600);
 
     return () => clearTimeout(timeout);
-  }, [profile, setProfile]);
+  }, [profile, setProfile, setOnboardingOpen]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={onboardingOpen} onOpenChange={setOnboardingOpen}>
       <DialogContent>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,7 +63,10 @@ export default function WelcomeModal() {
               know if popup shows up more than once haha.
             </p>
 
-            <Button className="max-w-24" onClick={() => setOpen(false)}>
+            <Button
+              className="max-w-24"
+              onClick={() => setOnboardingOpen(false)}
+            >
               <FiMapPin /> Done
             </Button>
           </div>

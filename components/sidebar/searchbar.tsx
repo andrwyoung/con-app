@@ -115,6 +115,7 @@ export default function Searchbar() {
   };
   const runFullSearch = async () => {
     if (!searchbarText.trim()) return;
+    console.log("running full search");
 
     const res = grabConventions(searchbarText);
 
