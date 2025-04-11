@@ -1,4 +1,5 @@
 export const DROPDOWN_RESULTS = 5;
+export const IN_THE_AREA_RESULTS = 12;
 export const MAX_CARDS = 50;
 
 export const ZOOM_USE_DEFAULT = -1;

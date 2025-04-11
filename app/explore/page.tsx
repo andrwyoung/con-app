@@ -22,6 +22,7 @@ export default function ExplorePage() {
     const init = async () => {
       const coords = await getInitialLocation();
       if (coords) setInitLocation(coords);
+      useMapStore.getState().setUserLocation(coords); //save coords to map
 
       await useEventStore.getState().fetchAllEvents();
     };

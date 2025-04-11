@@ -15,6 +15,7 @@ import {
   DEFAULT_ZOOM_FAR,
   ZOOM_USE_DEFAULT,
 } from "@/lib/constants";
+import { getDistance } from "@/lib/utils";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -66,11 +67,10 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     setSidebarModeAndDeselectCon,
   ]);
 
-  function getDistance(a: [number, number], b: [number, number]) {
-    const dx = a[0] - b[0];
-    const dy = a[1] - b[1];
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+  const getCurrentCenter = () => {
+    if (!mapRef.current) return null;
+    return mapRef.current.getCenter().toArray() as [number, number];
+  };
 
   // utility function to fly to whereever
   const flyTo = (location: ConLocation, zoom?: number) => {
@@ -119,9 +119,30 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     }
   };
 
+  useEffect(() => {
+    const flyToMyLocation = () => {
+      const center = useMapStore.getState().userLocation;
+      if (!mapRef.current || !center) return;
+
+      mapRef.current.flyTo({
+        center: [center.longitude, center.latitude],
+        zoom: DEFAULT_ZOOM,
+        speed: 1.5,
+        curve: 1.2,
+      });
+    };
+
+    useMapStore.getState().setFlyToMyLocation(flyToMyLocation);
+  }, []);
+
   // add flyTo to zustand so we can access it anywhere
   useEffect(() => {
     useMapStore.getState().setFlyTo(flyTo);
+  }, []);
+
+  // add getCurrentCenter so we can use it anywhere
+  useEffect(() => {
+    useMapStore.getState().setGetCurrentCenter(getCurrentCenter);
   }, []);
 
   // clear points on map whenever a con is selected

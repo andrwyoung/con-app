@@ -9,6 +9,11 @@ import {
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
 import { useEventStore } from "@/stores/all-events-store";
+import {
+  grabConventions,
+  grabNearbyConventions,
+} from "@/lib/searching/local-search";
+import { useMapStore } from "@/stores/map-store";
 
 type DropdownItem = {
   id: string;
@@ -43,6 +48,7 @@ export default function Searchbar() {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const items: DropdownItem[] = [];
 
+  const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
   const { setSidebarModeAndDeselectCon } = useSidebarStore();
   const { setResults } = useSearchStore();
@@ -53,12 +59,6 @@ export default function Searchbar() {
     setSuggestionResults([]);
     setShowDropdown(false);
     setSearchbarText("");
-  };
-
-  const grabConventions = (text: string) => {
-    return Object.values(allEvents).filter((event) =>
-      event.name.toLowerCase().includes(text.toLowerCase())
-    );
   };
 
   // if we click out of the search bar, close the suggestions list
@@ -86,7 +86,7 @@ export default function Searchbar() {
         return;
       }
 
-      const res = grabConventions(searchbarText);
+      const res = grabConventions(searchbarText, allEvents);
       console.log(res);
 
       if (res.length === 0) {
@@ -117,7 +117,7 @@ export default function Searchbar() {
     if (!searchbarText.trim()) return;
     console.log("running full search");
 
-    const res = grabConventions(searchbarText);
+    const res = grabConventions(searchbarText, allEvents);
 
     setResults(res);
     setHighlightedIndex(-1);
@@ -141,9 +141,43 @@ export default function Searchbar() {
     setResults([s]); // Sidebar will fly if it's just 1
   };
 
-  // TODO these. remember to add setIsSearchMode
-  const onSearchHere = () => console.log("TODO: search current location");
-  const onSearchNearMe = () => console.log("TODO: search near me");
+  const onSearchHere = () => {
+    const center = getCurrentCenter?.();
+    if (!center) {
+      console.log("could not locate cons in area");
+      return;
+    }
+    const res = grabNearbyConventions(
+      {
+        latitude: center[1],
+        longitude: center[0],
+      },
+      allEvents
+    );
+    setResults(res);
+    setShowDropdown(false);
+    setSidebarModeAndDeselectCon("search");
+  };
+
+  const onSearchNearMe = () => {
+    const center = useMapStore.getState().userLocation;
+    if (!center) {
+      console.log("could not location your location");
+      return;
+    }
+    const res = grabNearbyConventions(
+      {
+        latitude: center.latitude,
+        longitude: center.longitude,
+      },
+      allEvents
+    );
+
+    useMapStore.getState().flyToMyLocation?.();
+    setResults(res);
+    setShowDropdown(false);
+    setSidebarModeAndDeselectCon("search");
+  };
 
   // SECTION: keyboard controls
   //

@@ -25,15 +25,12 @@ export default function SearchMode() {
       loc.latitude !== undefined &&
       loc.longitude !== undefined
     ) {
-      setSelectedCon(loc);
       flyTo?.(
         { latitude: loc.latitude, longitude: loc.longitude },
         ZOOM_USE_DEFAULT
       );
-    } else if (results.length > 1) {
-      // flyTo?.(DEFAULT_LOCATION);
-      console.log("search resulted in more than 1 entry. nice");
     }
+    setSelectedCon(loc);
   }, [results, flyTo, setSelectedCon]);
 
   return (
