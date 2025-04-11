@@ -10,6 +10,7 @@ import {
   useMapCardsStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
+import { DEFAULT_ZOOM, ZOOM_USE_DEFAULT } from "@/lib/constants";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -55,21 +56,31 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     );
   }, [eventsStillLoading, eventDict]);
 
-  // utility function to fly to where-ever
+  // utility function to fly to whereever
   const flyTo = (location: ConLocation, zoom?: number) => {
     if (!mapRef.current) return;
 
-    if (zoom !== undefined) {
+    const center = [location.longitude, location.latitude] as [number, number];
+
+    if (zoom === ZOOM_USE_DEFAULT) {
       mapRef.current.flyTo({
-        center: [location.longitude, location.latitude],
+        center,
+        zoom: DEFAULT_ZOOM,
         speed: 1.2,
+        curve: 1,
+        essential: true,
+      });
+    } else if (typeof zoom === "number") {
+      mapRef.current.flyTo({
+        center,
         zoom,
+        speed: 1.2,
         curve: 1,
         essential: true,
       });
     } else {
       mapRef.current.easeTo({
-        center: [location.longitude, location.latitude],
+        center,
         speed: 0.5,
         curve: 1,
         essential: true,

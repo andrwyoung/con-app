@@ -3,6 +3,7 @@ import { EventInfo } from "@/types/types";
 import { FiMenu } from "react-icons/fi";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
+import { ZOOM_USE_DEFAULT } from "@/lib/constants";
 
 const Card = forwardRef<
   HTMLDivElement,
@@ -10,9 +11,8 @@ const Card = forwardRef<
     info: EventInfo;
     selected?: boolean;
     onClick?: () => void;
-    onDoubleClick?: () => void;
   }
->(({ info, selected = false, onClick, onDoubleClick }, ref) => {
+>(({ info, selected = false, onClick }, ref) => {
   const flyTo = useMapStore((s) => s.flyTo);
 
   return (
@@ -38,9 +38,13 @@ const Card = forwardRef<
       <div className="absolute right-6 bottom-2 flex flex-row gap-1 text-primary-muted transition-all">
         <IoLocate
           className="hover:scale-110 hover:text-primary-text cursor-alias"
-          onClick={() =>
-            flyTo?.({ longitude: info.longitude, latitude: info.latitude }, 9)
-          }
+          onClick={(e) => {
+            e.stopPropagation();
+            flyTo?.(
+              { longitude: info.longitude, latitude: info.latitude },
+              ZOOM_USE_DEFAULT
+            );
+          }}
         />
         <FiMenu className="hover:scale-110 hover:text-primary-text" />
       </div>

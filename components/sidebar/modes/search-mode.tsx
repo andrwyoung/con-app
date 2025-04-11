@@ -1,4 +1,3 @@
-import Card from "../card";
 import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEffect } from "react";
 import { DEFAULT_LOCATION, MAX_CARDS } from "@/lib/constants";

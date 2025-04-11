@@ -11,7 +11,7 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
 
-  // Initialize refs for all items
+  // initialize refs for all cards for scrolling into view
   useEffect(() => {
     cardRefs.current = items.map(
       (_, i) => cardRefs.current[i] || React.createRef()
@@ -21,7 +21,6 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) return;
-
       e.preventDefault(); // prevent page scroll
 
       const current =
