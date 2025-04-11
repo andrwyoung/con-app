@@ -2,9 +2,8 @@
 import Sidebar from "@/components/sidebar/sidebar";
 import Map from "./map";
 import { useEffect, useState } from "react";
-import { ConLocation, EventInfo } from "@/types/types";
+import { ConLocation } from "@/types/types";
 import getInitialLocation from "./map/get-initial-location";
-import getAllEvents from "./map/get-all-events";
 import { useEventStore } from "@/stores/all-events-store";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
@@ -12,8 +11,6 @@ import { useMapStore } from "@/stores/map-store";
 export default function ExplorePage() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
   const [showMap, setShowMap] = useState(false);
-
-  const { setSelectedCon } = useSidebarStore();
 
   // initialization
   // 1: initial coordinates to center the map
@@ -33,28 +30,40 @@ export default function ExplorePage() {
 
   // if escape key is pressed then close details panel
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleShortcuts = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         const active = document.activeElement;
-        // but check if we're currently in an input
         const isInputFocused =
           active &&
           (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
 
-        // TODO: maybe also check if a modal is open
-        if (!isInputFocused) {
-          setSelectedCon(null);
+        if (isInputFocused) return;
 
-          const clearHighlight =
-            useMapStore.getState().clearSelectedPointHighlight;
-          if (clearHighlight) {
-            clearHighlight();
-          }
+        const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
+          useSidebarStore.getState();
+        console.log("escape pressed! selected con:", selectedCon);
+
+        // escape deselects, and then changes modes
+        if (selectedCon) {
+          setSelectedCon(null);
+          useMapStore.getState().clearSelectedPointHighlight?.();
+        } else {
+          setSidebarModeAndDeselectCon("filter");
         }
       }
+
+      // Cmd + L to focus the search bar
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "l") {
+        e.preventDefault();
+        const input = document.getElementById("explore-searchbar");
+        if (input instanceof HTMLInputElement) {
+          input.focus();
+        }
+        return;
+      }
     };
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleShortcuts);
+    return () => window.removeEventListener("keydown", handleShortcuts);
   }, []);
 
   // manual timer for a spinner lol

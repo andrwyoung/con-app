@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import { ConLocation, EventInfo } from "@/types/types";
+import { ConLocation } from "@/types/types";
 import addMarkersToMap from "./map/markers";
 import { useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";
@@ -16,7 +16,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { isLoading: eventsStillLoading, allEvents: eventDict } =
     useEventStore();
-  const { setSelectedCon, setSidebarMode } = useSidebarStore();
+  const { setSelectedCon, setSidebarModeAndDeselectCon } = useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
 
   // initial mount of map
@@ -57,7 +57,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       mapRef.current,
       eventDict,
       setSelectedCon,
-      setSidebarMode,
+      setSidebarModeAndDeselectCon,
       setFocusedEvents
     );
   }, [eventsStillLoading, eventDict]);
@@ -89,18 +89,23 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     useMapStore.getState().setFlyTo(flyTo);
   }, []);
 
-  // const { selectedCon } = useSidebarStore();
-  // useEffect(() => {
-  //   if (!mapRef.current || !selectedCon) return;
+  const { selectedCon } = useSidebarStore();
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!selectedCon) {
+      useMapStore.getState().clearSelectedPointHighlight?.();
+    } else {
+      useMapStore.getState().highlightPointOnMap?.(selectedCon.id);
+    }
 
-  //   const marker = new mapboxgl.Marker()
-  //     .setLngLat([selectedCon.longitude, selectedCon.latitude])
-  //     .addTo(mapRef.current);
+    // const marker = new mapboxgl.Marker()
+    //   .setLngLat([selectedCon.longitude, selectedCon.latitude])
+    //   .addTo(mapRef.current);
 
-  //   return () => {
-  //     if (marker) marker.remove();
-  //   };
-  // }, [selectedCon]);
+    // return () => {
+    //   if (marker) marker.remove();
+    // };
+  }, [selectedCon]);
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
 }

@@ -6,7 +6,7 @@ export type SidebarMode = "search" | "filter" | "map";
 
 type SidebarStore = {
   sidebarMode: SidebarMode;
-  setSidebarMode: (mode: SidebarMode) => void;
+  setSidebarModeAndDeselectCon: (mode: SidebarMode) => void;
 
   selectedCon: EventInfo | null;
   setSelectedCon: (id: EventInfo | null) => void;
@@ -14,10 +14,10 @@ type SidebarStore = {
 
 export const useSidebarStore = create<SidebarStore>((set) => ({
   sidebarMode: "filter",
-  setSidebarMode: (mode) => set({ sidebarMode: mode, selectedCon: null  }),
+  setSidebarModeAndDeselectCon: (mode) => set({ sidebarMode: mode, selectedCon: null  }),
 
   selectedCon: null,
-  setSelectedCon: (id) => set({ selectedCon: id }),
+  setSelectedCon: (id) => {set({ selectedCon: id })},
 }));
 
 

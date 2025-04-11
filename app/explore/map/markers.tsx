@@ -1,10 +1,9 @@
 // add all the event markers to the map
-import { useEventStore } from "@/stores/all-events-store";
-import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
+import { SidebarMode } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { EventInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
-import mapboxgl, { DataDrivenPropertyValueSpecification } from "mapbox-gl";
+import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
@@ -45,12 +44,23 @@ export default function addMarkersToMap(
     27,
   ] as DataDrivenPropertyValueSpecification<number>;
 
+  // SECTION: reusable functions
+  //
+
   const clearSelectedPointHighlight = () => {
     map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], ""]);
   };
   useMapStore
     .getState()
     .setClearSelectedPointHighlight(clearSelectedPointHighlight);
+
+  const highlightPointOnMap = (id: string | number) => {
+    map.setFilter("unclustered-point-clicked", ["==", ["get", "id"], id]);
+  };
+  useMapStore.getState().setHighlightPointOnMap(highlightPointOnMap);
+
+  // SECTION: Initialize Map
+  //
 
   map.on("load", () => {
     console.log("events length?", events.length);
@@ -169,27 +179,11 @@ export default function addMarkersToMap(
           },
         },
       });
-
-      // OLD marker logic
-      // if (events.length) {
-      //   events.map((event) => {
-      //     new mapboxgl.Marker()
-      //       .setLngLat([event.longitude, event.latitude])
-      //       .addTo(mapRef.current!);
-      //   });
-      // }
-
-      // DEBUG layer
-      // map.addLayer({
-      //   id: "debug-points",
-      //   type: "circle",
-      //   source: "events",
-      //   paint: {
-      //     "circle-color": "#ff0000",
-      //     "circle-radius": 4,
-      //   },
-      // });
     }
+
+    // SECTION: Hovering Behavior
+    //
+    //
 
     map.on("mousemove", "unclustered-point", (e) => {
       map.getCanvas().style.cursor = "pointer";
@@ -236,6 +230,8 @@ export default function addMarkersToMap(
       );
     });
 
+    // Cluster Hovering
+
     map.on("mousemove", "clusters", (e) => {
       map.getCanvas().style.cursor = "pointer";
 
@@ -267,6 +263,10 @@ export default function addMarkersToMap(
       map.setPaintProperty("clusters-hover", "circle-radius", CLUSTER_STEP);
     });
 
+    // SECTION: Clicking Behavior
+    //
+    //
+
     map.on("click", "unclustered-point", (e) => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: ["unclustered-point"],
@@ -280,11 +280,7 @@ export default function addMarkersToMap(
 
       if (clickedId) {
         // highlight point
-        map.setFilter("unclustered-point-clicked", [
-          "==",
-          ["get", "id"],
-          clickedId,
-        ]);
+        highlightPointOnMap(clickedId);
 
         // pan to it
         map.easeTo({

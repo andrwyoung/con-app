@@ -4,7 +4,6 @@ import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEffect } from "react";
 import { DEFAULT_LOCATION, MAX_CARDS } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
-import { Button } from "@/components/ui/button";
 import CardWrapper from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
 

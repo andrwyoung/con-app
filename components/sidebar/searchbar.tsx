@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { searchConventions } from "@/lib/searching/search-conventions";
 import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
@@ -45,7 +44,7 @@ export default function Searchbar() {
   const items: DropdownItem[] = [];
 
   const { allEvents } = useEventStore();
-  const { sidebarMode, setSidebarMode } = useSidebarStore();
+  const { setSidebarModeAndDeselectCon } = useSidebarStore();
   const { setResults } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,11 +53,6 @@ export default function Searchbar() {
     setSuggestionResults([]);
     setShowDropdown(false);
     setSearchbarText("");
-    inputRef.current?.blur();
-
-    // if (sidebarMode === "search") {
-    //   setSidebarMode("filter");
-    // }
   };
 
   const grabConventions = (text: string) => {
@@ -127,7 +121,7 @@ export default function Searchbar() {
     setResults(res);
     setHighlightedIndex(-1);
     setShowDropdown(false);
-    setSidebarMode("search");
+    setSidebarModeAndDeselectCon("search");
 
     // ux decision
     if (res.length != 0) {
@@ -141,7 +135,7 @@ export default function Searchbar() {
     setHighlightedIndex(-1);
     setSuggestionResults([]);
 
-    setSidebarMode("search");
+    setSidebarModeAndDeselectCon("search");
     setSearchbarText(s.name);
     setResults([s]); // Sidebar will fly if it's just 1
   };
@@ -261,12 +255,14 @@ export default function Searchbar() {
             setHighlightedIndex(-1);
           }}
           className="pr-8"
+          id="explore-searchbar"
         />
         {searchbarText && (
           <button
             type="button"
             onClick={() => {
               clearSearchBar();
+              inputRef.current?.focus();
             }}
             className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
             aria-label="clear search text"
