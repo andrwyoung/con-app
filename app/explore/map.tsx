@@ -38,6 +38,16 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       zoom: 8,
     });
 
+    const el = document.createElement("div");
+    el.style.backgroundImage = `url('/my-location5.png')`;
+    el.style.width = "24px";
+    el.style.height = "24px";
+    el.style.backgroundSize = "contain";
+    el.style.backgroundRepeat = "no-repeat";
+    new mapboxgl.Marker({ element: el })
+      .setLngLat([initLocation.longitude, initLocation.latitude])
+      .addTo(mapRef.current);
+
     return () => mapRef.current?.remove();
   }, [initLocation.latitude, initLocation.longitude]);
 
