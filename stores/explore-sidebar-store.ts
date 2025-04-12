@@ -21,8 +21,6 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
 }));
 
 
-
-
 type SearchStore = {
   results: EventInfo[];
   setResults: (r: EventInfo[]) => void;

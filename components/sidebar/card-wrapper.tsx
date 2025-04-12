@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "./card";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
+import { MAX_CARDS } from "@/lib/constants";
 
 export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
   const { setSelectedCon, selectedCon } = useSidebarStore();
@@ -76,7 +77,7 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
   return (
     <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
       <div className="flex flex-col gap-3 pr-1 m-1">
-        {items.map((con, i) => (
+        {items.slice(0, MAX_CARDS).map((con, i) => (
           <Card
             key={con.id || i}
             info={con}
@@ -88,6 +89,11 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
             ref={cardRefs.current[i]}
           />
         ))}
+        {items.length > MAX_CARDS && (
+          <p className="text-sm text-primary-muted self-center">
+            showing first {MAX_CARDS} results
+          </p>
+        )}
       </div>
     </div>
   );

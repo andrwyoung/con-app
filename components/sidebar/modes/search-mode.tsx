@@ -2,8 +2,8 @@ import {
   useSearchStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
-import { useEffect } from "react";
-import { MAX_CARDS, ZOOM_USE_DEFAULT } from "@/lib/constants";
+import { useEffect, useState } from "react";
+import { ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
 import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
@@ -13,12 +13,15 @@ export default function SearchMode() {
   const { setSelectedCon } = useSidebarStore();
   const flyTo = useMapStore((s) => s.flyTo);
 
+  const [numResults, setNumResults] = useState(0);
+
   // process the results of a search
   useEffect(() => {
     const loc = results.at(0);
     if (!loc) return;
 
     console.log("searchbar results: ", results);
+    setNumResults(results.length);
 
     if (
       results.length === 1 &&
@@ -34,14 +37,14 @@ export default function SearchMode() {
   }, [results, flyTo, setSelectedCon]);
 
   return (
-    <ModeWrapper title="Search Results">
+    <ModeWrapper title={`Search Results (${numResults})`}>
       {results.length === 0 ? (
         <div className="text-sm text-center text-primary-muted px-2">
           No results found. <br />
           Try refining your search.
         </div>
       ) : (
-        <NavigatableCardList items={results.slice(0, MAX_CARDS)} />
+        <NavigatableCardList items={results} />
       )}
     </ModeWrapper>
   );

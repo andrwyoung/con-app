@@ -8,10 +8,15 @@ import { useEventStore } from "@/stores/all-events-store";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ExplorePage() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
   const [showMap, setShowMap] = useState(false);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const setLoginStep = useUIStore((s) => s.setLoginModalStep);
 
   // initialization
   // 1: initial coordinates to center the map
@@ -78,6 +83,13 @@ export default function ExplorePage() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("login") === "true") {
+      setLoginStep("email");
+      router.replace("/explore", { scroll: false });
+    }
+  }, [searchParams, router, setLoginStep]);
 
   return (
     <div className="w-screen h-screen font-extrabold">
