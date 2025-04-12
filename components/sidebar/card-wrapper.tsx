@@ -1,3 +1,6 @@
+// the expandable scrollable list that shows cards
+// responsible for sorting the cards depending on the props passed in
+// responsible for any keybaord navigation interactions too
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { EventInfo } from "@/types/types";
 import React, { useEffect, useRef, useState } from "react";
@@ -85,6 +88,7 @@ export default function NavigatableCardList({
     );
   }, [sortedItems]);
 
+  // keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();

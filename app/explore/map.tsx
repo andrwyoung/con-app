@@ -1,9 +1,13 @@
+// the map itelf
+// this file is the central hub for how the rest of the app interacts with the map
+// it handles mounting and utility functions
+
 import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation } from "@/types/types";
-import addMarkersToMap from "../../lib/map/markers";
+import addMarkersToMap from "../../lib/map/add-markers";
 import { useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {
@@ -38,20 +42,21 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       zoom: 8,
     });
 
-    const el = document.createElement("div");
-    el.style.backgroundImage = `url('/my-location5.png')`;
-    el.style.width = "24px";
-    el.style.height = "24px";
-    el.style.backgroundSize = "contain";
-    el.style.backgroundRepeat = "no-repeat";
-    new mapboxgl.Marker({ element: el })
-      .setLngLat([initLocation.longitude, initLocation.latitude])
-      .addTo(mapRef.current);
+    // your location marker
+    //   const el = document.createElement("div");
+    //   el.style.backgroundImage = `url('/my-location5.png')`;
+    //   el.style.width = "24px";
+    //   el.style.height = "24px";
+    //   el.style.backgroundSize = "contain";
+    //   el.style.backgroundRepeat = "no-repeat";
+    //   new mapboxgl.Marker({ element: el })
+    //     .setLngLat([initLocation.longitude, initLocation.latitude])
+    //     .addTo(mapRef.current);
 
     return () => mapRef.current?.remove();
   }, [initLocation.latitude, initLocation.longitude]);
 
-  // render all the markers once fetched
+  // render all the markers once events are fetched
   useEffect(() => {
     console.log("dict2", eventDict, eventsStillLoading, mapRef.current);
     if (
@@ -77,6 +82,35 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     setSidebarModeAndDeselectCon,
   ]);
 
+  // clear all points on map whenever a con is selected
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!selectedCon) {
+      useMapStore.getState().clearSelectedPointHighlight?.();
+    } else {
+      useMapStore.getState().highlightPointOnMap?.(selectedCon.id);
+
+      const el = document.createElement("div");
+      el.className = "custom-marker";
+
+      const marker = new mapboxgl.Marker({
+        // element: el,
+        color: "#7976D9",
+        offset: [0, -20],
+      })
+        .setLngLat([selectedCon.longitude, selectedCon.latitude])
+        .addTo(mapRef.current);
+      return () => {
+        if (marker) marker.remove();
+      };
+    }
+  }, [selectedCon]);
+
+  // SECTION: utility functions for the mapStore
+  //
+  //
+
+  // utility function to get coordinates of your current view
   const getCurrentCenter = () => {
     if (!mapRef.current) return null;
     return mapRef.current.getCenter().toArray() as [number, number];
@@ -129,55 +163,30 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     }
   };
 
+  // utility function to center view on the user's location
+  const flyToMyLocation = () => {
+    const center = useMapStore.getState().userLocation;
+    if (!mapRef.current || !center) return;
+
+    mapRef.current.flyTo({
+      center: [center.longitude, center.latitude],
+      zoom: DEFAULT_ZOOM,
+      speed: 1.5,
+      curve: 1.2,
+    });
+  };
+
+  // add those functions to the store
+
   useEffect(() => {
-    const flyToMyLocation = () => {
-      const center = useMapStore.getState().userLocation;
-      if (!mapRef.current || !center) return;
-
-      mapRef.current.flyTo({
-        center: [center.longitude, center.latitude],
-        zoom: DEFAULT_ZOOM,
-        speed: 1.5,
-        curve: 1.2,
-      });
-    };
-
     useMapStore.getState().setFlyToMyLocation(flyToMyLocation);
   }, []);
-
-  // add flyTo to zustand so we can access it anywhere
   useEffect(() => {
     useMapStore.getState().setFlyTo(flyTo);
   }, []);
-
-  // add getCurrentCenter so we can use it anywhere
   useEffect(() => {
     useMapStore.getState().setGetCurrentCenter(getCurrentCenter);
   }, []);
-
-  // clear points on map whenever a con is selected
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (!selectedCon) {
-      useMapStore.getState().clearSelectedPointHighlight?.();
-    } else {
-      useMapStore.getState().highlightPointOnMap?.(selectedCon.id);
-
-      const el = document.createElement("div");
-      el.className = "custom-marker";
-
-      const marker = new mapboxgl.Marker({
-        // element: el,
-        color: "#7976D9",
-        offset: [0, -20],
-      })
-        .setLngLat([selectedCon.longitude, selectedCon.latitude])
-        .addTo(mapRef.current);
-      return () => {
-        if (marker) marker.remove();
-      };
-    }
-  }, [selectedCon]);
 
   return <div id="map" ref={mapContainerRef} style={{ height: "100%" }}></div>;
 }

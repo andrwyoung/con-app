@@ -7,7 +7,6 @@ if (!supabaseUrl || !supabaseKey) {
     throw new Error("supabase env variables are missing!");
 }
 
-// TODO: rename to supabase once you get rid of the other one
 export const supabaseAnon = createBrowserClient(
   supabaseUrl, supabaseKey
 )

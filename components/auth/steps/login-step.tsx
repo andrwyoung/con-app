@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { authStep } from "../login-modal";
-import { AuthFormLayout, PasswordToggleButton } from "../../extras";
+import { AuthFormLayout, PasswordToggleButton } from "../extras";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

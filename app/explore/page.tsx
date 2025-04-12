@@ -18,11 +18,10 @@ export default function ExplorePage() {
   const router = useRouter();
   const setLoginStep = useUIStore((s) => s.setLoginModalStep);
 
-  // initialization
-  // 1: initial coordinates to center the map
+  // initialization steps:
+  // 1: get initial coordinates to center the map
   // 2: load all events in the background
-  // TODO memoize events
-  // inside useEffect
+  // TODO memoize events inside useEffect
   useEffect(() => {
     const init = async () => {
       const coords = await getInitialLocation();
@@ -35,11 +34,11 @@ export default function ExplorePage() {
     init();
   }, []);
 
-  // if escape key is pressed then close details panel
+  // keyboard shortcuts
   const isModalOpen = useUIStore.getState().anyModalOpen();
   useEffect(() => {
     const handleShortcuts = (e: KeyboardEvent) => {
-      if (isModalOpen) return;
+      if (isModalOpen) return; // important to check if modal is open
       if (e.key === "Escape") {
         const active = document.activeElement;
         const isInputFocused =
@@ -52,7 +51,8 @@ export default function ExplorePage() {
           useSidebarStore.getState();
         console.log("escape pressed! selected con:", selectedCon);
 
-        // escape deselects, and then changes modes
+        // 1st escape deselects con
+        // 2nd escape changes mode back to filter
         if (selectedCon) {
           setSelectedCon(null);
           useMapStore.getState().clearSelectedPointHighlight?.();
@@ -75,7 +75,8 @@ export default function ExplorePage() {
     return () => window.removeEventListener("keydown", handleShortcuts);
   }, [isModalOpen]);
 
-  // manual timer for a spinner lol
+  // manual timer so we can fade in the map....effective sometimes lol
+  // also gives us time to load all events
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMap(true);
@@ -94,14 +95,6 @@ export default function ExplorePage() {
   return (
     <div className="w-screen h-screen font-extrabold">
       <Sidebar />
-      {/* <div
-        className={`flex flex-row gap-4 items-center justify-center -z-10 absolute inset-0`}
-      >
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-4 border-primary-muted" />
-        <div className="text-lg  text-primary-muted">
-          Loading Conventions...
-        </div>
-      </div> */}
       <div
         className={`transition-opacity duration-800 h-full ${
           showMap ? "opacity-100" : "opacity-0"

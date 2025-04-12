@@ -1,11 +1,11 @@
 import { FiArrowLeft } from "react-icons/fi";
-import { authStep } from "./auth/login-modal";
+import { authStep } from "./login-modal";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+} from "../ui/dialog";
 
 // wrapper for Dialog with an optional back button
 export function AuthFormLayout({
@@ -33,6 +33,7 @@ export function AuthFormLayout({
   );
 }
 
+// showing and hiding the password
 export function PasswordToggleButton({
   show,
   toggle,
@@ -51,6 +52,7 @@ export function PasswordToggleButton({
   );
 }
 
+// lil back button
 export function AuthBackFooterButton({
   onBack,
 }: {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { authStep } from "../login-modal";
-import { AuthFormLayout } from "../../extras";
+import { AuthFormLayout } from "../extras";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 

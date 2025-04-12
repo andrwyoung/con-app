@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthFormLayout } from "../../extras";
+import { AuthFormLayout } from "../extras";
 
 export default function CheckEmailStep() {
   return (

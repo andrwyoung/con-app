@@ -79,6 +79,7 @@ export default function Searchbar() {
     };
   }, []);
 
+  // when the user types, get results for the dropdown suggestions
   const handleDropdownSuggestionItems = useDebouncedCallback(
     async (query: string) => {
       if (!query.trim()) {
@@ -105,10 +106,15 @@ export default function Searchbar() {
     300
   );
 
-  // SECTION: handlers
+  // SECTION: handlers when they search. there are 4 options
+  // 1: run a full search (either by clicking enter or by clicking "see all results" on dropdown)
+  // 2: when they click on an item in the dropdown menu
+  // 3: option to search conventions around the user's current viewport
+  // 4: option to search conventions near the user
+  //
   //
 
-  // when they want to see all results
+  // 1: run a full search
   const onShowAllItems = (e: React.FormEvent) => {
     e.preventDefault();
     runFullSearch();
@@ -130,9 +136,9 @@ export default function Searchbar() {
     }
   };
 
-  // if an event is selected on the search bar
+  // 2: selected an item on dropdown menu
   const onResultSelect = (s: EventInfo) => {
-    if (s.id === -1) return; // should never happen
+    if (s.id === -1) return; // should never happen...hopefully
     setHighlightedIndex(-1);
     setSuggestionResults([]);
 
@@ -141,6 +147,7 @@ export default function Searchbar() {
     setResults([s]); // Sidebar will fly if it's just 1
   };
 
+  // 3: search here option
   const onSearchHere = () => {
     const center = getCurrentCenter?.();
     if (!center) {
@@ -159,6 +166,7 @@ export default function Searchbar() {
     setSidebarModeAndDeselectCon("search");
   };
 
+  // 4: search near me option
   const onSearchNearMe = () => {
     const center = useMapStore.getState().userLocation;
     if (!center) {
@@ -180,6 +188,7 @@ export default function Searchbar() {
   };
 
   // SECTION: keyboard controls
+  //
   //
 
   const handleKeyBoardControls = (e: React.KeyboardEvent) => {
@@ -203,7 +212,13 @@ export default function Searchbar() {
     }
   };
 
-  // SECTION: here we build the dropdown list
+  // SECTION: build the dropdown list
+  // yes, it could have lived in it's own component....but I didn't want to deal with passing all those props lol
+  //
+  // here I decided to build a "list" of all the items. including "no results", "search near me" and "see all results" etc.
+  // this is because it made it easier to have keyboard navigation and makes it easier to
+  // include more options later on like search history. it's just one array you can index through
+  //
   //
 
   const nothingTyped = !searchbarText.trim();

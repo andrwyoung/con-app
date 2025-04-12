@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AuthFormLayout, PasswordToggleButton } from "../../extras";
+import { AuthFormLayout, PasswordToggleButton } from "../extras";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -41,7 +41,7 @@ export default function SignupStep({
   const isStrongPassword =
     hasMinLength && hasLowercase && hasUppercase && hasNumber;
 
-  // focus on Username field intially
+  // focus on username field intially
   useEffect(() => {
     inputRef.current?.focus();
   }, []);

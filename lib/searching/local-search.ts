@@ -1,3 +1,5 @@
+// since we're storing all convention data locally, we just "query" our hashmap with these functions
+
 import { ConLocation, EventInfo } from "@/types/types";
 import { getDistance } from "../utils";
 import { IN_THE_AREA_RESULTS } from "../constants";

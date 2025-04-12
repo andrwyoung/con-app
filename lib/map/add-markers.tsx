@@ -1,4 +1,6 @@
 // add all the event markers to the map
+// very messy file....sorry
+
 import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { EventInfo } from "@/types/types";
@@ -18,6 +20,10 @@ export default function addMarkersToMap(
 
   console.log("dict", eventDict);
   const events = Object?.values(eventDict);
+
+  // SECTION: Constants
+  //
+  //
 
   const POINT_COLOR = "#FFD79E";
   const HOVER_COLOR = "#EDAE77";
@@ -47,10 +53,12 @@ export default function addMarkersToMap(
 
   // SECTION: Initialize Map
   //
+  //
 
   map.on("load", () => {
     console.log("events length?", events.length);
 
+    // this is where we destructure all our events into mapbox's syntax
     const geoJsonData: FeatureCollection<Point, GeoJsonProperties> = {
       type: "FeatureCollection",
       features: events.map((event) => ({
@@ -79,7 +87,7 @@ export default function addMarkersToMap(
       // if "events" already exists, don't recreate it. rather just update it
       (map.getSource("events") as mapboxgl.GeoJSONSource).setData(geoJsonData);
     } else {
-      // but if "events" doesn't exist, then create
+      // but if "events" doesn't exist, then create em
       map.addSource("events", {
         type: "geojson",
         data: geoJsonData,
@@ -114,7 +122,6 @@ export default function addMarkersToMap(
           },
         },
       });
-
       map.addLayer({
         id: "clusters-clicked",
         type: "circle",
@@ -144,33 +151,6 @@ export default function addMarkersToMap(
         },
       });
 
-      // map.loadImage("/pin.png", (error, image) => {
-      //   if (error || !image) {
-      //     console.error("Failed to load marker image", error);
-      //     return;
-      //   }
-
-      //   if (!map.hasImage("custom-marker")) {
-      //     map.addImage("custom-marker", image);
-      //   }
-
-      //   map.addLayer({
-      //     id: "unclustered-point",
-      //     type: "symbol",
-      //     source: "events",
-      //     filter: ["!", ["has", "point_count"]],
-      //     layout: {
-      //       "icon-image": "custom-marker",
-      //       "icon-size": 0.5,
-      //       "icon-allow-overlap": true,
-      //     },
-      //     paint: {
-      //       "circle-color": POINT_COLOR,
-      //       //     "circle-radius": POINT_SIZE,
-      //     },
-      //   });
-      // });
-
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
@@ -197,7 +177,6 @@ export default function addMarkersToMap(
           },
         },
       });
-
       map.addLayer({
         id: "unclustered-point-clicked",
         type: "circle",
@@ -218,7 +197,8 @@ export default function addMarkersToMap(
       });
     }
 
-    // SECTION: reusable functions
+    // SECTION: reusable functions (put in store)
+    //
     //
 
     const clearSelectedPointHighlight = () => {
@@ -352,33 +332,17 @@ export default function addMarkersToMap(
             duration: 900,
           });
 
-          // TODO: set zustand
           console.log("Convention clicked:", props);
-
+          // KEY LINE: here's where we give the info to sidebar
           setSidebarMode("map");
           setFocusedEvents([eventDict[clickedId]]);
           setSelectedCon(eventDict[clickedId]);
         } else {
+          // if reselecting the same point then deselect
           clearSelectedPointHighlight();
-          setSelectedCon(null);
+          setSelectedCon(null); // deselect also on sidebar
         }
       }
-
-      // const popup = new mapboxgl.Popup({
-      //   closeButton: false,
-      //   closeOnClick: false,
-      //   offset: 12,
-      // });
-      // popup
-      //   .setLngLat(point.coordinates as [number, number])
-      //   .setHTML(
-      //     `
-      //     <div class="mapbox-popup">
-      //       <strong>${props?.name}</strong><br />
-      //     </div>
-      //   `
-      //   )
-      //   .addTo(map);
     });
 
     map.on("click", "clusters", (e) => {
@@ -401,7 +365,7 @@ export default function addMarkersToMap(
       // clear any clicked currently clicked points
       clearSelectedPointHighlight();
 
-      // Highlight clicked cluster
+      // highlight clicked cluster on mapbox
       clickedClusterId = clusterId;
       map.setFilter("clusters-clicked", [
         "==",
@@ -409,7 +373,7 @@ export default function addMarkersToMap(
         clickedClusterId,
       ]);
 
-      // Then, get all the individual points in that cluster
+      // then, get all the individual points in that cluster
       source.getClusterLeaves(clusterId, 500, 0, (err, leaves) => {
         if (err) {
           console.error("Failed to get cluster leaves", err);
@@ -424,9 +388,12 @@ export default function addMarkersToMap(
           .map((id) => eventDict[id])
           .filter((c): c is EventInfo => !!c);
 
+        // KEY LINE: here's where we return all the cluster points back to sidebar
         console.log("EventInfo: ", fullCons);
         setFocusedEvents(fullCons);
       });
+
+      // let sidebar mode know what's up
       setSidebarMode("map");
       setSelectedCon(null);
     });

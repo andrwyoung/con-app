@@ -1,3 +1,4 @@
+// DEPRECATED: created for initial iteration
 import { useState } from "react";
 import { ConLocation, EventInfo } from "@/types/types";
 import { supabaseAnon } from "@/lib/supabase/client";

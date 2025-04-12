@@ -1,3 +1,6 @@
+// a ui wrapper mainly responsible for showing the titles for search-mode and map-mode
+// as well as finding out what sort mode the user wants
+// also provides some logic for reseting back to filter-mode
 import {
   Select,
   SelectContent,

@@ -1,3 +1,6 @@
+// the sidebar itself
+// it's kept intentionally light to prevent prop drilling for all the different modes
+// all the logic is handled inside the modes themselves and they all talk to their global stores
 import SearchBar from "./searchbar";
 import DetailsPanel from "./details-panel";
 import SearchMode from "./modes/search-mode";

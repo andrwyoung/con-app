@@ -1,3 +1,5 @@
+// create user profile for user
+// we need the sudo key because we want to write user profile data without them being logged in
 "use server";
 
 import { Persona } from "@/types/enums";

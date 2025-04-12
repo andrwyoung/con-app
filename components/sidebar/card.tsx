@@ -1,3 +1,4 @@
+// the cards themselves. representing a single convention
 import React, { forwardRef } from "react";
 import { EventInfo } from "@/types/types";
 import { FiMenu } from "react-icons/fi";
@@ -46,6 +47,7 @@ const Card = forwardRef<
         <IoLocate
           className="hover:scale-110 hover:text-primary-text cursor-alias"
           onClick={(e) => {
+            // if the target button is clicked, then fly to it. but don't deselect the card itself
             e.stopPropagation();
             flyTo?.(
               { longitude: info.longitude, latitude: info.latitude },
@@ -58,6 +60,6 @@ const Card = forwardRef<
     </div>
   );
 });
-Card.displayName = "Card"; // Required when using forwardRef
+Card.displayName = "Card";
 
 export default Card;
