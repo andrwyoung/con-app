@@ -5,18 +5,26 @@ import { useEffect, useState } from "react";
 import { ConLocation } from "@/types/types";
 import getInitialLocation from "../../lib/map/get-initial-location";
 import { useEventStore } from "@/stores/all-events-store";
-import { useSidebarStore } from "@/stores/explore-sidebar-store";
+import {
+  useMapCardsStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ExplorePage() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
+  const [initializationDone, setInitializationDone] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const setLoginStep = useUIStore((s) => s.setLoginModalStep);
+
+  // SECTION: initalization and page on-load things
+  //
+  //
 
   // initialization steps:
   // 1: get initial coordinates to center the map
@@ -29,10 +37,41 @@ export default function ExplorePage() {
       useMapStore.getState().setUserLocation(coords); //save coords to map
 
       await useEventStore.getState().fetchAllEvents();
+
+      // if user types in /explore?conId=123 then init map to convention 123
+      const conId = searchParams.get("conId");
+      if (conId) {
+        const allCons = useEventStore.getState().allEvents;
+        const match = allCons[conId];
+
+        if (match) {
+          useSidebarStore.getState().setSidebarModeAndDeselectCon("map");
+          useMapCardsStore.getState().setFocusedEvents([match]);
+          useSidebarStore.getState().setSelectedCon(match);
+          setInitLocation({
+            latitude: match.latitude,
+            longitude: match.longitude,
+          });
+        }
+      }
+
+      setInitializationDone(true);
     };
 
     init();
   }, []);
+
+  // if ?login=true then open the login panel for them
+  useEffect(() => {
+    if (searchParams.get("login") === "true") {
+      setLoginStep("email");
+      router.replace("/explore", { scroll: false });
+    }
+  }, [searchParams, router, setLoginStep]);
+
+  // SECTION: shortcuts and stuff
+  //
+  //
 
   // keyboard shortcuts
   const isModalOpen = useUIStore.getState().anyModalOpen();
@@ -85,22 +124,20 @@ export default function ExplorePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    if (searchParams.get("login") === "true") {
-      setLoginStep("email");
-      router.replace("/explore", { scroll: false });
-    }
-  }, [searchParams, router, setLoginStep]);
-
   return (
     <div className="w-screen h-screen font-extrabold">
-      <Sidebar />
+      <Sidebar router={router} initializationDone={initializationDone} />
       <div
         className={`transition-opacity duration-800 h-full ${
           showMap ? "opacity-100" : "opacity-0"
         }`}
       >
-        {initLocation && <Map initLocation={initLocation} />}
+        {initLocation && (
+          <Map
+            initLocation={initLocation}
+            initializationDone={initializationDone}
+          />
+        )}
       </div>
     </div>
   );

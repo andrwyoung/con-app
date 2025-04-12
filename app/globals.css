@@ -102,17 +102,3 @@
     animation: shake 0.3s ease-in-out;
   }
 }
-
-.mapboxgl-popup-content {
-  @apply bg-primary cursor-pointer rounded-3xl;
-}
-
-.mapboxgl-popup-tip {
-  @apply mb-2;
-}
-
-.custom-marker {
-  transform: translateY(-50%); /* Optional: adjust position */
-  @apply w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[15px] border-t-black
-
-}

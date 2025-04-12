@@ -34,7 +34,6 @@ export default function SearchMode() {
         ZOOM_USE_DEFAULT
       );
     }
-    setSelectedCon(loc);
   }, [results, flyTo, setSelectedCon]);
 
   return (

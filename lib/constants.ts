@@ -1,6 +1,6 @@
 // sidebar consts
 export const DROPDOWN_RESULTS = 5;
-export const IN_THE_AREA_RESULTS = 12;
+export const IN_THE_AREA_RESULTS = 25;
 export const MAX_CARDS = 50;
 export const SPECIAL_CON_ID = {
     NO_RESULTS: -1,

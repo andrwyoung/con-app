@@ -66,7 +66,7 @@ export default function ModeWrapper({
               {/* <SelectItem value="just-passed">Just Passed</SelectItem> */}
               {/* <SelectItem value="upcoming">Upcoming</SelectItem> */}
               <SelectItem value="rev-chron">Oldest First</SelectItem>
-              <SelectItem value="distance">Distance (from you)</SelectItem>
+              <SelectItem value="distance">Distance (from me)</SelectItem>
               <SelectItem value="alpha">Alphabetical</SelectItem>
             </SelectContent>
           </Select>

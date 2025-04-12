@@ -4,13 +4,11 @@ import getAllEvents from "@/lib/map/get-all-events";
 
 type EventStore = {
   allEvents: Record<string, EventInfo>;
-  isLoading: boolean;
   fetchAllEvents: () => Promise<void>;
 };
 
 export const useEventStore = create<EventStore>((set) => ({
   allEvents: {},
-  isLoading: true,
   fetchAllEvents: async () => {
     try {
       const events = await getAllEvents();
@@ -19,8 +17,6 @@ export const useEventStore = create<EventStore>((set) => ({
       });
     } catch (err) {
       console.error("Failed to fetch events", err);
-    } finally {
-      set({ isLoading: false });
     }
   },
 }));

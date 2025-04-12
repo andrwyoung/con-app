@@ -6,11 +6,28 @@ import DetailsPanel from "./details-panel";
 import SearchMode from "./modes/search-mode";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import MapMode from "./modes/map-mode";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export type sidebarModes = "search" | "filter" | "map";
 
-export default function Sidebar() {
+export default function Sidebar({
+  router,
+  initializationDone,
+}: {
+  router: ReturnType<typeof useRouter>;
+  initializationDone: boolean;
+}) {
   const { sidebarMode: mode, setSelectedCon, selectedCon } = useSidebarStore();
+
+  // when you click on a con, change the url to reflect which one you click
+  useEffect(() => {
+    if (selectedCon && initializationDone) {
+      router.push(`/explore?conId=${selectedCon.id}`, { scroll: false });
+    } else {
+      router.push(`/explore`, { scroll: false });
+    }
+  }, [selectedCon, router, initializationDone]);
 
   return (
     <div className="absolute z-10 top-36 left-8">

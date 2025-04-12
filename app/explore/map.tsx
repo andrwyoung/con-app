@@ -21,11 +21,16 @@ import {
 } from "@/lib/constants";
 import { getDistance } from "@/lib/utils";
 
-export default function Map({ initLocation }: { initLocation: ConLocation }) {
+export default function Map({
+  initLocation,
+  initializationDone,
+}: {
+  initLocation: ConLocation;
+  initializationDone: boolean;
+}) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const { isLoading: eventsStillLoading, allEvents: eventDict } =
-    useEventStore();
+  const { allEvents: eventDict } = useEventStore();
   const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
     useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
@@ -58,10 +63,10 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // render all the markers once events are fetched
   useEffect(() => {
-    console.log("dict2", eventDict, eventsStillLoading, mapRef.current);
+    console.log("dict2", eventDict, initializationDone, mapRef.current);
     if (
       !mapRef.current ||
-      eventsStillLoading ||
+      !initializationDone ||
       !eventDict ||
       Object.keys(eventDict).length === 0
     )
@@ -75,7 +80,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       setFocusedEvents
     );
   }, [
-    eventsStillLoading,
+    initializationDone,
     eventDict,
     setFocusedEvents,
     setSelectedCon,
