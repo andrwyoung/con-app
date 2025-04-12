@@ -1,6 +1,6 @@
 import { EventInfo } from "@/types/types";
 import { create } from "zustand";
-import getAllEvents from "@/app/explore/map/get-all-events";
+import getAllEvents from "@/lib/map/get-all-events";
 
 type EventStore = {
   allEvents: Record<string, EventInfo>;

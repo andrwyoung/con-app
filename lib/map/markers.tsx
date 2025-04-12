@@ -410,7 +410,7 @@ export default function addMarkersToMap(
       ]);
 
       // Then, get all the individual points in that cluster
-      source.getClusterLeaves(clusterId, 100, 0, (err, leaves) => {
+      source.getClusterLeaves(clusterId, 500, 0, (err, leaves) => {
         if (err) {
           console.error("Failed to get cluster leaves", err);
           return;

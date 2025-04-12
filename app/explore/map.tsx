@@ -3,7 +3,7 @@ import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation } from "@/types/types";
-import addMarkersToMap from "./map/markers";
+import addMarkersToMap from "../../lib/map/markers";
 import { useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {

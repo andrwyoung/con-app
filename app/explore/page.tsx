@@ -3,7 +3,7 @@ import Sidebar from "@/components/sidebar/sidebar";
 import Map from "./map";
 import { useEffect, useState } from "react";
 import { ConLocation } from "@/types/types";
-import getInitialLocation from "./map/get-initial-location";
+import getInitialLocation from "../../lib/map/get-initial-location";
 import { useEventStore } from "@/stores/all-events-store";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
