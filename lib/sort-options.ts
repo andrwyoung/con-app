@@ -12,7 +12,7 @@ export function getSortLabel(
     value: SortType,
     options = SORT_OPTIONS
   ): string {
-    if (value === "distance" || value === "raw") return "Default";
+    if (value === "distance" ) return "Default";
     const match = options.find((opt) => opt.value === value);
     return match?.label ?? "Default";
   }

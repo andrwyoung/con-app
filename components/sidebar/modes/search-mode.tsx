@@ -10,6 +10,9 @@ import ModeWrapper from "./mode-wrapper";
 import { SortType } from "@/lib/sort-cons";
 import { sortEvents } from "@/lib/sort-cons";
 
+const TITLE_DEFAULT = "Search Results";
+const TITLE_LOCATION = "Nearby";
+
 export default function SearchMode() {
   const { results } = useSearchStore();
   const { setSelectedCon } = useSidebarStore();
@@ -18,6 +21,8 @@ export default function SearchMode() {
 
   const [numResults, setNumResults] = useState(0);
   const [sortOption, setSortOption] = useState<SortType>("chron");
+
+  const [title, setTitle] = useState(TITLE_DEFAULT);
 
   const [centerOfViewport, setCenterOfViewport] = useState(
     getCurrentCenter?.()
@@ -33,14 +38,14 @@ export default function SearchMode() {
 
     // if searchbar has a preferred default sort, start with that
     const preferredSort = useSearchStore.getState().sortPreference;
-    console.log(
-      "search bar set sort option from: ",
-      sortOption,
-      " to:",
-      preferredSort
-    );
     setCenterOfViewport(getCurrentCenter?.());
     setSortOption(preferredSort);
+
+    if (preferredSort === "distance") {
+      setTitle(TITLE_LOCATION);
+    } else {
+      setTitle(TITLE_DEFAULT);
+    }
 
     if (
       results.length === 1 &&
@@ -53,7 +58,7 @@ export default function SearchMode() {
       );
       setSelectedCon(loc);
     }
-  }, [results, flyTo, setSelectedCon, getCurrentCenter, sortOption]);
+  }, [results, flyTo, setSelectedCon, getCurrentCenter]);
 
   // build out the sorted results
   const sortedResults = useMemo(
@@ -69,7 +74,7 @@ export default function SearchMode() {
 
   return (
     <ModeWrapper
-      title={`Search Results`}
+      title={title}
       numResults={numResults}
       sortMode={sortOption}
       setSortMode={setSortOption}

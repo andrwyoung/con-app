@@ -169,7 +169,7 @@ export default function Searchbar() {
     );
     console.log("searched in area. got:", res);
 
-    setSortPreference("distance");
+    setSortPreference("raw");
     setResults(res);
 
     setShowDropdown(false);
@@ -192,7 +192,7 @@ export default function Searchbar() {
     );
 
     useMapStore.getState().flyToMyLocation?.();
-    setSortPreference("distance-me");
+    setSortPreference("distance");
     setResults(res);
 
     setShowDropdown(false);
