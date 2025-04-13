@@ -21,13 +21,7 @@ import {
 } from "@/lib/constants";
 import { getDistance } from "@/lib/utils";
 
-export default function Map({
-  initLocation,
-  initializationDone,
-}: {
-  initLocation: ConLocation;
-  initializationDone: boolean;
-}) {
+export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { allEvents: eventDict } = useEventStore();
@@ -63,13 +57,8 @@ export default function Map({
 
   // render all the markers once events are fetched
   useEffect(() => {
-    console.log("dict2", eventDict, initializationDone, mapRef.current);
-    if (
-      !mapRef.current ||
-      !initializationDone ||
-      !eventDict ||
-      Object.keys(eventDict).length === 0
-    )
+    console.log("dict2", eventDict, mapRef.current);
+    if (!mapRef.current || !eventDict || Object.keys(eventDict).length === 0)
       return;
 
     addMarkersToMap(
@@ -80,7 +69,6 @@ export default function Map({
       setFocusedEvents
     );
   }, [
-    initializationDone,
     eventDict,
     setFocusedEvents,
     setSelectedCon,

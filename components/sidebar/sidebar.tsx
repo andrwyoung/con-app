@@ -11,23 +11,19 @@ import { useEffect } from "react";
 
 export type sidebarModes = "search" | "filter" | "map";
 
-export default function Sidebar({
-  router,
-  initializationDone,
-}: {
-  router: ReturnType<typeof useRouter>;
-  initializationDone: boolean;
-}) {
+export default function Sidebar() {
+  const router = useRouter();
+
   const { sidebarMode: mode, setSelectedCon, selectedCon } = useSidebarStore();
 
   // when you click on a con, change the url to reflect which one you click
   useEffect(() => {
-    if (selectedCon && initializationDone) {
+    if (selectedCon) {
       router.push(`/explore?conId=${selectedCon.id}`, { scroll: false });
     } else {
       router.push(`/explore`, { scroll: false });
     }
-  }, [selectedCon, router, initializationDone]);
+  }, [selectedCon, router]);
 
   return (
     <div className="absolute z-10 top-32 left-10">
