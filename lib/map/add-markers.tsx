@@ -6,6 +6,7 @@ import { useMapStore } from "@/stores/map-store";
 import { EventInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
+import { MAX_SEARCH_BATCH_SIZE } from "../constants";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
@@ -374,24 +375,29 @@ export default function addMarkersToMap(
       ]);
 
       // then, get all the individual points in that cluster
-      source.getClusterLeaves(clusterId, 500, 0, (err, leaves) => {
-        if (err) {
-          console.error("Failed to get cluster leaves", err);
-          return;
+      source.getClusterLeaves(
+        clusterId,
+        MAX_SEARCH_BATCH_SIZE,
+        0,
+        (err, leaves) => {
+          if (err) {
+            console.error("Failed to get cluster leaves", err);
+            return;
+          }
+
+          const conList =
+            leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
+          console.log("Cluster contains:", conList);
+
+          const fullCons = conList
+            .map((id) => eventDict[id])
+            .filter((c): c is EventInfo => !!c);
+
+          // KEY LINE: here's where we return all the cluster points back to sidebar
+          console.log("EventInfo: ", fullCons);
+          setFocusedEvents(fullCons);
         }
-
-        const conList =
-          leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
-        console.log("Cluster contains:", conList);
-
-        const fullCons = conList
-          .map((id) => eventDict[id])
-          .filter((c): c is EventInfo => !!c);
-
-        // KEY LINE: here's where we return all the cluster points back to sidebar
-        console.log("EventInfo: ", fullCons);
-        setFocusedEvents(fullCons);
-      });
+      );
 
       // let sidebar mode know what's up
       setSidebarMode("map");

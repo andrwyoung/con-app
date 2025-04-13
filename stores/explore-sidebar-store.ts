@@ -1,3 +1,4 @@
+import { SortType } from "@/lib/sort-cons";
 import { EventInfo } from "@/types/types";
 import { create } from "zustand";
 
@@ -24,11 +25,17 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
 type SearchStore = {
   results: EventInfo[];
   setResults: (r: EventInfo[]) => void;
+
+  sortPreference: SortType,
+  setSortPreference: (value: SortType) => void,
 };
 
 export const useSearchStore = create<SearchStore>((set) => ({
   results: [],
   setResults: (r) => set({ results: r }),
+
+  sortPreference: "raw" as SortType,
+  setSortPreference: (value: SortType) => set({ sortPreference: value }),
 }));
 
 

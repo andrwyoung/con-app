@@ -9,7 +9,7 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col items-center justify-center text-center">
       <Image src="/404.png" width={400} alt="sunflower!" height={400} />
       <p className="text-lg font-semibold my-3 max-w-xs sm:max-w-2xl">
-        Hi! We couldn’t find that page...but here&apos;s some confetti:
+        Hi! We couldn’t find that page...but here&apos;s a fun button:
       </p>
       <Button
         onClick={fireConfetti}

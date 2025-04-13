@@ -1,3 +1,5 @@
+export const MAX_SEARCH_BATCH_SIZE = 500;
+
 // sidebar consts
 export const DROPDOWN_RESULTS = 5;
 export const IN_THE_AREA_RESULTS = 25;

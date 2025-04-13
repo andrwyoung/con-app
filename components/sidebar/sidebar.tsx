@@ -30,8 +30,8 @@ export default function Sidebar({
   }, [selectedCon, router, initializationDone]);
 
   return (
-    <div className="absolute z-10 top-36 left-8">
-      <div className="flex flex-col gap-2 w-80 max-h-180 h-full rounded-lg shadow-lg bg-white px-5 py-6">
+    <div className="absolute z-10 top-32 left-10">
+      <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-14rem)] rounded-lg shadow-lg bg-white px-5 py-6">
         <SearchBar key={mode} />
         {mode === "search" && <SearchMode />}
         {mode === "filter" && <div>filter mode</div>}

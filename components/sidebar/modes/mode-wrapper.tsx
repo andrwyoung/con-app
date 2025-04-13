@@ -8,28 +8,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { SortType } from "@/lib/sort-cons";
+import { SORT_OPTIONS, getSortLabel } from "@/lib/sort-options";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import React from "react";
 
-export type sortType =
-  | "chron"
-  | "rev-chron"
-  | "distance"
-  | "alpha"
-  | "just-passed"
-  | "upcoming";
-
 export default function ModeWrapper({
   title,
   numResults,
+  sortMode,
   setSortMode,
   hideReset = false,
   children,
 }: {
   title: string;
   numResults?: number;
-  setSortMode: (e: sortType) => void;
+  sortMode: SortType;
+  setSortMode: (e: SortType) => void;
   hideReset?: boolean;
   children: React.ReactNode;
 }) {
@@ -57,17 +54,19 @@ export default function ModeWrapper({
 
         <div className="flex flex-row px-2 items-center gap-2">
           <p className="text-xs text-primary-text">Sorting by:</p>
-          <Select onValueChange={(value) => setSortMode(value as sortType)}>
+          <Select
+            onValueChange={(value) => setSortMode(value as SortType)}
+            value={sortMode}
+          >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Latest First" />
+              <SelectValue>{getSortLabel(sortMode)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="chron">Latest First</SelectItem>
-              {/* <SelectItem value="just-passed">Just Passed</SelectItem> */}
-              {/* <SelectItem value="upcoming">Upcoming</SelectItem> */}
-              <SelectItem value="rev-chron">Oldest First</SelectItem>
-              <SelectItem value="distance">Distance (from me)</SelectItem>
-              <SelectItem value="alpha">Alphabetical</SelectItem>
+              {SORT_OPTIONS.map(({ value, label }) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

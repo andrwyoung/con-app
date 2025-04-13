@@ -118,7 +118,8 @@ export default function Map({
   // utility function to get coordinates of your current view
   const getCurrentCenter = () => {
     if (!mapRef.current) return null;
-    return mapRef.current.getCenter().toArray() as [number, number];
+    const [lng, lat] = mapRef.current.getCenter().toArray();
+    return { longitude: lng, latitude: lat };
   };
 
   // utility function to fly to whereever

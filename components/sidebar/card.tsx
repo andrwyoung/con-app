@@ -34,14 +34,16 @@ const Card = forwardRef<
           selected ? "bg-primary/40" : "bg-primary-light"
         }`}
       />
-      <div className="flex flex-col ml-15 gap-0.5">
-        <div className="text-sm font-semibold leading-tight group-hover:text-primary-text">
+      <div className="flex flex-col ml-15">
+        <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1">
           {info.name}
         </div>
-        <div className="text-xs text-primary-muted font-regular">
+        <div className="text-xs text-primary-muted font-regular line-clamp-1">
           {info.date}
         </div>
-        {/* <div className="text-xs text-primary-muted">{info.venue}</div> */}
+        <div className="text-xs text-primary-muted line-clamp-1">
+          {info.venue}
+        </div>
       </div>
       <div className="absolute right-6 bottom-2 flex flex-row gap-1 text-primary-muted transition-all">
         <IoLocate

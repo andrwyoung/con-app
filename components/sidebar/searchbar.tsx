@@ -51,7 +51,7 @@ export default function Searchbar() {
   const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
   const { setSidebarModeAndDeselectCon } = useSidebarStore();
-  const { setResults } = useSearchStore();
+  const { setResults, setSortPreference } = useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearSearchBar = () => {
@@ -125,7 +125,9 @@ export default function Searchbar() {
 
     const res = grabConventions(searchbarText, allEvents);
 
+    setSortPreference("raw");
     setResults(res);
+
     setHighlightedIndex(-1);
     setShowDropdown(false);
     setSidebarModeAndDeselectCon("search");
@@ -144,7 +146,9 @@ export default function Searchbar() {
 
     setSidebarModeAndDeselectCon("search");
     setSearchbarText(s.name);
-    setResults([s]); // Sidebar will fly if it's just 1
+
+    setSortPreference("chron"); // doesn't really matter lol
+    setResults([s]); // sidebar will fly if it's just 1
   };
 
   // 3: search here option
@@ -154,14 +158,20 @@ export default function Searchbar() {
       console.log("could not locate cons in area");
       return;
     }
+
+    console.log("searching in the area...");
     const res = grabNearbyConventions(
       {
-        latitude: center[1],
-        longitude: center[0],
+        latitude: center.latitude,
+        longitude: center.longitude,
       },
       allEvents
     );
+    console.log("searched in area. got:", res);
+
+    setSortPreference("distance");
     setResults(res);
+
     setShowDropdown(false);
     setSidebarModeAndDeselectCon("search");
   };
@@ -182,7 +192,9 @@ export default function Searchbar() {
     );
 
     useMapStore.getState().flyToMyLocation?.();
+    setSortPreference("distance-me");
     setResults(res);
+
     setShowDropdown(false);
     setSidebarModeAndDeselectCon("search");
   };
@@ -273,7 +285,14 @@ export default function Searchbar() {
       items.push({
         id: `result-${res.id}`,
         type: "result",
-        label: res.name,
+        label: (
+          <div className="flex flex-col truncate">
+            <span className="">{res.name}</span>{" "}
+            <span className="text-primary-muted text-xs opacity-50">
+              {res.venue}
+            </span>
+          </div>
+        ),
         data: res,
         onClick: () => onResultSelect(res),
       });
@@ -325,7 +344,7 @@ export default function Searchbar() {
         )}
       </div>
       {showDropdown && (
-        <ul className="absolute z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-64 overflow-y-auto">
+        <ul className="absolute z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-96 overflow-y-auto">
           {items.map((item, i) => (
             <li
               key={item.id}

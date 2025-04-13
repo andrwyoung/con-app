@@ -1,10 +1,29 @@
 // since we're storing all convention data locally, we just "query" our hashmap with these functions
 
+import Fuse from "fuse.js";
+import type { IFuseOptions } from "fuse.js";
 import { ConLocation, EventInfo } from "@/types/types";
 import { getDistance } from "../utils";
 import { IN_THE_AREA_RESULTS } from "../constants";
 
 export const grabConventions = (text: string, events: Record<string, EventInfo>) => {
+  const options: IFuseOptions<EventInfo> = {
+    keys: [
+      { name: "name", weight: 0.7 },
+      { name: "venue", weight: 0.3 },
+    ],
+    threshold: 0.4,
+    includeScore: false,
+  };
+
+  const fuse = new Fuse(Object.values(events), options);
+  const results = fuse.search(text);
+
+  return results.map(result => result.item);
+};
+
+// DEPRECATED: using fuse now
+export const grabConventionsV1 = (text: string, events: Record<string, EventInfo>) => {
   return Object.values(events).filter((event) =>
     event.name.toLowerCase().includes(text.toLowerCase())
   );

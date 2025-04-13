@@ -13,8 +13,8 @@ type MapStore = {
   flyToMyLocation?: () => void;
   setFlyToMyLocation: (fn: () => void) => void;
 
-  getCurrentCenter: () => [number, number] | null;
-  setGetCurrentCenter: (fn: () => [number, number] | null) => void; 
+  getCurrentCenter: () => ConLocation | null;
+  setGetCurrentCenter: (fn: () => ConLocation | null) => void; 
 
   clearSelectedPointHighlight?: () => void;
   setClearSelectedPointHighlight: (fn: () => void) => void;
