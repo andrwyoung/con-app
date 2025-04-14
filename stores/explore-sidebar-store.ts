@@ -1,5 +1,5 @@
 import { DROPDOWN_RESULTS } from "@/lib/constants";
-import { SortType } from "@/lib/sort-cons";
+import { SortType } from "@/lib/helpers/sort-cons";
 import { EventInfo } from "@/types/types";
 import { create } from "zustand";
 

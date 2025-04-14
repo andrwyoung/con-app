@@ -7,8 +7,8 @@ import { ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
 import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
-import { SortType } from "@/lib/sort-cons";
-import { sortEvents } from "@/lib/sort-cons";
+import { SortType } from "@/lib/helpers/sort-cons";
+import { sortEvents } from "@/lib/helpers/sort-cons";
 
 const TITLE_DEFAULT = "Search Results";
 const TITLE_LOCATION = "Nearby";

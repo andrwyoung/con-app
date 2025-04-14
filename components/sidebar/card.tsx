@@ -1,7 +1,7 @@
 // the cards themselves. representing a single convention
 import React, { forwardRef } from "react";
 import { EventInfo } from "@/types/types";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
@@ -9,13 +9,23 @@ import {
   formatEventDates,
   formatShortLocation,
 } from "@/lib/helpers/display-formatters";
+import { getEventTimeCategory } from "@/lib/helpers/event-recency";
 
-function PastBadge() {
-  return (
-    <span className="ml-2 px-1.5 py-0.5 text-xs text-gray-600 bg-gray-100 rounded">
-      PAST
-    </span>
-  );
+function StatusDot({
+  status,
+}: {
+  status: "past" | "soon" | "upcoming" | "unknown";
+}) {
+  const color =
+    status === "past"
+      ? "bg-gray-400"
+      : status === "soon"
+      ? "bg-yellow-400"
+      : status === "upcoming"
+      ? "bg-green-500"
+      : "bg-gray-300";
+
+  return <div className={`w-2 h-2 rounded-full ${color}`} />;
 }
 
 const Card = forwardRef<
@@ -54,11 +64,12 @@ const Card = forwardRef<
         <div className="text-xs text-primary-muted line-clamp-1">
           {formatShortLocation(info.address)}
         </div>
-        <div className="text-xs text-primary-muted font-regular line-clamp-1">
+        <div className="flex flex-row items-baseline gap-2 text-xs text-primary-muted font-regular line-clamp-1">
+          <StatusDot status={getEventTimeCategory(info)} />
           {formatEventDates(info)}
         </div>
       </div>
-      <div className="absolute right-6 bottom-2 flex flex-row gap-1 text-primary-muted transition-all">
+      <div className="absolute right-4 bottom-1.5 flex flex-row gap-1 text-primary-muted transition-all">
         <IoLocate
           className="hover:scale-110 hover:text-primary-text cursor-alias"
           onClick={(e) => {
@@ -70,7 +81,7 @@ const Card = forwardRef<
             );
           }}
         />
-        <FiMenu className="hover:scale-110 hover:text-primary-text" />
+        {/* <FiMenu className="hover:scale-110 hover:text-primary-text" /> */}
       </div>
     </div>
   );

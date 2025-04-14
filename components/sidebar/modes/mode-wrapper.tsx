@@ -9,8 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { SortType } from "@/lib/sort-cons";
-import { SORT_OPTIONS, getSortLabel } from "@/lib/sort-options";
+import { SortType } from "@/lib/helpers/sort-cons";
+import { SORT_OPTIONS, getSortLabel } from "@/lib/helpers/sort-options";
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import React from "react";

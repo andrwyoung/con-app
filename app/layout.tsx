@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
 import UserProvider from "@/components/user-provider";
 import MapWrapper from "./map-wrapper";
+import { Suspense } from "react";
 
 const raleway = Raleway({
   variable: "--font-header",
@@ -40,7 +41,9 @@ export default function RootLayout({
         <UserProvider>
           <NavBar />
           {children}
-          <MapWrapper />
+          <Suspense>
+            <MapWrapper />
+          </Suspense>
         </UserProvider>
       </body>
     </html>

@@ -1,5 +1,5 @@
 import { EventInfo } from "@/types/types";
-import { getDistance } from "./utils";
+import { getDistance } from "../utils";
 
 export type SortType =
   | "alpha"
