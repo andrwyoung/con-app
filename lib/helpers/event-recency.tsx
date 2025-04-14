@@ -35,7 +35,6 @@ export function getEventTimeCategory(info: EventInfo): TimeCategory {
 }
 
 export function getDaysUntilEvent(info: EventInfo): number | null {
-  const now = new Date();
   const start = info.start_date
     ? new Date(info.start_date)
     : info.year

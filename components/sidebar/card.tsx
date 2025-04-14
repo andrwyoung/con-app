@@ -1,7 +1,6 @@
 // the cards themselves. representing a single convention
 import React, { forwardRef } from "react";
 import { EventInfo } from "@/types/types";
-import { FiMenu, FiX } from "react-icons/fi";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
@@ -14,16 +13,22 @@ import { getEventTimeCategory } from "@/lib/helpers/event-recency";
 function StatusDot({
   status,
 }: {
-  status: "past" | "soon" | "upcoming" | "unknown";
+  status:
+    | "past"
+    | "soon"
+    | "upcoming"
+    | "unknown"
+    | "discontinued"
+    | "cancelled";
 }) {
   const color =
     status === "past"
-      ? "bg-gray-400"
+      ? "bg-slate-300"
       : status === "soon"
-      ? "bg-yellow-400"
+      ? "bg-green-400"
       : status === "upcoming"
-      ? "bg-green-500"
-      : "bg-gray-300";
+      ? "bg-primary"
+      : "bg-red-500";
 
   return <div className={`w-2 h-2 rounded-full ${color}`} />;
 }
