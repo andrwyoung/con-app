@@ -312,6 +312,7 @@ export default function Searchbar() {
     <form onSubmit={onShowAllItems} ref={wrapperRef} className="relative">
       <div className="relative">
         <Input
+          autoComplete="off"
           type="text"
           ref={inputRef}
           value={searchbarText}

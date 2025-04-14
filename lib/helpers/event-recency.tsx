@@ -1,7 +1,15 @@
 import { EventInfo } from "@/types/types";
-import { DAYS_UNTIL_SOON } from "../constants";
+import { DAYS_UNTIL_SOON, DAYS_UNTIL_UPCOMING } from "../constants";
 
-type TimeCategory = "past" | "soon" | "upcoming" | "unknown";
+export type TimeCategory =
+  | "past"
+  | "here"
+  | "soon"
+  | "upcoming"
+  | "postponed"
+  | "discontinued"
+  | "cancelled"
+  | "unknown";
 
 function daysUntil(upcomingDate: Date): number {
   return Math.ceil(
@@ -10,6 +18,9 @@ function daysUntil(upcomingDate: Date): number {
 }
 
 export function getEventTimeCategory(info: EventInfo): TimeCategory {
+  if (info.event_status === "EventCancelled") return "cancelled";
+  if (info.event_status === "EventPostponed") return "postponed";
+
   const now = new Date();
 
   const end = info.end_date
@@ -29,7 +40,9 @@ export function getEventTimeCategory(info: EventInfo): TimeCategory {
   if (end < now) return "past";
 
   const daysTill = daysUntil(start);
-  if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "soon";
+  if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "here";
+  if (daysTill <= DAYS_UNTIL_UPCOMING && daysTill > DAYS_UNTIL_SOON)
+    return "soon";
 
   return "upcoming";
 }

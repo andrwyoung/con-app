@@ -24,9 +24,9 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
 
 
 type SearchHistoryItem = {
-  term: string;         // what they typed or clicked
-  timestamp: number;    // when it happened (for sorting, freshness)
-  source?: "typed" | "clicked"; // optional: how it was added
+  term: string;         
+  timestamp: number; 
+  source?: "typed" | "clicked"; 
 };
 
 type SearchStore = {

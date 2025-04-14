@@ -13,6 +13,7 @@ export type EventInfo = {
   address: string;
   location_lat: number;
   location_long: number;
+  event_status: string;
 
   // from convention_years
   start_date?: string;

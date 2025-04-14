@@ -1,6 +1,7 @@
 export const MAX_SEARCH_BATCH_SIZE = 500;
 
 export const DAYS_UNTIL_SOON = 7;
+export const DAYS_UNTIL_UPCOMING = 30;
 
 // sidebar consts
 export const DROPDOWN_RESULTS = 5;

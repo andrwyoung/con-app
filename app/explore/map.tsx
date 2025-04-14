@@ -36,7 +36,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     // create the map
     mapRef.current = new mapboxgl.Map({
       container: "map",
-      style: "mapbox://styles/andrwyoung/cm93lxid4003c01rihwc1844d",
+      style: "mapbox://styles/andrwyoung/cm9gka3jp00ep01rcg0k1dy0a",
       center: [initLocation.longitude, initLocation.latitude],
       zoom: 8,
     });
