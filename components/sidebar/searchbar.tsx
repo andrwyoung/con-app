@@ -314,7 +314,7 @@ export default function Searchbar() {
           <div className="flex flex-col truncate">
             <span className="">{res.name}</span>{" "}
             <span className="text-primary-muted text-xs opacity-50">
-              {res.address}
+              {res.location}
             </span>
           </div>
         ),

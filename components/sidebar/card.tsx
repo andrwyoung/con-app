@@ -85,7 +85,7 @@ const Card = forwardRef<
         </div>
 
         <div className="text-xs text-primary-muted line-clamp-1">
-          {formatShortLocation(info.address)}
+          {formatShortLocation(info.location)}
         </div>
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1">
           <StatusDot status={getEventTimeCategory(info)} />

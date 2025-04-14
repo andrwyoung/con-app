@@ -45,19 +45,13 @@ export function formatEventDates(con: EventInfo): string {
 }
 
 export function formatShortLocation(fullAddress: string): string {
-  const parts = fullAddress.split(",").map((s) => s.trim());
+  const parts = fullAddress.split(",").map((p) => p.trim());
+  if (parts.length < 2) return fullAddress;
 
-  if (parts.length < 2) return fullAddress; // fallback for short/invalid addresses
-
-  parts.shift(); // remove the venue or first item
-
-  const country = parts.at(-1);
-  const region = parts.at(-2);
-  const city = parts.at(-3); // may be undefined if only 2 parts left
-
-  if (country === "USA") {
-    return city ? `${city}, ${region}` : `${region}`;
+  // drop USA
+  if (parts.length === 3 && parts[2] === "USA") {
+    return `${parts[0]}, ${parts[1]}`;
   }
 
-  return city ? `${city}, ${region}, ${country}` : `${region}, ${country}`;
+  return parts.join(", ");
 }

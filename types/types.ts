@@ -10,7 +10,7 @@ export type EventInfo = {
   slug: string; // solely for url naming
   name: string;
 
-  address: string;
+  location: string;
   location_lat: number;
   location_long: number;
   event_status: string;

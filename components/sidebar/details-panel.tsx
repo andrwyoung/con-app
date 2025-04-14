@@ -22,7 +22,7 @@ export default function DetailsPanel({
         <h2 className="text-2xl font-semibold">{con.name}</h2>
         <div className="flex flex-col">
           <p className="text-xs text-primary-muted">{con.start_date}</p>
-          <p className="text-sm mt-2">{con.address}</p>
+          <p className="text-sm mt-2">{con.location}</p>
         </div>
       </div>
     </div>
