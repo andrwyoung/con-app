@@ -51,7 +51,8 @@ export default function Searchbar() {
   const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
   const { setSidebarModeAndDeselectCon } = useSidebarStore();
-  const { setResults, setSortPreference } = useSearchStore();
+  const { setResults, setSortPreference, history, addToHistory } =
+    useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearSearchBar = () => {
@@ -119,14 +120,18 @@ export default function Searchbar() {
     e.preventDefault();
     runFullSearch();
   };
-  const runFullSearch = async () => {
-    if (!searchbarText.trim()) return;
+  const runFullSearch = async (termOverride?: string) => {
+    const term = termOverride ?? searchbarText;
+    if (!term.trim()) return;
     console.log("running full search");
 
-    const res = grabConventions(searchbarText, allEvents);
+    const res = grabConventions(term, allEvents);
 
     setSortPreference("raw");
     setResults(res);
+
+    // add to history
+    addToHistory(term, "typed");
 
     setHighlightedIndex(-1);
     setShowDropdown(false);
@@ -146,6 +151,8 @@ export default function Searchbar() {
 
     setSidebarModeAndDeselectCon("search");
     setSearchbarText(s.name);
+
+    addToHistory(s.name, "clicked");
 
     setSortPreference("chron"); // doesn't really matter lol
     setResults([s]); // sidebar will fly if it's just 1
@@ -264,6 +271,22 @@ export default function Searchbar() {
   });
 
   if (nothingTyped) {
+    history.slice(0, DROPDOWN_RESULTS).forEach((res) => {
+      items.push({
+        id: `result-${res.term}`,
+        type: "result",
+        label: (
+          <div className="flex flex-col truncate">
+            <span className="">{res.term}</span>
+          </div>
+        ),
+        onClick: () => {
+          setSearchbarText(res.term);
+          runFullSearch(res.term);
+        },
+      });
+    });
+
     items.push(SEARCH_NEAR_HERE_ITEM(), SEARCH_NEAR_ME_ITEM());
   } else if (nothingFound) {
     items.push(
