@@ -31,7 +31,7 @@ export default function addMarkersToMap(
   // const OUTLINE_COLOR = "#CF803B";
   const TRANSITION_TIME = 300;
 
-  const POINT_SIZE = 8;
+  const POINT_SIZE = 10;
 
   const CLUSTER_STEP = [
     "step",
@@ -67,18 +67,11 @@ export default function addMarkersToMap(
         id: event.id,
         geometry: {
           type: "Point",
-          coordinates: [event.longitude, event.latitude],
+          coordinates: [event.location_long, event.location_lat],
         },
         properties: {
           id: event.id,
           name: event.name,
-          length: event.days_length,
-          iconType:
-            event.days_length <= 1
-              ? "marker-short"
-              : event.days_length <= 3
-              ? "marker-medium"
-              : "marker-long",
         },
       })),
     };

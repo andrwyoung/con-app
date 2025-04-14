@@ -71,8 +71,11 @@ export default function NavigatableCardList({ items }: { items: EventInfo[] }) {
 
       if (e.key === "Enter") {
         const con = items[current];
-        if (con?.latitude && con?.longitude) {
-          flyTo?.({ latitude: con.latitude, longitude: con.longitude }, 9);
+        if (con?.location_lat && con?.location_long) {
+          flyTo?.(
+            { latitude: con.location_lat, longitude: con.location_long },
+            9
+          );
         }
       }
     };

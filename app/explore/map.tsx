@@ -91,7 +91,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
         color: "#7976D9",
         offset: [0, -20],
       })
-        .setLngLat([selectedCon.longitude, selectedCon.latitude])
+        .setLngLat([selectedCon.location_long, selectedCon.location_lat])
         .addTo(mapRef.current);
       return () => {
         if (marker) marker.remove();

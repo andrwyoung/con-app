@@ -10,8 +10,8 @@ export default async function getAllEvents(): Promise<EventInfo[]> {
   try {
     // TODO: supabase max select 1000 rows. so paginate
     const { data, error } = await supabaseAnon
-      .from("full_convention_table")
-      .select("*");
+    .from("latest_convention_years")
+    .select("*");
 
     if (error) throw error;
     console.log("Gotten initial Data. Len:", data.length);

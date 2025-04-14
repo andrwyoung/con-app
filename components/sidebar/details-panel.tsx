@@ -21,8 +21,8 @@ export default function DetailsPanel({
       <div className="flex flex-col px-4 pt-8 pb-6 gap-8">
         <h2 className="text-2xl font-semibold">{con.name}</h2>
         <div className="flex flex-col">
-          <p className="text-xs text-primary-muted">{con.date}</p>
-          <p className="text-sm mt-2">{con.venue}</p>
+          <p className="text-xs text-primary-muted">{con.start_date}</p>
+          <p className="text-sm mt-2">{con.address}</p>
         </div>
       </div>
     </div>

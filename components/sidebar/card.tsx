@@ -5,6 +5,18 @@ import { FiMenu } from "react-icons/fi";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
+import {
+  formatEventDates,
+  formatShortLocation,
+} from "@/lib/helpers/display-formatters";
+
+function PastBadge() {
+  return (
+    <span className="ml-2 px-1.5 py-0.5 text-xs text-gray-600 bg-gray-100 rounded">
+      PAST
+    </span>
+  );
+}
 
 const Card = forwardRef<
   HTMLDivElement,
@@ -38,11 +50,12 @@ const Card = forwardRef<
         <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1">
           {info.name}
         </div>
-        <div className="text-xs text-primary-muted font-regular line-clamp-1">
-          {info.date}
-        </div>
+
         <div className="text-xs text-primary-muted line-clamp-1">
-          {info.venue}
+          {formatShortLocation(info.address)}
+        </div>
+        <div className="text-xs text-primary-muted font-regular line-clamp-1">
+          {formatEventDates(info)}
         </div>
       </div>
       <div className="absolute right-6 bottom-2 flex flex-row gap-1 text-primary-muted transition-all">
@@ -52,7 +65,7 @@ const Card = forwardRef<
             // if the target button is clicked, then fly to it. but don't deselect the card itself
             e.stopPropagation();
             flyTo?.(
-              { longitude: info.longitude, latitude: info.latitude },
+              { longitude: info.location_long, latitude: info.location_lat },
               ZOOM_USE_DEFAULT
             );
           }}

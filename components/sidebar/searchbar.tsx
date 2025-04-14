@@ -95,8 +95,8 @@ export default function Searchbar() {
           {
             id: SPECIAL_CON_ID.NO_RESULTS,
             name: `No results for "${searchbarText}"`,
-            latitude: 0,
-            longitude: 0,
+            location_lat: 0,
+            location_long: 0,
           } as EventInfo,
         ]);
       } else {
@@ -289,7 +289,7 @@ export default function Searchbar() {
           <div className="flex flex-col truncate">
             <span className="">{res.name}</span>{" "}
             <span className="text-primary-muted text-xs opacity-50">
-              {res.venue}
+              {res.address}
             </span>
           </div>
         ),

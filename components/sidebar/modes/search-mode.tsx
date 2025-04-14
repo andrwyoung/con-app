@@ -49,11 +49,11 @@ export default function SearchMode() {
 
     if (
       results.length === 1 &&
-      loc.latitude !== undefined &&
-      loc.longitude !== undefined
+      loc.location_lat !== undefined &&
+      loc.location_long !== undefined
     ) {
       flyTo?.(
-        { latitude: loc.latitude, longitude: loc.longitude },
+        { latitude: loc.location_lat, longitude: loc.location_long },
         ZOOM_USE_DEFAULT
       );
       setSelectedCon(loc);

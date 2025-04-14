@@ -11,6 +11,10 @@ export type SortType =
   | "distance-me"
   | "raw";
 
+function getStartDate(event: EventInfo): Date {
+  return new Date(event.start_date ?? `${event.year}-01-01`);
+}
+
 export function sortEvents(
   items: EventInfo[],
   sortType: SortType,
@@ -25,36 +29,34 @@ export function sortEvents(
     case "chron":
       sorted.sort(
         (a, b) =>
-          new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+          getStartDate(a).getTime() - getStartDate(b).getTime()
       );
       break;
     case "rev-chron":
       sorted.sort(
         (a, b) =>
-          new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+          getStartDate(b).getTime() - getStartDate(a).getTime()
       );
       break;
     case "just-passed":
       return sorted
-        .filter((event) => new Date(event.start_date) < new Date())
+        .filter((event) => getStartDate(event) < new Date())
         .sort(
           (a, b) =>
-            new Date(b.start_date).getTime() -
-            new Date(a.start_date).getTime()
+            getStartDate(b).getTime() - getStartDate(a).getTime()
         );
     case "upcoming":
       return sorted
-        .filter((event) => new Date(event.start_date) >= new Date())
+        .filter((event) => getStartDate(event) >= new Date())
         .sort(
           (a, b) =>
-            new Date(a.start_date).getTime() -
-            new Date(b.start_date).getTime()
+            getStartDate(a).getTime() - getStartDate(b).getTime()
         );
     case "distance-me":
       if (userLocation) {
         const dist = (a: EventInfo) =>
           getDistance(
-            [a.latitude, a.longitude],
+            [a.location_lat, a.location_long],
             [userLocation.latitude, userLocation.longitude]
           );
         sorted.sort((a, b) => dist(a) - dist(b));
@@ -64,7 +66,7 @@ export function sortEvents(
         if (placeLocation) {
           const dist = (a: EventInfo) =>
             getDistance(
-              [a.latitude, a.longitude],
+              [a.location_lat, a.location_long],
               [placeLocation.latitude, placeLocation.longitude]
             );
           sorted.sort((a, b) => dist(a) - dist(b));

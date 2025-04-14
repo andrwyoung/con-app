@@ -37,8 +37,8 @@ export default function useInitMapData() {
           useMapCardsStore.getState().setFocusedEvents([match]);
           useSidebarStore.getState().setSelectedCon(match);
           setInitLocation({
-            latitude: match.latitude,
-            longitude: match.longitude,
+            latitude: match.location_lat,
+            longitude: match.location_long,
           });
         }
       }

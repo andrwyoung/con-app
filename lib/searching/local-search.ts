@@ -37,10 +37,10 @@ export const grabNearbyConventions = (loc: ConLocation, events: Record<string, E
 
   for (const radius of radiusSteps) {
     const more = eventsList.filter((event) => {
-      if (!event.latitude || !event.longitude) return false;
+      if (!event.location_lat || !event.location_long) return false;
       const dist = getDistance(
         [loc.longitude, loc.latitude],
-        [event.longitude, event.latitude]
+        [event.location_long, event.location_lat]
       );
       return dist <= radius;
     });
