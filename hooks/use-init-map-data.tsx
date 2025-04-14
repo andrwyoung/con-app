@@ -27,10 +27,10 @@ export default function useInitMapData() {
       await useEventStore.getState().fetchAllEvents();
 
       // if user types in /explore?conId=123 then init map to convention 123
-      const conId = searchParams.get("conId");
-      if (conId) {
-        const allCons = useEventStore.getState().allEvents;
-        const match = allCons[conId];
+      const con = searchParams.get("con");
+      if (con) {
+        const conId = useEventStore.getState().slugToId[con];
+        const match = useEventStore.getState().allEvents[conId];
 
         if (match) {
           useSidebarStore.getState().setSidebarModeAndDeselectCon("map");
@@ -44,6 +44,7 @@ export default function useInitMapData() {
       }
 
       setInitialized(true);
+      useSidebarStore.getState().setInitialized();
     };
 
     init();

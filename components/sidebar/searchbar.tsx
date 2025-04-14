@@ -3,7 +3,7 @@ import { Input } from "../ui/input";
 import { EventInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
-import { FiMapPin, FiUser, FiX } from "react-icons/fi";
+import { FiClock, FiMapPin, FiUser, FiX } from "react-icons/fi";
 import {
   useSearchStore,
   useSidebarStore,
@@ -131,7 +131,7 @@ export default function Searchbar() {
     setResults(res);
 
     // add to history
-    addToHistory(term, "typed");
+    if (term.length > 2) addToHistory(term, "typed");
 
     setHighlightedIndex(-1);
     setShowDropdown(false);
@@ -271,13 +271,15 @@ export default function Searchbar() {
   });
 
   if (nothingTyped) {
+    // recent search history
     history.slice(0, DROPDOWN_RESULTS).forEach((res) => {
       items.push({
         id: `result-${res.term}`,
         type: "result",
         label: (
-          <div className="flex flex-col truncate">
-            <span className="">{res.term}</span>
+          <div className="flex flex-row items-center justify-between gap-2 truncate">
+            <span className="text-primary-text">{res.term}</span>
+            <FiClock className="text-primary-text" />
           </div>
         ),
         onClick: () => {

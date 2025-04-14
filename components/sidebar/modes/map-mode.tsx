@@ -4,7 +4,7 @@ import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
 import { sortEvents, SortType } from "@/lib/helpers/sort-cons";
 
-const MAPMODE_DEFAULT_SORT = "chron";
+const MAPMODE_DEFAULT_SORT = "raw";
 
 export default function MapMode() {
   const { focusedEvents } = useMapCardsStore();

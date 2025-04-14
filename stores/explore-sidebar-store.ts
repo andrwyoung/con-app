@@ -7,6 +7,9 @@ import { create } from "zustand";
 export type SidebarMode = "search" | "filter" | "map";
 
 type SidebarStore = {
+  initialized: boolean;
+  setInitialized: () => void;
+
   sidebarMode: SidebarMode;
   setSidebarModeAndDeselectCon: (mode: SidebarMode) => void;
 
@@ -15,6 +18,9 @@ type SidebarStore = {
 };
 
 export const useSidebarStore = create<SidebarStore>((set) => ({
+  initialized: false,
+  setInitialized: () => set({initialized: true}),
+
   sidebarMode: "filter",
   setSidebarModeAndDeselectCon: (mode) => set({ sidebarMode: mode, selectedCon: null  }),
 
