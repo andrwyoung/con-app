@@ -2,7 +2,7 @@
 // this file is the central hub for how the rest of the app interacts with the map
 // it handles mounting and utility functions
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -20,6 +20,8 @@ import {
   ZOOM_USE_DEFAULT,
 } from "@/lib/constants";
 import { getDistance } from "@/lib/utils";
+import { useFilterStore } from "@/stores/filter-store";
+import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -28,6 +30,9 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
     useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
+
+  const selectedTags = useFilterStore((s) => s.selectedTags);
+  const includeUntagged = useFilterStore((s) => s.includeUntagged);
 
   // initial mount of map
   useEffect(() => {
@@ -41,35 +46,74 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       zoom: 8,
     });
 
-    // your location marker
-    //   const el = document.createElement("div");
-    //   el.style.backgroundImage = `url('/my-location5.png')`;
-    //   el.style.width = "24px";
-    //   el.style.height = "24px";
-    //   el.style.backgroundSize = "contain";
-    //   el.style.backgroundRepeat = "no-repeat";
-    //   new mapboxgl.Marker({ element: el })
-    //     .setLngLat([initLocation.longitude, initLocation.latitude])
-    //     .addTo(mapRef.current);
-
     return () => mapRef.current?.remove();
   }, [initLocation.latitude, initLocation.longitude]);
 
-  // render all the markers once events are fetched
+  // SECTION: rendering markers based off of filters
+  //
+  //
+
+  // create filteredDict
+  const filteredDict = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(eventDict).filter((event) => {
+        const eventTags = event[1].tags ?? [];
+
+        // show if tag matches
+        const tagMatch = selectedTags.some((tag) => eventTags.includes(tag));
+        // show untagged if enabled
+        const isUntagged = eventTags.length === 0;
+        if (isUntagged) return includeUntagged;
+
+        return tagMatch;
+      })
+    );
+  }, [eventDict, selectedTags, includeUntagged]);
+
+  // whenever filteredData changes, regenerate the GeoJSON
   useEffect(() => {
-    console.log("dict2", eventDict, mapRef.current);
+    if (!mapRef.current || !mapRef.current.getSource("events")) return;
+
+    const source = mapRef.current.getSource("events") as mapboxgl.GeoJSONSource;
+
+    const geoJsonData: FeatureCollection<Point, GeoJsonProperties> = {
+      type: "FeatureCollection",
+      features: Object.values(filteredDict).map((event) => ({
+        type: "Feature",
+        id: event.id,
+        geometry: {
+          type: "Point",
+          coordinates: [event.location_long, event.location_lat],
+        },
+        properties: {
+          id: event.id,
+          name: event.name,
+        },
+      })),
+    };
+
+    source.setData(geoJsonData);
+  }, [filteredDict]);
+
+  // here's where the markers are rendered
+  //
+  useEffect(() => {
+    console.log("dict-map", eventDict, mapRef.current);
     if (!mapRef.current || !eventDict || Object.keys(eventDict).length === 0)
       return;
 
+    console.log("selectedTags", selectedTags);
+
     addMarkersToMap(
       mapRef.current,
-      eventDict,
+      filteredDict,
       setSelectedCon,
       setSidebarModeAndDeselectCon,
       setFocusedEvents
     );
   }, [
     eventDict,
+    selectedTags,
     setFocusedEvents,
     setSelectedCon,
     setSidebarModeAndDeselectCon,

@@ -5,7 +5,7 @@ import getAllEvents from "@/lib/map/get-all-events";
 type EventStore = {
   allEvents: Record<number, EventInfo>;
   slugToId: Record<string, number>;
-  fetchAllEvents: () => Promise<void>;
+  fetchAllEvents: () => Promise<EventInfo[]>;
 };
 
 export const useEventStore = create<EventStore>((set) => ({
@@ -18,8 +18,10 @@ export const useEventStore = create<EventStore>((set) => ({
         allEvents: Object.fromEntries(events.map((e) => [e.id, e])),
         slugToId: Object.fromEntries(events.map((e) => [e.slug, e.id])),
       });
+      return events;
     } catch (err) {
       console.error("Failed to fetch events", err);
+      return [];
     }
   },
 }));

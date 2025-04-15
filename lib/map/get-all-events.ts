@@ -15,7 +15,16 @@ export default async function getAllEvents(): Promise<EventInfo[]> {
 
     if (error) throw error;
     console.log("Gotten initial Data. Len:", data.length);
-    return data ?? [];
+
+    const normalizedData = (data ?? []).map((event) => ({
+      ...event,
+      tags: event.tags
+        ?.split(",")
+        .map((tag: string) => tag.trim().toLowerCase())
+        .filter(Boolean),
+    }));
+    
+    return normalizedData;
   } catch (err) {
     console.error("error fetching events for map:", err);
     return [];

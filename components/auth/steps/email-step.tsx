@@ -4,7 +4,7 @@ import { AuthFormLayout } from "../extras";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const isValidEmail = (email: string) =>
+export const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export default function EmailStep({
@@ -63,7 +63,6 @@ export default function EmailStep({
           <p className="text-sm">or</p>
           <button
             onClick={() => {
-              if (!validateEmail()) return;
               changeStep("signup");
             }}
             type="button"

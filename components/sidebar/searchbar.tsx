@@ -370,7 +370,10 @@ export default function Searchbar() {
         )}
       </div>
       {showDropdown && (
-        <ul className="absolute z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-96 overflow-y-auto">
+        <ul
+          className="absolute z-20 bg-white shadow-md text-sm w-full mt-1 rounded max-h-96 overflow-y-auto"
+          onMouseLeave={() => setHighlightedIndex(-1)}
+        >
           {items.map((item, i) => (
             <li
               key={item.id}

@@ -10,7 +10,7 @@ import { MAX_SEARCH_BATCH_SIZE } from "../constants";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
-  eventDict: Record<string, EventInfo>,
+  filteredDict: Record<string, EventInfo>,
   setSelectedCon: (c: EventInfo | null) => void,
   setSidebarMode: (mode: SidebarMode) => void,
   setFocusedEvents: (e: EventInfo[]) => void
@@ -19,8 +19,8 @@ export default function addMarkersToMap(
   let hoveredClusterId: number | null = null;
   let clickedClusterId: number | null = null;
 
-  console.log("dict", eventDict);
-  const events = Object?.values(eventDict);
+  console.log("dict-marker", filteredDict);
+  const events = Object?.values(filteredDict);
 
   // SECTION: Constants
   //
@@ -329,8 +329,8 @@ export default function addMarkersToMap(
           console.log("Convention clicked:", props);
           // KEY LINE: here's where we give the info to sidebar
           setSidebarMode("map");
-          setFocusedEvents([eventDict[clickedId]]);
-          setSelectedCon(eventDict[clickedId]);
+          setFocusedEvents([filteredDict[clickedId]]);
+          setSelectedCon(filteredDict[clickedId]);
         } else {
           // if reselecting the same point then deselect
           clearSelectedPointHighlight();
@@ -383,7 +383,7 @@ export default function addMarkersToMap(
           console.log("Cluster contains:", conList);
 
           const fullCons = conList
-            .map((id) => eventDict[id])
+            .map((id) => filteredDict[id])
             .filter((c): c is EventInfo => !!c);
 
           // KEY LINE: here's where we return all the cluster points back to sidebar

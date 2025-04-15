@@ -15,6 +15,9 @@ export type EventInfo = {
   location_long: number;
   event_status: string;
 
+  // for filters
+  tags: string[];
+
   // from convention_years
   start_date?: string;
   end_date?: string;

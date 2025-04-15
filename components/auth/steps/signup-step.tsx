@@ -10,6 +10,7 @@ import { authStep } from "../login-modal";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
 import { signupUser } from "@/lib/actions/signup";
+import { isValidEmail } from "./email-step";
 
 export const PERSONA = ["ATTENDEE", "ARTIST", "ORGANIZER"] as const;
 export type Persona = (typeof PERSONA)[number];
@@ -29,6 +30,7 @@ export default function SignupStep({
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { error, shake, triggerError } = useShakeError();
+  const [finalEmail, setFinalEmail] = useState<string>(email);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +43,7 @@ export default function SignupStep({
   const isStrongPassword =
     hasMinLength && hasLowercase && hasUppercase && hasNumber;
 
-  // focus on username field intially
+  // focus first field
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -80,6 +82,12 @@ export default function SignupStep({
     setIsSubmitting(true);
 
     // handle frontend checks here
+    if (!isValidEmail(finalEmail)) {
+      triggerError("Please enter a valid email");
+      setIsSubmitting(false);
+      return;
+    }
+
     if (username.length < 3) {
       triggerError("Please choose a longer username.");
       setIsSubmitting(false);
@@ -103,7 +111,12 @@ export default function SignupStep({
 
     // this is the server action that actually signs them up
     // as well as further check some things
-    const res = await signupUser({ email, password, username, persona });
+    const res = await signupUser({
+      finalEmail,
+      password,
+      username,
+      persona,
+    });
 
     if (res.error) {
       triggerError(res.error.toString());
@@ -125,18 +138,37 @@ export default function SignupStep({
         <>
           Good to have you—help us get to know you a bit.
           <br />
-          Signing up as: <strong>{email}</strong>
+          {email !== "" ? (
+            <span>
+              Signing up as: <strong>{email}</strong>
+            </span>
+          ) : (
+            ""
+          )}
         </>
       }
       onBack={changeStep}
     >
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6 py-8">
+        <div className="flex flex-col gap-4 pb-8 pt-6">
+          {email === "" ? (
+            <div className="flex flex-col gap-2 text-sm">
+              <Label>Email:</Label>
+              <Input
+                ref={inputRef} // focus on init
+                onChange={(e) => setFinalEmail(e.target.value)}
+                placeholder="Enter your email"
+              />
+            </div>
+          ) : (
+            ""
+          )}
+
           <div className="flex flex-col gap-2 text-sm">
             <Label>Username:</Label>
             <div className="relative">
               <Input
-                ref={inputRef}
+                ref={email !== "" ? inputRef : null} // focus on this one if email don't exist
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Pick a Unique Handle"
               />

@@ -6,12 +6,12 @@ import { Persona } from "@/types/enums";
 import { createClientSudo } from "../supabase/server";
 
 export async function signupUser({
-  email,
+  finalEmail: email,
   password,
   username,
   persona,
 }: {
-  email: string;
+  finalEmail: string;
   password: string;
   username: string;
   persona: Persona;
