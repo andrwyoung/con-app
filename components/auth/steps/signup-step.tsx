@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AuthFormLayout, PasswordToggleButton } from "../extras";
+import { AuthFormLayout, PasswordToggleButton } from "../auth-helpers";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

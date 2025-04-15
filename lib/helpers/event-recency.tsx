@@ -1,15 +1,35 @@
 import { EventInfo } from "@/types/types";
-import { DAYS_UNTIL_SOON, DAYS_UNTIL_UPCOMING } from "../constants";
+import {
+  DAYS_SINCE_RECENT,
+  DAYS_UNTIL_SOON,
+  DAYS_UNTIL_UPCOMING,
+} from "../constants";
 
-export type TimeCategory =
-  | "past"
-  | "here"
-  | "soon"
-  | "upcoming"
-  | "postponed"
-  | "discontinued"
-  | "cancelled"
-  | "unknown";
+export const timeCategories = [
+  "past",
+  "recent",
+  "here",
+  "soon",
+  "upcoming",
+  "postponed",
+  "discontinued",
+  "cancelled",
+  "unknown",
+] as const;
+
+export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
+  past: "Earlier",
+  recent: "Just Ended",
+  here: "Now",
+  soon: "Soon",
+  upcoming: "Later",
+  postponed: "Postponed",
+  discontinued: "Ended Forever",
+  cancelled: "Cancelled",
+  unknown: "Unknown",
+};
+
+export type TimeCategory = (typeof timeCategories)[number];
 
 function daysUntil(upcomingDate: Date): number {
   return Math.ceil(
@@ -37,7 +57,13 @@ export function getEventTimeCategory(info: EventInfo): TimeCategory {
 
   if (!start || !end) return "unknown";
 
-  if (end < now) return "past";
+  if (end < now) {
+    const daysSinceEnded = Math.ceil(
+      (now.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (daysSinceEnded <= DAYS_SINCE_RECENT) return "recent";
+    return "past";
+  }
 
   const daysTill = daysUntil(start);
   if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "here";

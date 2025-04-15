@@ -1,4 +1,4 @@
-import { AuthFormLayout } from "../extras";
+import { AuthFormLayout } from "../auth-helpers";
 
 export default function ResetPasswordStep({ email }: { email: string }) {
   return (

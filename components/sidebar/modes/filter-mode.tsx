@@ -1,13 +1,11 @@
 import { useState } from "react";
-import {
-  DistanceFilter,
-  StatusFilter,
-  TagsFilter,
-  TimeFilter,
-} from "./filters/filters";
 import { AnimatePresence, motion } from "framer-motion";
 import { useFilterStore } from "@/stores/filter-store";
-import FilterToggleButton from "./filters/helpers";
+import FilterToggleButton from "./filters/filter-helpers";
+import { FaCaretDown } from "react-icons/fa6";
+import TagsFilter from "./filters/tag-filter";
+import StatusFilter from "./filters/status-filter";
+import DistanceFilter from "./filters/distance-filter";
 
 export type FilterKey = "tags" | "time" | "distance" | "status";
 
@@ -15,8 +13,6 @@ function FilterPanel({ type }: { type: FilterKey }) {
   switch (type) {
     case "tags":
       return <TagsFilter />;
-    case "time":
-      return <TimeFilter />;
     case "distance":
       return <DistanceFilter />;
     case "status":
@@ -27,15 +23,21 @@ function FilterPanel({ type }: { type: FilterKey }) {
 }
 
 export default function FilterMode() {
-  const [activeFilters, setActiveFilters] = useState<FilterKey[]>([]);
+  const [shownFilters, setShownFilters] = useState<FilterKey[]>([]);
   const filterBar: FilterKey[] = ["tags", "distance", "status"];
   const numberOfCons = Object.keys(
     useFilterStore((s) => s.filteredItems)
   ).length;
 
   const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
+
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive());
-  const activeCount = [tagFilterIsActive].filter(Boolean).length;
+  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive());
+  const activeCount = [tagFilterIsActive, statusFilterIsActive].filter(
+    Boolean
+  ).length;
+
+  const [showRecomended, setShowRecomended] = useState(true);
 
   return (
     <div className="flex flex-col min-h-0">
@@ -49,29 +51,36 @@ export default function FilterMode() {
               className="text-xs text-rose-400 hover:underline cursor-pointer hover:text-rose-600 transition-colors"
               onClick={() => {
                 resetAllFilters();
-                setActiveFilters([]);
+                setShownFilters([]);
+                setShowRecomended(true);
               }}
             >
-              reset all filters
+              Reset All Filters
             </button>
           )}
         </div>
         <p className="text-xs text-primary-muted mb-3">
-          showing: {numberOfCons} cons • {activeCount} active filters
+          showing:
+          {activeCount === 0
+            ? ` all ${numberOfCons} cons • no filters applied`
+            : ` ${numberOfCons} cons • ${activeCount} filter${
+                activeCount === 1 ? "" : "s"
+              }
+               applied`}
         </p>
         <div className="flex flex-wrap justify-center gap-x-3 gap-y-2 mb-2">
           {filterBar.map((filter) => {
-            const isActive = activeFilters.includes(filter);
+            const isShown = shownFilters.includes(filter);
 
             // check if filter is active
-            const hasActiveFilters = (() => {
+            const isActive = (() => {
               switch (filter) {
                 case "tags":
                   return tagFilterIsActive;
                 // case "distance":
-                //   return store.distance !== store.defaultDistance;
-                // case "status":
-                //   return store.status !== "all"; // or whatever your default is
+                //   return statusFilterIsActive;
+                case "status":
+                  return statusFilterIsActive;
                 default:
                   return false;
               }
@@ -81,15 +90,9 @@ export default function FilterMode() {
               <FilterToggleButton
                 key={filter}
                 filter={filter}
+                isShown={isShown}
                 isActive={isActive}
-                hasActiveFilters={hasActiveFilters}
-                toggle={() =>
-                  setActiveFilters((prev) =>
-                    isActive
-                      ? prev.filter((f) => f !== filter)
-                      : [...prev, filter]
-                  )
-                }
+                toggle={() => setShownFilters(() => (isShown ? [] : [filter]))}
               />
             );
           })}
@@ -97,7 +100,7 @@ export default function FilterMode() {
       </div>
       <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
         <AnimatePresence initial={false}>
-          {activeFilters.map((key) => (
+          {shownFilters.map((key) => (
             <motion.div
               key={key}
               initial={{ opacity: 0, height: 0 }}
@@ -110,6 +113,33 @@ export default function FilterMode() {
             </motion.div>
           ))}
         </AnimatePresence>
+        <div className="flex flex-col items-center">
+          <hr className="border-t border-primary-muted w-64 my-3" />
+          <button
+            type="button"
+            className="flex flex-row items-center gap-1 cursor-pointer"
+            onClick={() => setShowRecomended((prev) => !prev)}
+          >
+            <h1 className="font-semibold uppercase text-primary-muted text-sm tracking-wide">
+              Recomended
+            </h1>
+            <FaCaretDown
+              className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${
+                showRecomended ? "rotate-180" : "rotate-0"
+              }`}
+            />
+          </button>
+
+          {showRecomended && (
+            <>
+              {" "}
+              <p className="text-xs text-primary-muted italic">
+                Based on your location and recent activity
+              </p>
+              <p>cards go here</p>{" "}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

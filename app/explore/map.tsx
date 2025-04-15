@@ -34,6 +34,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
   const selectedTags = useFilterStore((s) => s.selectedTags);
   const includeUntagged = useFilterStore((s) => s.includeUntagged);
+  const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
 
   // initial mount of map
   useEffect(() => {
@@ -57,19 +58,25 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   // create filteredDict
   const filteredDict = useMemo(() => {
     return Object.fromEntries(
-      Object.entries(eventDict).filter((event) => {
-        const eventTags = event[1].tags ?? [];
+      Object.entries(eventDict).filter((eventRecord) => {
+        const event = eventRecord[1];
 
-        // show if tag matches
+        // tag filter
+        const eventTags = event.tags ?? [];
         const tagMatch = selectedTags.some((tag) => eventTags.includes(tag));
-        // show untagged if enabled
         const isUntagged = eventTags.length === 0;
-        if (isUntagged) return includeUntagged;
 
+        // status filter
+        const statusMatch = selectedStatuses.includes(
+          event.timeCategory ?? "unknown"
+        );
+
+        if (!statusMatch) return false;
+        if (isUntagged) return includeUntagged;
         return tagMatch;
       })
     );
-  }, [eventDict, selectedTags, includeUntagged]);
+  }, [eventDict, selectedTags, includeUntagged, selectedStatuses]);
 
   // update the store with the filtered items
   useEffect(() => {

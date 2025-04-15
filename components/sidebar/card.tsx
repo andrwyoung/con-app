@@ -8,36 +8,30 @@ import {
   formatEventDates,
   formatShortLocation,
 } from "@/lib/helpers/display-formatters";
-import { TimeCategory } from "@/lib/helpers/event-recency";
-
-const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
-  past: "Past Event",
-  here: "Happening Now!",
-  soon: "Starting Soon",
-  upcoming: "Upcoming",
-  postponed: "Postponed",
-  discontinued: "Discontinued",
-  cancelled: "Cancelled",
-  unknown: "Unknown",
-};
+import {
+  TIME_CATEGORY_LABELS,
+  TimeCategory,
+} from "@/lib/helpers/event-recency";
 
 function StatusDot({ status }: { status: TimeCategory }) {
   const color =
     status === "past"
       ? "bg-slate-300"
+      : status === "recent"
+      ? "bg-sky-300"
       : status === "here"
       ? "bg-emerald-400"
       : status === "soon"
       ? "bg-orange-300"
       : status === "upcoming"
-      ? "bg-sky-300"
+      ? "bg-stone-300"
       : status === "postponed"
       ? "bg-secondary"
       : status === "discontinued"
       ? "bg-red-400"
       : status === "cancelled"
       ? "bg-red-400"
-      : "bg-red-500";
+      : "bg-red-800";
 
   return (
     <div

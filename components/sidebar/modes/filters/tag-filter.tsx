@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { CheckField, FilterSection } from "./helpers";
+import { useState } from "react";
+import { CheckField, FilterSection } from "./filter-helpers";
 import { extraTags, topTags, useFilterStore } from "@/stores/filter-store";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
 
-export function TagsFilter() {
+export default function TagsFilter() {
   const [showExtra, setShowExtra] = useState(false);
   const selectedTags = useFilterStore((s) => s.selectedTags);
   const setSelectedTags = useFilterStore((s) => s.setSelectedTags);
 
-  const selectAllFilters = useFilterStore((s) => s.selectAllTags);
-  const clearAllFilters = useFilterStore((s) => s.clearTagFilter);
+  const selectAllTags = useFilterStore((s) => s.selectAllTags);
+  const clearTagFilter = useFilterStore((s) => s.clearTagFilter);
   const includeUntagged = useFilterStore((s) => s.includeUntagged);
   const setIncludeUntagged = useFilterStore((s) => s.setIncludeUntagged);
 
@@ -22,16 +22,12 @@ export function TagsFilter() {
     }
   };
 
-  useEffect(() => {
-    console.log("TagsFilter mounted");
-
-    return () => {
-      console.log("TagsFilter unmounted");
-    };
-  }, []);
-
   return (
-    <FilterSection title="Tags:">
+    <FilterSection
+      title="Tags"
+      selectAll={selectAllTags}
+      deselectAll={clearTagFilter}
+    >
       {/* Top Tags Section */}
       <div className="grid grid-cols-3 gap-x-2 gap-y-0">
         {topTags.map((tag) => (
@@ -82,53 +78,10 @@ export function TagsFilter() {
         )}
       </AnimatePresence>
       <CheckField
-        text="include untagged events"
+        text="Include untagged events"
         isChecked={includeUntagged}
         onChange={() => setIncludeUntagged(!includeUntagged)}
       />
-
-      <div className="flex flex-col self-end items-end px-2">
-        <button
-          className="text-xs text-primary-muted cursor-pointer hover:underline"
-          onClick={() => selectAllFilters()}
-        >
-          Select All Tags
-        </button>
-        <button
-          className="text-xs text-rose-400 cursor-pointer hover:underline"
-          onClick={() => clearAllFilters()}
-        >
-          Deselect All Tags
-        </button>
-      </div>
-    </FilterSection>
-  );
-}
-
-export function TimeFilter() {
-  return <div>time filter</div>;
-}
-
-export function DistanceFilter() {
-  return (
-    <FilterSection title="Distance:">
-      <div className="flex flex-row justify-between">
-        {/* <CheckField text="hey" />
-        <CheckField text="hey2" />
-        <CheckField text="hey3" /> */}
-      </div>
-    </FilterSection>
-  );
-}
-
-export function StatusFilter() {
-  return (
-    <FilterSection title="Status:">
-      <div className="flex flex-row justify-between">
-        {/* <CheckField text="hey" />
-        <CheckField text="hey2" />
-        <CheckField text="hey3" /> */}
-      </div>
     </FilterSection>
   );
 }
