@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CheckField, FilterSection } from "./indicators";
+import { useEffect, useState } from "react";
+import { CheckField, FilterSection } from "./helpers";
 import { extraTags, topTags, useFilterStore } from "@/stores/filter-store";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,8 +9,8 @@ export function TagsFilter() {
   const selectedTags = useFilterStore((s) => s.selectedTags);
   const setSelectedTags = useFilterStore((s) => s.setSelectedTags);
 
-  const selectAllFilters = useFilterStore((s) => s.selectAllFilters);
-  const clearAllFilters = useFilterStore((s) => s.clearAllFilters);
+  const selectAllFilters = useFilterStore((s) => s.selectAllTags);
+  const clearAllFilters = useFilterStore((s) => s.clearTagFilter);
   const includeUntagged = useFilterStore((s) => s.includeUntagged);
   const setIncludeUntagged = useFilterStore((s) => s.setIncludeUntagged);
 
@@ -21,6 +21,14 @@ export function TagsFilter() {
       setSelectedTags([...selectedTags, tag]);
     }
   };
+
+  useEffect(() => {
+    console.log("TagsFilter mounted");
+
+    return () => {
+      console.log("TagsFilter unmounted");
+    };
+  }, []);
 
   return (
     <FilterSection title="Tags:">

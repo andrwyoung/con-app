@@ -14,7 +14,7 @@ export const SPECIAL_CON_ID = {
 
 // map consts
 export const ZOOM_USE_DEFAULT = -1;
-export const DEFAULT_ZOOM = 8;
+export const DEFAULT_ZOOM = 7;
 export const DEFAULT_ZOOM_FAR = 5;
 export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
     latitude: 37.7749, longitude: -122.4194

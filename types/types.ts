@@ -1,3 +1,5 @@
+import { TimeCategory } from "@/lib/helpers/event-recency";
+
 // TODO: Get rid of ./supabase.ts deprecates this
 export type ConLocation = {
   latitude: number;
@@ -22,6 +24,9 @@ export type EventInfo = {
   start_date?: string;
   end_date?: string;
   year: number;
+
+  // my generated info
+  timeCategory?: TimeCategory;
 }
 
 export type EventInfoV1 = {

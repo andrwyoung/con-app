@@ -4,11 +4,6 @@ import {
   useMapCardsStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
-import {
-  extractExtraTags,
-  topTags,
-  useFilterStore,
-} from "@/stores/filter-store";
 import { useMapStore } from "@/stores/map-store";
 import { ConLocation } from "@/types/types";
 import { useSearchParams } from "next/navigation";

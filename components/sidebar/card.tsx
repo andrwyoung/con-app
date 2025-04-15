@@ -8,10 +8,7 @@ import {
   formatEventDates,
   formatShortLocation,
 } from "@/lib/helpers/display-formatters";
-import {
-  getEventTimeCategory,
-  TimeCategory,
-} from "@/lib/helpers/event-recency";
+import { TimeCategory } from "@/lib/helpers/event-recency";
 
 const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
   past: "Past Event",
@@ -88,7 +85,7 @@ const Card = forwardRef<
           {formatShortLocation(info.location)}
         </div>
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1">
-          <StatusDot status={getEventTimeCategory(info)} />
+          <StatusDot status={info.timeCategory ?? "unknown"} />
           {formatEventDates(info)}
         </div>
       </div>

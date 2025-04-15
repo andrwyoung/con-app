@@ -4,26 +4,40 @@
 
 import { supabaseAnon } from "@/lib/supabase/client";
 import { EventInfo } from "@/types/types";
+import { getEventTimeCategory } from "../helpers/event-recency";
 
 export default async function getAllEvents(): Promise<EventInfo[]> {
-  console.log("Grabbing events data");
   try {
-    // TODO: supabase max select 1000 rows. so paginate
-    const { data, error } = await supabaseAnon
-    .from("latest_convention_years")
-    .select("*");
-
-    if (error) throw error;
-    console.log("Gotten initial Data. Len:", data.length);
-
-    const normalizedData = (data ?? []).map((event) => ({
-      ...event,
-      tags: event.tags
-        ?.split(",")
-        .map((tag: string) => tag.trim().toLowerCase())
-        .filter(Boolean),
-    }));
+    const pageSize = 1000;
+    const allData: EventInfo[] = [];
+    let offset = 0;
+    let done = false;
     
+    // loop through database to get events
+    while (!done) {
+      const { data, error } = await supabaseAnon
+        .from("latest_convention_years")
+        .select("*")
+        .range(offset, offset + pageSize - 1); // inclusive 
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        done = true;
+      } else {
+        allData.push(...data);
+        offset += pageSize;
+        if (data.length < pageSize) done = true;
+      }
+    }
+
+    const normalizedData = (allData ?? []).map((event) => {
+      return {
+        ...event,
+        timeCategory: getEventTimeCategory(event),
+      };
+    });
+
     return normalizedData;
   } catch (err) {
     console.error("error fetching events for map:", err);

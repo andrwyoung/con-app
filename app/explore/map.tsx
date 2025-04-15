@@ -31,6 +31,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
 
+  const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
   const selectedTags = useFilterStore((s) => s.selectedTags);
   const includeUntagged = useFilterStore((s) => s.includeUntagged);
 
@@ -43,7 +44,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       container: "map",
       style: "mapbox://styles/andrwyoung/cm9gka3jp00ep01rcg0k1dy0a",
       center: [initLocation.longitude, initLocation.latitude],
-      zoom: 8,
+      zoom: DEFAULT_ZOOM_FAR,
     });
 
     return () => mapRef.current?.remove();
@@ -70,8 +71,14 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     );
   }, [eventDict, selectedTags, includeUntagged]);
 
+  // update the store with the filtered items
+  useEffect(() => {
+    setFilteredItems(filteredDict);
+  }, [filteredDict, setFilteredItems]);
+
   // whenever filteredData changes, regenerate the GeoJSON
   useEffect(() => {
+    console.log("filteredData has changed. updating!");
     if (!mapRef.current || !mapRef.current.getSource("events")) return;
 
     const source = mapRef.current.getSource("events") as mapboxgl.GeoJSONSource;
@@ -112,6 +119,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       setFocusedEvents
     );
   }, [
+    filteredDict,
     eventDict,
     selectedTags,
     setFocusedEvents,

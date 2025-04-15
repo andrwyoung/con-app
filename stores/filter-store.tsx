@@ -27,42 +27,43 @@ export const extraTags = [
 export const allTags = [...topTags, ...extraTags];
 
 type FilterStore = {
+  // global list of filtered items
+  filteredItems: Record<string, EventInfo>;
+  setFilteredItems: (dict: Record<string, EventInfo>) => void;
+
+  // tag filter
   selectedTags: string[];
   setSelectedTags: (tags: string[]) => void;
-  selectAllFilters: () => void;
-  clearAllFilters: () => void;
+  selectAllTags: () => void;
+  clearTagFilter: () => void;
+  tagFilterIsActive: () => boolean;
 
   includeUntagged: boolean;
   setIncludeUntagged: (e: boolean) => void;
+
+  // reseting all filters
+  resetAllFilters: () => void;
 };
 
-export const useFilterStore = create<FilterStore>((set) => ({
+export const useFilterStore = create<FilterStore>((set, get) => ({
+  filteredItems: {},
+  setFilteredItems: (dict) => set({ filteredItems: dict }),
+
   selectedTags: [...allTags],
   setSelectedTags: (tags) => set({ selectedTags: tags }),
-  selectAllFilters: () => set({ selectedTags: [...allTags] }),
-  clearAllFilters: () => set({ selectedTags: [] }),
+  selectAllTags: () => set({ selectedTags: [...allTags] }),
+  clearTagFilter: () => set({ selectedTags: [] }),
+  tagFilterIsActive: () => {
+    const s = get();
+    return s.selectedTags.length !== allTags.length && s.includeUntagged;
+  },
 
   includeUntagged: true,
   setIncludeUntagged: (value) => set({ includeUntagged: value }),
+
+  // reseting all filters
+  resetAllFilters: () => {
+    const s = get();
+    s.selectAllTags();
+  },
 }));
-
-// DEPRECATED: dynamically generating tags from all events
-export function extractExtraTags(
-  events: EventInfo[],
-  topTags: string[]
-): string[] {
-  const tagCount: Record<string, number> = {};
-
-  for (const event of events) {
-    for (const tag of event.tags.map((t) => t.trim().toLowerCase())) {
-      if (!topTags.includes(tag)) {
-        tagCount[tag] = (tagCount[tag] || 0) + 1;
-      }
-    }
-  }
-
-  return Object.entries(tagCount)
-    .sort((a, b) => b[1] - a[1]) // sort by frequency
-    .map(([tag]) => tag)
-    .filter((tag) => !topTags.includes(tag)); // take out the top tags
-}
