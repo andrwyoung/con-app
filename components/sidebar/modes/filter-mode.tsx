@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useFilterStore } from "@/stores/filter-store";
+import { useFilterStore, useFilterUIStore } from "@/stores/filter-store";
 import FilterToggleButton from "./filters/filter-helpers";
 import { FaCaretDown } from "react-icons/fa6";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
-import DistanceFilter from "./filters/distance-filter";
 import NavigatableCardList from "../card-wrapper";
 import { useMapCardsStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
@@ -17,8 +16,8 @@ function FilterPanel({ type }: { type: FilterKey }) {
   switch (type) {
     case "tags":
       return <TagsFilter />;
-    case "distance":
-      return <DistanceFilter />;
+    // case "distance":
+    //   return <DistanceFilter />;
     case "status":
       return <StatusFilter />;
     default:
@@ -27,10 +26,10 @@ function FilterPanel({ type }: { type: FilterKey }) {
 }
 
 export default function FilterMode() {
-  const [shownFilters, setShownFilters] = useState<FilterKey[]>([]);
-  const [showRecomended, setShowRecomended] = useState(true);
+  const { shownFilters, setShownFilters, showRecomended, setShowRecomended } =
+    useFilterUIStore();
 
-  const filterBar: FilterKey[] = ["tags", "distance", "status"];
+  const filterBar: FilterKey[] = ["tags", "status"];
   const numberOfCons = Object.keys(
     useFilterStore((s) => s.filteredItems)
   ).length;
@@ -62,7 +61,7 @@ export default function FilterMode() {
   }, [filteredItems, focusedEvents, setFilteredFocusedEvents]);
 
   return (
-    <div className="flex flex-col min-h-0">
+    <div className="flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
       <div className="flex-none py-2 px-2">
         <div className="flex flex-row justify-between items-baseline">
           <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
@@ -89,7 +88,7 @@ export default function FilterMode() {
               }
                applied`}
         </p>
-        <div className="flex flex-wrap justify-center gap-x-3 gap-y-2 mb-2">
+        <div className="flex flex-wrap justify-center gap-x-3 gap-y-2">
           {filterBar.map((filter) => {
             const isShown = shownFilters.includes(filter);
 
@@ -113,7 +112,7 @@ export default function FilterMode() {
                 filter={filter}
                 isShown={isShown}
                 isActive={isActive}
-                toggle={() => setShownFilters(() => (isShown ? [] : [filter]))}
+                toggle={() => setShownFilters(isShown ? [] : [filter])}
               />
             );
           })}
@@ -169,7 +168,7 @@ export default function FilterMode() {
             </div>
           ) : (
             <div className="text-sm text-center text-primary-muted px-2">
-              No events found. <br />
+              No events selected. <br />
               Try removing filters
             </div>
           )}
@@ -179,7 +178,7 @@ export default function FilterMode() {
           <button
             type="button"
             className="flex flex-row items-center gap-1 cursor-pointer"
-            onClick={() => setShowRecomended((prev) => !prev)}
+            onClick={() => setShowRecomended(!showRecomended)}
           >
             <h1 className="font-semibold uppercase text-primary-muted text-sm tracking-wide">
               Recomended

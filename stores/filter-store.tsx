@@ -1,3 +1,4 @@
+import { FilterKey } from "@/components/sidebar/modes/filter-mode";
 import { timeCategories } from "@/lib/helpers/event-recency";
 import { EventInfo } from "@/types/types";
 import { create } from "zustand";
@@ -85,4 +86,20 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     s.setIncludeUntagged(true);
     s.selectAllStatuses();
   },
+}));
+
+type FilterUIStore = {
+  shownFilters: FilterKey[];
+  setShownFilters: (key: FilterKey[]) => void;
+
+  showRecomended: boolean;
+  setShowRecomended: (r: boolean) => void;
+};
+
+export const useFilterUIStore = create<FilterUIStore>((set) => ({
+  shownFilters: [],
+  setShownFilters: (key) => set({ shownFilters: key }),
+
+  showRecomended: true,
+  setShowRecomended: (r) => set({ showRecomended: r }),
 }));
