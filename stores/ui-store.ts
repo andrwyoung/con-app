@@ -10,6 +10,9 @@ type UIStore = {
   setOnboardingOpen: (open: boolean) => void;
   setProfileOpen: (open: boolean) => void;
   anyModalOpen: () => boolean;
+
+  shouldScrollToLocation: boolean;
+  setShouldScrollToLocation: (val: boolean) => void;
 };
   
 export const useUIStore = create<UIStore>((set, get) => ({
@@ -25,4 +28,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
     const s = get();
     return s.loginModalStep !== "closed"  || s.onboardingOpen || s.profileOpen;
   },
+
+  shouldScrollToLocation: false,
+  setShouldScrollToLocation: (val) => set({ shouldScrollToLocation: val}),
 }));

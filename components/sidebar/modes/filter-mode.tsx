@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useFilterStore } from "@/stores/filter-store";
 import FilterToggleButton from "./filters/filter-helpers";
@@ -6,6 +6,10 @@ import { FaCaretDown } from "react-icons/fa6";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
 import DistanceFilter from "./filters/distance-filter";
+import NavigatableCardList from "../card-wrapper";
+import { useMapCardsStore } from "@/stores/explore-sidebar-store";
+import { useMapStore } from "@/stores/map-store";
+import Recommendations from "./recomendations";
 
 export type FilterKey = "tags" | "time" | "distance" | "status";
 
@@ -24,20 +28,38 @@ function FilterPanel({ type }: { type: FilterKey }) {
 
 export default function FilterMode() {
   const [shownFilters, setShownFilters] = useState<FilterKey[]>([]);
+  const [showRecomended, setShowRecomended] = useState(true);
+
   const filterBar: FilterKey[] = ["tags", "distance", "status"];
   const numberOfCons = Object.keys(
     useFilterStore((s) => s.filteredItems)
   ).length;
 
-  const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
+  const filteredItems = useFilterStore((s) => s.filteredItems);
 
+  const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive());
   const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive());
   const activeCount = [tagFilterIsActive, statusFilterIsActive].filter(
     Boolean
   ).length;
 
-  const [showRecomended, setShowRecomended] = useState(true);
+  const {
+    focusedEvents,
+    filteredFocusedEvents,
+    setFocusedEvents,
+    setFilteredFocusedEvents,
+  } = useMapCardsStore();
+
+  // whenever filters change, update the selected items list
+  // but still keep the original full list around
+  useEffect(() => {
+    const filteredKeys = Object.keys(filteredItems);
+    const updatedFilteredEvents = focusedEvents.filter((event) =>
+      filteredKeys.includes(event.id.toString())
+    );
+    setFilteredFocusedEvents(updatedFilteredEvents);
+  }, [filteredItems, focusedEvents, setFilteredFocusedEvents]);
 
   return (
     <div className="flex flex-col min-h-0">
@@ -52,7 +74,6 @@ export default function FilterMode() {
               onClick={() => {
                 resetAllFilters();
                 setShownFilters([]);
-                setShowRecomended(true);
               }}
             >
               Reset All Filters
@@ -98,7 +119,7 @@ export default function FilterMode() {
           })}
         </div>
       </div>
-      <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+      <div className="overflow-y-auto flex-none scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
         <AnimatePresence initial={false}>
           {shownFilters.map((key) => (
             <motion.div
@@ -113,8 +134,48 @@ export default function FilterMode() {
             </motion.div>
           ))}
         </AnimatePresence>
-        <div className="flex flex-col items-center">
-          <hr className="border-t border-primary-muted w-64 my-3" />
+      </div>
+
+      <hr className="border-t border-primary-muted w-full mt-2 mb-2" />
+
+      {focusedEvents.length > 0 ? (
+        <>
+          <div className="flex-none flex flex-row justify-between px-1 pt-2 pb-4 items-baseline">
+            <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted px-1">
+              Selected (
+              {filteredFocusedEvents.length > 0
+                ? filteredFocusedEvents.length
+                : "none"}
+              )
+            </h1>
+
+            <button
+              type="button"
+              onClick={() => {
+                setFocusedEvents([]);
+                // setSelectedCon(null);
+                useMapStore.getState().clearSelectedPointHighlight?.();
+                useMapStore.getState().clearClickedClusterHighlight?.();
+              }}
+              className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
+            >
+              {filteredFocusedEvents.length > 0 ? "deselect" : "close"}
+            </button>
+          </div>
+
+          {filteredFocusedEvents.length > 0 ? (
+            <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+              <NavigatableCardList items={filteredFocusedEvents} />
+            </div>
+          ) : (
+            <div className="text-sm text-center text-primary-muted px-2">
+              No events found. <br />
+              Try removing filters
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex flex-col min-h-0 w-full items-center py-2">
           <button
             type="button"
             className="flex flex-row items-center gap-1 cursor-pointer"
@@ -130,17 +191,13 @@ export default function FilterMode() {
             />
           </button>
 
-          {showRecomended && (
-            <>
-              {" "}
-              <p className="text-xs text-primary-muted italic">
-                Based on your location and recent activity
-              </p>
-              <p>cards go here</p>{" "}
-            </>
-          )}
+          <div className="overflow-y-auto w-full flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+            <AnimatePresence initial={false}>
+              {showRecomended ? <Recommendations /> : ""}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

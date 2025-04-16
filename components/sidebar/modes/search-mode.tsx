@@ -85,7 +85,9 @@ export default function SearchMode() {
           Try refining your search.
         </div>
       ) : (
-        <NavigatableCardList items={sortedResults} />
+        <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+          <NavigatableCardList items={sortedResults} />
+        </div>
       )}
     </ModeWrapper>
   );

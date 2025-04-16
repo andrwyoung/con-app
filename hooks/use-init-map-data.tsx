@@ -33,7 +33,6 @@ export default function useInitMapData() {
         const match = useEventStore.getState().allEvents[conId];
 
         if (match) {
-          useSidebarStore.getState().setSidebarModeAndDeselectCon("map");
           useMapCardsStore.getState().setFocusedEvents([match]);
           useSidebarStore.getState().setSelectedCon(match);
           setInitLocation({

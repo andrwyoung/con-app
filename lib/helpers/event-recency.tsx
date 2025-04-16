@@ -31,7 +31,7 @@ export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
 
 export type TimeCategory = (typeof timeCategories)[number];
 
-function daysUntil(upcomingDate: Date): number {
+export function daysUntil(upcomingDate: Date): number {
   return Math.ceil(
     (upcomingDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
   );

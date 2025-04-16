@@ -15,6 +15,9 @@ type SidebarStore = {
 
   selectedCon: EventInfo | null;
   setSelectedCon: (id: EventInfo | null) => void;
+
+  selectedClusterId: number | null;
+  setSelectedClusterId: (id: number | null) => void;
 };
 
 export const useSidebarStore = create<SidebarStore>((set) => ({
@@ -26,6 +29,9 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
 
   selectedCon: null,
   setSelectedCon: (id) => {set({ selectedCon: id })},
+
+  selectedClusterId: null,
+  setSelectedClusterId: (id) => set({selectedClusterId: id}),
 }));
 
 
@@ -79,12 +85,22 @@ export const useSearchStore = create<SearchStore>((set) => ({
 
 
 
-type MapCardsStore = {
+type MapCardsStore = {  
   focusedEvents: EventInfo[];
   setFocusedEvents: (e: EventInfo[]) => void;
+
+  filteredFocusedEvents: EventInfo[]; 
+  setFilteredFocusedEvents: (e: EventInfo[]) => void;
+
+  clearSelectedEvents: () => void;
 };
 
 export const useMapCardsStore = create<MapCardsStore>((set) => ({
   focusedEvents: [],
   setFocusedEvents: (e) => set({ focusedEvents: e }),
+
+  filteredFocusedEvents: [],
+  setFilteredFocusedEvents: (e) => set({ filteredFocusedEvents: e }),
+
+  clearSelectedEvents: () => set({focusedEvents: [], filteredFocusedEvents: []}),
 }));

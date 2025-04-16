@@ -11,7 +11,7 @@ export type SortType =
   | "distance-me"
   | "raw";
 
-function getStartDate(event: EventInfo): Date {
+export function getStartDate(event: EventInfo): Date {
   return new Date(event.start_date ?? `${event.year}-01-01`);
 }
 

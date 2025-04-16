@@ -7,17 +7,18 @@ import { EventInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 import { MAX_SEARCH_BATCH_SIZE } from "../constants";
+import { isPointTooCloseToEdge } from "./map-helpers";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
   filteredDict: Record<string, EventInfo>,
   setSelectedCon: (c: EventInfo | null) => void,
+  setSelectedClusterId: (id: number | null) => void,
   setSidebarMode: (mode: SidebarMode) => void,
   setFocusedEvents: (e: EventInfo[]) => void
 ) {
   let hoveredPointId: string | number | null = null;
   let hoveredClusterId: number | null = null;
-  let clickedClusterId: number | null = null;
 
   console.log("dict-marker", filteredDict);
   const events = Object?.values(filteredDict);
@@ -209,7 +210,7 @@ export default function addMarkersToMap(
     useMapStore.getState().setHighlightPointOnMap(highlightPointOnMap);
 
     const clearClickedClusterHighlight = () => {
-      clickedClusterId = null;
+      setSelectedClusterId(null);
       map.setFilter("clusters-clicked", ["==", ["get", "cluster_id"], -1]);
     };
     useMapStore
@@ -302,6 +303,7 @@ export default function addMarkersToMap(
     //
     //
 
+    // clicking a single point
     map.on("click", "unclustered-point", (e) => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: ["unclustered-point"],
@@ -319,16 +321,19 @@ export default function addMarkersToMap(
           // highlight point
           highlightPointOnMap(clickedId);
 
-          // pan to it
-          map.easeTo({
-            center: point.coordinates as [number, number],
-            speed: 0.5,
-            duration: 900,
-          });
+          // pan to it if user preference allows
+          const coords = point.coordinates as [number, number];
+          if (isPointTooCloseToEdge(map, coords)) {
+            map.easeTo({
+              center: coords,
+              speed: 0.5,
+              duration: 900,
+            });
+          }
 
           console.log("Convention clicked:", props);
           // KEY LINE: here's where we give the info to sidebar
-          setSidebarMode("map");
+          setSidebarMode("filter");
           setFocusedEvents([filteredDict[clickedId]]);
           setSelectedCon(filteredDict[clickedId]);
         } else {
@@ -339,6 +344,7 @@ export default function addMarkersToMap(
       }
     });
 
+    // clicking a cluster
     map.on("click", "clusters", (e) => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: ["clusters"],
@@ -350,50 +356,60 @@ export default function addMarkersToMap(
 
       // first center the point
       const point = features[0].geometry as GeoJSON.Point;
-      map.easeTo({
-        center: point.coordinates as [number, number],
-        speed: 0.5,
-        duration: 900,
-      });
+      const coords = point.coordinates as [number, number];
+      if (isPointTooCloseToEdge(map, coords)) {
+        map.easeTo({
+          center: coords,
+          speed: 0.5,
+          duration: 900,
+        });
+      }
 
       // clear any clicked currently clicked points
       clearSelectedPointHighlight();
 
-      // highlight clicked cluster on mapbox
-      clickedClusterId = clusterId;
-      map.setFilter("clusters-clicked", [
-        "==",
-        ["get", "cluster_id"],
-        clickedClusterId,
-      ]);
+      const selectedClusterId = useSidebarStore.getState().selectedClusterId;
+      if (selectedClusterId !== clusterId) {
+        // highlight clicked cluster on mapbox
+        map.setFilter("clusters-clicked", [
+          "==",
+          ["get", "cluster_id"],
+          clusterId,
+        ]);
 
-      // then, get all the individual points in that cluster
-      source.getClusterLeaves(
-        clusterId,
-        MAX_SEARCH_BATCH_SIZE,
-        0,
-        (err, leaves) => {
-          if (err) {
-            console.error("Failed to get cluster leaves", err);
-            return;
+        // then, get all the individual points in that cluster
+        source.getClusterLeaves(
+          clusterId,
+          MAX_SEARCH_BATCH_SIZE,
+          0,
+          (err, leaves) => {
+            if (err) {
+              console.error("Failed to get cluster leaves", err);
+              return;
+            }
+
+            const conList =
+              leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
+            console.log("Cluster contains:", conList);
+
+            const fullCons = conList
+              .map((id) => filteredDict[id])
+              .filter((c): c is EventInfo => !!c);
+
+            // KEY LINE: here's where we return all the cluster points back to sidebar
+            console.log("EventInfo: ", fullCons);
+            setFocusedEvents(fullCons);
           }
+        );
 
-          const conList =
-            leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
-          console.log("Cluster contains:", conList);
-
-          const fullCons = conList
-            .map((id) => filteredDict[id])
-            .filter((c): c is EventInfo => !!c);
-
-          // KEY LINE: here's where we return all the cluster points back to sidebar
-          console.log("EventInfo: ", fullCons);
-          setFocusedEvents(fullCons);
-        }
-      );
-
-      // let sidebar mode know what's up
-      setSidebarMode("map");
+        // let sidebar mode know what's up
+        setSelectedClusterId(clusterId);
+        setSidebarMode("filter");
+      } else {
+        setSelectedClusterId(null);
+        setFocusedEvents([]);
+        clearClickedClusterHighlight();
+      }
       setSelectedCon(null);
     });
   });

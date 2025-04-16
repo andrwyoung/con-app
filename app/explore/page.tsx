@@ -1,13 +1,21 @@
 "use client";
-import Sidebar from "@/components/sidebar/sidebar";
+import Sidebar from "@/app/explore/sidebar";
 import { useEffect } from "react";
-import { useSidebarStore } from "@/stores/explore-sidebar-store";
+import {
+  useMapCardsStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
+import DetailsPanel from "@/components/sidebar/details-panel";
 
 export default function ExplorePage() {
-  // keyboard shortcuts
+  const { selectedCon, setSelectedCon } = useSidebarStore();
+  const clearSelectedEvents = useMapCardsStore((s) => s.clearSelectedEvents);
+
   const isModalOpen = useUIStore.getState().anyModalOpen();
+
+  // keyboard shortcuts
   useEffect(() => {
     const handleShortcuts = (e: KeyboardEvent) => {
       if (isModalOpen) return; // important to check if modal is open
@@ -19,8 +27,13 @@ export default function ExplorePage() {
 
         if (isInputFocused) return;
 
-        const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
-          useSidebarStore.getState();
+        const {
+          selectedCon,
+          setSelectedCon,
+          setSidebarModeAndDeselectCon,
+          sidebarMode,
+        } = useSidebarStore.getState();
+
         console.log("escape pressed! selected con:", selectedCon);
 
         // 1st escape deselects con
@@ -28,6 +41,9 @@ export default function ExplorePage() {
         if (selectedCon) {
           setSelectedCon(null);
           useMapStore.getState().clearSelectedPointHighlight?.();
+        } else if (sidebarMode === "filter") {
+          clearSelectedEvents();
+          useMapStore.getState().clearClickedClusterHighlight?.();
         } else {
           setSidebarModeAndDeselectCon("filter");
         }
@@ -45,11 +61,21 @@ export default function ExplorePage() {
     };
     window.addEventListener("keydown", handleShortcuts);
     return () => window.removeEventListener("keydown", handleShortcuts);
-  }, [isModalOpen]);
+  }, [isModalOpen, clearSelectedEvents]);
 
   return (
     <div className="w-screen h-screen font-extrabold">
-      <Sidebar />
+      <div className="absolute z-10 top-32 left-12">
+        <Sidebar />
+      </div>
+      {selectedCon && (
+        <div className="absolute right-16 top-32 z-17">
+          <DetailsPanel
+            con={selectedCon}
+            onClose={() => setSelectedCon(null)}
+          />
+        </div>
+      )}
     </div>
   );
 }

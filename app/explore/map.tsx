@@ -27,8 +27,12 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { allEvents: eventDict } = useEventStore();
-  const { selectedCon, setSelectedCon, setSidebarModeAndDeselectCon } =
-    useSidebarStore();
+  const {
+    selectedCon,
+    setSelectedCon,
+    setSidebarModeAndDeselectCon,
+    setSelectedClusterId,
+  } = useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
 
   const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
@@ -122,6 +126,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       mapRef.current,
       filteredDict,
       setSelectedCon,
+      setSelectedClusterId,
       setSidebarModeAndDeselectCon,
       setFocusedEvents
     );
@@ -131,6 +136,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     selectedTags,
     setFocusedEvents,
     setSelectedCon,
+    setSelectedClusterId,
     setSidebarModeAndDeselectCon,
   ]);
 

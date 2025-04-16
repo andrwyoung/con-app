@@ -9,7 +9,7 @@ export default function DetailsPanel({
   onClose: () => void;
 }) {
   return (
-    <div className="absolute left-[22rem] top-12 w-80 max-h-180 bg-white rounded-lg shadow-lg z-17">
+    <div className="w-80 max-h-180 bg-white rounded-lg shadow-xl border">
       <button
         type="button"
         className="absolute top-4 right-4 text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105"
