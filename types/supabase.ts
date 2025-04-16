@@ -42,11 +42,17 @@ export type Database = {
             referencedRelation: "conventions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "convention_history_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
+          },
         ]
       }
       convention_years: {
         Row: {
-          address: string | null
           artist_app_deadline: string | null
           artist_app_first_heard: string | null
           artist_app_link: string | null
@@ -66,7 +72,6 @@ export type Database = {
           year: number
         }
         Insert: {
-          address?: string | null
           artist_app_deadline?: string | null
           artist_app_first_heard?: string | null
           artist_app_link?: string | null
@@ -86,7 +91,6 @@ export type Database = {
           year: number
         }
         Update: {
-          address?: string | null
           artist_app_deadline?: string | null
           artist_app_first_heard?: string | null
           artist_app_link?: string | null
@@ -113,6 +117,13 @@ export type Database = {
             referencedRelation: "conventions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "convention_years_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
+          },
         ]
       }
       conventions: {
@@ -120,17 +131,23 @@ export type Database = {
           address: string | null
           created_at: string
           description: string | null
+          event_status: string | null
           facebook_url: string | null
           fancons_link: string | null
           id: number
           image_url: string | null
           instagram_url: string | null
+          location: string | null
           location_lat: number | null
           location_long: number | null
           name: string
           organizer: string | null
+          organizer_url: string | null
+          slug: string | null
+          social_links: string | null
           tags: string[] | null
           updated_at: string | null
+          venue: string | null
           website: string | null
           x_url: string | null
         }
@@ -138,17 +155,23 @@ export type Database = {
           address?: string | null
           created_at?: string
           description?: string | null
+          event_status?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
           image_url?: string | null
           instagram_url?: string | null
+          location?: string | null
           location_lat?: number | null
           location_long?: number | null
           name: string
           organizer?: string | null
+          organizer_url?: string | null
+          slug?: string | null
+          social_links?: string | null
           tags?: string[] | null
           updated_at?: string | null
+          venue?: string | null
           website?: string | null
           x_url?: string | null
         }
@@ -156,17 +179,23 @@ export type Database = {
           address?: string | null
           created_at?: string
           description?: string | null
+          event_status?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
           image_url?: string | null
           instagram_url?: string | null
+          location?: string | null
           location_lat?: number | null
           location_long?: number | null
           name?: string
           organizer?: string | null
+          organizer_url?: string | null
+          slug?: string | null
+          social_links?: string | null
           tags?: string[] | null
           updated_at?: string | null
+          venue?: string | null
           website?: string | null
           x_url?: string | null
         }
@@ -302,6 +331,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_convention_years_id_fkey"
             columns: ["convention_years_id"]
             isOneToOne: false
@@ -371,6 +407,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "user_convention_list_item_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "user_convention_list_item_list_id_fkey"
             columns: ["list_id"]
             isOneToOne: false
@@ -436,6 +479,8 @@ export type Database = {
         Row: {
           bio: string | null
           created_at: string | null
+          email: string
+          has_never_logged_in: boolean
           persona: Database["public"]["Enums"]["Persona"]
           role: Database["public"]["Enums"]["Role"]
           updated_at: string | null
@@ -445,6 +490,8 @@ export type Database = {
         Insert: {
           bio?: string | null
           created_at?: string | null
+          email: string
+          has_never_logged_in?: boolean
           persona: Database["public"]["Enums"]["Persona"]
           role?: Database["public"]["Enums"]["Role"]
           updated_at?: string | null
@@ -454,6 +501,8 @@ export type Database = {
         Update: {
           bio?: string | null
           created_at?: string | null
+          email?: string
+          has_never_logged_in?: boolean
           persona?: Database["public"]["Enums"]["Persona"]
           role?: Database["public"]["Enums"]["Role"]
           updated_at?: string | null
@@ -529,7 +578,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      latest_convention_years: {
+        Row: {
+          address: string | null
+          end_date: string | null
+          event_status: string | null
+          id: number | null
+          location: string | null
+          location_lat: number | null
+          location_long: number | null
+          name: string | null
+          slug: string | null
+          start_date: string | null
+          tags: string[] | null
+          venue: string | null
+          year: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
@@ -553,27 +619,29 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DefaultSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -581,20 +649,22 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -602,20 +672,22 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -623,21 +695,23 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -646,6 +720,19 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      ApplicationStatus: ["OPEN", "CLOSED", "WAITLIST", "MAYBE"],
+      ConventionSize: ["SEED", "SMALL", "MEDIUM", "LARGE"],
+      GoingStatus: ["UNDECIDED", "INTERESTED", "APPLIED", "TENTATIVE", "GOING"],
+      Persona: ["ATTENDEE", "ARTIST", "ORGANIZER"],
+      Role: ["FREE", "TIER_1", "TIER_2", "LIFETIME", "ADMIN", "SUDO"],
+      Visibility: ["PUBLIC", "LINK_ONLY", "PRIVATE"],
+    },
+  },
+} as const

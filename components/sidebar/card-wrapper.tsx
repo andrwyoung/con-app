@@ -35,6 +35,23 @@ export default function NavigatableCardList({
 
   const { userLocation } = useMapStore();
 
+  // build out the sorted results
+  const sortedResults = useMemo(
+    () =>
+      sortEvents(
+        items,
+        sortOption,
+        userLocation ?? undefined,
+        currentLocation ?? undefined
+      ),
+    [items, sortOption, userLocation, currentLocation]
+  );
+
+  const groupStatusResults = useMemo(() => {
+    if (sortOption !== "status") return null;
+    return groupByStatus(sortedResults);
+  }, [sortOption, sortedResults]);
+
   // initialize refs for all cards for scrolling into view
   useEffect(() => {
     cardRefs.current = items.map(
@@ -61,10 +78,12 @@ export default function NavigatableCardList({
       e.preventDefault(); // prevent page scroll
 
       const current =
-        selectedIndex ?? items.findIndex((c) => c.id === selectedCon?.id) ?? -1;
+        selectedIndex ??
+        sortedResults.findIndex((c) => c.id === selectedCon?.id) ??
+        -1;
 
       const navigate = (next: number) => {
-        setSelectedCon(items[next]);
+        setSelectedCon(sortedResults[next]);
         setSelectedIndex(next);
         setTimeout(() => {
           cardRefs.current[next]?.current?.scrollIntoView({
@@ -100,24 +119,20 @@ export default function NavigatableCardList({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [items, selectedCon, selectedIndex, setSelectedCon, flyTo, anyModalOpen]);
+  }, [
+    items,
+    sortedResults,
+    selectedCon,
+    selectedIndex,
+    setSelectedCon,
+    flyTo,
+    anyModalOpen,
+  ]);
 
-  // build out the sorted results
-  const sortedResults = useMemo(
-    () =>
-      sortEvents(
-        items,
-        sortOption,
-        userLocation ?? undefined,
-        currentLocation ?? undefined
-      ),
-    [items, sortOption, userLocation, currentLocation]
-  );
-
-  const groupStatusResults = useMemo(() => {
-    if (sortOption !== "status") return null;
-    return groupByStatus(sortedResults);
-  }, [sortOption, sortedResults]);
+  // reset index when list changes
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [items, sortOption]);
 
   return (
     <div className="flex flex-col">

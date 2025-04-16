@@ -1,11 +1,13 @@
-import { EventInfo } from "@/types/types";
-
-export function formatEventDates(con: EventInfo): string {
-  if (!con.end_date || !con.start_date) {
-    return con.year.toString();
+export function formatEventDates(
+  year: number,
+  start?: string,
+  end?: string
+): string {
+  if (!start || !end) {
+    return year.toString();
   }
-  const startDate = new Date(con.start_date);
-  const endDate = new Date(con.end_date);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
 
   const sameDay =
     startDate.getFullYear() === endDate.getFullYear() &&
@@ -42,6 +44,23 @@ export function formatEventDates(con: EventInfo): string {
   });
 
   return `${startStr} – ${endStr}, '${String(endDate.getFullYear()).slice(-2)}`;
+}
+
+export function formatEventMonthRange(start?: string, end?: string): string {
+  if (!start || !end) return "";
+
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  const options: Intl.DateTimeFormatOptions = {
+    month: "long",
+    day: "numeric",
+  };
+
+  const startStr = startDate.toLocaleDateString("en-US", options);
+  const endStr = endDate.toLocaleDateString("en-US", options);
+
+  return `${startStr} – ${endStr}`;
 }
 
 export function formatShortLocation(fullAddress: string): string {

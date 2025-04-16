@@ -7,7 +7,7 @@ import {
 } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
-import DetailsPanel from "@/components/sidebar/details-panel";
+import DetailsPanel from "@/components/sidebar/details_panel/details-panel";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon } = useSidebarStore();

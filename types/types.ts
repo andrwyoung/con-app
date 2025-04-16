@@ -1,4 +1,13 @@
+import { Tables } from "@/types/supabase";
 import { TimeCategory } from "@/lib/helpers/event-recency";
+
+export type Convention = Tables<"conventions">;
+export type ConventionYear = Tables<"convention_years">;
+
+
+export type FullConventionDetails = Convention & {
+  convention_years: ConventionYear[];
+};
 
 // TODO: Get rid of ./supabase.ts deprecates this
 export type ConLocation = {
@@ -27,23 +36,4 @@ export type EventInfo = {
 
   // my generated info
   timeCategory?: TimeCategory;
-}
-
-export type EventInfoV1 = {
-  id: number;
-  name: string;
-  url: string;
-
-  created_at: string;
-
-  date: string;
-  days_length: number;
-  start_date: string;
-  end_date: string;
-  year: number;
-  
-  venue: string;
-  latitude: number;
-  longitude: number;
-  location?: string;
 }

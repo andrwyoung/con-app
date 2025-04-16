@@ -52,7 +52,7 @@ export default function Recommendations() {
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="overflow-y-scroll scrollbar-none flex flex-col gap-2 items-center w-full"
+      className="overflow-y-scroll scrollbar-none flex flex-col gap-2 w-full"
     >
       <p className="text-xs text-primary-muted italic">
         Based on your location and recent activity

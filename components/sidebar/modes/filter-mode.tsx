@@ -177,7 +177,7 @@ export default function FilterMode() {
           )}
         </>
       ) : (
-        <div className="flex flex-col min-h-0 w-full items-center py-2">
+        <div className="flex flex-col min-h-0 w-full py-2">
           <button
             type="button"
             className="flex flex-row items-center gap-1 cursor-pointer"

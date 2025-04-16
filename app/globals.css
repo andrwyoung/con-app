@@ -76,7 +76,7 @@
 
 @layer base {
   * {
-    @apply border-border font-sans-body font-medium outline-ring/50;
+    @apply border-border font-sans-body font-medium outline-ring/50 ;
   }
   body {
     @apply bg-background text-foreground;
@@ -86,8 +86,6 @@
     @apply font-sans-header;
   }
 }
-
-
 
 @keyframes shake {
   0%, 100% {
@@ -101,27 +99,24 @@
   }
 }
 
+@keyframes ripple {
+  0% {
+    opacity: 0.3;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
 @layer utilities {
   .animate-shake {
     animation: shake 0.3s ease-in-out;
   }
-}
 
-
-@layer utilities {
   .map-pulse {
     @apply absolute w-4 h-4 bg-primary rounded-full pointer-events-none;
     animation: ripple 0.4s ease-out forwards;
-  }
-
-  @keyframes ripple {
-    0% {
-      opacity: 0.3;
-      transform: scale(0);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(3);
-    }
   }
 }

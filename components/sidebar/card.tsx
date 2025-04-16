@@ -103,7 +103,7 @@ const Card = forwardRef<
         </div>
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1">
           <StatusDot status={info.timeCategory ?? "unknown"} />
-          {formatEventDates(info)}
+          {formatEventDates(info.year, info.start_date, info.end_date)}
         </div>
       </div>
       <div className="absolute right-4 bottom-1.5 flex flex-row gap-1 text-primary-muted transition-all">
