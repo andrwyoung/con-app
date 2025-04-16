@@ -3,7 +3,7 @@ import mapboxgl from "mapbox-gl";
 export function isPointTooCloseToEdge(
   map: mapboxgl.Map,
   coordinates: [number, number],
-  bufferRatio: number = 0.3 // % by default
+  bufferRatio: number = 0.2 // % by default
 ): boolean {
   const screenPoint = map.project(
     new mapboxgl.LngLat(coordinates[0], coordinates[1])

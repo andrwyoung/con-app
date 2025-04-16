@@ -7,12 +7,32 @@ export type SortType =
   | "rev-chron"
   | "just-passed"
   | "upcoming"
+  | "status"
   | "distance"
   | "distance-me"
   | "raw";
 
 export function getStartDate(event: EventInfo): Date {
   return new Date(event.start_date ?? `${event.year}-01-01`);
+}
+
+
+// for the special sort of status
+export function groupByStatus(items: EventInfo[]): Record<string, EventInfo[]> {
+  const grouped = items.reduce((acc, item) => {
+    const status = item.timeCategory ?? "unknown";
+    if (!acc[status]) acc[status] = [];
+    acc[status].push(item);
+    return acc;
+  }, {} as Record<string, EventInfo[]>);
+
+  // sort each group by date 
+  Object.keys(grouped).forEach((key) => {
+    grouped[key].sort(
+      (a, b) => getStartDate(a).getTime() - getStartDate(b).getTime()
+    );
+  });
+  return grouped;
 }
 
 export function sortEvents(

@@ -50,7 +50,7 @@ export default function NavBar() {
             href="/about"
             className="text-md hidden md:block text-white font-bold transition-all hover:text-primary hover:scale-105"
           >
-            About + Pricing
+            About + Foundry
           </Link>
         </div>
         <div

@@ -106,3 +106,22 @@
     animation: shake 0.3s ease-in-out;
   }
 }
+
+
+@layer utilities {
+  .map-pulse {
+    @apply absolute w-4 h-4 bg-primary rounded-full pointer-events-none;
+    animation: ripple 0.4s ease-out forwards;
+  }
+
+  @keyframes ripple {
+    0% {
+      opacity: 0.3;
+      transform: scale(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(3);
+    }
+  }
+}

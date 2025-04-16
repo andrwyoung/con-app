@@ -12,34 +12,54 @@ import {
   TIME_CATEGORY_LABELS,
   TimeCategory,
 } from "@/lib/helpers/event-recency";
+import { FaStar } from "react-icons/fa6";
 
 export type CardVariant = "default" | "recommendation" | "minimal";
+
+export function StatusDotTester() {
+  return (
+    <div className="p-4 flex flex-col gap-1">
+      {Object.entries(TIME_CATEGORY_LABELS).map(([key, label]) => (
+        <div key={key} className="flex items-center gap-2">
+          <StatusDot status={key as TimeCategory} />
+          <span className="text-sm text-primary-text">{label}</span>
+          <code className="text-xs text-primary-muted">({key})</code>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function StatusDot({ status }: { status: TimeCategory }) {
   const color =
     status === "past"
-      ? "bg-slate-300"
+      ? "bg-violet-400"
       : status === "recent"
-      ? "bg-sky-300"
+      ? "bg-blue-300"
       : status === "here"
-      ? "bg-emerald-400"
+      ? "bg-emerald-500"
       : status === "soon"
-      ? "bg-orange-300"
+      ? "bg-green-400"
       : status === "upcoming"
-      ? "bg-stone-300"
+      ? "bg-lime-400"
       : status === "postponed"
-      ? "bg-secondary"
+      ? "bg-orange-300"
       : status === "discontinued"
-      ? "bg-red-400"
+      ? "bg-slate-300"
       : status === "cancelled"
       ? "bg-red-400"
-      : "bg-red-800";
+      : "bg-white border shadow-sm";
 
-  return (
+  return status !== "here" ? (
     <div
       className={`w-2 h-2 rounded-full transform translate-y-[1px] ${color}`}
       title={TIME_CATEGORY_LABELS[status]}
       aria-label={TIME_CATEGORY_LABELS[status]}
+    />
+  ) : (
+    <FaStar
+      className="w-3 h-3 text-emerald-500 transform"
+      title={TIME_CATEGORY_LABELS[status]}
     />
   );
 }

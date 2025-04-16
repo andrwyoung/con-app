@@ -1,16 +1,17 @@
 import { EventInfo } from "@/types/types";
 import {
   DAYS_SINCE_RECENT,
+  DAYS_UNTIL_DISCONTINUED,
   DAYS_UNTIL_SOON,
   DAYS_UNTIL_UPCOMING,
 } from "../constants";
 
 export const timeCategories = [
-  "past",
-  "recent",
   "here",
   "soon",
   "upcoming",
+  "recent",
+  "past",
   "postponed",
   "discontinued",
   "cancelled",
@@ -18,13 +19,13 @@ export const timeCategories = [
 ] as const;
 
 export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
-  past: "Earlier",
-  recent: "Just Ended",
   here: "Now",
   soon: "Soon",
-  upcoming: "Later",
+  past: "Earlier",
+  recent: "Just Ended",
+  upcoming: "Upcoming",
   postponed: "Postponed",
-  discontinued: "Ended Forever",
+  discontinued: "Discontinued",
   cancelled: "Cancelled",
   unknown: "Unknown",
 };
@@ -34,6 +35,12 @@ export type TimeCategory = (typeof timeCategories)[number];
 export function daysUntil(upcomingDate: Date): number {
   return Math.ceil(
     (upcomingDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+  );
+}
+
+export function daysFrom(pastDate: Date): number {
+  return Math.ceil(
+    (new Date().getTime() - pastDate.getTime()) / (1000 * 60 * 60 * 24)
   );
 }
 
@@ -58,10 +65,9 @@ export function getEventTimeCategory(info: EventInfo): TimeCategory {
   if (!start || !end) return "unknown";
 
   if (end < now) {
-    const daysSinceEnded = Math.ceil(
-      (now.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    const daysSinceEnded = daysFrom(end);
     if (daysSinceEnded <= DAYS_SINCE_RECENT) return "recent";
+    if (daysSinceEnded > DAYS_UNTIL_DISCONTINUED) return "discontinued";
     return "past";
   }
 

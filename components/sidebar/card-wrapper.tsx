@@ -2,18 +2,28 @@
 // responsible for any keybaord navigation interactions too
 
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
-import { EventInfo } from "@/types/types";
-import React, { useEffect, useRef, useState } from "react";
+import { ConLocation, EventInfo } from "@/types/types";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Card, { CardVariant } from "./card";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import { MAX_CARDS } from "@/lib/constants";
+import { groupByStatus, sortEvents, SortType } from "@/lib/helpers/sort-cons";
+import {
+  TIME_CATEGORY_LABELS,
+  timeCategories,
+  TimeCategory,
+} from "@/lib/helpers/event-recency";
 
 export default function NavigatableCardList({
   items,
+  sortOption = "raw",
+  currentLocation = null,
   type = "default",
 }: {
   items: EventInfo[];
+  sortOption?: SortType;
+  currentLocation?: ConLocation | null;
   type?: CardVariant;
 }) {
   const { setSelectedCon, selectedCon } = useSidebarStore();
@@ -22,6 +32,8 @@ export default function NavigatableCardList({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
   const anyModalOpen = useUIStore((s) => s.anyModalOpen());
+
+  const { userLocation } = useMapStore();
 
   // initialize refs for all cards for scrolling into view
   useEffect(() => {
@@ -90,24 +102,80 @@ export default function NavigatableCardList({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [items, selectedCon, selectedIndex, setSelectedCon, flyTo, anyModalOpen]);
 
+  // build out the sorted results
+  const sortedResults = useMemo(
+    () =>
+      sortEvents(
+        items,
+        sortOption,
+        userLocation ?? undefined,
+        currentLocation ?? undefined
+      ),
+    [items, sortOption, userLocation, currentLocation]
+  );
+
+  const groupStatusResults = useMemo(() => {
+    if (sortOption !== "status") return null;
+    return groupByStatus(sortedResults);
+  }, [sortOption, sortedResults]);
+
   return (
-    <div className="flex flex-col gap-3 pr-1 m-1">
-      {items.slice(0, MAX_CARDS).map((con, i) => (
-        <Card
-          key={con.id || i}
-          info={con}
-          selected={selectedCon?.id === con.id}
-          onClick={() => {
-            setSelectedCon(selectedCon?.id === con.id ? null : con);
-            setSelectedIndex(i);
-          }}
-          ref={cardRefs.current[i]}
-          type={type}
-        />
-      ))}
+    <div className="flex flex-col">
+      {sortOption === "status" && groupStatusResults ? (
+        // special case if we're sorting by status
+        <div className="flex flex-col gap-3">
+          {Object.entries(groupStatusResults)
+            .sort(([a], [b]) => {
+              return (
+                timeCategories.indexOf(a as TimeCategory) -
+                timeCategories.indexOf(b as TimeCategory)
+              );
+            })
+            .map(([status, group]) => (
+              <div key={status}>
+                <h3 className="text-xs font-semibold text-primary-muted mb-2 px uppercase tracking-wide">
+                  {TIME_CATEGORY_LABELS[status as TimeCategory]}
+                </h3>
+                <div className="flex flex-col gap-3 pr-1 m-1">
+                  {group.slice(0, MAX_CARDS).map((con, i) => (
+                    <Card
+                      key={con.id || i}
+                      info={con}
+                      selected={selectedCon?.id === con.id}
+                      onClick={() => {
+                        setSelectedCon(selectedCon?.id === con.id ? null : con);
+                        setSelectedIndex(i);
+                      }}
+                      ref={cardRefs.current[i]}
+                      type={type}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}{" "}
+        </div>
+      ) : (
+        // the normal sort case
+        <div className="flex flex-col gap-3 pr-1 m-1">
+          {" "}
+          {sortedResults.slice(0, MAX_CARDS).map((con, i) => (
+            <Card
+              key={con.id || i}
+              info={con}
+              selected={selectedCon?.id === con.id}
+              onClick={() => {
+                setSelectedCon(selectedCon?.id === con.id ? null : con);
+                setSelectedIndex(i);
+              }}
+              ref={cardRefs.current[i]}
+              type={type}
+            />
+          ))}
+        </div>
+      )}
       {items.length > MAX_CARDS && (
-        <p className="text-sm text-primary-muted self-center">
-          showing first {MAX_CARDS} results
+        <p className="text-sm text-primary-muted self-center mt-2">
+          Only showing {MAX_CARDS} results
         </p>
       )}
     </div>

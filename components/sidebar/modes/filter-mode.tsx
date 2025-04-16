@@ -164,7 +164,10 @@ export default function FilterMode() {
 
           {filteredFocusedEvents.length > 0 ? (
             <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-              <NavigatableCardList items={filteredFocusedEvents} />
+              <NavigatableCardList
+                items={filteredFocusedEvents}
+                sortOption="status"
+              />
             </div>
           ) : (
             <div className="text-sm text-center text-primary-muted px-2">

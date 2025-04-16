@@ -1,9 +1,9 @@
 import { SortType } from "./sort-cons";
 
 export const SORT_OPTIONS: { label: string; value: SortType }[] = [
-    { value: "raw", label: "Default"},
-    { value: "chron", label: "Latest First" },
-    { value: "rev-chron", label: "Oldest First" },
+    { value: "status", label: "Status" },
+    { value: "chron", label: "Earliest" },
+    { value: "rev-chron", label: "Latest" },
     { value: "distance-me", label: "Distance (from me)" },
     { value: "alpha", label: "Alphabetical" },
 ];

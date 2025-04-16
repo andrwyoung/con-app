@@ -127,7 +127,7 @@ export default function Searchbar() {
 
     const res = grabConventions(term, allEvents);
 
-    setSortPreference("raw");
+    setSortPreference("status");
     setResults(res);
 
     // add to history
@@ -154,7 +154,7 @@ export default function Searchbar() {
 
     addToHistory(s.name, "clicked");
 
-    setSortPreference("chron"); // doesn't really matter lol
+    setSortPreference("raw"); // doesn't really matter lol
     setResults([s]); // sidebar will fly if it's just 1
   };
 
@@ -176,7 +176,7 @@ export default function Searchbar() {
     );
     console.log("searched in area. got:", res);
 
-    setSortPreference("raw");
+    setSortPreference("distance");
     setResults(res);
 
     setShowDropdown(false);
@@ -199,7 +199,7 @@ export default function Searchbar() {
     );
 
     useMapStore.getState().flyToMyLocation?.();
-    setSortPreference("distance");
+    setSortPreference("distance-me");
     setResults(res);
 
     setShowDropdown(false);

@@ -2,13 +2,12 @@ import {
   useSearchStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
 import NavigatableCardList from "../card-wrapper";
 import ModeWrapper from "./mode-wrapper";
 import { SortType } from "@/lib/helpers/sort-cons";
-import { sortEvents } from "@/lib/helpers/sort-cons";
 
 const TITLE_DEFAULT = "Search Results";
 const TITLE_LOCATION = "Nearby";
@@ -16,11 +15,11 @@ const TITLE_LOCATION = "Nearby";
 export default function SearchMode() {
   const { results } = useSearchStore();
   const { setSelectedCon } = useSidebarStore();
-  const { userLocation, getCurrentCenter } = useMapStore();
+  const { getCurrentCenter } = useMapStore();
   const flyTo = useMapStore((s) => s.flyTo);
 
   const [numResults, setNumResults] = useState(0);
-  const [sortOption, setSortOption] = useState<SortType>("chron");
+  const [sortOption, setSortOption] = useState<SortType>("raw");
 
   const [title, setTitle] = useState(TITLE_DEFAULT);
 
@@ -60,18 +59,6 @@ export default function SearchMode() {
     }
   }, [results, flyTo, setSelectedCon, getCurrentCenter]);
 
-  // build out the sorted results
-  const sortedResults = useMemo(
-    () =>
-      sortEvents(
-        results,
-        sortOption,
-        userLocation ?? undefined,
-        centerOfViewport ?? undefined
-      ),
-    [results, sortOption, userLocation, centerOfViewport]
-  );
-
   return (
     <ModeWrapper
       title={title}
@@ -86,7 +73,11 @@ export default function SearchMode() {
         </div>
       ) : (
         <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-          <NavigatableCardList items={sortedResults} />
+          <NavigatableCardList
+            items={results}
+            currentLocation={centerOfViewport}
+            sortOption={sortOption}
+          />
         </div>
       )}
     </ModeWrapper>

@@ -51,6 +51,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       center: [initLocation.longitude, initLocation.latitude],
       zoom: DEFAULT_ZOOM_FAR,
     });
+    mapRef.current.getCanvas().style.cursor = "default";
 
     return () => mapRef.current?.remove();
   }, [initLocation.latitude, initLocation.longitude]);

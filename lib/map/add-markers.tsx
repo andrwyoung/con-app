@@ -250,7 +250,7 @@ export default function addMarkersToMap(
     });
 
     map.on("mouseleave", "unclustered-point", () => {
-      map.getCanvas().style.cursor = "";
+      map.getCanvas().style.cursor = "default";
       map.setFilter("unclustered-point-hover", ["==", ["get", "id"], ""]);
       hoveredPointId = null;
 
@@ -292,7 +292,7 @@ export default function addMarkersToMap(
       );
     });
     map.on("mouseleave", "clusters", () => {
-      map.getCanvas().style.cursor = "";
+      map.getCanvas().style.cursor = "default";
       hoveredClusterId = null;
       map.setFilter("clusters-hover", ["==", ["get", "cluster_id"], -1]);
       map.setPaintProperty("clusters-hover", "circle-color", POINT_COLOR);
@@ -411,6 +411,32 @@ export default function addMarkersToMap(
         clearClickedClusterHighlight();
       }
       setSelectedCon(null);
+    });
+
+    map.on("click", (e) => {
+      const { point } = e;
+
+      // optional: skip clicks on features (like markers or clusters)
+      // const features = map.queryRenderedFeatures(e.point);
+      // if (features.length > 0) return;
+
+      // create ripple
+      const ripple = document.createElement("div");
+      ripple.className = "map-pulse";
+      ripple.style.left = `${point.x - 12}px`; // center it
+      ripple.style.top = `${point.y - 12}px`; // center it
+
+      // add to map container
+      const mapCanvas = map.getCanvasContainer();
+      ripple.style.position = "absolute";
+      ripple.style.zIndex = "999";
+
+      mapCanvas.appendChild(ripple);
+
+      // remove it after animation
+      setTimeout(() => {
+        ripple.remove();
+      }, 400);
     });
   });
 }

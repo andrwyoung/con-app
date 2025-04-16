@@ -100,6 +100,6 @@ export const useFilterUIStore = create<FilterUIStore>((set) => ({
   shownFilters: [],
   setShownFilters: (key) => set({ shownFilters: key }),
 
-  showRecomended: true,
+  showRecomended: false,
   setShowRecomended: (r) => set({ showRecomended: r }),
 }));
