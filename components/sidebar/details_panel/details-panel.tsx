@@ -49,7 +49,7 @@ export default function DetailsPanel({
             </p>
           )}
 
-          <hr className="border-t border-primary-muted w-full my-4" />
+          <hr className="border-t border-primary-muted mt-8 mb-4 mx-auto w-80 border-1" />
 
           <ReviewsSection />
         </div>

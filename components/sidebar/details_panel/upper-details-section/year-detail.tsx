@@ -28,7 +28,7 @@ function getTimeCategory(
 // style if depending on what type it is
 const bgClass: Record<YearType, string> = {
   past: "bg-stone-100",
-  now: "bg-emerald-100",
+  now: "bg-emerald-200",
   future: "bg-primary-light text-primary-text",
   unknown: "bg-white border-dashed border-2",
 };

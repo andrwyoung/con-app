@@ -29,11 +29,11 @@ export default function DetailsSection({
   );
   return (
     <>
-      <div className="px-2 flex flex-col gap-2 text-sm mb-6">
+      <div className="px-2 flex flex-col gap-2 text-sm mb-4">
         <h3 className="text-primary-muted font-semibold uppercase">
           Description
         </h3>
-        <p className="leading-6 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+        <p className="leading-6 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
           {details.description}
         </p>
       </div>
@@ -59,7 +59,7 @@ export default function DetailsSection({
             title={`${details.name} website`}
             className="flex flex-row gap-2 items-center text-primary-muted uppercase text-sm font-semibold hover:text-primary-darker transition-colors"
           >
-            <FaLink className="-rotate-5 h-5 w-5 translate-y-0.5" /> Main
+            <FaLink className="-rotate-5 h-5 w-5" />
             Website
           </a>
         )}
