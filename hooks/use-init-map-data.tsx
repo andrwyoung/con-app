@@ -20,6 +20,8 @@ export default function useInitMapData() {
 
   useEffect(() => {
     const init = async () => {
+      const start = performance.now();
+
       const coords = await getInitialLocation();
       if (coords) setInitLocation(coords);
       useMapStore.getState().setUserLocation(coords); //save coords to map
@@ -46,6 +48,9 @@ export default function useInitMapData() {
 
       // things ok to do after initialization
       useSidebarStore.getState().setInitialized(); // just so ?conId doesn't break
+
+      const end = performance.now();
+      console.log(`useInitMapData finished in ${Math.round(end - start)}ms`);
     };
 
     init();

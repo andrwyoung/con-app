@@ -1,7 +1,6 @@
 "use client";
 import useInitMapData from "@/hooks/use-init-map-data";
 import { usePathname } from "next/navigation";
-import React from "react";
 import Map from "./explore/map";
 
 export default function MapWrapper() {

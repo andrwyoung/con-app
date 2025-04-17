@@ -2,18 +2,20 @@ import { DEFAULT_LOCATION } from "@/lib/constants";
 import { ConLocation } from "@/types/types";
 
 export default async function getInitialLocation(): Promise<ConLocation> {
-  // 1: try browser GPS
-  const browserLoc = await new Promise<ConLocation | null>((resolve) => {
-    if (!navigator.geolocation) return resolve(null);
+  // 1: try browser GPS 
+  // DEPRECATED to increase trust
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({latitude: pos.coords.latitude, longitude: pos.coords.longitude}),
-      () => resolve(null),
-      { timeout: 5000 }
-    );
-  });
-  console.log("Trying to browser GPS:", browserLoc);
-  if (browserLoc) return browserLoc;
+  // const browserLoc = await new Promise<ConLocation | null>((resolve) => {
+  //   if (!navigator.geolocation) return resolve(null);
+
+  //   navigator.geolocation.getCurrentPosition(
+  //     (pos) => resolve({latitude: pos.coords.latitude, longitude: pos.coords.longitude}),
+  //     () => resolve(null),
+  //     { timeout: 5000 }
+  //   );
+  // });
+  // console.log("Trying to browser GPS:", browserLoc);
+  // if (browserLoc) return browserLoc;
 
   // 2: if that doesn't work, then try getting location from IP address
   try {

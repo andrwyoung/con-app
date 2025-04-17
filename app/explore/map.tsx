@@ -39,6 +39,8 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const selectedTags = useFilterStore((s) => s.selectedTags);
   const includeUntagged = useFilterStore((s) => s.includeUntagged);
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
+  const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive)();
+  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive)();
 
   // initial mount of map
   useEffect(() => {
@@ -62,7 +64,9 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // create filteredDict
   const filteredDict = useMemo(() => {
-    return Object.fromEntries(
+    if (!tagFilterIsActive && !statusFilterIsActive) return eventDict;
+
+    const result = Object.fromEntries(
       Object.entries(eventDict).filter((eventRecord) => {
         const event = eventRecord[1];
 
@@ -81,15 +85,28 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
         return tagMatch;
       })
     );
-  }, [eventDict, selectedTags, includeUntagged, selectedStatuses]);
+
+    return result;
+  }, [
+    eventDict,
+    selectedTags,
+    includeUntagged,
+    selectedStatuses,
+    statusFilterIsActive,
+    tagFilterIsActive,
+  ]);
 
   // update the store with the filtered items
   useEffect(() => {
-    setFilteredItems(filteredDict);
+    requestIdleCallback(() => {
+      setFilteredItems(filteredDict);
+    });
   }, [filteredDict, setFilteredItems]);
 
   // whenever filteredData changes, regenerate the GeoJSON
   useEffect(() => {
+    if (!tagFilterIsActive && !statusFilterIsActive) return;
+
     console.log("filteredData has changed. updating!");
     if (!mapRef.current || !mapRef.current.getSource("events")) return;
 
@@ -112,7 +129,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     };
 
     source.setData(geoJsonData);
-  }, [filteredDict]);
+  }, [filteredDict, tagFilterIsActive, statusFilterIsActive]);
 
   // here's where the markers are rendered
   //
