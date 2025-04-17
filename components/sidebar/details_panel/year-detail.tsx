@@ -3,8 +3,36 @@ import { ConventionYear } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
 import { IoCaretBack } from "react-icons/io5";
+import { daysUntil } from "@/lib/helpers/event-recency";
+import { DAYS_UNTIL_SOON } from "@/lib/constants";
 
-export function YearDetail({
+type YearType = "past" | "now" | "future" | "unknown";
+
+function getTimeCategory(
+  start: string | null | undefined,
+  end: string | null | undefined
+): YearType {
+  if (!start || !end) return "unknown";
+
+  const now = new Date();
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (endDate < now) return "past";
+  const daysTill = daysUntil(startDate);
+  if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "now";
+  return "future";
+}
+
+// style if depending on what type it is
+const bgClass: Record<YearType, string> = {
+  past: "bg-gray-100 text-gray-500",
+  now: "bg-green-100 text-green-800",
+  future: "bg-primary-light text-primary-text",
+  unknown: "bg-white text-primary-muted border-dashed border",
+};
+
+function YearDetail({
   conYear,
   venue,
   location,
@@ -13,6 +41,8 @@ export function YearDetail({
   venue: string;
   location: string;
 }) {
+  const category = getTimeCategory(conYear.start_date, conYear.end_date);
+
   const formattedDates = formatEventMonthRange(
     conYear.start_date ?? undefined,
     conYear.end_date ?? undefined
@@ -24,7 +54,7 @@ export function YearDetail({
   return (
     <div
       key={conYear.year}
-      className="snap-center bg-primary-light border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4"
+      className={`snap-center ${bgClass[category]} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
     >
       <div className="text-sm text-primary-text flex flex-col gap-4">
         <div className="flex justify-between items-center">
@@ -52,13 +82,17 @@ export function YearDetail({
 }
 
 export default function YearGallery({
+  currentYear,
   allYears,
   venue,
   location,
+  showMissing = false,
 }: {
+  currentYear: number;
   allYears: ConventionYear[];
   venue: string;
   location: string;
+  showMissing: boolean;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(false);
@@ -132,6 +166,28 @@ export default function YearGallery({
               location={location}
             />
           ))}
+        {showMissing && (
+          <div
+            className={`snap-center ${bgClass["unknown"]} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
+          >
+            <div className="text-sm text-primary-text flex flex-col gap-4">
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-lg">{currentYear + 1}</span>
+                <span>unknown</span>
+              </div>
+              <div className="text-xs text-primary-muted">
+                <div className="flex flex-row items-center gap-2">
+                  <SiGooglemaps className="w-4 h-4" />
+                  <div className="hover:underline text-primary-muted">
+                    {venue}
+                    <br />
+                    {location}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

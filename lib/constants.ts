@@ -1,6 +1,6 @@
 export const MAX_SEARCH_BATCH_SIZE = 500;
 
-export const DAYS_UNTIL_DISCONTINUED = 600
+export const DAYS_UNTIL_DISCONTINUED = 550
 export const DAYS_SINCE_RECENT = 7;
 export const DAYS_UNTIL_SOON = 7;
 export const DAYS_UNTIL_UPCOMING = 30;
