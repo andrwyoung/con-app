@@ -98,9 +98,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // update the store with the filtered items
   useEffect(() => {
-    requestIdleCallback(() => {
-      setFilteredItems(filteredDict);
-    });
+    setFilteredItems(filteredDict);
   }, [filteredDict, setFilteredItems]);
 
   // whenever filteredData changes, regenerate the GeoJSON
@@ -141,7 +139,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     console.log("selectedTags", selectedTags);
 
     addMarkersToMap(
-      mapRef.current,
+      mapRef.current!,
       filteredDict,
       setSelectedCon,
       setSelectedClusterId,
