@@ -25,7 +25,7 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
   setInitialized: () => set({initialized: true}),
 
   sidebarMode: "filter",
-  setSidebarModeAndDeselectCon: (mode) => set({ sidebarMode: mode, selectedCon: null  }),
+  setSidebarModeAndDeselectCon: (mode) => set({ sidebarMode: mode}),
 
   selectedCon: null,
   setSelectedCon: (id) => {set({ selectedCon: id })},

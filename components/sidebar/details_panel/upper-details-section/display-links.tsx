@@ -26,7 +26,10 @@ export const socialIconMap: Record<string, JSX.Element> = {
 export function parseSocialLinks(
   raw: string
 ): { href: string; platform: string }[] {
-  return raw
+  const platformCounts: Record<string, number> = {};
+  const results: { href: string; platform: string }[] = [];
+
+  raw
     .split(",")
     .map((link) => link.trim())
     .filter((link) => {
@@ -35,18 +38,26 @@ export function parseSocialLinks(
         Boolean(link) &&
         !lower.includes("login") &&
         !lower.includes("facebook.com/events") &&
-        !lower.includes("facebook.com/sharer.php")
+        !lower.includes("facebook.com/sharer.php") &&
+        !lower.includes("facebook.com/profile.php") &&
+        !lower.includes("www.instagram.com/p/")
       );
     })
-    .map((href) => {
+    .forEach((href) => {
       const hostname = new URL(href).hostname.toLowerCase();
-
       const platform =
         Object.keys(socialIconMap).find((key) => hostname.includes(key)) ??
         "other";
 
-      return { href, platform };
+      platformCounts[platform] = platformCounts[platform] || 0;
+
+      if (platformCounts[platform] < 2) {
+        results.push({ href, platform });
+        platformCounts[platform]++;
+      }
     });
+
+  return results;
 }
 
 export default function SocialLinks({ links }: { links: string }) {

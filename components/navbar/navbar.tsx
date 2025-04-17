@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import LoginModal from "../auth/login-modal";
 import { fireConfetti } from "@/lib/utils";
-import { FiFile, FiGrid, FiLock } from "react-icons/fi";
+import { FiLock } from "react-icons/fi";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -82,14 +82,14 @@ export default function NavBar() {
               align="end"
               className="w-32 p-2 text-sm bg-white shadow-lg rounded-md"
             >
-              <DropdownButton>
+              {/* <DropdownButton>
                 <FiFile />
                 Profile
               </DropdownButton>
               <DropdownButton>
                 <FiGrid />
                 Settings
-              </DropdownButton>
+              </DropdownButton> */}
               <DropdownButton
                 onClick={async () => {
                   // TODO: toast saying logged out

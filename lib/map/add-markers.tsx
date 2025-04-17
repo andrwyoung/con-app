@@ -410,7 +410,7 @@ export default function addMarkersToMap(
         setFocusedEvents([]);
         clearClickedClusterHighlight();
       }
-      setSelectedCon(null);
+      // setSelectedCon(null);
     });
 
     map.on("click", (e) => {

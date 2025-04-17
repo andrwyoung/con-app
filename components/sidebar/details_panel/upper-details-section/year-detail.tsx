@@ -5,6 +5,7 @@ import { SiGooglemaps } from "react-icons/si";
 import { IoCaretBack } from "react-icons/io5";
 import { daysUntil } from "@/lib/helpers/event-recency";
 import { DAYS_UNTIL_SOON } from "@/lib/constants";
+import { MdEdit } from "react-icons/md";
 
 type YearType = "past" | "now" | "future" | "unknown";
 
@@ -26,10 +27,18 @@ function getTimeCategory(
 
 // style if depending on what type it is
 const bgClass: Record<YearType, string> = {
-  past: "bg-gray-100 text-gray-500",
-  now: "bg-green-100 text-green-800",
+  past: "bg-stone-100",
+  now: "bg-emerald-100",
   future: "bg-primary-light text-primary-text",
-  unknown: "bg-white text-primary-muted border-dashed border",
+  unknown: "bg-white border-dashed border-2",
+};
+
+// style if depending on what type it is
+const yearStatusText: Record<YearType, string> = {
+  past: "Event Passed",
+  now: "Happening This Weekend!",
+  future: "Coming Soon",
+  unknown: "",
 };
 
 function YearDetail({
@@ -54,12 +63,17 @@ function YearDetail({
   return (
     <div
       key={conYear.year}
-      className={`snap-center ${bgClass[category]} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
+      className={`snap-center ${bgClass[category]} rounded-lg shrink-0 w-76 p-4`}
     >
       <div className="text-sm text-primary-text flex flex-col gap-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-start">
           <span className="font-bold text-lg">{conYear.year}</span>
-          <span>{formattedDates}</span>
+          <div className="flex flex-col items-end">
+            <span>{formattedDates}</span>
+            <span className="text-xs text-primary-muted">
+              {yearStatusText[category]}
+            </span>
+          </div>
         </div>
         <div className="text-xs text-primary-muted">
           <div className="flex flex-row items-center gap-2">
@@ -110,6 +124,7 @@ export default function YearGallery({
     }
   }, [scrollRef, allYears]);
 
+  // detect when scroll is at far left/right
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -139,7 +154,7 @@ export default function YearGallery({
         >
           <IoCaretBack className="w-6 h-6" />
         </button>
-        <h3 className="text-sm self-center text-primary-muted font-semibold uppercase">
+        <h3 className="text-sm self-center text-primary-darker font-semibold uppercase">
           Convention Years
         </h3>
         <button
@@ -171,9 +186,20 @@ export default function YearGallery({
             className={`snap-center ${bgClass["unknown"]} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
           >
             <div className="text-sm text-primary-text flex flex-col gap-4">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start">
                 <span className="font-bold text-lg">{currentYear + 1}</span>
-                <span>unknown</span>
+                <div className="flex flex-col items-end">
+                  <span>Unknown</span>
+                  <div className="flex flex-row gap-0.5 text-secondary-darker ">
+                    <MdEdit className="translate-y-[1px]" />
+                    <a
+                      href="mailto:andrew@jonadrew.com"
+                      className="text-xs cursor-pointer hover:underline"
+                    >
+                      Submit an update
+                    </a>
+                  </div>
+                </div>
               </div>
               <div className="text-xs text-primary-muted">
                 <div className="flex flex-row items-center gap-2">

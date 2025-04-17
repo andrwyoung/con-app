@@ -69,7 +69,7 @@ export default function ExplorePage() {
         <Sidebar />
       </div>
       {selectedCon && (
-        <div className="absolute right-16 top-32 z-17">
+        <div className="absolute right-12 top-32 z-17">
           <DetailsPanel
             con={selectedCon}
             onClose={() => setSelectedCon(null)}
