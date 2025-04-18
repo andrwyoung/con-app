@@ -2,6 +2,7 @@
 // and then store it locally
 
 "use client";
+import { fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect } from "react";
@@ -10,7 +11,6 @@ export function useUser() {
   const { user, setUser, setProfile } = useUserStore();
 
   useEffect(() => {
-    // helper function: fetch data from user_profiles given auth.user.id
     const fetchProfile = async (userId: string) => {
       const { data, error } = await supabaseAnon
         .from("user_profiles")
@@ -25,33 +25,39 @@ export function useUser() {
       }
 
       setProfile(data);
+
+      await syncAllListsToSupabase();
+      await fetchUserListsFromSupabase(userId);
     };
 
-    // if authentication changes, then reflect that on the store
     const { data: listener } = supabaseAnon.auth.onAuthStateChange(
-      (event, session) => {
+      (_, session) => {
         const user = session?.user ?? null;
         setUser(user);
 
         if (user) {
-          fetchProfile(user.id);
+          void fetchProfile(user.id);
         } else {
           setProfile(null);
         }
       }
     );
 
-    // on init, set the user
     supabaseAnon.auth.getUser().then(({ data }) => {
       const user = data.user;
       setUser(user);
+
       if (user) {
-        fetchProfile(user.id);
-      }
+        supabaseAnon.auth.getSession().then(({ data: session }) => {
+          console.log("Current Supabase session:", session);
+      });
+
+      void fetchProfile(user.id);
+    }
     });
 
     return () => {
-      listener.subscription.unsubscribe();
+      listener?.subscription?.unsubscribe?.();
     };
   }, [setUser, setProfile]);
 

@@ -1,4 +1,4 @@
-import { useDropStore } from "@/stores/use-list-store";
+import { useListStore } from "@/stores/use-list-store";
 import { EventInfo } from "@/types/types";
 import { useDroppable } from "@dnd-kit/core";
 
@@ -12,7 +12,11 @@ export default function Droppable({
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
-  const validDrop = item && !useDropStore.getState().alreadyInDropList(item);
+  const validDrop =
+    item &&
+    !useListStore
+      .getState()
+      .alreadyInList(useListStore.getState().showingNow, item);
 
   return (
     <div ref={setNodeRef}>

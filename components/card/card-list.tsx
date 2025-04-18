@@ -15,7 +15,7 @@ import {
   TimeCategory,
 } from "@/lib/helpers/event-recency";
 
-export default function NavigatableCardList({
+export default function CardList({
   items,
   sortOption = "raw",
   currentLocation = null,

@@ -1,3 +1,5 @@
+import { EventInfo } from "@/types/types";
+
 export const MAX_SEARCH_BATCH_SIZE = 500;
 
 export const DAYS_UNTIL_DISCONTINUED = 550
@@ -21,3 +23,21 @@ export const DEFAULT_ZOOM_FAR = 5;
 export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
     latitude: 37.7749, longitude: -122.4194
 };
+
+
+export const UNKNOWN_CONVENTION: EventInfo = {
+    id: -1,
+    slug: "non",
+    name: "Unknown Convention",
+  
+    location: "unknown",
+    location_lat: -15.6221,
+    location_long: -130.9843,
+    event_status: "unknown",
+  
+    tags: [],
+  
+    year: 1999,
+  
+    timeCategory: "unknown",
+  };

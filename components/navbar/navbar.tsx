@@ -35,7 +35,6 @@ export default function NavBar() {
   const pathname = usePathname();
   const user = useUserStore((s) => s.user);
   const profile = useUserStore((s) => s.profile);
-  console.log(user);
 
   return (
     <div
