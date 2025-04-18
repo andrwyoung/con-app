@@ -1,4 +1,4 @@
-import { grabAllDetails } from "@/lib/searching/grab-all-details";
+import { grabAllDetails } from "@/lib/details/grab-all-details";
 import { EventInfo, FullConventionDetails } from "@/types/types";
 import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
@@ -51,7 +51,7 @@ export default function DetailsPanel({
 
           <hr className="border-t border-primary-muted mt-8 mb-4 mx-auto w-80 border-1" />
 
-          <ReviewsSection />
+          <ReviewsSection id={con.id} />
         </div>
       </div>
     </div>

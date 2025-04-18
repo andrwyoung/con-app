@@ -43,11 +43,11 @@ const Card = forwardRef<
         onClick={onClick}
         className={`${baseClass} ${variantClass}`}
       >
-        <div
+        {/* <div
           className={`absolute top-0 left-0  h-16 w-16  ${
             selected ? "bg-primary-light" : "bg-primary-lightest"
           }`}
-        />
+        /> */}
 
         {type !== "list" && (
           <Draggable con={info}>

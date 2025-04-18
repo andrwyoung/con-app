@@ -1,10 +1,39 @@
+import { grabAllReviewsForConvention } from "@/lib/details/grab-all-reviews";
 import { useUserStore } from "@/stores/user-store";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ReviewCard from "./review-card";
+import ReviewModal from "./review-modal";
+import { UUID } from "crypto";
 // import AllReviews from "./all-reviews";
 
-export default function ReviewsSection() {
+export type Review = {
+  review_id: UUID;
+  user_id: string;
+  convention_id: number;
+  stars: number;
+  review_text: string;
+
+  // grabbing username too
+  user_profiles?: {
+    username: string;
+  };
+};
+
+export default function ReviewsSection({ id }: { id: number }) {
   const profile = useUserStore((s) => s.profile);
-  // const reviews = [];
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  // grab con data from database
+  useEffect(() => {
+    const init = async () => {
+      const allReviews = await grabAllReviewsForConvention(id);
+      console.log("all reviews", allReviews);
+
+      setReviews(allReviews);
+    };
+
+    init();
+  }, [id]);
 
   return (
     <div className="flex flex-col gap-2 px-2">
@@ -13,13 +42,7 @@ export default function ReviewsSection() {
           Reviews
         </h1>
         {profile ? (
-          <a
-            href="mailto:andrew@jonadrew.com"
-            className="bg-primary-lightest cursor-pointer text-primary-text border-2 border-primary 
-            uppercase text-xs px-4 py-1 rounded-full hover:bg-primary focus:outline-none"
-          >
-            Submit a review
-          </a>
+          <ReviewModal conId={id} />
         ) : (
           <p className="text-xs text-primary-muted ">
             Sign in to leave a review
@@ -28,16 +51,16 @@ export default function ReviewsSection() {
       </div>
 
       <div className="flex flex-col items-center">
-        {/* {reviews.length > 0 ? (
+        {reviews.length > 0 ? (
           reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard key={review.review_id} review={review} />
           ))
-        ) : ( */}
-        <p className="text-sm text-primary-muted text-center">
-          No reviews yet. <br />
-          Be the first to share your thoughts!
-        </p>
-        {/* )} */}
+        ) : (
+          <p className="text-sm text-primary-muted text-center">
+            No reviews yet. <br />
+            Be the first to share your thoughts!
+          </p>
+        )}
       </div>
     </div>
   );
