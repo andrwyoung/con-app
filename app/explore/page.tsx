@@ -7,7 +7,7 @@ import {
 } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
-import DetailsPanel from "@/components/sidebar/details_panel/details-panel";
+import DetailsPanel from "@/components/details-panel/details-panel";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon } = useSidebarStore();
@@ -65,11 +65,11 @@ export default function ExplorePage() {
 
   return (
     <div className="w-screen h-screen font-extrabold">
-      <div className="absolute z-10 top-32 left-12">
+      <div className="absolute z-8 top-32 left-12">
         <Sidebar />
       </div>
       {selectedCon && (
-        <div className="absolute right-12 top-32 z-17">
+        <div className="absolute right-12 top-32 z-5">
           <DetailsPanel
             con={selectedCon}
             onClose={() => setSelectedCon(null)}

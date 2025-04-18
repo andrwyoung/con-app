@@ -1,4 +1,5 @@
 import { authStep } from "@/components/auth/login-modal";
+import { EventInfo } from "@/types/types";
 import { create } from "zustand";
 
 type UIStore = {
@@ -31,4 +32,14 @@ export const useUIStore = create<UIStore>((set, get) => ({
 
   shouldScrollToLocation: false,
   setShouldScrollToLocation: (val) => set({ shouldScrollToLocation: val}),
+}));
+
+
+
+export const useDragStore = create<{
+  activeCon: EventInfo | null;
+  setActiveCon: (con: EventInfo | null) => void;
+}>((set) => ({
+  activeCon: null,
+  setActiveCon: (con) => {console.log("dragging con:", con); set({ activeCon: con })},
 }));

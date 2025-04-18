@@ -82,29 +82,30 @@ export default function NavigatableCardList({
         sortedResults.findIndex((c) => c.id === selectedCon?.id) ??
         -1;
 
-      const navigate = (next: number) => {
-        setSelectedCon(sortedResults[next]);
-        setSelectedIndex(next);
-        setTimeout(() => {
-          cardRefs.current[next]?.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-          });
-        }, 0);
-      };
+      // const navigate = (next: number) => {
+      //   setSelectedCon(sortedResults[next]);
+      //   setSelectedIndex(next);
+      //   setTimeout(() => {
+      //     cardRefs.current[next]?.current?.scrollIntoView({
+      //       behavior: "smooth",
+      //       block: "nearest",
+      //     });
+      //   }, 0);
+      // };
 
-      if (e.key === "ArrowDown") {
-        const next = Math.min(
-          current + 1,
-          Math.min(items.length, MAX_CARDS) - 1
-        );
-        navigate(next);
-      }
+      // DISABLED: for now
+      // if (e.key === "ArrowDown") {
+      //   const next = Math.min(
+      //     current + 1,
+      //     Math.min(items.length, MAX_CARDS) - 1
+      //   );
+      //   navigate(next);
+      // }
 
-      if (e.key === "ArrowUp") {
-        const next = Math.max(current - 1, 0);
-        navigate(next);
-      }
+      // if (e.key === "ArrowUp") {
+      //   const next = Math.max(current - 1, 0);
+      //   navigate(next);
+      // }
 
       if (e.key === "Enter") {
         const con = items[current];

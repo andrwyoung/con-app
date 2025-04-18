@@ -1,4 +1,4 @@
-import { FilterKey } from "@/components/sidebar/modes/filter-mode";
+import { FilterKey } from "@/components/sidebar-panel/modes/filter-mode";
 import { timeCategories } from "@/lib/helpers/event-recency";
 import { EventInfo } from "@/types/types";
 import { create } from "zustand";

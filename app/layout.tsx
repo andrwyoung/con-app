@@ -3,8 +3,9 @@ import { Raleway, Mulish, Pattaya } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
 import UserProvider from "@/components/user-provider";
-import MapWrapper from "./map-wrapper";
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
+
+const HeavyComponent = lazy(() => import("./map-wrapper"));
 
 const raleway = Raleway({
   variable: "--font-header",
@@ -42,7 +43,7 @@ export default function RootLayout({
           <NavBar />
           {children}
           <Suspense>
-            <MapWrapper />
+            <HeavyComponent />
           </Suspense>
         </UserProvider>
       </body>
