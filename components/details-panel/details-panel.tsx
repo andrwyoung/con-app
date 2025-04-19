@@ -52,7 +52,7 @@ export default function DetailsPanel({
   }
 
   return (
-    <div className="w-96 max-h-[calc(100vh-13rem)] bg-white rounded-lg shadow-xl border flex flex-col">
+    <div className="w-96 max-h-[calc(100vh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
       <button
         type="button"
         className="absolute top-4 right-4 text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105 z-10"

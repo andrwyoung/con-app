@@ -65,11 +65,11 @@ export default function ExplorePage() {
 
   return (
     <div className="w-screen h-screen font-extrabold">
-      <div className="absolute z-8 top-32 left-12">
+      <div className="absolute z-8 top-[13%] left-[2%]">
         <Sidebar />
       </div>
       {selectedCon && (
-        <div className="absolute right-12 top-32 z-5">
+        <div className="absolute right-[2%] top-[13%] z-5">
           <DetailsPanel
             con={selectedCon}
             onClose={() => setSelectedCon(null)}

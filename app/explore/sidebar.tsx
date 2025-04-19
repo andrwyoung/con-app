@@ -59,7 +59,7 @@ export default function Sidebar() {
         )}
       </DragOverlay>
       <div className="relative">
-        <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-14rem)] border rounded-lg shadow-xl bg-white px-5 py-6">
+        <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6">
           <SearchBar key={mode} />
           {/* <StatusDotTester /> */}
           {mode === "search" && <SearchMode />}

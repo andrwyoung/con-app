@@ -1,7 +1,7 @@
 import { useListStore } from "@/stores/use-list-store";
 import { ConventionInfo } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Droppable from "./drop-wrapper";
 import CardList from "../card/card-list";
 import {
@@ -41,6 +41,10 @@ export default function ListPanel({
   const renameList = useListStore((s) => s.renameList);
   const deleteList = useListStore((s) => s.deleteList);
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const hasSyncedRef = useRef(false);
+
   // if current list was removed somehow, fall back to "planning"
   useEffect(() => {
     const currentList = lists[showingNow];
@@ -48,6 +52,13 @@ export default function ListPanel({
       setShowingNow(DEFAULT_LIST);
     }
   }, [lists, showingNow, setShowingNow]);
+
+  useEffect(() => {
+    if (profile?.user_id && !hasSyncedRef.current) {
+      fetchUserListsFromSupabase(profile.user_id);
+      hasSyncedRef.current = true;
+    }
+  }, [profile]);
 
   // when new items are added, scroll to bottom
   const itemCount = lists[showingNow]?.items.length;
@@ -178,15 +189,32 @@ export default function ListPanel({
                   <div className="flex flex-row gap-4 items-center  text-primary-muted">
                     <MdOutlineSync
                       title="Sync Lists"
-                      onClick={() =>
-                        fetchUserListsFromSupabase(profile.user_id)
-                      }
-                      className="cursor-pointer size-5"
+                      onClick={async () => {
+                        if (isSyncing) return;
+                        setIsSyncing(true);
+                        await fetchUserListsFromSupabase(profile.user_id);
+                        const listCount = Object.keys(
+                          useListStore.getState().lists
+                        ).length;
+
+                        // simulate spin duration even if fetch is fast
+                        setTimeout(() => {
+                          setIsSyncing(false);
+                          toast(
+                            `Synced ${listCount} ${
+                              listCount === 1 ? "list" : "lists"
+                            }!`
+                          );
+                        }, 1000); // 0.8s spin
+                      }}
+                      className={`cursor-pointer size-5 transition-transform hover:text-primary-darker ${
+                        isSyncing ? "animate-spin-twice" : "hover:rotate-12"
+                      }`}
                     />
                     {!isSpecialListKey(showingNow) && (
                       <FiTrash2
                         title="Delete Current List"
-                        className="cursor-pointer size-4.5"
+                        className="cursor-pointer size-4.5 hover:text-primary-darker"
                         onClick={() => {
                           const deletedLabel = lists[showingNow].label;
                           const confirmed = window.confirm(
@@ -205,12 +233,19 @@ export default function ListPanel({
               </div>
             </div>
 
-            <div
-              ref={scrollRef}
-              className="overflow-y-auto flex-grow max-h-[calc(100vh-24rem)] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
-            >
-              <CardList items={lists[showingNow].items} type="list" />
-            </div>
+            {lists[showingNow].items.length === 0 ? (
+              <div className="text-sm text-center text-primary-muted px-2">
+                No cons in this list. <br />
+                Drag your favorite cons here!
+              </div>
+            ) : (
+              <div
+                ref={scrollRef}
+                className="overflow-y-auto flex-grow max-h-[calc(100vh-24rem)] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
+              >
+                <CardList items={lists[showingNow].items} type="list" />
+              </div>
+            )}
           </Droppable>
         </motion.div>
       )}
