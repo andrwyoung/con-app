@@ -2,7 +2,7 @@
 // we need the sudo key because we want to write user profile data without them being logged in
 "use server";
 
-import { Persona } from "@/types/enums";
+import { Persona } from "@/components/auth/steps/signup-step";
 import { createClientSudo } from "../supabase/server";
 
 export async function signupUser({

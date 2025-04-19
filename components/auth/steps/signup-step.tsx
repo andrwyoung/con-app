@@ -15,6 +15,22 @@ import { isValidEmail } from "./email-step";
 export const PERSONA = ["ATTENDEE", "ARTIST", "ORGANIZER"] as const;
 export type Persona = (typeof PERSONA)[number];
 
+const reservedUsernames = [
+  "admin",
+  "support",
+  "help",
+  "me",
+  "you",
+  "new",
+  "root",
+  "system",
+  "mod",
+  "staff",
+  "convention",
+  "explore",
+  "planner",
+];
+
 export default function SignupStep({
   changeStep,
   email,
@@ -44,21 +60,6 @@ export default function SignupStep({
     hasMinLength && hasLowercase && hasUppercase && hasNumber;
 
   const validUsernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-  const reservedUsernames = [
-    "admin",
-    "support",
-    "help",
-    "me",
-    "you",
-    "new",
-    "root",
-    "system",
-    "mod",
-    "staff",
-    "convention",
-    "explore",
-    "planner",
-  ];
 
   // focus first field
   useEffect(() => {

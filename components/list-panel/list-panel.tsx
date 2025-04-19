@@ -47,7 +47,7 @@ export default function ListPanel({
     if (!currentList) {
       setShowingNow(DEFAULT_LIST);
     }
-  }, [lists, showingNow]);
+  }, [lists, showingNow, setShowingNow]);
 
   // when new items are added, scroll to bottom
   const itemCount = lists[showingNow]?.items.length;
@@ -61,7 +61,7 @@ export default function ListPanel({
   }, [itemCount]);
 
   // determines naming conventions for new lists
-  function handleNewList(value: string) {
+  function handleNewList() {
     const userCreatedLists = Object.entries(lists).filter(([id]) =>
       id.startsWith(`${profile?.username}-list-`)
     );
@@ -76,7 +76,7 @@ export default function ListPanel({
     // Generate smart label
     const unnamedLabelPrefix = "Unnamed List";
     const unnamedLabels = userCreatedLists
-      .map(([_, list]) => list.label)
+      .map(([, list]) => list.label)
       .filter((label) => label.startsWith(unnamedLabelPrefix));
 
     let label = unnamedLabelPrefix;
@@ -134,7 +134,7 @@ export default function ListPanel({
                 <Select
                   onValueChange={(value) => {
                     if (value === NEW_ITEM_KEY) {
-                      handleNewList(value);
+                      handleNewList();
                     } else {
                       setShowingNow(value);
                     }

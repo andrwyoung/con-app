@@ -13,6 +13,7 @@ import { useUserStore } from "@/stores/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import WelcomeModal from "../onboarding/welcome-modal";
 import { toast } from "sonner";
+import { useListStore } from "@/stores/use-list-store";
 
 function DropdownButton({
   children,
@@ -36,6 +37,8 @@ export default function NavBar() {
   const pathname = usePathname();
   const user = useUserStore((s) => s.user);
   const profile = useUserStore((s) => s.profile);
+
+  const resetLists = useListStore((s) => s.resetLists);
 
   return (
     <div
@@ -93,6 +96,7 @@ export default function NavBar() {
               <DropdownButton
                 onClick={async () => {
                   await supabaseAnon.auth.signOut();
+                  resetLists();
                   toast("Succesfully Logged Out");
                 }}
               >

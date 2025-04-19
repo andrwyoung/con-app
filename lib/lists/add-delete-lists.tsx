@@ -47,7 +47,7 @@ export async function renameListInSupabase({
   const userId = useUserStore.getState().user?.id;
   if (!userId) return;
 
-  const { data, error } = await supabaseAnon
+  const { error } = await supabaseAnon
     .from("user_convention_lists")
     .update({ label: newLabel })
     .match({ list_id: listId, user_id: userId })

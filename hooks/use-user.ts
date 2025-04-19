@@ -45,8 +45,6 @@ export function useUser() {
         if (user) {
           void fetchProfile(user.id);
         } else {
-          
-          resetLists();
           setProfile(null);
         }
       }

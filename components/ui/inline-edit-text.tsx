@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Input } from "./input";
 
 type InlineEditTextProps = {
   value: string;
