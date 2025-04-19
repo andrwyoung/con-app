@@ -7,7 +7,7 @@ import { createListInSupabase, deleteListFromSupabase, renameListInSupabase } fr
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
-type UserList = {
+export type UserList = {
   label: string;
   items: ConventionInfo[];
 };

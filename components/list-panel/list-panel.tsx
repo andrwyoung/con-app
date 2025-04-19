@@ -20,6 +20,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { DEFAULT_LIST, SPECIAL_LIST_KEYS } from "@/lib/constants";
 import { isSpecialListKey } from "@/lib/lists/special-list";
 import { toast } from "sonner";
+import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
 
 const NEW_ITEM_KEY = "__new__";
 
@@ -73,38 +74,13 @@ export default function ListPanel({
 
   // determines naming conventions for new lists
   function handleNewList() {
-    const userCreatedLists = Object.entries(lists).filter(([id]) =>
-      id.startsWith(`${profile?.username}-list-`)
-    );
+    if (!profile?.username) return;
 
-    // Generate new list ID
-    const highestId = userCreatedLists.reduce((max, [id]) => {
-      const num = parseInt(id.replace(`${profile?.username}-list-`, ""), 10);
-      return isNaN(num) ? max : Math.max(max, num);
-    }, -1);
-    const newListId = `${profile?.username}-list-${highestId + 1}`;
+    const { newListId, label } = generateNewListNames({
+      lists,
+      username: profile.username,
+    });
 
-    // Generate smart label
-    const unnamedLabelPrefix = "Unnamed List";
-    const unnamedLabels = userCreatedLists
-      .map(([, list]) => list.label)
-      .filter((label) => label.startsWith(unnamedLabelPrefix));
-
-    let label = unnamedLabelPrefix;
-
-    if (unnamedLabels.length > 0) {
-      const highestSuffix = unnamedLabels.reduce((max, curr) => {
-        const match = curr.match(/Unnamed List (\d+)/);
-        const num = match
-          ? parseInt(match[1], 10)
-          : curr === "Unnamed List"
-          ? 1
-          : 0;
-        return Math.max(max, num);
-      }, 0);
-
-      label = `${unnamedLabelPrefix} ${highestSuffix + 1}`;
-    }
     createList(newListId, label);
     setShowingNow(newListId);
   }

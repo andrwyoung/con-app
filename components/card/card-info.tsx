@@ -59,7 +59,7 @@ function StatusDot({ status }: { status: TimeCategory }) {
 
 export default function CardInfo({ info }: { info: ConventionInfo }) {
   return (
-    <div className="flex flex-col ml-15 mr-4">
+    <>
       <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1">
         {info.name}
       </div>
@@ -71,6 +71,6 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
         <StatusDot status={info.timeCategory ?? "unknown"} />
         {formatEventDates(info.year, info.start_date, info.end_date)}
       </div>
-    </div>
+    </>
   );
 }

@@ -9,6 +9,13 @@ import Draggable from "./drag-wrapper";
 import CardInfo from "./card-info";
 import { ContextMenu, ContextMenuTrigger } from "@radix-ui/react-context-menu";
 import CardContextMenu from "./card-context-menu";
+import { FiMenu } from "react-icons/fi";
+import { ContextMenuContent } from "../ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export type CardVariant = "default" | "recommendation" | "list" | "hover";
 
@@ -59,12 +66,14 @@ const Card = forwardRef<
           </Draggable>
         )}
 
-        <CardInfo info={info} />
-        <div className="absolute right-8 bottom-1.5 flex flex-row gap-1 text-primary-muted transition-all">
+        <div className="flex flex-col ml-4 mr-10">
+          <CardInfo info={info} />
+        </div>
+        <div className="absolute right-8 bottom-1.5 flex flex-col gap-1 text-primary-muted transition-all">
           <IoLocate
             aria-label="Fly to Location"
             title="Fly to Location"
-            className="hover:scale-110 hover:text-primary-text cursor-alias"
+            className="hover:scale-110 hover:text-primary-text cursor-default"
             onClick={(e) => {
               // if the target button is clicked, then fly to it. but don't deselect the card itself
               e.stopPropagation();
@@ -74,9 +83,23 @@ const Card = forwardRef<
               );
             }}
           />
+          <DropdownMenu>
+            <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} asChild>
+              <FiMenu
+                aria-label="Open Card Menu"
+                title="Open Card Menu"
+                className="hover:scale-110 hover:text-primary-text cursor-default"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
+              <CardContextMenu cardType={type} con={info} menuType="dropdown" />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </ContextMenuTrigger>
-      <CardContextMenu type={type} con={info} />
+      <ContextMenuContent>
+        <CardContextMenu cardType={type} con={info} menuType="context" />
+      </ContextMenuContent>
     </ContextMenu>
   );
 });

@@ -115,13 +115,11 @@
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(-720deg); /* two full rotations */
+    transform: rotate(-732deg); /* two full rotations */
   }
 }
 
-.animate-spin-twice {
-  animation: spin-once 1.6s ease-out;
-}
+
 
 @layer utilities {
   .animate-shake {
@@ -131,5 +129,9 @@
   .map-pulse {
     @apply absolute w-4 h-4 bg-primary rounded-full pointer-events-none;
     animation: ripple 0.4s ease-out forwards;
+  }
+
+  .animate-spin-twice {
+    animation: spin-once 1.6s ease-out;
   }
 }

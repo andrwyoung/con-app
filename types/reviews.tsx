@@ -1,14 +1,26 @@
 import { UUID } from "crypto";
 
+// export const TAG_OPTIONS = [
+//   "Family Friendly",
+//   "Great Artist Alley",
+//   "Well Organized",
+//   "Awesome Panels",
+//   "Would Go Again",
+//   "Lots of People",
+//   "A Little Slow",
+//   "Not My Vibe",
+// ] as const;
+
 export const TAG_OPTIONS = [
-  "Family Friendly",
   "Great Artist Alley",
   "Well Organized",
-  "Awesome Panels",
+  "Good Foot Traffic",
+  "Helpful Staff",
+  "Smooth Setup/Takedown",
   "Would Go Again",
-  "Lots of People",
   "A Little Slow",
-  "Not My Vibe",
+  "Unorganized",
+  "Not Worth It",
 ] as const;
 
 export type ReviewTag = (typeof TAG_OPTIONS)[number];
