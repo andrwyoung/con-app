@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/navbar/navbar";
 import UserProvider from "@/components/user-provider";
 import { lazy, Suspense } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const HeavyComponent = lazy(() => import("./map-wrapper"));
 
@@ -45,6 +46,7 @@ export default function RootLayout({
           <Suspense>
             <HeavyComponent />
           </Suspense>
+          <Toaster />
         </UserProvider>
       </body>
     </html>

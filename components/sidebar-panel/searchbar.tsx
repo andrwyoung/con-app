@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiClock, FiMapPin, FiUser, FiX } from "react-icons/fi";
@@ -19,7 +19,7 @@ type DropdownItem = {
   id: string;
   type: "result" | "action" | "message";
   label: React.ReactNode;
-  data?: EventInfo;
+  data?: ConventionInfo;
   className?: string;
   onClick?: () => void;
 };
@@ -43,7 +43,9 @@ function getDropdownItemClass(item: DropdownItem, isHighlighted: boolean) {
 
 export default function Searchbar() {
   const [searchbarText, setSearchbarText] = useState("");
-  const [suggestionResults, setSuggestionResults] = useState<EventInfo[]>([]);
+  const [suggestionResults, setSuggestionResults] = useState<ConventionInfo[]>(
+    []
+  );
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const items: DropdownItem[] = [];
@@ -98,7 +100,7 @@ export default function Searchbar() {
             name: `No results for "${searchbarText}"`,
             location_lat: 0,
             location_long: 0,
-          } as EventInfo,
+          } as ConventionInfo,
         ]);
       } else {
         setSuggestionResults(res);
@@ -144,7 +146,7 @@ export default function Searchbar() {
   };
 
   // 2: selected an item on dropdown menu
-  const onResultSelect = (s: EventInfo) => {
+  const onResultSelect = (s: ConventionInfo) => {
     if (s.id === -1) return; // should never happen...hopefully
     setHighlightedIndex(-1);
     setSuggestionResults([]);

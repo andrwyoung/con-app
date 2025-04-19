@@ -6,7 +6,7 @@ import {
   TIME_CATEGORY_LABELS,
   TimeCategory,
 } from "@/lib/helpers/event-recency";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { FaStar } from "react-icons/fa6";
 
 export function StatusDotTester() {
@@ -57,7 +57,7 @@ function StatusDot({ status }: { status: TimeCategory }) {
   );
 }
 
-export default function CardInfo({ info }: { info: EventInfo }) {
+export default function CardInfo({ info }: { info: ConventionInfo }) {
   return (
     <div className="flex flex-col ml-15 mr-4">
       <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1">

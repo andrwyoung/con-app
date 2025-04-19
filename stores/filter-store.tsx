@@ -1,6 +1,6 @@
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-mode";
 import { timeCategories } from "@/lib/helpers/event-recency";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
 export const topTags = ["comic", "anime", "cosplay", "gaming", "art", "manga"];
@@ -30,8 +30,8 @@ export const allTags = [...topTags, ...extraTags];
 
 type FilterStore = {
   // global list of filtered items
-  filteredItems: Record<string, EventInfo>;
-  setFilteredItems: (dict: Record<string, EventInfo>) => void;
+  filteredItems: Record<string, ConventionInfo>;
+  setFilteredItems: (dict: Record<string, ConventionInfo>) => void;
 
   // tag filter
   selectedTags: string[];

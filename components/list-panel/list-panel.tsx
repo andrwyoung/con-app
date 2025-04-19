@@ -1,5 +1,5 @@
 import { useListStore } from "@/stores/use-list-store";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import Droppable from "./drop-wrapper";
@@ -18,7 +18,7 @@ export default function ListPanel({
   draggedCon,
 }: {
   isOpen: boolean;
-  draggedCon: EventInfo | null;
+  draggedCon: ConventionInfo | null;
 }) {
   const { lists, showingNow, setShowingNow } = useListStore();
   const scrollRef = useRef<HTMLDivElement>(null);

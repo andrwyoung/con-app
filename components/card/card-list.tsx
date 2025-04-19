@@ -2,7 +2,7 @@
 // responsible for any keybaord navigation interactions too
 
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
-import { ConLocation, EventInfo } from "@/types/types";
+import { ConLocation, ConventionInfo } from "@/types/types";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Card, { CardVariant } from "./card";
 import { useMapStore } from "@/stores/map-store";
@@ -21,7 +21,7 @@ export default function CardList({
   currentLocation = null,
   type = "default",
 }: {
-  items: EventInfo[];
+  items: ConventionInfo[];
   sortOption?: SortType;
   currentLocation?: ConLocation | null;
   type?: CardVariant;

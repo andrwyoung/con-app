@@ -12,6 +12,7 @@ import { supabaseAnon } from "@/lib/supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import WelcomeModal from "../onboarding/welcome-modal";
+import { toast } from "sonner";
 
 function DropdownButton({
   children,
@@ -91,8 +92,8 @@ export default function NavBar() {
               </DropdownButton> */}
               <DropdownButton
                 onClick={async () => {
-                  // TODO: toast saying logged out
                   await supabaseAnon.auth.signOut();
+                  toast("Succesfully Logged Out");
                 }}
               >
                 <FiLock />

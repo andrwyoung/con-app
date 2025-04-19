@@ -3,13 +3,13 @@
 // and we need to grab all of it anyways for the map. so we'll just keep it in local store afterwards
 
 import { supabaseAnon } from "@/lib/supabase/client";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { getEventTimeCategory } from "../helpers/event-recency";
 
-export default async function getAllEvents(): Promise<EventInfo[]> {
+export default async function getAllEvents(): Promise<ConventionInfo[]> {
   try {
     const pageSize = 1000;
-    const allData: EventInfo[] = [];
+    const allData: ConventionInfo[] = [];
     let offset = 0;
     let done = false;
     

@@ -1,4 +1,4 @@
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import {
   ContextMenuContent,
   ContextMenuItem,
@@ -15,7 +15,7 @@ export default function CardContextMenu({
   con,
   type,
 }: {
-  con: EventInfo;
+  con: ConventionInfo;
   type: CardVariant;
 }) {
   const removeFromList = useListStore((s) => s.removeFromList);

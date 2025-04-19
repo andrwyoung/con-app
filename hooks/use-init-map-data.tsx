@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 // initialization steps:
 // 1: get initial coordinates to center the map
 // 2: load all events in the background
-// TODO memoize events inside useEffect
 export default function useInitMapData() {
   const [initLocation, setInitLocation] = useState<ConLocation | null>(null);
   const [initialized, setInitialized] = useState(false);

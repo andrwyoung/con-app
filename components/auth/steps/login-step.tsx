@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { supabaseAnon } from "@/lib/supabase/client";
 import React from "react";
 import useShakeError from "@/hooks/use-shake-error";
+import { toast } from "sonner";
 
 export default function LoginStep({
   changeStep,
@@ -46,7 +47,8 @@ export default function LoginStep({
 
     setError("");
     setIsSubmitting(false);
-    // TODO: toast logged in
+
+    toast("Welcome! Successfully Logged In.");
     changeStep("closed");
   };
 

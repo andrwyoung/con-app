@@ -3,7 +3,7 @@
 
 import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 import { MAX_SEARCH_BATCH_SIZE } from "../constants";
@@ -11,11 +11,11 @@ import { isPointTooCloseToEdge } from "./map-helpers";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
-  filteredDict: Record<string, EventInfo>,
-  setSelectedCon: (c: EventInfo | null) => void,
+  filteredDict: Record<string, ConventionInfo>,
+  setSelectedCon: (c: ConventionInfo | null) => void,
   setSelectedClusterId: (id: number | null) => void,
   setSidebarMode: (mode: SidebarMode) => void,
-  setFocusedEvents: (e: EventInfo[]) => void
+  setFocusedEvents: (e: ConventionInfo[]) => void
 ) {
   let hoveredPointId: string | number | null = null;
   let hoveredClusterId: number | null = null;
@@ -394,7 +394,7 @@ export default function addMarkersToMap(
 
             const fullCons = conList
               .map((id) => filteredDict[id])
-              .filter((c): c is EventInfo => !!c);
+              .filter((c): c is ConventionInfo => !!c);
 
             // KEY LINE: here's where we return all the cluster points back to sidebar
             console.log("EventInfo: ", fullCons);

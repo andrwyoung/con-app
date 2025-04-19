@@ -1,6 +1,6 @@
 import { DROPDOWN_RESULTS } from "@/lib/constants";
 import { SortType } from "@/lib/helpers/sort-cons";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
 
@@ -13,8 +13,8 @@ type SidebarStore = {
   sidebarMode: SidebarMode;
   setSidebarModeAndDeselectCon: (mode: SidebarMode) => void;
 
-  selectedCon: EventInfo | null;
-  setSelectedCon: (id: EventInfo | null) => void;
+  selectedCon: ConventionInfo | null;
+  setSelectedCon: (id: ConventionInfo | null) => void;
 
   selectedClusterId: number | null;
   setSelectedClusterId: (id: number | null) => void;
@@ -42,8 +42,8 @@ type SearchHistoryItem = {
 };
 
 type SearchStore = {
-  results: EventInfo[];
-  setResults: (r: EventInfo[]) => void;
+  results: ConventionInfo[];
+  setResults: (r: ConventionInfo[]) => void;
 
   sortPreference: SortType,
   setSortPreference: (value: SortType) => void,
@@ -86,11 +86,11 @@ export const useSearchStore = create<SearchStore>((set) => ({
 
 
 type MapCardsStore = {  
-  focusedEvents: EventInfo[];
-  setFocusedEvents: (e: EventInfo[]) => void;
+  focusedEvents: ConventionInfo[];
+  setFocusedEvents: (e: ConventionInfo[]) => void;
 
-  filteredFocusedEvents: EventInfo[]; 
-  setFilteredFocusedEvents: (e: EventInfo[]) => void;
+  filteredFocusedEvents: ConventionInfo[]; 
+  setFilteredFocusedEvents: (e: ConventionInfo[]) => void;
 
   clearSelectedEvents: () => void;
 };

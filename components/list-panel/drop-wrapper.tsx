@@ -1,12 +1,12 @@
 import { useListStore } from "@/stores/use-list-store";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { useDroppable } from "@dnd-kit/core";
 
 export default function Droppable({
   item,
   children,
 }: {
-  item: EventInfo | undefined;
+  item: ConventionInfo | undefined;
   children: React.ReactNode;
 }) {
   const { isOver, setNodeRef } = useDroppable({

@@ -1,6 +1,6 @@
 // the cards themselves. representing a single convention
 import React, { forwardRef } from "react";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
@@ -15,7 +15,7 @@ export type CardVariant = "default" | "recommendation" | "list" | "hover";
 const Card = forwardRef<
   HTMLDivElement,
   {
-    info: EventInfo;
+    info: ConventionInfo;
     selected?: boolean;
     onClick?: () => void;
     type?: CardVariant;

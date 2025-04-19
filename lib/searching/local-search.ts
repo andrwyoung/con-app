@@ -2,12 +2,12 @@
 
 import Fuse from "fuse.js";
 import type { IFuseOptions } from "fuse.js";
-import { ConLocation, EventInfo } from "@/types/types";
+import { ConLocation, ConventionInfo } from "@/types/types";
 import { getDistance } from "../utils";
 import { IN_THE_AREA_RESULTS } from "../constants";
 
-export const grabConventions = (text: string, events: Record<string, EventInfo>) => {
-  const options: IFuseOptions<EventInfo> = {
+export const grabConventions = (text: string, events: Record<string, ConventionInfo>) => {
+  const options: IFuseOptions<ConventionInfo> = {
     keys: [
       { name: "name", weight: 0.7 },
       { name: "venue", weight: 0.3 },
@@ -23,13 +23,13 @@ export const grabConventions = (text: string, events: Record<string, EventInfo>)
 };
 
 // DEPRECATED: using fuse now
-export const grabConventionsV1 = (text: string, events: Record<string, EventInfo>) => {
+export const grabConventionsV1 = (text: string, events: Record<string, ConventionInfo>) => {
   return Object.values(events).filter((event) =>
     event.name.toLowerCase().includes(text.toLowerCase())
   );
 };
 
-export const grabNearbyConventions = (loc: ConLocation, events: Record<string, EventInfo>) => {
+export const grabNearbyConventions = (loc: ConLocation, events: Record<string, ConventionInfo>) => {
   const eventsList = Object.values(events);
 
   const radiusSteps = [0.5, 1, 2, 5, 10, 25];

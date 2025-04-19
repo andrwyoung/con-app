@@ -1,15 +1,15 @@
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 import getAllEvents from "@/lib/map/get-all-events";
 
 type EventStore = {
-  allEvents: Record<number, EventInfo>;
+  allEvents: Record<number, ConventionInfo>;
   slugToId: Record<string, number>;
 
   initialized: boolean;
-  fetchInProgress: Promise<EventInfo[]> | null;
+  fetchInProgress: Promise<ConventionInfo[]> | null;
 
-  fetchAllEvents: () => Promise<EventInfo[]>;
+  fetchAllEvents: () => Promise<ConventionInfo[]>;
   ensureInitialized: () => Promise<void>;
 };
 export const useEventStore = create<EventStore>((set, get) => ({

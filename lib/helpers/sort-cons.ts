@@ -1,4 +1,4 @@
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { getDistance } from "../utils";
 
 export type SortType =
@@ -12,19 +12,19 @@ export type SortType =
   | "distance-me"
   | "raw";
 
-export function getStartDate(event: EventInfo): Date {
+export function getStartDate(event: ConventionInfo): Date {
   return new Date(event.start_date ?? `${event.year}-01-01`);
 }
 
 
 // for the special sort of status
-export function groupByStatus(items: EventInfo[]): Record<string, EventInfo[]> {
+export function groupByStatus(items: ConventionInfo[]): Record<string, ConventionInfo[]> {
   const grouped = items.reduce((acc, item) => {
     const status = item.timeCategory ?? "unknown";
     if (!acc[status]) acc[status] = [];
     acc[status].push(item);
     return acc;
-  }, {} as Record<string, EventInfo[]>);
+  }, {} as Record<string, ConventionInfo[]>);
 
   // sort each group by date 
   Object.keys(grouped).forEach((key) => {
@@ -36,11 +36,11 @@ export function groupByStatus(items: EventInfo[]): Record<string, EventInfo[]> {
 }
 
 export function sortEvents(
-  items: EventInfo[],
+  items: ConventionInfo[],
   sortType: SortType,
   userLocation?: { latitude: number; longitude: number },
   placeLocation?: { latitude: number; longitude: number }
-): EventInfo[] {
+): ConventionInfo[] {
   const sorted = [...items];
   switch (sortType) {
     case "alpha":
@@ -74,7 +74,7 @@ export function sortEvents(
         );
     case "distance-me":
       if (userLocation) {
-        const dist = (a: EventInfo) =>
+        const dist = (a: ConventionInfo) =>
           getDistance(
             [a.location_lat, a.location_long],
             [userLocation.latitude, userLocation.longitude]
@@ -84,7 +84,7 @@ export function sortEvents(
       break;
       case "distance":
         if (placeLocation) {
-          const dist = (a: EventInfo) =>
+          const dist = (a: ConventionInfo) =>
             getDistance(
               [a.location_lat, a.location_long],
               [placeLocation.latitude, placeLocation.longitude]

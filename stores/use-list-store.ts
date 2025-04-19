@@ -1,10 +1,10 @@
 import { addListItemToSupabase, removeListItemFromSupabase } from "@/lib/lists/add-delete-items";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
 type UserList = {
   label: string;
-  items: EventInfo[];
+  items: ConventionInfo[];
 };
 
 export type ListStore = {
@@ -14,9 +14,9 @@ export type ListStore = {
   showingNow: string; 
   setShowingNow: (listId: string) => void;
 
-  addToList: (listId: string, item: EventInfo) => void;
+  addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, itemId: number) => void;
-  alreadyInList: (listId: string, item: EventInfo) => boolean;
+  alreadyInList: (listId: string, item: ConventionInfo) => boolean;
 };
 
 

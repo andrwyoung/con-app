@@ -1,4 +1,4 @@
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import {
   DAYS_SINCE_RECENT,
   DAYS_UNTIL_DISCONTINUED,
@@ -44,7 +44,7 @@ export function daysFrom(pastDate: Date): number {
   );
 }
 
-export function getEventTimeCategory(info: EventInfo): TimeCategory {
+export function getEventTimeCategory(info: ConventionInfo): TimeCategory {
   if (info.event_status === "EventCancelled") return "cancelled";
   if (info.event_status === "EventPostponed") return "postponed";
 
@@ -79,7 +79,7 @@ export function getEventTimeCategory(info: EventInfo): TimeCategory {
   return "upcoming";
 }
 
-export function getDaysUntilEvent(info: EventInfo): number | null {
+export function getDaysUntilEvent(info: ConventionInfo): number | null {
   const start = info.start_date
     ? new Date(info.start_date)
     : info.year

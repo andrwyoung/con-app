@@ -3,25 +3,19 @@ import { useUserStore } from "@/stores/user-store";
 import React, { useEffect, useState } from "react";
 import ReviewCard from "./review-card";
 import ReviewModal from "./review-modal";
-import { UUID } from "crypto";
-// import AllReviews from "./all-reviews";
-
-export type Review = {
-  review_id: UUID;
-  user_id: string;
-  convention_id: number;
-  stars: number;
-  review_text: string;
-
-  // grabbing username too
-  user_profiles?: {
-    username: string;
-  };
-};
+import { Review } from "@/types/reviews";
 
 export default function ReviewsSection({ id }: { id: number }) {
   const profile = useUserStore((s) => s.profile);
   const [reviews, setReviews] = useState<Review[]>([]);
+
+  const [editReview, setEditReview] = useState<Review | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEdit = (review: Review) => {
+    setEditReview(review);
+    setIsModalOpen(true);
+  };
 
   // grab con data from database
   useEffect(() => {
@@ -35,30 +29,57 @@ export default function ReviewsSection({ id }: { id: number }) {
     init();
   }, [id]);
 
+  // let outside code fetch reviews
+  const refreshReviews = async () => {
+    const allReviews = await grabAllReviewsForConvention(id);
+    setReviews(allReviews);
+  };
+
   return (
     <div className="flex flex-col gap-2 px-2">
       <div className="flex flex-row justify-between items-baseline mb-4">
         <h1 className="uppercase text-sm font-semibold text-primary-muted">
-          Reviews
+          Notes ({reviews.length})
         </h1>
         {profile ? (
-          <ReviewModal conId={id} />
+          <>
+            <ReviewModal
+              conId={id}
+              onSubmitted={refreshReviews}
+              initialReview={editReview}
+              isOpen={isModalOpen}
+              setIsOpen={(open) => {
+                setIsModalOpen(open);
+                if (!open) setEditReview(null); // reset when closing
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary-lightest cursor-pointer text-primary-text border-2 border-primary 
+            uppercase text-xs px-4 py-1 rounded-full hover:bg-primary focus:outline-none"
+            >
+              Share a Note
+            </button>
+          </>
         ) : (
-          <p className="text-xs text-primary-muted ">
-            Sign in to leave a review
-          </p>
+          <p className="text-xs text-primary-muted ">Sign in to leave a note</p>
         )}
       </div>
 
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center gap-8">
         {reviews.length > 0 ? (
           reviews.map((review) => (
-            <ReviewCard key={review.review_id} review={review} />
+            <ReviewCard
+              key={review.review_id}
+              review={review}
+              onEditClick={handleEdit}
+            />
           ))
         ) : (
           <p className="text-sm text-primary-muted text-center">
-            No reviews yet. <br />
-            Be the first to share your thoughts!
+            No notes yet. <br />
+            Let others know what this convention is like!
           </p>
         )}
       </div>

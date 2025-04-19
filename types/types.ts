@@ -15,7 +15,7 @@ export type ConLocation = {
   longitude: number;
 };
 
-export type EventInfo = {
+export type ConventionInfo = {
   // from conventions
   id: number;
   slug: string; // solely for url naming

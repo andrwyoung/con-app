@@ -1,11 +1,11 @@
 // DEPRECATED: created for initial iteration
 import { useState } from "react";
-import { ConLocation, EventInfo } from "@/types/types";
+import { ConLocation, ConventionInfo } from "@/types/types";
 import { supabaseAnon } from "@/lib/supabase/client";
 
 export function useExploreEvents() {
   const [location, setLocation] = useState<ConLocation | null>(null);
-  const [events, setEvents] = useState<EventInfo[]>([]);
+  const [events, setEvents] = useState<ConventionInfo[]>([]);
 
   const updateLocation = async (newLocation: ConLocation) => {
     if (!newLocation?.latitude || !newLocation?.longitude) {

@@ -1,12 +1,12 @@
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 
 export default function Draggable({
   con,
   children,
 }: {
-  con: EventInfo;
+  con: ConventionInfo;
   children: React.ReactNode;
 }) {
   const id = crypto.randomUUID();

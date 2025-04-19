@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { useDragStore } from "@/stores/ui-store";
 import Card from "@/components/card/card";
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 import { useListStore } from "@/stores/use-list-store";
 import { FaChevronRight } from "react-icons/fa6";
 import ListPanel from "@/components/list-panel/list-panel";
@@ -46,7 +46,7 @@ export default function Sidebar() {
       }}
       onDragEnd={(event) => {
         if (event.over && event.over.id === "droppable") {
-          addToList(showingNow, activeCon as EventInfo);
+          addToList(showingNow, activeCon as ConventionInfo);
         }
         setActiveCon(null);
       }}

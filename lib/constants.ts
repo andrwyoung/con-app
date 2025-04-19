@@ -1,4 +1,4 @@
-import { EventInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 
 export const MAX_SEARCH_BATCH_SIZE = 500;
 
@@ -25,7 +25,7 @@ export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
 };
 
 
-export const UNKNOWN_CONVENTION: EventInfo = {
+export const UNKNOWN_CONVENTION: ConventionInfo = {
     id: -1,
     slug: "non",
     name: "Unknown Convention",
