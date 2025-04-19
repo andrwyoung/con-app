@@ -64,8 +64,6 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // create filteredDict
   const filteredDict = useMemo(() => {
-    if (!tagFilterIsActive && !statusFilterIsActive) return eventDict;
-
     const result = Object.fromEntries(
       Object.entries(eventDict).filter((eventRecord) => {
         const event = eventRecord[1];
@@ -87,14 +85,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     );
 
     return result;
-  }, [
-    eventDict,
-    selectedTags,
-    includeUntagged,
-    selectedStatuses,
-    statusFilterIsActive,
-    tagFilterIsActive,
-  ]);
+  }, [eventDict, selectedTags, includeUntagged, selectedStatuses]);
 
   // update the store with the filtered items
   useEffect(() => {
@@ -103,8 +94,6 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // whenever filteredData changes, regenerate the GeoJSON
   useEffect(() => {
-    if (!tagFilterIsActive && !statusFilterIsActive) return;
-
     console.log("filteredData has changed. updating!");
     if (!mapRef.current || !mapRef.current.getSource("events")) return;
 

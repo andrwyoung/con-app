@@ -47,7 +47,7 @@ export default function CardContextMenu({
     addToList(newListId, con);
     setShowingNow(newListId);
 
-    toast(`Added ${con.name} to new List: ${newListId}`);
+    toast(`Added ${con.name} to new List: ${label}`);
   }
 
   function handleAddToList(listId: string) {

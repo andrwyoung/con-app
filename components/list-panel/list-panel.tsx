@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
   SelectSeparator,
+  SelectGroup,
+  SelectLabel,
 } from "../ui/select";
 import { useUserStore } from "@/stores/user-store";
 import InlineEditText from "../ui/inline-edit-text";
@@ -23,6 +25,7 @@ import { toast } from "sonner";
 import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
 
 const NEW_ITEM_KEY = "__new__";
+const NO_ACTION = "__dud__";
 
 export default function ListPanel({
   isOpen,
@@ -122,6 +125,8 @@ export default function ListPanel({
                   onValueChange={(value) => {
                     if (value === NEW_ITEM_KEY) {
                       handleNewList();
+                    } else if (value === NO_ACTION) {
+                      return;
                     } else {
                       setShowingNow(value);
                     }
@@ -132,32 +137,45 @@ export default function ListPanel({
                     <SelectValue>Select A List</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {SPECIAL_LIST_KEYS.map((key) => (
-                      <SelectItem key={key} value={key}>
-                        {lists[key].label}
-                      </SelectItem>
-                    ))}
-                    {profile && (
-                      <>
-                        <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel>Default Lists</SelectLabel>
+                      {SPECIAL_LIST_KEYS.map((key) => (
+                        <SelectItem key={key} value={key}>
+                          {lists[key].label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectSeparator />
+                      {profile ? (
+                        <>
+                          <SelectLabel>My Lists</SelectLabel>
 
-                        {Object.entries(lists)
-                          .filter(([key]) =>
-                            key.startsWith(`${profile.username}-list-`)
-                          )
-                          .map(([key, list]) => (
-                            <SelectItem key={key} value={key}>
-                              {list.label}
-                            </SelectItem>
-                          ))}
+                          {Object.entries(lists)
+                            .filter(([key]) =>
+                              key.startsWith(`${profile.username}-list-`)
+                            )
+                            .map(([key, list]) => (
+                              <SelectItem key={key} value={key}>
+                                {list.label}
+                              </SelectItem>
+                            ))}
+                          <SelectItem
+                            value={NEW_ITEM_KEY}
+                            className="text-primary-muted"
+                          >
+                            + New List
+                          </SelectItem>
+                        </>
+                      ) : (
                         <SelectItem
-                          value={NEW_ITEM_KEY}
+                          value={NO_ACTION}
                           className="text-primary-muted"
                         >
-                          + New List
+                          Sign in to make new lists
                         </SelectItem>
-                      </>
-                    )}
+                      )}
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
 
