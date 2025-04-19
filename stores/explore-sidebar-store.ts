@@ -18,6 +18,9 @@ type SidebarStore = {
 
   selectedClusterId: number | null;
   setSelectedClusterId: (id: number | null) => void;
+
+  selectedIndex: number;
+  setSelectedIndex: (index: number) => void;
 };
 
 export const useSidebarStore = create<SidebarStore>((set) => ({
@@ -32,6 +35,9 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
 
   selectedClusterId: null,
   setSelectedClusterId: (id) => set({selectedClusterId: id}),
+
+  selectedIndex: -1,
+  setSelectedIndex: (index) => set({selectedIndex: index}), 
 }));
 
 

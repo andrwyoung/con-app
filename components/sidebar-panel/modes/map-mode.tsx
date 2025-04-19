@@ -2,7 +2,7 @@
 // logic has been moved to filter mode
 import { useMapCardsStore } from "@/stores/explore-sidebar-store";
 import React, { useEffect, useMemo, useState } from "react";
-import CardList from "../../card/card-list";
+import CardList from "../../card/card-list/card-list";
 import ModeWrapper from "./mode-wrapper";
 import { sortEvents, SortType } from "@/lib/helpers/sort-cons";
 

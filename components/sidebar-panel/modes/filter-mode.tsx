@@ -5,7 +5,7 @@ import FilterToggleButton from "./filters/filter-helpers";
 import { FaCaretDown } from "react-icons/fa6";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
-import CardList from "../../card/card-list";
+import CardList from "../../card/card-list/card-list";
 import { useMapCardsStore } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";

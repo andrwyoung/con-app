@@ -1,5 +1,5 @@
 import { useMapStore } from "@/stores/map-store";
-import CardList from "../../card/card-list";
+import CardList from "../../card/card-list/card-list";
 import { useEventStore } from "@/stores/all-events-store";
 import { useMemo } from "react";
 import { getDistance } from "@/lib/utils";

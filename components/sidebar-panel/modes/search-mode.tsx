@@ -5,7 +5,7 @@ import {
 import { useEffect, useState } from "react";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapStore } from "@/stores/map-store";
-import CardList from "../../card/card-list";
+import CardList from "../../card/card-list/card-list";
 import ModeWrapper from "./mode-wrapper";
 import { SortType } from "@/lib/helpers/sort-cons";
 

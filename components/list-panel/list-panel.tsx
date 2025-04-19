@@ -3,7 +3,7 @@ import { ConventionInfo } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Droppable from "./drop-wrapper";
-import CardList from "../card/card-list";
+import CardList from "../card/card-list/card-list";
 import {
   Select,
   SelectContent,
