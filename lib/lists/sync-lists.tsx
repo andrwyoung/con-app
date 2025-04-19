@@ -12,7 +12,7 @@ export async function syncAllListsToSupabase() {
 
   for (const [listId, { label, items }] of Object.entries(lists)) {
     console.log(
-      "looping through inserting ",
+      "looping through uploading",
       listId,
       " for ",
       label,
@@ -103,6 +103,8 @@ export async function fetchUserListsFromSupabase(userId: string) {
 
     list.items.push(eventsDict[item.convention_id] ?? UNKNOWN_CONVENTION);
   }
+
+  console.log("setting lists: ", parsedLists);
 
   useListStore.getState().setLists(parsedLists);
 }

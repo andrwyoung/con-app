@@ -55,7 +55,7 @@ export default function DetailsPanel({
     <div className="w-96 max-h-[calc(100vh-13rem)] bg-white rounded-lg shadow-xl border flex flex-col">
       <button
         type="button"
-        className="absolute top-4 right-4 text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105"
+        className="absolute top-4 right-4 text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105 z-10"
         onClick={onClose}
         aria-label="close details panel"
       >
@@ -87,7 +87,7 @@ export default function DetailsPanel({
 
           <ReviewsSection id={con.id} />
           <div
-            className={`pointer-events-none absolute bottom-6 left-0 right-0 h-16 
+            className={`pointer-events-none absolute bottom-6 left-0 right-0 h-16 z-1 
             bg-gradient-to-t from-white to-transparent rounded-lg 
             transition-opacity duration-300 
             ${atBottom ? "opacity-0" : "opacity-100"}

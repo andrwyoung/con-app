@@ -4,11 +4,13 @@
 "use client";
 import { fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
 import { supabaseAnon } from "@/lib/supabase/client";
+import { useListStore } from "@/stores/use-list-store";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect } from "react";
 
 export function useUser() {
   const { user, setUser, setProfile } = useUserStore();
+  const resetLists = useListStore.getState().resetLists;
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {
@@ -26,7 +28,12 @@ export function useUser() {
 
       setProfile(data);
 
-      await syncAllListsToSupabase();
+      if (data.has_never_logged_in) {
+        await syncAllListsToSupabase();
+      } else {
+        resetLists();
+      }
+        
       await fetchUserListsFromSupabase(userId);
     };
 
@@ -38,6 +45,8 @@ export function useUser() {
         if (user) {
           void fetchProfile(user.id);
         } else {
+          
+          resetLists();
           setProfile(null);
         }
       }

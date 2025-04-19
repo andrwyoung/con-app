@@ -10,8 +10,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectSeparator,
 } from "../ui/select";
 import { useUserStore } from "@/stores/user-store";
+import InlineEditText from "../ui/inline-edit-text";
+import { MdOutlineSync } from "react-icons/md";
+import { fetchUserListsFromSupabase } from "@/lib/lists/sync-lists";
+import { FiTrash2 } from "react-icons/fi";
+import { DEFAULT_LIST, SPECIAL_LIST_KEYS } from "@/lib/constants";
+import { isSpecialListKey } from "@/lib/lists/special-list";
+import { toast } from "sonner";
+
+const NEW_ITEM_KEY = "__new__";
 
 export default function ListPanel({
   isOpen,
@@ -20,11 +30,26 @@ export default function ListPanel({
   isOpen: boolean;
   draggedCon: ConventionInfo | null;
 }) {
-  const { lists, showingNow, setShowingNow } = useListStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const user = useUserStore((s) => s.user);
+  const profile = useUserStore((s) => s.profile);
 
+  const lists = useListStore((s) => s.lists);
+  const showingNow = useListStore((s) => s.showingNow);
+  const setShowingNow = useListStore((s) => s.setShowingNow);
+  const createList = useListStore((s) => s.createList);
+  const renameList = useListStore((s) => s.renameList);
+  const deleteList = useListStore((s) => s.deleteList);
+
+  // if current list was removed somehow, fall back to "planning"
+  useEffect(() => {
+    const currentList = lists[showingNow];
+    if (!currentList) {
+      setShowingNow(DEFAULT_LIST);
+    }
+  }, [lists, showingNow]);
+
+  // when new items are added, scroll to bottom
   const itemCount = lists[showingNow]?.items.length;
   useEffect(() => {
     if (scrollRef.current) {
@@ -34,6 +59,44 @@ export default function ListPanel({
       });
     }
   }, [itemCount]);
+
+  // determines naming conventions for new lists
+  function handleNewList(value: string) {
+    const userCreatedLists = Object.entries(lists).filter(([id]) =>
+      id.startsWith(`${profile?.username}-list-`)
+    );
+
+    // Generate new list ID
+    const highestId = userCreatedLists.reduce((max, [id]) => {
+      const num = parseInt(id.replace(`${profile?.username}-list-`, ""), 10);
+      return isNaN(num) ? max : Math.max(max, num);
+    }, -1);
+    const newListId = `${profile?.username}-list-${highestId + 1}`;
+
+    // Generate smart label
+    const unnamedLabelPrefix = "Unnamed List";
+    const unnamedLabels = userCreatedLists
+      .map(([_, list]) => list.label)
+      .filter((label) => label.startsWith(unnamedLabelPrefix));
+
+    let label = unnamedLabelPrefix;
+
+    if (unnamedLabels.length > 0) {
+      const highestSuffix = unnamedLabels.reduce((max, curr) => {
+        const match = curr.match(/Unnamed List (\d+)/);
+        const num = match
+          ? parseInt(match[1], 10)
+          : curr === "Unnamed List"
+          ? 1
+          : 0;
+        return Math.max(max, num);
+      }, 0);
+
+      label = `${unnamedLabelPrefix} ${highestSuffix + 1}`;
+    }
+    createList(newListId, label);
+    setShowingNow(newListId);
+  }
 
   return (
     <AnimatePresence>
@@ -53,39 +116,93 @@ export default function ListPanel({
           className="origin-left flex flex-col absolute top-0 left-[calc(100%+0.4rem)] gap-2 w-80 border rounded-lg shadow-xl px-5 py-6 bg-white -z-2"
         >
           <Droppable item={draggedCon ?? undefined}>
-            <div className="flex flex-col gap-1 mb-4 px-2">
-              <div className="flex flex-row justify-between items-center">
-                <h1 className="text-primary-muted uppercase font-semibold">
-                  My Lists
+            <div className="flex flex-col mb-4">
+              <div className="flex flex-row justify-between items-baseline">
+                <h1 className="font-bold uppercase text-sm text-primary-muted">
+                  My lists
                 </h1>
-
-                <p className="text-xs text-primary-muted text-right">
-                  {user ? `` : `Sign in to save your lists`}
-                </p>
+                <InlineEditText
+                  value={lists[showingNow].label}
+                  onChange={(newLabel) => renameList(showingNow, newLabel)}
+                  isEditable={!isSpecialListKey(showingNow)}
+                />
               </div>
-
-              <div className="flex gap-2 items-baseline">
-                <p className="text-xs">Showing:</p>
+              <p className="text-xs text-primary-muted mb-2">
+                {profile ? `` : `Sign in to save and create new lists`}
+              </p>
+              <div className="flex gap-2 items-center justify-between">
                 <Select
-                  onValueChange={(value) => setShowingNow(value)}
+                  onValueChange={(value) => {
+                    if (value === NEW_ITEM_KEY) {
+                      handleNewList(value);
+                    } else {
+                      setShowingNow(value);
+                    }
+                  }}
                   value={showingNow}
                 >
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue>{lists[showingNow].label}</SelectValue>
+                    <SelectValue>Select A List</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(lists).map(([key, list]) => (
+                    {SPECIAL_LIST_KEYS.map((key) => (
                       <SelectItem key={key} value={key}>
-                        {list.label}
+                        {lists[key].label}
                       </SelectItem>
                     ))}
+                    {profile && (
+                      <>
+                        <SelectSeparator />
+
+                        {Object.entries(lists)
+                          .filter(([key]) =>
+                            key.startsWith(`${profile.username}-list-`)
+                          )
+                          .map(([key, list]) => (
+                            <SelectItem key={key} value={key}>
+                              {list.label}
+                            </SelectItem>
+                          ))}
+                        <SelectItem
+                          value={NEW_ITEM_KEY}
+                          className="text-primary-muted"
+                        >
+                          + New List
+                        </SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
+
+                {profile && (
+                  <div className="flex flex-row gap-4 items-center  text-primary-muted">
+                    <MdOutlineSync
+                      title="Sync Lists"
+                      onClick={() =>
+                        fetchUserListsFromSupabase(profile.user_id)
+                      }
+                      className="cursor-pointer size-5"
+                    />
+                    {!isSpecialListKey(showingNow) && (
+                      <FiTrash2
+                        title="Delete Current List"
+                        className="cursor-pointer size-4.5"
+                        onClick={() => {
+                          const deletedLabel = lists[showingNow].label;
+                          const confirmed = window.confirm(
+                            `Are you sure you want to delete "${deletedLabel}"?`
+                          );
+                          if (!confirmed) return;
+
+                          deleteList(showingNow);
+                          toast(`"${deletedLabel}" was deleted.`);
+                          setShowingNow(DEFAULT_LIST);
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
-              {/* 
-              <p className="text-sm text-primary-muted self-end">
-                Sorted by: Last Added
-              </p> */}
             </div>
 
             <div

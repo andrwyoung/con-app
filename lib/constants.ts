@@ -24,6 +24,13 @@ export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
     latitude: 37.7749, longitude: -122.4194
 };
 
+// list consts
+export const SPECIAL_LIST_KEYS = ["planning", "interested"] as const;
+export const DEFAULT_LIST = "planning";
+export const DEFAULT_LISTS = {
+    planning: { label: "My Plan", items: [] },
+    interested: { label: "Interested", items: [] },
+  };
 
 export const UNKNOWN_CONVENTION: ConventionInfo = {
     id: -1,

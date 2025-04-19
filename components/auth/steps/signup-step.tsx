@@ -43,6 +43,23 @@ export default function SignupStep({
   const isStrongPassword =
     hasMinLength && hasLowercase && hasUppercase && hasNumber;
 
+  const validUsernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+  const reservedUsernames = [
+    "admin",
+    "support",
+    "help",
+    "me",
+    "you",
+    "new",
+    "root",
+    "system",
+    "mod",
+    "staff",
+    "convention",
+    "explore",
+    "planner",
+  ];
+
   // focus first field
   useEffect(() => {
     inputRef.current?.focus();
@@ -57,6 +74,21 @@ export default function SignupStep({
       }
 
       setCheckingUsername(true);
+
+      if (reservedUsernames.includes(username.toLowerCase())) {
+        setUsernameAvailable(false);
+        setCheckingUsername(false);
+        return;
+      }
+
+      const blockedSubstrings = ["concaly"];
+      for (const bad of blockedSubstrings) {
+        if (username.toLowerCase().includes(bad)) {
+          setUsernameAvailable(false);
+          setCheckingUsername(false);
+          return;
+        }
+      }
 
       const { error } = await supabaseAnon
         .from("user_profiles")
@@ -91,6 +123,10 @@ export default function SignupStep({
     if (username.length < 3) {
       triggerError("Please choose a longer username.");
       setIsSubmitting(false);
+      return;
+    }
+    if (!validUsernameRegex.test(username)) {
+      triggerError("Usernames can only include letters, numbers, and _ or -");
       return;
     }
     if (!usernameAvailable) {

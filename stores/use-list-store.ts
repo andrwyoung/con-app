@@ -1,4 +1,9 @@
-import { addListItemToSupabase, removeListItemFromSupabase } from "@/lib/lists/add-delete-items";
+import { DEFAULT_LIST, DEFAULT_LISTS } from "@/lib/constants";
+import {
+  addListItemToSupabase,
+  removeListItemFromSupabase,
+} from "@/lib/lists/add-delete-items";
+import { createListInSupabase, deleteListFromSupabase, renameListInSupabase } from "@/lib/lists/add-delete-lists";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
@@ -10,86 +15,119 @@ type UserList = {
 export type ListStore = {
   lists: Record<string, UserList>;
   setLists: (e: Record<string, UserList>) => void;
+  resetLists: () => void;
 
-  showingNow: string; 
+  showingNow: string;
   setShowingNow: (listId: string) => void;
 
   addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, itemId: number) => void;
   alreadyInList: (listId: string, item: ConventionInfo) => boolean;
+
+  createList: (id: string, label: string) => void;
+  renameList: (id: string, newLabel: string) => void;
+  deleteList: (id: string) => void;
 };
 
+export const useListStore = create<ListStore>((set, get) => ({
+  lists: DEFAULT_LISTS,
+  setLists: (newLists) => set({ lists: newLists }),
+  resetLists: () => set({ lists: DEFAULT_LISTS, showingNow: DEFAULT_LIST }),
 
-  export const useListStore = create<ListStore>((set, get) => ({
-    lists: {
-      planning: {
-        label: "Planning to Go",
-        items: [],
-      },
-      interested: {
-        label: "Interested In",
-        items: [],
-      },
-    },
-    setLists: (newLists) => set({ lists: newLists }),
-  
-    showingNow: "planning",
-    setShowingNow: (listId) => set({ showingNow: listId }),
-  
-    addToList: (listId, item) => {
-      const current = get().lists[listId];
+  showingNow: DEFAULT_LIST,
+  setShowingNow: (listId) => set({ showingNow: listId }),
 
-      addListItemToSupabase({
-        listId,
-        conventionId: item.id,
-      });
-      if (!current) { // unlabeled list situation
-        set((state) => ({
-          lists: {
-            ...state.lists,
-            [listId]: {
-              label: "Unnamed List", 
-              items: [item],
-            },
-          },
-        }));
-        return;
-      }
-      if (current.items.some((c) => c.id === item.id)) return;
-    
+  addToList: (listId, item) => {
+    const current = get().lists[listId];
+    addListItemToSupabase({
+      listId,
+      conventionId: item.id,
+    });
+    if (!current) {
+      // unlabeled list situation
       set((state) => ({
         lists: {
           ...state.lists,
           [listId]: {
-            ...current,
-            items: [...current.items, item],
+            label: "Unnamed List",
+            items: [item],
           },
         },
       }));
-    },
-  
-    removeFromList: (listId, itemId) => {
+      return;
+    }
+    if (current.items.some((c) => c.id === item.id)) return;
+    set((state) => ({
+      lists: {
+        ...state.lists,
+        [listId]: {
+          ...current,
+          items: [...current.items, item],
+        },
+      },
+    }));
+  },
 
-      removeListItemFromSupabase({
-        listId,
-        conventionId: itemId,
-      });
-      const current = get().lists[listId];
-      if (!current) return;
-    
-      set((state) => ({
-        lists: {
-          ...state.lists,
-          [listId]: {
-            ...current,
-            items: current.items.filter((c) => c.id !== itemId),
-          },
+  removeFromList: (listId, itemId) => {
+    removeListItemFromSupabase({
+      listId,
+      conventionId: itemId,
+    });
+    const current = get().lists[listId];
+    if (!current) return;
+
+    set((state) => ({
+      lists: {
+        ...state.lists,
+        [listId]: {
+          ...current,
+          items: current.items.filter((c) => c.id !== itemId),
         },
-      }));
-    },
+      },
+    }));
+  },
+
+  alreadyInList: (listId, item) => {
+    const current = get().lists[listId] || [];
+    return current.items.some((c) => c.id === item.id);
+  },
+
+  createList: (id: string, label: string) => {
+    createListInSupabase({listId: id, label});
+    set((state) => ({
+      lists: {
+        ...state.lists,
+        [id]: {
+          label,
+          items: [],
+        },
+      },
+    }));
+  },
+
+  renameList: (id: string, newLabel: string) => {
+    renameListInSupabase({listId: id, newLabel});
+    set((state) => ({
+      lists: {
+        ...state.lists,
+        [id]: {
+          ...state.lists[id],
+          label: newLabel,
+        },
+      },
+    }));
+  },
+
+  deleteList: (id: string) => {
+    // optimistically remove from local state
+    set((state) => {
+      const newLists = { ...state.lists };
+      delete newLists[id];
+      return { lists: newLists };
+    });
   
-    alreadyInList: (listId, item) => {
-      const current = get().lists[listId] || [];
-      return current.items.some((c) => c.id === item.id);
-    },
-  }));
+    // remove from Supabase
+    deleteListFromSupabase({ listId: id }).catch(console.error);
+  },
+
+}));
