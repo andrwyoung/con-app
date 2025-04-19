@@ -167,7 +167,9 @@ export default function ReviewModal({
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle>Submit a Note</DialogTitle>
-          <DialogDescription>What's this convention like?</DialogDescription>
+          <DialogDescription>
+            What&apos;s this convention like?
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
           <div className="grid grid-cols-2 items-center ">

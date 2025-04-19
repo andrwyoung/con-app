@@ -1,5 +1,4 @@
 import {
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
@@ -8,7 +7,6 @@ import {
   DropdownMenuSubTrigger,
 } from "./dropdown-menu";
 import {
-  ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuShortcut,

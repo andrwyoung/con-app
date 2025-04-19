@@ -127,7 +127,6 @@ export default function CardContextMenu({
       <SharedMenuSeparator type={menuType} />
       <SharedMenuItem
         type={menuType}
-        aria-title="Copy Con Link"
         onClick={() => {
           const url = `${window.location.origin}/explore?con=${con.slug}`;
           navigator.clipboard.writeText(url);
@@ -138,7 +137,6 @@ export default function CardContextMenu({
       </SharedMenuItem>
       <SharedMenuItem
         type={menuType}
-        aria-title="Search All Cons"
         onClick={() => {
           setTimeout(() => {
             const input = document.getElementById("explore-searchbar");
