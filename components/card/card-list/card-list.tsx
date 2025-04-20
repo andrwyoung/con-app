@@ -3,19 +3,16 @@
 
 import { useSidebarStore } from "@/stores/explore-sidebar-store";
 import { ConLocation, ConventionInfo } from "@/types/types";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import Card, { CardVariant } from "../card";
+import React, { useEffect, useRef } from "react";
+import { CardVariant } from "../card";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import { MAX_CARDS } from "@/lib/constants";
-import { groupByStatus, sortEvents, SortType } from "@/lib/helpers/sort-cons";
-import {
-  TIME_CATEGORY_LABELS,
-  timeCategories,
-  TimeCategory,
-} from "@/lib/helpers/event-recency";
-import { FlatCardList, GroupedCardList } from "./grouped-card-list";
-import { useSortedAndGrouped } from "@/hooks/useSortedAndGroup";
+import { SortType } from "@/lib/helpers/sort-cons";
+
+import { FlatCardList } from "./grouped-card-list";
+import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
+import { useCardListKeyboardNav } from "@/hooks/use-card-list-keyboard";
 
 export default function CardList({
   items,
@@ -39,7 +36,7 @@ export default function CardList({
   const { userLocation } = useMapStore();
 
   // build out the sorted results
-  const { flattened: sortedResults, grouped } = useSortedAndGrouped({
+  const { flattened } = useSortedAndGrouped({
     items,
     sortOption,
     userLocation: userLocation ?? undefined,
@@ -49,105 +46,38 @@ export default function CardList({
   // initialize refs for all cards for scrolling into view
   useEffect(() => {
     cardRefs.current = Array.from(
-      { length: sortedResults.length },
+      { length: flattened.length },
       (_, i) => cardRefs.current[i] || React.createRef()
     );
-  }, [sortedResults]);
+  }, [flattened]);
 
-  // keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
-      if (
-        tag === "input" ||
-        tag === "textarea" ||
-        (e.target as HTMLElement)?.isContentEditable
-      ) {
-        return;
-      }
-
-      console.log("is any modal open:", anyModalOpen);
-      if (anyModalOpen) return;
-
-      if (!["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) return;
-      e.preventDefault(); // prevent page scroll
-
-      const current = selectedIndex ?? -1;
-
-      const navigate = (next: number) => {
-        setSelectedCon(sortedResults[next]);
-        setSelectedIndex(next);
-        setTimeout(() => {
-          cardRefs.current[next]?.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-          });
-        }, 0);
-      };
-
-      // DISABLED: for now
-      if (e.key === "ArrowDown") {
-        const next = Math.min(
-          current + 1,
-          Math.min(sortedResults.length, MAX_CARDS) - 1
-        );
-        navigate(next);
-      }
-
-      if (e.key === "ArrowUp") {
-        const next = Math.max(current - 1, 0);
-        navigate(next);
-      }
-
-      if (e.key === "Enter") {
-        const con = sortedResults[current];
-        if (con?.location_lat && con?.location_long) {
-          flyTo?.(
-            { latitude: con.location_lat, longitude: con.location_long },
-            9
-          );
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    items,
-    sortedResults,
-    selectedCon,
+  // keyboard nav
+  useCardListKeyboardNav({
+    flattened,
     selectedIndex,
+    selectedCon,
     setSelectedCon,
+    setSelectedIndex,
+    cardRefs: cardRefs.current,
     flyTo,
     anyModalOpen,
-  ]);
+  });
 
   // reset index when list changes
   useEffect(() => {
     setSelectedIndex(-1);
-  }, [items, sortOption]);
+  }, [items, sortOption, setSelectedIndex]);
 
   return (
     <div className="flex flex-col">
-      {grouped ? (
-        <GroupedCardList
-          grouped={grouped}
-          selectedCon={selectedCon}
-          setSelectedCon={setSelectedCon}
-          setSelectedIndex={setSelectedIndex}
-          cardRefs={cardRefs.current}
-          type={type}
-        />
-      ) : (
-        <FlatCardList
-          items={sortedResults}
-          selectedCon={selectedCon}
-          setSelectedCon={setSelectedCon}
-          setSelectedIndex={setSelectedIndex}
-          cardRefs={cardRefs.current}
-          type={type}
-        />
-      )}
+      <FlatCardList
+        items={flattened}
+        selectedCon={selectedCon}
+        setSelectedCon={setSelectedCon}
+        setSelectedIndex={setSelectedIndex}
+        cardRefs={cardRefs.current}
+        type={type}
+      />
       {items.length > MAX_CARDS && (
         <p className="text-sm text-primary-muted self-center mt-2">
           Only showing {MAX_CARDS} results
