@@ -1,16 +1,5 @@
 import { UUID } from "crypto";
 
-// export const TAG_OPTIONS = [
-//   "Family Friendly",
-//   "Great Artist Alley",
-//   "Well Organized",
-//   "Awesome Panels",
-//   "Would Go Again",
-//   "Lots of People",
-//   "A Little Slow",
-//   "Not My Vibe",
-// ] as const;
-
 export const TAG_OPTIONS = [
   "Great Artist Alley",
   "Well Organized",

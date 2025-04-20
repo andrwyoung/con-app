@@ -135,3 +135,7 @@
     animation: spin-once 1.6s ease-out;
   }
 }
+
+.mapboxgl-marker img {
+  box-shadow: none !important;
+}

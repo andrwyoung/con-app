@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Star } from "lucide-react"; // or use Heroicons/Radix/etc.
 import { supabaseAnon } from "@/lib/supabase/client";
-import { Review, ReviewTag, TAG_OPTIONS } from "../../../types/reviews";
+import { Review, ReviewTag, TAG_OPTIONS } from "../../../types/review-types";
 import { FiTrash2 } from "react-icons/fi";
 
 type Props = {

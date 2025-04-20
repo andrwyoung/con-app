@@ -3,19 +3,17 @@ import {
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
 import { useEffect, useState } from "react";
-import { ZOOM_USE_DEFAULT } from "@/lib/constants";
-import { useMapStore } from "@/stores/map-store";
+import { DEFAULT_SORT, ZOOM_USE_DEFAULT } from "@/lib/constants";
+import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import CardList from "../../card/card-list/card-list";
-import ModeWrapper from "./mode-wrapper";
-import { SortType } from "@/lib/helpers/sort-cons";
+import SearchBarWrapper from "./search-wrapper";
+import { SortType } from "@/types/search-types";
 
 const TITLE_DEFAULT = "Search Results";
-const TITLE_LOCATION = "Nearby";
 
 export default function SearchMode() {
   const { results } = useSearchStore();
   const { setSelectedCon } = useSidebarStore();
-  const { getCurrentCenter } = useMapStore();
   const flyTo = useMapStore((s) => s.flyTo);
 
   const [numResults, setNumResults] = useState(0);
@@ -23,44 +21,67 @@ export default function SearchMode() {
 
   const [title, setTitle] = useState(TITLE_DEFAULT);
 
-  const [centerOfViewport, setCenterOfViewport] = useState(
-    getCurrentCenter?.()
-  );
+  const setTempPins = useMapPinsStore((s) => s.setTempPins);
+  const clearTempPins = useMapPinsStore((s) => s.clearTempPins);
+
+  const searchState = useSearchStore((s) => s.searchState);
+  const userLocation = useMapStore((s) => s.userLocation);
+  const currentLocation =
+    searchState.context?.type === "near-me" ||
+    searchState.context?.type === "current-location"
+      ? searchState.context.location
+      : undefined;
 
   // process the results of a search
   useEffect(() => {
-    const loc = results.at(0);
+    const first_result = results.at(0);
     setNumResults(results.length);
-    if (!loc) return;
+    if (!first_result) return;
 
     console.log("searchbar results: ", results);
 
     // if searchbar has a preferred default sort, start with that
-    const preferredSort = useSearchStore.getState().sortPreference;
-    setCenterOfViewport(getCurrentCenter?.());
-    setSortOption(preferredSort);
+    setSortOption(searchState.context?.sort ?? DEFAULT_SORT);
 
-    if (preferredSort === "distance") {
-      setTitle(TITLE_LOCATION);
+    if (searchState.context?.type === "current-location") {
+      setTitle("Nearby");
+      setTempPins(results);
+    } else if (searchState.context?.type === "near-me" && userLocation) {
+      setTitle("Near Me");
+      setTempPins(results);
+      flyTo?.(userLocation, ZOOM_USE_DEFAULT);
     } else {
       setTitle(TITLE_DEFAULT);
+      clearTempPins();
     }
 
+    // if only 1 result, fly to it
     if (
       results.length === 1 &&
-      loc.location_lat !== undefined &&
-      loc.location_long !== undefined
+      first_result.location_lat !== undefined &&
+      first_result.location_long !== undefined
     ) {
       flyTo?.(
-        { latitude: loc.location_lat, longitude: loc.location_long },
+        {
+          latitude: first_result.location_lat,
+          longitude: first_result.location_long,
+        },
         ZOOM_USE_DEFAULT
       );
-      setSelectedCon(loc);
+      setSelectedCon(first_result);
     }
-  }, [results, flyTo, setSelectedCon, getCurrentCenter]);
+  }, [
+    results,
+    flyTo,
+    setSelectedCon,
+    searchState,
+    clearTempPins,
+    setTempPins,
+    userLocation,
+  ]);
 
   return (
-    <ModeWrapper
+    <SearchBarWrapper
       title={title}
       numResults={numResults}
       sortMode={sortOption}
@@ -75,11 +96,12 @@ export default function SearchMode() {
         <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
           <CardList
             items={results}
-            currentLocation={centerOfViewport}
+            currentLocation={currentLocation}
+            userLocation={userLocation ?? undefined}
             sortOption={sortOption}
           />
         </div>
       )}
-    </ModeWrapper>
+    </SearchBarWrapper>
   );
 }

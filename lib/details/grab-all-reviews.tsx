@@ -1,4 +1,4 @@
-import { Review } from "@/types/reviews";
+import { Review } from "@/types/review-types";
 import { supabaseAnon } from "../supabase/client";
 
 export async function grabAllReviewsForConvention(

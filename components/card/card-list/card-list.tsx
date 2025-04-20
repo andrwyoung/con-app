@@ -8,21 +8,23 @@ import { CardVariant } from "../card";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import { MAX_CARDS } from "@/lib/constants";
-import { SortType } from "@/lib/helpers/sort-cons";
 
 import { FlatCardList } from "./grouped-card-list";
 import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
 import { useCardListKeyboardNav } from "@/hooks/use-card-list-keyboard";
+import { SortType } from "@/types/search-types";
 
 export default function CardList({
   items,
   sortOption = "raw",
   currentLocation = null,
+  userLocation,
   type = "default",
 }: {
   items: ConventionInfo[];
   sortOption?: SortType;
   currentLocation?: ConLocation | null;
+  userLocation?: ConLocation;
   type?: CardVariant;
 }) {
   const { setSelectedCon, selectedCon } = useSidebarStore();
@@ -32,8 +34,6 @@ export default function CardList({
   const setSelectedIndex = useSidebarStore((s) => s.setSelectedIndex);
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
   const anyModalOpen = useUIStore((s) => s.anyModalOpen());
-
-  const { userLocation } = useMapStore();
 
   // build out the sorted results
   const { flattened } = useSortedAndGrouped({

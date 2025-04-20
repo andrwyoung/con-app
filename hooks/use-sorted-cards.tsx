@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import { ConventionInfo, ConLocation } from "@/types/types";
-import { groupByStatus, sortEvents, SortType } from "@/lib/helpers/sort-cons";
+import { groupByStatus, sortEvents } from "@/lib/helpers/sort-cons";
 import {
   TIME_CATEGORY_LABELS,
   timeCategories,
   TimeCategory,
 } from "@/lib/helpers/event-recency";
+import { SortType } from "@/types/search-types";
 
 export type FlatItem =
   | { type: "label"; label: string }

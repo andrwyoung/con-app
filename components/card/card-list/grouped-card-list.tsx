@@ -34,8 +34,9 @@ export function FlatCardList({
             info={item.con}
             selected={selectedCon?.id === item.con.id}
             onClick={() => {
-              setSelectedCon(item.con);
-              setSelectedIndex(i);
+              const isSelected = selectedCon?.id === item.con.id;
+              setSelectedCon(isSelected ? null : item.con);
+              setSelectedIndex(isSelected ? -1 : i);
             }}
             ref={cardRefs[i]}
             type={type}

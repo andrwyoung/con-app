@@ -4,10 +4,7 @@ import { ConventionInfo } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiClock, FiMapPin, FiUser, FiX } from "react-icons/fi";
-import {
-  useSearchStore,
-  useSidebarStore,
-} from "@/stores/explore-sidebar-store";
+import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {
   grabConventions,
@@ -52,8 +49,7 @@ export default function Searchbar() {
 
   const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
-  const { setSidebarModeAndDeselectCon } = useSidebarStore();
-  const { setResults, setSortPreference, history, addToHistory } =
+  const { setResults, setSearchState, history, addToHistory } =
     useSearchStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -129,7 +125,11 @@ export default function Searchbar() {
 
     const res = grabConventions(term, allEvents);
 
-    setSortPreference("status");
+    setSearchState({
+      type: "typed",
+      query: term,
+      sort: "status",
+    });
     setResults(res);
 
     // add to history
@@ -137,7 +137,6 @@ export default function Searchbar() {
 
     setHighlightedIndex(-1);
     setShowDropdown(false);
-    setSidebarModeAndDeselectCon("search");
 
     // ux decision
     if (res.length != 0) {
@@ -151,13 +150,15 @@ export default function Searchbar() {
     setHighlightedIndex(-1);
     setSuggestionResults([]);
 
-    setSidebarModeAndDeselectCon("search");
+    setSearchState({
+      type: "clicked",
+      query: s.name,
+      sort: "alpha",
+    });
     setSearchbarText(s.name);
-
     addToHistory(s.name, "clicked");
 
-    setSortPreference("raw"); // doesn't really matter lol
-    setResults([s]); // sidebar will fly if it's just 1
+    setResults([s]);
   };
 
   // 3: search here option
@@ -178,11 +179,14 @@ export default function Searchbar() {
     );
     console.log("searched in area. got:", res);
 
-    setSortPreference("distance");
+    setSearchState({
+      type: "current-location",
+      location: center,
+      sort: "status",
+    });
     setResults(res);
 
     setShowDropdown(false);
-    setSidebarModeAndDeselectCon("search");
   };
 
   // 4: search near me option
@@ -200,12 +204,14 @@ export default function Searchbar() {
       allEvents
     );
 
-    useMapStore.getState().flyToMyLocation?.();
-    setSortPreference("distance-me");
+    setSearchState({
+      type: "near-me",
+      location: center,
+      sort: "distance-me",
+    });
     setResults(res);
 
     setShowDropdown(false);
-    setSidebarModeAndDeselectCon("search");
   };
 
   // SECTION: keyboard controls

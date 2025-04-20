@@ -21,11 +21,11 @@ export default function useInitMapData() {
     const init = async () => {
       const start = performance.now();
 
+      await useEventStore.getState().fetchAllEvents();
+
       const coords = await getInitialLocation();
       if (coords) setInitLocation(coords);
       useMapStore.getState().setUserLocation(coords); //save coords to map
-
-      await useEventStore.getState().fetchAllEvents();
 
       // if user types in /explore?conId=123 then init map to convention 123
       const con = searchParams.get("con");

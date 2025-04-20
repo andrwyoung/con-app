@@ -5,6 +5,8 @@ import NavBar from "@/components/navbar/navbar";
 import UserProvider from "@/components/user-provider";
 import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const HeavyComponent = lazy(() => import("./map-wrapper"));
 
@@ -25,7 +27,10 @@ const pattaya = Pattaya({
 });
 
 export const metadata: Metadata = {
-  title: "Convention App",
+  title: {
+    template: "ConCaly | %s",
+    default: "ConCaly",
+  },
   description: "Search and Plan conventions",
 };
 
@@ -48,6 +53,8 @@ export default function RootLayout({
           </Suspense>
           <Toaster />
         </UserProvider>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

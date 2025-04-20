@@ -3,7 +3,10 @@
 // all the logic is handled inside the modes themselves and they all talk to their global stores
 import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "../../components/sidebar-panel/modes/search-mode";
-import { useSidebarStore } from "@/stores/explore-sidebar-store";
+import {
+  useSearchStore,
+  useSidebarStore,
+} from "@/stores/explore-sidebar-store";
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect, useState } from "react";
@@ -14,6 +17,7 @@ import { ConventionInfo } from "@/types/types";
 import { useListStore } from "@/stores/use-list-store";
 import { FaChevronRight } from "react-icons/fa6";
 import ListPanel from "@/components/list-panel/list-panel";
+import { useMapPinsStore } from "@/stores/map-store";
 
 export type sidebarModes = "search" | "filter";
 
@@ -26,6 +30,8 @@ export default function Sidebar() {
   const { addToList, showingNow } = useListStore();
   const [isExtensionOpen, setIsExtensionOpen] = useState(false);
 
+  const searchState = useSearchStore((s) => s.searchState);
+
   // when you click on a con, change the url to reflect which one you click
   useEffect(() => {
     if (!initialized) return;
@@ -36,6 +42,16 @@ export default function Sidebar() {
       router.push(`/explore`, { scroll: false });
     }
   }, [selectedCon, router, initialized]);
+
+  // if there's a search then set mode to search
+  useEffect(() => {
+    if (searchState.context) {
+      useSidebarStore.getState().setSidebarMode("search");
+    } else {
+      useSidebarStore.getState().setSidebarMode("filter");
+      useMapPinsStore.getState().clearTempPins();
+    }
+  }, [searchState.context]);
 
   return (
     <DndContext

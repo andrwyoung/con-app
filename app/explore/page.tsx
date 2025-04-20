@@ -3,6 +3,7 @@ import Sidebar from "@/app/explore/sidebar";
 import { useEffect } from "react";
 import {
   useMapCardsStore,
+  useSearchStore,
   useSidebarStore,
 } from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
@@ -27,12 +28,8 @@ export default function ExplorePage() {
 
         if (isInputFocused) return;
 
-        const {
-          selectedCon,
-          setSelectedCon,
-          setSidebarModeAndDeselectCon,
-          sidebarMode,
-        } = useSidebarStore.getState();
+        const { selectedCon, setSelectedCon, sidebarMode } =
+          useSidebarStore.getState();
 
         console.log("escape pressed! selected con:", selectedCon);
 
@@ -45,7 +42,7 @@ export default function ExplorePage() {
           clearSelectedEvents();
           useMapStore.getState().clearClickedClusterHighlight?.();
         } else {
-          setSidebarModeAndDeselectCon("filter");
+          useSearchStore.getState().setSearchState(null);
         }
       }
 

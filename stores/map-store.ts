@@ -1,5 +1,6 @@
 // map store so all components in explore can access it
-import { ConLocation } from "@/types/types";
+import { ConLocation, Convention, ConventionInfo } from "@/types/types";
+import { Marker } from "mapbox-gl";
 import { create } from "zustand";
 
 
@@ -47,4 +48,18 @@ export const useMapStore = create<MapStore>((set) => ({
 
   clearClickedClusterHighlight: undefined,
   setClearClickedClusterHighlight: (fn) => set({ clearClickedClusterHighlight: fn }),
+}))
+
+
+type MapPinsStore = {
+  tempPins: ConventionInfo[];
+  setTempPins: (cons: ConventionInfo[]) => void;
+  clearTempPins: () => void;
+}
+
+
+export const useMapPinsStore = create<MapPinsStore>((set) => ({
+  tempPins: [],
+  setTempPins: (cons) => set({ tempPins: cons }),
+  clearTempPins: () => set({ tempPins: [] }),
 }))

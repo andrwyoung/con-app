@@ -1,6 +1,6 @@
 import { formatReviewDate } from "@/lib/helpers/review-time";
 import { useUserStore } from "@/stores/user-store";
-import { Review } from "@/types/reviews";
+import { Review } from "@/types/review-types";
 import { FiEdit3 } from "react-icons/fi";
 
 export default function ReviewCard({

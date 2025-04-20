@@ -1,16 +1,8 @@
 import { ConventionInfo } from "@/types/types";
 import { getDistance } from "../utils";
+import { SortType } from "@/types/search-types";
 
-export type SortType =
-  | "alpha"
-  | "chron"
-  | "rev-chron"
-  | "just-passed"
-  | "upcoming"
-  | "status"
-  | "distance"
-  | "distance-me"
-  | "raw";
+
 
 export function getStartDate(event: ConventionInfo): Date {
   return new Date(event.start_date ?? `${event.year}-01-01`);

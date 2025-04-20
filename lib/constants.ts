@@ -16,6 +16,9 @@ export const SPECIAL_CON_ID = {
     UNKNOWN_CON: -999,
 }
 
+// search consts
+export const DEFAULT_SORT = "status";
+
 // map consts
 export const ZOOM_USE_DEFAULT = -1;
 export const DEFAULT_ZOOM = 7;

@@ -3,7 +3,7 @@ import { useUserStore } from "@/stores/user-store";
 import React, { useEffect, useState } from "react";
 import ReviewCard from "./review-card";
 import ReviewModal from "./review-modal";
-import { Review } from "@/types/reviews";
+import { Review } from "@/types/review-types";
 
 export default function ReviewsSection({ id }: { id: number }) {
   const profile = useUserStore((s) => s.profile);

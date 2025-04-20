@@ -8,7 +8,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ConLocation } from "@/types/types";
 import addMarkersToMap from "../../lib/map/add-markers";
-import { useMapStore } from "@/stores/map-store";
+import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {
   useMapCardsStore,
@@ -30,7 +30,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const {
     selectedCon,
     setSelectedCon,
-    setSidebarModeAndDeselectCon,
+    setSidebarMode: setSidebarModeAndDeselectCon,
     setSelectedClusterId,
   } = useSidebarStore();
   const { setFocusedEvents } = useMapCardsStore();
@@ -41,6 +41,13 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive)();
   const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive)();
+
+  const tempPinCons = useMapPinsStore((s) => s.tempPins);
+
+  useEffect(() => {
+    console.time("map render");
+    return () => console.timeEnd("map render");
+  }, []);
 
   // initial mount of map
   useEffect(() => {
@@ -168,6 +175,28 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       };
     }
   }, [selectedCon]);
+
+  // render the temp pins
+  useEffect(() => {
+    if (!mapRef.current || tempPinCons.length === 0) return;
+
+    const markers: mapboxgl.Marker[] = [];
+
+    tempPinCons.forEach((con) => {
+      const marker = new mapboxgl.Marker({
+        color: "#FFA726",
+        offset: [0, -20],
+      })
+        .setLngLat([con.location_long, con.location_lat])
+        .addTo(mapRef.current!);
+
+      markers.push(marker);
+    });
+
+    return () => {
+      markers.forEach((m) => m.remove());
+    };
+  }, [tempPinCons]);
 
   // SECTION: utility functions for the mapStore
   //

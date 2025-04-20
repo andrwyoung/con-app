@@ -7,7 +7,7 @@ import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
 import CardList from "../../card/card-list/card-list";
 import { useMapCardsStore } from "@/stores/explore-sidebar-store";
-import { useMapStore } from "@/stores/map-store";
+import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
 
 export type FilterKey = "tags" | "time" | "distance" | "status";
@@ -155,6 +155,7 @@ export default function FilterMode() {
                 // setSelectedCon(null);
                 useMapStore.getState().clearSelectedPointHighlight?.();
                 useMapStore.getState().clearClickedClusterHighlight?.();
+                useMapPinsStore.getState().clearTempPins();
               }}
               className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
             >

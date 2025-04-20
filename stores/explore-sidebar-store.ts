@@ -1,5 +1,5 @@
-import { DROPDOWN_RESULTS } from "@/lib/constants";
-import { SortType } from "@/lib/helpers/sort-cons";
+import { DEFAULT_SORT, DROPDOWN_RESULTS } from "@/lib/constants";
+import { SearchContext, SearchState, SortType } from "@/types/search-types";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
@@ -11,7 +11,7 @@ type SidebarStore = {
   setInitialized: () => void;
 
   sidebarMode: SidebarMode;
-  setSidebarModeAndDeselectCon: (mode: SidebarMode) => void;
+  setSidebarMode: (mode: SidebarMode) => void;
 
   selectedCon: ConventionInfo | null;
   setSelectedCon: (id: ConventionInfo | null) => void;
@@ -28,7 +28,7 @@ export const useSidebarStore = create<SidebarStore>((set) => ({
   setInitialized: () => set({initialized: true}),
 
   sidebarMode: "filter",
-  setSidebarModeAndDeselectCon: (mode) => set({ sidebarMode: mode}),
+  setSidebarMode: (mode) => set({ sidebarMode: mode}),
 
   selectedCon: null,
   setSelectedCon: (id) => {set({ selectedCon: id })},
@@ -50,9 +50,9 @@ type SearchHistoryItem = {
 type SearchStore = {
   results: ConventionInfo[];
   setResults: (r: ConventionInfo[]) => void;
-
-  sortPreference: SortType,
-  setSortPreference: (value: SortType) => void,
+  
+  searchState: SearchState;
+  setSearchState: (ctx: SearchContext | null) => void;
 
   history: SearchHistoryItem[];
   addToHistory: (term: string, source?: "typed" | "clicked") => void;
@@ -63,8 +63,10 @@ export const useSearchStore = create<SearchStore>((set) => ({
   results: [],
   setResults: (r) => set({ results: r }),
 
-  sortPreference: "raw" as SortType,
-  setSortPreference: (value: SortType) => set({ sortPreference: value }),
+  searchState: {
+    context: null,
+  },
+  setSearchState: (ctx) => set({ searchState: { context: ctx } }),
 
   history: [],
   addToHistory: (term, source = "typed") =>
