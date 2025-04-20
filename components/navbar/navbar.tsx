@@ -97,13 +97,12 @@ export default function NavBar() {
                 onClick={async () => {
                   await supabaseAnon.auth.signOut();
                   resetLists();
-                  toast("Succesfully Logged Out");
+                  toast.success("Succesfully Logged Out");
                 }}
               >
                 <FiLock />
                 Log out
               </DropdownButton>
-              {/* Add more options here later, like "Profile", "Settings", etc */}
             </PopoverContent>
           </Popover>
         ) : (

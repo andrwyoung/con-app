@@ -48,7 +48,7 @@ export default function LoginStep({
     setError("");
     setIsSubmitting(false);
 
-    toast("Welcome! Successfully Logged In.");
+    toast.success("Welcome! Successfully Logged In.");
     changeStep("closed");
   };
 

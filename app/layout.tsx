@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   description:
     "Find, track, and plan your next convention — anime, comics, gaming, and more.",
-  metadataBase: new URL("https://www.concaly.app"), // or your deployed domain
+  metadataBase: new URL("https://www.concaly.app"),
   keywords: [
     "conventions",
     "anime",

@@ -9,12 +9,21 @@ import {
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
+import { useSearchParams } from "next/navigation";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon } = useSidebarStore();
   const clearSelectedEvents = useMapCardsStore((s) => s.clearSelectedEvents);
 
   const isModalOpen = useUIStore.getState().anyModalOpen();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const showLogin = searchParams.get("login") === "true";
+    if (showLogin) {
+      useUIStore.getState().setLoginModalStep("email");
+    }
+  }, [searchParams]);
 
   // keyboard shortcuts
   useEffect(() => {

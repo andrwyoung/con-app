@@ -194,7 +194,7 @@ export default function ListPanel({
                         // simulate spin duration even if fetch is fast
                         setTimeout(() => {
                           setIsSyncing(false);
-                          toast(
+                          toast.success(
                             `Synced ${listCount} ${
                               listCount === 1 ? "list" : "lists"
                             }!`
@@ -217,7 +217,7 @@ export default function ListPanel({
                           if (!confirmed) return;
 
                           deleteList(showingNow);
-                          toast(`"${deletedLabel}" was deleted.`);
+                          toast.success(`"${deletedLabel}" was deleted.`);
                           setShowingNow(DEFAULT_LIST);
                         }}
                       />

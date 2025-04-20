@@ -47,7 +47,7 @@ export default function CardContextMenu({
     addToList(newListId, con);
     setShowingNow(newListId);
 
-    toast(`Added ${con.name} to new List: ${label}`);
+    toast.success(`Added ${con.name} to new List: ${label}`);
   }
 
   function handleAddToList(listId: string) {
@@ -55,12 +55,12 @@ export default function CardContextMenu({
 
     // make sure not already in there
     if (alreadyInList(listId, con)) {
-      toast(`Already in list ${listLabel}`);
+      toast.error(`Already in list ${listLabel}`);
       return;
     }
 
     addToList(listId, con);
-    toast(`Added ${con.name} to ${listLabel}`);
+    toast.success(`Added ${con.name} to ${listLabel}`);
     console.log("Added", con.name, "to list", listLabel);
   }
 
@@ -130,7 +130,7 @@ export default function CardContextMenu({
         onClick={() => {
           const url = `${window.location.origin}/explore?con=${con.slug}`;
           navigator.clipboard.writeText(url);
-          toast("Link copied to clipboard");
+          toast.success("Link copied to clipboard");
         }}
       >
         Copy Link

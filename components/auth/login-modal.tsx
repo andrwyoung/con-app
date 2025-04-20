@@ -98,7 +98,7 @@ export default function LoginModal() {
               <SignupStep changeStep={changeStep} email={email} />
             )}
             {step === "reset-password" && <ResetPasswordStep email={email} />}
-            {step === "check-email" && <CheckEmailStep />}
+            {step === "check-email" && <CheckEmailStep email={email} />}
           </motion.div>
         </AnimatePresence>
       </DialogContent>

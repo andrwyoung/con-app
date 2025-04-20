@@ -56,18 +56,29 @@ export default function WelcomeModal() {
           </DialogHeader>
           <div className="flex flex-col items-center text-center gap-6">
             <h1 className="text-3xl font-semibold">Welcome to ConCaly!</h1>
-            <p>
-              Start looking for conventions...or something lol.
-              <br />
-              <br /> This is just a placeholder for onboarding.... so let me
-              know if popup shows up more than once haha.
+            <motion.div
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            >
+              <video
+                src="/welcome-vid.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full max-w-md rounded-xl shadow-md"
+              />
+            </motion.div>
+
+            <p className="leading-loose">
+              Start building your plan on the Explore page! <br />
+              Drag and drop cons you&apos;re interested in to build your
+              schedule.
             </p>
 
-            <Button
-              className="max-w-24"
-              onClick={() => setOnboardingOpen(false)}
-            >
-              <FiMapPin /> Done
+            <Button className="" onClick={() => setOnboardingOpen(false)}>
+              <FiMapPin /> Get Started
             </Button>
           </div>
         </motion.div>
