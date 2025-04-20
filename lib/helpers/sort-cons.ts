@@ -2,12 +2,9 @@ import { ConventionInfo } from "@/types/types";
 import { getDistance } from "../utils";
 import { SortType } from "@/types/search-types";
 
-
-
 export function getStartDate(event: ConventionInfo): Date {
   return new Date(event.start_date ?? `${event.year}-01-01`);
 }
-
 
 // for the special sort of status
 export function groupByStatus(items: ConventionInfo[]): Record<string, ConventionInfo[]> {

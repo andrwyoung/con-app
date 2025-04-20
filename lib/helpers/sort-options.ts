@@ -1,4 +1,4 @@
-import { SortType } from "./sort-cons";
+import { SortType } from "@/types/search-types";
 
 export const SORT_OPTIONS: { label: string; value: SortType }[] = [
     { value: "status", label: "Status" },

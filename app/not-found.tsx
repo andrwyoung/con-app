@@ -1,33 +1,12 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { fireConfetti } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
+// app/not-found.tsx
+import { Metadata } from "next";
+import NotFoundClient from "./not-found/not-found-client";
 
-export default function NotFound() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center">
-      <Image src="/404.png" width={400} alt="sunflower!" height={400} />
-      <p className="text-lg font-semibold my-3 max-w-xs sm:max-w-2xl">
-        Hi! We couldn’t find that page...but here&apos;s a fun button:
-      </p>
-      <Button
-        onClick={fireConfetti}
-        variant="outline"
-        className="hover:bg-primary-lightest hover:text-primary-text hover:border-primary-light"
-      >
-        {/* <Image
-          src="/confetti.png"
-          height={24}
-          width={24}
-          alt="confetti icon"
-          className="transform -translate-y-1"
-        /> */}
-        404 Party Button
-      </Button>
-      <Link href="/" className="text-primary-text mt-8 text-sm hover:underline">
-        Back to Explore page →
-      </Link>
-    </div>
-  );
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description: "Sad we couldn’t find that page. But here's a 404 party",
+};
+
+export default function NotFoundPage() {
+  return <NotFoundClient />;
 }

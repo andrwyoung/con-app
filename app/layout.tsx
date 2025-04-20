@@ -28,10 +28,57 @@ const pattaya = Pattaya({
 
 export const metadata: Metadata = {
   title: {
-    template: "ConCaly | %s",
+    template: "%s - ConCaly",
     default: "ConCaly",
   },
-  description: "Search and Plan conventions",
+  description:
+    "Find, track, and plan your next convention — anime, comics, gaming, and more.",
+  metadataBase: new URL("https://www.concaly.app"), // or your deployed domain
+  keywords: [
+    "conventions",
+    "anime",
+    "comic cons",
+    "gaming expos",
+    "convention planner",
+    "event calendar",
+    "convention schedule",
+    "cosplay",
+  ],
+  applicationName: "ConCaly",
+  alternates: {
+    canonical: "https://www.concaly.app",
+  },
+  openGraph: {
+    title: "ConCaly",
+    description: "Find, track, and plan your next convention.",
+    url: "https://www.concaly.app",
+    siteName: "ConCaly",
+    images: [
+      {
+        url: "/og-image.png", // ideally a real OG image at public root
+        width: 1860,
+        height: 954,
+        alt: "ConCaly convention planning preview",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ConCaly",
+    description: "Discover and plan upcoming conventions.",
+    creator: "@andrwyoung", // if you have a handle
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport = {
+  themeColor: "#FFD79E",
 };
 
 export default function RootLayout({
