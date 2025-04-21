@@ -37,10 +37,8 @@ export function useUser() {
 
       setProfile(data); // NOTE: welcome-modal.tsx sets has_never_logged_in to false
 
-
-      // always ensure default lists exist
-      await ensureDefaultListsExist(userId);
       // then sync: database is truth. always.
+      // inside this function we also ensure default lists exist
       await fetchUserListsFromSupabase(userId);
     };
 

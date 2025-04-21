@@ -123,6 +123,9 @@ export async function ensureDefaultListsExist(userId: string) {
 }
 
 export async function fetchUserListsFromSupabase(userId: string) {
+  // Always make sure default list shells exist
+  await ensureDefaultListsExist(userId);
+
   const { data: listMeta, error: listError } = await supabaseAnon
     .from("user_convention_lists")
     .select("*")
