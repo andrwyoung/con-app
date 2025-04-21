@@ -19,6 +19,7 @@ export default function ExplorePage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // if url says /explore?login=true
     const showLogin = searchParams.get("login") === "true";
     if (showLogin) {
       useUIStore.getState().setLoginModalStep("email");
