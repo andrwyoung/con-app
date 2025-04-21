@@ -2,7 +2,7 @@
 // and then store it locally
 
 "use client";
-import { fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
+import { ensureDefaultListsExist, fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { useListStore } from "@/stores/use-list-store";
 import { useUserStore } from "@/stores/user-store";
@@ -20,20 +20,27 @@ export function useUser() {
         .eq("user_id", userId)
         .single();
 
-      if (error) {
+      if (!data || error) {
         console.error("Failed to fetch user profile:", error);
         setProfile(null);
         return;
       }
 
-      setProfile(data);
-
+      // if first time loggind in, sync "guest lists" before fetchUserListsFromSupabase nukes it
       if (data.has_never_logged_in) {
-        await syncAllListsToSupabase();
-      } else {
-        resetLists();
+        try {
+          await syncAllListsToSupabase();
+        } catch (err) {
+          console.error("Failed to sync initial lists to Supabase:", err);
+        }
       }
-        
+
+      setProfile(data); // NOTE: welcome-modal.tsx sets has_never_logged_in to false
+
+
+      // always ensure default lists exist
+      await ensureDefaultListsExist(userId);
+      // then sync: database is truth. always.
       await fetchUserListsFromSupabase(userId);
     };
 

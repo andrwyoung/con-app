@@ -2,7 +2,11 @@ import { ListStore, useListStore } from "@/stores/use-list-store";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "../supabase/client";
 import { useEventStore } from "@/stores/all-events-store";
-import { UNKNOWN_CONVENTION } from "../constants";
+import {
+  DEFAULT_LISTS,
+  SPECIAL_LIST_KEYS,
+  UNKNOWN_CONVENTION,
+} from "../constants";
 
 export async function syncAllListsToSupabase() {
   const userId = useUserStore.getState().user?.id;
@@ -39,11 +43,13 @@ export async function syncAllListsToSupabase() {
     }
 
     // 2. uploading each item in the list
-    const itemInserts = items.map((item) => ({
-      user_id: userId,
-      list_id: listId,
-      convention_id: item.id,
-    }));
+    const itemInserts = items
+      .filter((item) => typeof item.id === "number")
+      .map((item) => ({
+        user_id: userId,
+        list_id: listId,
+        convention_id: item.id,
+      }));
 
     if (itemInserts.length > 0) {
       const { error: itemError } = await supabaseAnon
@@ -60,6 +66,62 @@ export async function syncAllListsToSupabase() {
   }
 }
 
+export function ensureAllDefaultsExist(
+  input: Record<string, ListStore["lists"][string]>
+): Record<string, ListStore["lists"][string]> {
+  const filled = { ...input };
+
+  for (const key of SPECIAL_LIST_KEYS) {
+    if (!filled[key]) {
+      filled[key] = DEFAULT_LISTS[key];
+    }
+  }
+
+  return filled;
+}
+
+export async function ensureDefaultListsExist(userId: string) {
+  const { data: existingLists, error } = await supabaseAnon
+    .from("user_convention_lists")
+    .select("list_id")
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("Failed to fetch existing user lists:", error);
+    return;
+  }
+
+  // check if supabase matches our local lists
+  const existingIds = new Set(existingLists?.map((list) => list.list_id));
+  const missingDefaults = SPECIAL_LIST_KEYS.filter(
+    (key) => !existingIds.has(key)
+  );
+
+  if (missingDefaults.length === 0) {
+    console.log("All default lists already exist.");
+    return;
+  }
+
+  const inserts = missingDefaults.map((key) => ({
+    user_id: userId,
+    list_id: key,
+    label: DEFAULT_LISTS[key].label,
+  }));
+
+  const { error: insertError } = await supabaseAnon
+    .from("user_convention_lists")
+    .insert(inserts);
+
+  if (insertError) {
+    console.error("Failed to insert default lists:", insertError);
+  } else {
+    console.log(
+      "Inserted default lists:",
+      inserts.map((i) => i.list_id)
+    );
+  }
+}
+
 export async function fetchUserListsFromSupabase(userId: string) {
   const { data: listMeta, error: listError } = await supabaseAnon
     .from("user_convention_lists")
@@ -72,6 +134,12 @@ export async function fetchUserListsFromSupabase(userId: string) {
   }
 
   console.log("fetched lists from supabase: ", listMeta);
+  // guard if they default lists don't exist
+  if (!listMeta?.length) {
+    console.warn("No user lists found. Using default.");
+    useListStore.getState().setLists(DEFAULT_LISTS);
+    return;
+  }
 
   const { data: listItems, error: itemError } = await supabaseAnon
     .from("user_convention_list_items")

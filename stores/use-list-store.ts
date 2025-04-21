@@ -4,6 +4,7 @@ import {
   removeListItemFromSupabase,
 } from "@/lib/lists/add-delete-items";
 import { createListInSupabase, deleteListFromSupabase, renameListInSupabase } from "@/lib/lists/add-delete-lists";
+import { ensureAllDefaultsExist } from "@/lib/lists/sync-lists";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
@@ -31,7 +32,16 @@ export type ListStore = {
 
 export const useListStore = create<ListStore>((set, get) => ({
   lists: DEFAULT_LISTS,
-  setLists: (newLists) => set({ lists: newLists }),
+  setLists: (newLists) => {
+    if (!newLists || Object.keys(newLists).length === 0) {
+      console.warn("setLists received empty or undefined — falling back to DEFAULT_LISTS.");
+      set({ lists: DEFAULT_LISTS });
+      return;
+    }
+  
+    const withDefaults = ensureAllDefaultsExist(newLists);
+    set({ lists: withDefaults });
+  },
   resetLists: () => set({ lists: DEFAULT_LISTS, showingNow: DEFAULT_LIST }),
 
   showingNow: DEFAULT_LIST,
@@ -88,8 +98,8 @@ export const useListStore = create<ListStore>((set, get) => ({
   },
 
   alreadyInList: (listId, item) => {
-    const current = get().lists[listId] || [];
-    return current.items.some((c) => c.id === item.id);
+    const current = get().lists[listId];
+    return !!current && current.items.some((c) => c.id === item.id);
   },
 
   createList: (id: string, label: string) => {
@@ -105,8 +115,17 @@ export const useListStore = create<ListStore>((set, get) => ({
     }));
   },
 
+  
   renameList: (id: string, newLabel: string) => {
-    renameListInSupabase({listId: id, newLabel});
+    const current = get().lists[id];
+  
+    if (!current) {
+      console.warn(`Tried to rename list that doesn't exist: "${id}"`);
+      return;
+    }
+  
+    renameListInSupabase({ listId: id, newLabel });
+  
     set((state) => ({
       lists: {
         ...state.lists,

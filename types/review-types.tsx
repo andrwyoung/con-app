@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 export const TAG_OPTIONS = [
   "Great Artist Alley",
   "Well Organized",
@@ -15,7 +13,7 @@ export const TAG_OPTIONS = [
 export type ReviewTag = (typeof TAG_OPTIONS)[number];
 
 export type Review = {
-  review_id: UUID;
+  review_id: string;
   created_at: Date;
 
   user_id: string;
