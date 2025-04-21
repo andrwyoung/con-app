@@ -4,9 +4,9 @@
 import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "../../components/sidebar-panel/modes/search-mode";
 import {
-  useSearchStore,
+  useExploreSelectedCardsStore,
   useSidebarStore,
-} from "@/stores/explore-sidebar-store";
+} from "@/stores/sidebar-store";
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect, useState } from "react";
@@ -18,19 +18,21 @@ import { useListStore } from "@/stores/use-list-store";
 import { FaChevronRight } from "react-icons/fa6";
 import ListPanel from "@/components/list-panel/list-panel";
 import { useMapPinsStore } from "@/stores/map-store";
+import { useScopedSearchStore } from "@/stores/search-store";
 
 export type sidebarModes = "search" | "filter";
 
 export default function Sidebar() {
   const router = useRouter();
 
-  const { sidebarMode: mode, selectedCon, initialized } = useSidebarStore();
+  const { sidebarMode: mode, initialized } = useSidebarStore();
+  const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
   const { activeCon, setActiveCon } = useDragStore();
 
   const { addToList, showingNow } = useListStore();
   const [isExtensionOpen, setIsExtensionOpen] = useState(false);
 
-  const searchState = useSearchStore((s) => s.searchState);
+  const { searchState } = useScopedSearchStore("explore");
 
   // when you click on a con, change the url to reflect which one you click
   useEffect(() => {
@@ -76,13 +78,17 @@ export default function Sidebar() {
       </DragOverlay>
       <div className="relative">
         <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6">
-          <SearchBar key={mode} />
+          <SearchBar key={mode} scope={"explore"} />
           {/* <StatusDotTester /> */}
-          {mode === "search" && <SearchMode />}
-          {mode === "filter" && <FilterMode />}
+          {mode === "search" && <SearchMode scope="explore" />}
+          {mode === "filter" && <FilterMode scope="explore" />}
         </div>
 
-        <ListPanel isOpen={isExtensionOpen} draggedCon={activeCon} />
+        <ListPanel
+          isOpen={isExtensionOpen}
+          draggedCon={activeCon}
+          scope="explore"
+        />
 
         <button
           onClick={() => setIsExtensionOpen((prev) => !prev)}

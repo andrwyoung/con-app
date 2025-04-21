@@ -1,10 +1,10 @@
 import getInitialLocation from "@/lib/map/get-initial-location";
 import { useEventStore } from "@/stores/all-events-store";
-import {
-  useMapCardsStore,
-  useSidebarStore,
-} from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
+import {
+  useExploreSelectedCardsStore,
+  useSidebarStore,
+} from "@/stores/sidebar-store";
 import { ConLocation } from "@/types/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -34,8 +34,8 @@ export default function useInitMapData() {
         const match = useEventStore.getState().allEvents[conId];
 
         if (match) {
-          useMapCardsStore.getState().setFocusedEvents([match]);
-          useSidebarStore.getState().setSelectedCon(match);
+          useExploreSelectedCardsStore.getState().setFocusedEvents([match]);
+          useExploreSelectedCardsStore.getState().setSelectedCon(match);
           setInitLocation({
             latitude: match.location_lat,
             longitude: match.location_long,

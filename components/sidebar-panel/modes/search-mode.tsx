@@ -1,19 +1,18 @@
-import {
-  useSearchStore,
-  useSidebarStore,
-} from "@/stores/explore-sidebar-store";
 import { useEffect, useState } from "react";
 import { DEFAULT_SORT, ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import CardList from "../../card/card-list/card-list";
 import SearchBarWrapper from "./search-wrapper";
 import { SortType } from "@/types/search-types";
+import { Scope } from "@/types/types";
+import { useScopedSearchStore } from "@/stores/search-store";
+import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
 
 const TITLE_DEFAULT = "Search Results";
 
-export default function SearchMode() {
-  const { results } = useSearchStore();
-  const { setSelectedCon } = useSidebarStore();
+export default function SearchMode({ scope }: { scope: Scope }) {
+  const { results, searchState } = useScopedSearchStore(scope);
+  const { setSelectedCon } = useScopedSelectedCardsStore(scope);
   const flyTo = useMapStore((s) => s.flyTo);
 
   const [numResults, setNumResults] = useState(0);
@@ -24,7 +23,6 @@ export default function SearchMode() {
   const setTempPins = useMapPinsStore((s) => s.setTempPins);
   const clearTempPins = useMapPinsStore((s) => s.clearTempPins);
 
-  const searchState = useSearchStore((s) => s.searchState);
   const userLocation = useMapStore((s) => s.userLocation);
   const currentLocation =
     searchState.context?.type === "near-me" ||
@@ -86,6 +84,7 @@ export default function SearchMode() {
       numResults={numResults}
       sortMode={sortOption}
       setSortMode={setSortOption}
+      scope={scope}
     >
       {results.length === 0 ? (
         <div className="text-sm text-center text-primary-muted px-2">
@@ -99,6 +98,7 @@ export default function SearchMode() {
             currentLocation={currentLocation}
             userLocation={userLocation ?? undefined}
             sortOption={sortOption}
+            scope={scope}
           />
         </div>
       )}

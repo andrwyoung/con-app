@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/select";
 
 import { SORT_OPTIONS, getSortLabel } from "@/lib/helpers/sort-options";
-import { useSearchStore } from "@/stores/explore-sidebar-store";
+import { useScopedSearchStore } from "@/stores/search-store";
 import { SortType } from "@/types/search-types";
+import { Scope } from "@/types/types";
 import React from "react";
 
 export default function SearchBarWrapper({
@@ -20,14 +21,16 @@ export default function SearchBarWrapper({
   sortMode,
   setSortMode,
   children,
+  scope,
 }: {
   title: string;
   numResults?: number;
   sortMode: SortType;
   setSortMode: (e: SortType) => void;
   children: React.ReactNode;
+  scope: Scope;
 }) {
-  const setSearchState = useSearchStore((s) => s.setSearchState);
+  const { setSearchState } = useScopedSearchStore(scope);
 
   return (
     <>

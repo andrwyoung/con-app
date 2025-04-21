@@ -1,19 +1,19 @@
 "use client";
 import Sidebar from "@/app/explore/sidebar";
 import { useEffect } from "react";
-import {
-  useMapCardsStore,
-  useSearchStore,
-  useSidebarStore,
-} from "@/stores/explore-sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { useUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
 import { useSearchParams } from "next/navigation";
+import { useExploreSearchStore } from "@/stores/search-store";
+import {
+  useExploreSelectedCardsStore,
+  useSidebarStore,
+} from "@/stores/sidebar-store";
 
 export default function ExplorePage() {
-  const { selectedCon, setSelectedCon } = useSidebarStore();
-  const clearSelectedEvents = useMapCardsStore((s) => s.clearSelectedEvents);
+  const { selectedCon, setSelectedCon, clearSelectedEvents } =
+    useExploreSelectedCardsStore.getState();
 
   const isModalOpen = useUIStore.getState().anyModalOpen();
   const searchParams = useSearchParams();
@@ -38,8 +38,9 @@ export default function ExplorePage() {
 
         if (isInputFocused) return;
 
-        const { selectedCon, setSelectedCon, sidebarMode } =
-          useSidebarStore.getState();
+        const { selectedCon, setSelectedCon } =
+          useExploreSelectedCardsStore.getState();
+        const { sidebarMode } = useSidebarStore.getState();
 
         console.log("escape pressed! selected con:", selectedCon);
 
@@ -52,7 +53,7 @@ export default function ExplorePage() {
           clearSelectedEvents();
           useMapStore.getState().clearClickedClusterHighlight?.();
         } else {
-          useSearchStore.getState().setSearchState(null);
+          useExploreSearchStore.getState().setSearchState(null);
         }
       }
 

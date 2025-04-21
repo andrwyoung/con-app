@@ -11,10 +11,6 @@ import addMarkersToMap from "../../lib/map/add-markers";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {
-  useMapCardsStore,
-  useSidebarStore,
-} from "@/stores/explore-sidebar-store";
-import {
   DEFAULT_ZOOM,
   DEFAULT_ZOOM_FAR,
   ZOOM_USE_DEFAULT,
@@ -22,18 +18,18 @@ import {
 import { getDistance } from "@/lib/utils";
 import { useFilterStore } from "@/stores/filter-store";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
+import {
+  useExploreSelectedCardsStore,
+  useSidebarStore,
+} from "@/stores/sidebar-store";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { allEvents: eventDict } = useEventStore();
-  const {
-    selectedCon,
-    setSelectedCon,
-    setSidebarMode: setSidebarModeAndDeselectCon,
-    setSelectedClusterId,
-  } = useSidebarStore();
-  const { setFocusedEvents } = useMapCardsStore();
+  const { setSidebarMode, setSelectedClusterId } = useSidebarStore();
+  const { setFocusedEvents, selectedCon, setSelectedCon } =
+    useExploreSelectedCardsStore();
 
   const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
   const tagFilter = useFilterStore((s) => s.tagFilter);
@@ -140,7 +136,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       filteredDict,
       setSelectedCon,
       setSelectedClusterId,
-      setSidebarModeAndDeselectCon,
+      setSidebarMode,
       setFocusedEvents
     );
   }, [
@@ -150,7 +146,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     setFocusedEvents,
     setSelectedCon,
     setSelectedClusterId,
-    setSidebarModeAndDeselectCon,
+    setSidebarMode,
   ]);
 
   // clear all points on map whenever a con is selected

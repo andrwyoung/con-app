@@ -6,9 +6,10 @@ import { FaCaretDown } from "react-icons/fa6";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
 import CardList from "../../card/card-list/card-list";
-import { useMapCardsStore } from "@/stores/explore-sidebar-store";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
+import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { Scope } from "@/types/types";
 
 export type FilterKey = "tags" | "time" | "distance" | "status";
 
@@ -25,7 +26,7 @@ function FilterPanel({ type }: { type: FilterKey }) {
   }
 }
 
-export default function FilterMode() {
+export default function FilterMode({ scope }: { scope: Scope }) {
   const { shownFilters, setShownFilters, showRecomended, setShowRecomended } =
     useFilterUIStore();
 
@@ -48,7 +49,7 @@ export default function FilterMode() {
     filteredFocusedEvents,
     setFocusedEvents,
     setFilteredFocusedEvents,
-  } = useMapCardsStore();
+  } = useScopedSelectedCardsStore(scope);
 
   // whenever filters change, update the selected items list
   // but still keep the original full list around
@@ -165,7 +166,11 @@ export default function FilterMode() {
 
           {filteredFocusedEvents.length > 0 ? (
             <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-              <CardList items={filteredFocusedEvents} sortOption="status" />
+              <CardList
+                items={filteredFocusedEvents}
+                sortOption="status"
+                scope={scope}
+              />
             </div>
           ) : (
             <div className="text-sm text-center text-primary-muted px-2">
@@ -193,7 +198,7 @@ export default function FilterMode() {
 
           <div className="overflow-y-auto w-full flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
             <AnimatePresence initial={false}>
-              {showRecomended ? <Recommendations /> : ""}
+              {showRecomended ? <Recommendations scope={scope} /> : ""}
             </AnimatePresence>
           </div>
         </div>

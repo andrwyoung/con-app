@@ -1,8 +1,8 @@
 // the expandable scrollable list that shows cards
 // responsible for any keybaord navigation interactions too
 
-import { useSidebarStore } from "@/stores/explore-sidebar-store";
-import { ConLocation, ConventionInfo } from "@/types/types";
+import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { ConLocation, ConventionInfo, Scope } from "@/types/types";
 import React, { useEffect, useRef } from "react";
 import { CardVariant } from "../card";
 import { useMapStore } from "@/stores/map-store";
@@ -20,18 +20,19 @@ export default function CardList({
   currentLocation = null,
   userLocation,
   type = "default",
+  scope,
 }: {
   items: ConventionInfo[];
   sortOption?: SortType;
   currentLocation?: ConLocation | null;
   userLocation?: ConLocation;
   type?: CardVariant;
+  scope: Scope;
 }) {
-  const { setSelectedCon, selectedCon } = useSidebarStore();
+  const { setSelectedCon, selectedCon, selectedIndex, setSelectedIndex } =
+    useScopedSelectedCardsStore(scope);
   const flyTo = useMapStore((s) => s.flyTo);
 
-  const selectedIndex = useSidebarStore((s) => s.selectedIndex);
-  const setSelectedIndex = useSidebarStore((s) => s.setSelectedIndex);
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
   const anyModalOpen = useUIStore((s) => s.anyModalOpen());
 

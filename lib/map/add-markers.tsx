@@ -1,7 +1,11 @@
 // add all the event markers to the map
 // very messy file....sorry
 
-import { SidebarMode, useSidebarStore } from "@/stores/explore-sidebar-store";
+import {
+  SidebarMode,
+  useExploreSelectedCardsStore,
+  useSidebarStore,
+} from "@/stores/sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { ConventionInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
@@ -316,7 +320,7 @@ export default function addMarkersToMap(
       const clickedId = props?.id;
 
       if (clickedId) {
-        const selectedCon = useSidebarStore.getState().selectedCon;
+        const selectedCon = useExploreSelectedCardsStore.getState().selectedCon;
         if (!selectedCon || selectedCon.id !== clickedId) {
           // highlight point
           highlightPointOnMap(clickedId);

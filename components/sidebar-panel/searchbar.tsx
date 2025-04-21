@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiClock, FiMapPin, FiUser, FiX } from "react-icons/fi";
-import { useSearchStore } from "@/stores/explore-sidebar-store";
 import { useEventStore } from "@/stores/all-events-store";
 import {
   grabConventions,
   grabNearbyConventions,
 } from "@/lib/searching/local-search";
 import { useMapStore } from "@/stores/map-store";
+import {
+  useScopedSearchStore,
+  useSearchHistoryStore,
+} from "@/stores/search-store";
 
 type DropdownItem = {
   id: string;
@@ -38,7 +41,7 @@ function getDropdownItemClass(item: DropdownItem, isHighlighted: boolean) {
   return base;
 }
 
-export default function Searchbar() {
+export default function Searchbar({ scope }: { scope: Scope }) {
   const [searchbarText, setSearchbarText] = useState("");
   const [suggestionResults, setSuggestionResults] = useState<ConventionInfo[]>(
     []
@@ -49,8 +52,8 @@ export default function Searchbar() {
 
   const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
-  const { setResults, setSearchState, history, addToHistory } =
-    useSearchStore();
+  const { setResults, setSearchState } = useScopedSearchStore(scope);
+  const { history, addToHistory } = useSearchHistoryStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clearSearchBar = () => {
@@ -278,7 +281,7 @@ export default function Searchbar() {
     onClick: onSearchHere,
   });
 
-  if (nothingTyped) {
+  if (nothingTyped && scope == "explore") {
     // recent search history
     history.slice(0, DROPDOWN_RESULTS).forEach((res) => {
       items.push({

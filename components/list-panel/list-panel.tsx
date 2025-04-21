@@ -1,5 +1,5 @@
 import { useListStore } from "@/stores/use-list-store";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Droppable from "./drop-wrapper";
@@ -30,9 +30,11 @@ const NO_ACTION = "__dud__";
 export default function ListPanel({
   isOpen,
   draggedCon,
+  scope,
 }: {
   isOpen: boolean;
   draggedCon: ConventionInfo | null;
+  scope: Scope;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -237,7 +239,11 @@ export default function ListPanel({
                 ref={scrollRef}
                 className="overflow-y-auto flex-grow max-h-[calc(100vh-24rem)] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
               >
-                <CardList items={lists[showingNow].items} type="list" />
+                <CardList
+                  items={lists[showingNow].items}
+                  type="list"
+                  scope={scope}
+                />
               </div>
             )}
           </Droppable>

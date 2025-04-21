@@ -5,8 +5,9 @@ import { useMemo } from "react";
 import { getDistance } from "@/lib/utils";
 import { getStartDate } from "@/lib/helpers/sort-cons";
 import { motion } from "framer-motion";
+import { Scope } from "@/types/types";
 
-export default function Recommendations() {
+export default function Recommendations({ scope }: { scope: Scope }) {
   const userLocation = useMapStore((s) => s.userLocation);
   const allCons = useEventStore((s) => s.allEvents);
 
@@ -57,7 +58,7 @@ export default function Recommendations() {
       <p className="text-xs text-primary-muted italic">
         Based on your location and recent activity
       </p>
-      <CardList items={recommended} type="recommendation" />
+      <CardList items={recommended} type="recommendation" scope={scope} />
     </motion.div>
   );
 }
