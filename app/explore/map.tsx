@@ -36,8 +36,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const { setFocusedEvents } = useMapCardsStore();
 
   const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
-  const selectedTags = useFilterStore((s) => s.selectedTags);
-  const includeUntagged = useFilterStore((s) => s.includeUntagged);
+  const tagFilter = useFilterStore((s) => s.tagFilter);
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive)();
   const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive)();
@@ -77,7 +76,9 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
         // tag filter
         const eventTags = event.tags ?? [];
-        const tagMatch = selectedTags.some((tag) => eventTags.includes(tag));
+        const tagMatch = tagFilter.selected.some((tag) =>
+          eventTags.includes(tag)
+        );
         const isUntagged = eventTags.length === 0;
 
         // status filter
@@ -86,13 +87,13 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
         );
 
         if (!statusMatch) return false;
-        if (isUntagged) return includeUntagged;
+        if (isUntagged) return tagFilter.includeUntagged;
         return tagMatch;
       })
     );
 
     return result;
-  }, [eventDict, selectedTags, includeUntagged, selectedStatuses]);
+  }, [eventDict, tagFilter, selectedStatuses]);
 
   // update the store with the filtered items
   useEffect(() => {
@@ -132,7 +133,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     if (!mapRef.current || !eventDict || Object.keys(eventDict).length === 0)
       return;
 
-    console.log("selectedTags", selectedTags);
+    console.log("selectedTags", tagFilter.selected);
 
     addMarkersToMap(
       mapRef.current!,
@@ -145,7 +146,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   }, [
     filteredDict,
     eventDict,
-    selectedTags,
+    tagFilter,
     setFocusedEvents,
     setSelectedCon,
     setSelectedClusterId,

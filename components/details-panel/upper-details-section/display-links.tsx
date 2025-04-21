@@ -66,7 +66,7 @@ export default function SocialLinks({ links }: { links: string }) {
   return (
     <>
       {socials.length > 0 && (
-        <div className="flex gap-3 items-center text-xl text-primary-muted mt-2">
+        <div className="flex gap-3 items-center text-xl text-primary-muted">
           {socials.map(({ href, platform }, idx) => {
             const icon = socialIconMap[platform];
             if (!icon) return null;

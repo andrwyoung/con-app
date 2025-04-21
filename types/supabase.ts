@@ -64,6 +64,7 @@ export type Database = {
           convention_id: number
           created_at: string
           end_date: string | null
+          event_status: string | null
           id: string
           length_days: number | null
           start_date: string | null
@@ -83,6 +84,7 @@ export type Database = {
           convention_id: number
           created_at?: string
           end_date?: string | null
+          event_status?: string | null
           id?: string
           length_days?: number | null
           start_date?: string | null
@@ -102,6 +104,7 @@ export type Database = {
           convention_id?: number
           created_at?: string
           end_date?: string | null
+          event_status?: string | null
           id?: string
           length_days?: number | null
           start_date?: string | null
@@ -130,8 +133,8 @@ export type Database = {
         Row: {
           address: string | null
           created_at: string
+          cs_description: string | null
           description: string | null
-          event_status: string | null
           facebook_url: string | null
           fancons_link: string | null
           id: number
@@ -154,8 +157,8 @@ export type Database = {
         Insert: {
           address?: string | null
           created_at?: string
+          cs_description?: string | null
           description?: string | null
-          event_status?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -178,8 +181,8 @@ export type Database = {
         Update: {
           address?: string | null
           created_at?: string
+          cs_description?: string | null
           description?: string | null
-          event_status?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -298,7 +301,8 @@ export type Database = {
           created_at: string
           review_id: string
           review_text: string
-          stars: number
+          stars: number | null
+          tags: string[] | null
           updated_at: string | null
           user_id: string
         }
@@ -308,7 +312,8 @@ export type Database = {
           created_at?: string
           review_id?: string
           review_text: string
-          stars: number
+          stars?: number | null
+          tags?: string[] | null
           updated_at?: string | null
           user_id?: string
         }
@@ -318,7 +323,8 @@ export type Database = {
           created_at?: string
           review_id?: string
           review_text?: string
-          stars?: number
+          stars?: number | null
+          tags?: string[] | null
           updated_at?: string | null
           user_id?: string
         }
@@ -344,58 +350,44 @@ export type Database = {
             referencedRelation: "convention_years"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
-      user_convention_list: {
+      user_convention_list_items: {
         Row: {
+          convention_id: number
           created_at: string
-          id: string
-          name: string
+          list_id: string
           notes: string | null
+          sort_order: number | null
+          status: string | null
           updated_at: string | null
           user_id: string
-          visibility: Database["public"]["Enums"]["Visibility"]
         }
         Insert: {
+          convention_id: number
           created_at?: string
-          id?: string
-          name: string
+          list_id: string
           notes?: string | null
+          sort_order?: number | null
+          status?: string | null
           updated_at?: string | null
-          user_id?: string
-          visibility?: Database["public"]["Enums"]["Visibility"]
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          notes?: string | null
-          updated_at?: string | null
-          user_id?: string
-          visibility?: Database["public"]["Enums"]["Visibility"]
-        }
-        Relationships: []
-      }
-      user_convention_list_item: {
-        Row: {
-          convention_id: number | null
-          created_at: string
-          id: string
-          list_id: string | null
-          user_id: string
-        }
-        Insert: {
-          convention_id?: number | null
-          created_at?: string
-          id?: string
-          list_id?: string | null
           user_id?: string
         }
         Update: {
-          convention_id?: number | null
+          convention_id?: number
           created_at?: string
-          id?: string
-          list_id?: string | null
+          list_id?: string
+          notes?: string | null
+          sort_order?: number | null
+          status?: string | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -413,49 +405,43 @@ export type Database = {
             referencedRelation: "latest_convention_years"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "user_convention_list_item_list_id_fkey"
-            columns: ["list_id"]
-            isOneToOne: false
-            referencedRelation: "user_convention_list"
-            referencedColumns: ["id"]
-          },
         ]
       }
-      user_convention_status: {
+      user_convention_lists: {
         Row: {
-          convention_year_id: string | null
           created_at: string
-          going_status: Database["public"]["Enums"]["GoingStatus"]
-          note: string | null
+          id: string
+          label: string
+          list_id: string
+          notes: string | null
+          special_type: string | null
           updated_at: string | null
           user_id: string
+          visibility: Database["public"]["Enums"]["Visibility"]
         }
         Insert: {
-          convention_year_id?: string | null
           created_at?: string
-          going_status?: Database["public"]["Enums"]["GoingStatus"]
-          note?: string | null
+          id?: string
+          label: string
+          list_id: string
+          notes?: string | null
+          special_type?: string | null
           updated_at?: string | null
           user_id?: string
+          visibility?: Database["public"]["Enums"]["Visibility"]
         }
         Update: {
-          convention_year_id?: string | null
           created_at?: string
-          going_status?: Database["public"]["Enums"]["GoingStatus"]
-          note?: string | null
+          id?: string
+          label?: string
+          list_id?: string
+          notes?: string | null
+          special_type?: string | null
           updated_at?: string | null
           user_id?: string
+          visibility?: Database["public"]["Enums"]["Visibility"]
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_convention_status_convention_id_fkey"
-            columns: ["convention_year_id"]
-            isOneToOne: false
-            referencedRelation: "convention_years"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_follows: {
         Row: {
@@ -580,7 +566,6 @@ export type Database = {
     Views: {
       latest_convention_years: {
         Row: {
-          address: string | null
           end_date: string | null
           event_status: string | null
           id: number | null

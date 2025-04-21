@@ -3,42 +3,23 @@ import { ConventionYear } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
 import { IoCaretBack } from "react-icons/io5";
-import { daysUntil } from "@/lib/helpers/event-recency";
-import { DAYS_UNTIL_SOON } from "@/lib/constants";
+import {
+  getEventTimeCategory,
+  TimeCategory,
+} from "@/lib/helpers/event-recency";
 import { MdEdit } from "react-icons/md";
 
-type YearType = "past" | "now" | "future" | "unknown";
-
-function getTimeCategory(
-  start: string | null | undefined,
-  end: string | null | undefined
-): YearType {
-  if (!start || !end) return "unknown";
-
-  const now = new Date();
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-
-  if (endDate < now) return "past";
-  const daysTill = daysUntil(startDate);
-  if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "now";
-  return "future";
-}
-
 // style if depending on what type it is
-const bgClass: Record<YearType, string> = {
-  past: "bg-stone-100",
-  now: "bg-emerald-200",
-  future: "bg-primary-light text-primary-text",
-  unknown: "bg-white border-dashed border-2",
-};
-
-// style if depending on what type it is
-const yearStatusText: Record<YearType, string> = {
-  past: "Event Passed",
-  now: "Happening This Weekend!",
-  future: "Coming Soon",
-  unknown: "",
+const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
+  here: { bg: "bg-emerald-200", label: "Happening This Weekend!" },
+  postponed: { bg: "bg-secondary/40", label: "Event Postponed" },
+  soon: { bg: "bg-primary-light text-primary-text", label: "Coming Soon" },
+  upcoming: { bg: "bg-primary-light text-primary-text", label: "Coming Soon" },
+  recent: { bg: "bg-stone-100", label: "Event Passed" },
+  past: { bg: "bg-stone-100", label: "Event Passed" },
+  discontinued: { bg: "bg-stone-100", label: "Event Passed" },
+  cancelled: { bg: "bg-rose-200", label: "Event Cancelled" },
+  unknown: { bg: "bg-white border-dashed border-2", label: "" },
 };
 
 function YearDetail({
@@ -50,7 +31,12 @@ function YearDetail({
   venue: string;
   location: string;
 }) {
-  const category = getTimeCategory(conYear.start_date, conYear.end_date);
+  const category = getEventTimeCategory(
+    conYear.event_status,
+    conYear.year,
+    conYear.start_date,
+    conYear.end_date
+  );
 
   const formattedDates = formatEventMonthRange(
     conYear.start_date ?? undefined,
@@ -63,7 +49,7 @@ function YearDetail({
   return (
     <div
       key={conYear.year}
-      className={`snap-center ${bgClass[category]} rounded-lg shrink-0 w-76 p-4`}
+      className={`snap-center ${YEAR_STYLES[category].bg} rounded-lg shrink-0 w-76 p-4`}
     >
       <div className="text-sm text-primary-text flex flex-col gap-4">
         <div className="flex justify-between items-start">
@@ -71,7 +57,7 @@ function YearDetail({
           <div className="flex flex-col items-end">
             <span>{formattedDates}</span>
             <span className="text-xs text-primary-muted">
-              {yearStatusText[category]}
+              {YEAR_STYLES[category].label}
             </span>
           </div>
         </div>
@@ -183,7 +169,7 @@ export default function YearGallery({
           ))}
         {showMissing && (
           <div
-            className={`snap-center ${bgClass["unknown"]} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
+            className={`snap-center ${YEAR_STYLES["unknown"].bg} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
           >
             <div className="text-sm text-primary-text flex flex-col gap-4">
               <div className="flex justify-between items-start">
@@ -204,8 +190,8 @@ export default function YearGallery({
               <div className="text-xs text-primary-muted">
                 <div className="flex flex-row items-center gap-2">
                   <SiGooglemaps className="w-4 h-4" />
-                  <div className="hover:underline text-primary-muted">
-                    {venue}
+                  <div className="text-primary-muted">
+                    Unknown
                     <br />
                     {location}
                   </div>

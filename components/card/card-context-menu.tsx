@@ -9,7 +9,6 @@ import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
 import {
   SharedMenuItem,
   SharedMenuSeparator,
-  SharedMenuShortcut,
   SharedMenuSub,
   SharedMenuSubContent,
   SharedMenuSubTrigger,
@@ -134,20 +133,6 @@ export default function CardContextMenu({
         }}
       >
         Copy Link
-      </SharedMenuItem>
-      <SharedMenuItem
-        type={menuType}
-        onClick={() => {
-          setTimeout(() => {
-            const input = document.getElementById("explore-searchbar");
-            if (input instanceof HTMLInputElement) {
-              input.focus();
-            }
-          }, 10);
-        }}
-      >
-        Search
-        <SharedMenuShortcut type={menuType}>⌘L</SharedMenuShortcut>
       </SharedMenuItem>
     </>
   );

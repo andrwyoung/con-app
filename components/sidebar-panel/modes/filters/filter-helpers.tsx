@@ -1,6 +1,6 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { FaCaretDown } from "react-icons/fa6";
 import { FilterKey } from "../filter-mode";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 
 interface FilterToggleButtonProps {
   filter: FilterKey;
@@ -45,11 +45,13 @@ export function FilterSection({
   children,
   selectAll,
   deselectAll,
+  filterIsActive,
 }: {
   title: string;
   children: React.ReactNode;
   selectAll?: () => void;
   deselectAll?: () => void;
+  filterIsActive: boolean;
 }) {
   return (
     <div className="flex flex-col py-2">
@@ -61,16 +63,18 @@ export function FilterSection({
       {selectAll && deselectAll ? (
         <div className="flex flex-col self-end items-end px-2 mt-2">
           <button
-            className="text-xs text-secondary-darker cursor-pointer hover:underline"
-            onClick={() => selectAll()}
-          >
-            Select All {title}
-          </button>
-          <button
             className="text-xs text-primary-muted cursor-pointer hover:underline"
             onClick={() => deselectAll()}
           >
-            Deselect All {title}
+            Select None
+          </button>
+          <button
+            className={`text-xs  cursor-pointer hover:underline ${
+              filterIsActive ? "text-rose-400" : "text-primary-muted"
+            }`}
+            onClick={() => selectAll()}
+          >
+            Reset (Select All)
           </button>
         </div>
       ) : (
@@ -84,13 +88,17 @@ export function CheckField({
   text,
   isChecked,
   onChange,
+  isMuted = false,
 }: {
   text: string;
   isChecked: boolean;
   onChange: () => void;
+  isMuted?: boolean;
 }) {
   return (
-    <label className="flex items-center gap-2 cursor-pointer select-none p-1 group">
+    <label
+      className={`flex items-center gap-2 cursor-pointer select-none p-1 group`}
+    >
       <input
         type="checkbox"
         id={`${text}-checkbox`}
@@ -98,7 +106,30 @@ export function CheckField({
         onChange={onChange}
         className="hidden"
       />
-      <Checkbox checked={isChecked} onCheckedChange={onChange} />
+      <CheckboxPrimitive.Root
+        data-slot="checkbox"
+        className={`
+          peer border-input dark:bg-input/30 
+          dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50
+          aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-3.5 shrink-0
+          rounded-[4px] border shadow-sm  transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed
+          disabled:opacity-50 cursor-pointer ${
+            isMuted
+              ? "data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              : "data-[state=checked]:bg-primary-lightest data-[state=checked]:border-primary"
+          }
+        `}
+        checked={isChecked}
+        onCheckedChange={onChange}
+      >
+        <CheckboxPrimitive.Indicator
+          data-slot="checkbox-indicator"
+          className="flex items-center justify-center text-current transition-none"
+        >
+          {/* <FaCheck className="size-2.5 text-primary-muted" /> */}
+        </CheckboxPrimitive.Indicator>
+      </CheckboxPrimitive.Root>
+
       <span className="text-sm font-medium text-primary-text group-hover:text-primary-muted leading-tight">
         {text}
       </span>

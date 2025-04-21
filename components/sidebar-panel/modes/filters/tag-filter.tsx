@@ -6,20 +6,26 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function TagsFilter() {
   const [showExtra, setShowExtra] = useState(false);
-  const selectedTags = useFilterStore((s) => s.selectedTags);
-  const setSelectedTags = useFilterStore((s) => s.setSelectedTags);
+  const tagFilter = useFilterStore((s) => s.tagFilter);
+  const setTagFilter = useFilterStore((s) => s.setTagFilter);
 
   const selectAllTags = useFilterStore((s) => s.selectAllTags);
   const clearTagFilter = useFilterStore((s) => s.clearTagFilter);
-  const includeUntagged = useFilterStore((s) => s.includeUntagged);
-  const setIncludeUntagged = useFilterStore((s) => s.setIncludeUntagged);
+  const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive);
 
   const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
+    const isDefault = !tagFilterIsActive();
+    // if all are selected and one is selected. ONLY select that one
+    if (isDefault) {
+      setTagFilter([tag], false);
+      return;
     }
+
+    const selected = tagFilter.selected.includes(tag)
+      ? tagFilter.selected.filter((t) => t !== tag)
+      : [...tagFilter.selected, tag];
+
+    setTagFilter(selected, tagFilter.includeUntagged);
   };
 
   return (
@@ -27,6 +33,7 @@ export default function TagsFilter() {
       title="Tags"
       selectAll={selectAllTags}
       deselectAll={clearTagFilter}
+      filterIsActive={tagFilterIsActive()}
     >
       {/* Top Tags Section */}
       <div className="grid grid-cols-3 gap-x-2 gap-y-0">
@@ -34,8 +41,9 @@ export default function TagsFilter() {
           <CheckField
             key={tag}
             text={tag}
-            isChecked={selectedTags.includes(tag)}
+            isChecked={tagFilter.selected.includes(tag)}
             onChange={() => toggleTag(tag)}
+            isMuted={tagFilterIsActive()}
           />
         ))}
       </div>
@@ -69,8 +77,9 @@ export default function TagsFilter() {
                 <CheckField
                   key={tag}
                   text={tag}
-                  isChecked={selectedTags.includes(tag)}
+                  isChecked={tagFilter.selected.includes(tag)}
                   onChange={() => toggleTag(tag)}
+                  isMuted={tagFilterIsActive()}
                 />
               ))}
             </div>
@@ -79,8 +88,19 @@ export default function TagsFilter() {
       </AnimatePresence>
       <CheckField
         text="Include untagged events"
-        isChecked={includeUntagged}
-        onChange={() => setIncludeUntagged(!includeUntagged)}
+        isChecked={tagFilter.includeUntagged}
+        onChange={() => {
+          const isDefault = !tagFilterIsActive();
+
+          if (isDefault) {
+            // first click: reset to just untagged
+            setTagFilter([], true);
+            return;
+          }
+          // normal toggle
+          setTagFilter(tagFilter.selected, !tagFilter.includeUntagged);
+        }}
+        isMuted={tagFilterIsActive()}
       />
     </FilterSection>
   );

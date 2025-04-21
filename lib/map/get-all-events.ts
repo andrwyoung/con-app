@@ -34,7 +34,7 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
     const normalizedData = (allData ?? []).map((event) => {
       return {
         ...event,
-        timeCategory: getEventTimeCategory(event),
+        timeCategory: getEventTimeCategory(event.event_status, event.year, event.start_date, event.end_date),
       };
     });
 

@@ -34,14 +34,14 @@ type FilterStore = {
   setFilteredItems: (dict: Record<string, ConventionInfo>) => void;
 
   // tag filter
-  selectedTags: string[];
-  setSelectedTags: (tags: string[]) => void;
-  selectAllTags: () => void;
+  tagFilter: {
+    selected: string[];
+    includeUntagged: boolean;
+  };
+  setTagFilter: (selected: string[], includeUntagged: boolean) => void;
   clearTagFilter: () => void;
+  selectAllTags: () => void;
   tagFilterIsActive: () => boolean;
-
-  includeUntagged: boolean;
-  setIncludeUntagged: (e: boolean) => void;
 
   // status filter
   selectedStatuses: string[];
@@ -58,17 +58,33 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   filteredItems: {},
   setFilteredItems: (dict) => set({ filteredItems: dict }),
 
-  selectedTags: [...allTags],
-  setSelectedTags: (tags) => set({ selectedTags: tags }),
-  selectAllTags: () => set({ selectedTags: [...allTags] }),
-  clearTagFilter: () => set({ selectedTags: [] }),
+  tagFilter: {
+    selected: [...allTags],
+    includeUntagged: true,
+  },
+  setTagFilter: (selected, includeUntagged) =>
+    set({ tagFilter: { selected, includeUntagged } }),
+  clearTagFilter: () =>
+    set(() => ({
+      tagFilter: {
+        selected: [],
+        includeUntagged: false,
+      },
+    })),
+  selectAllTags: () =>
+    set(() => ({
+      tagFilter: {
+        selected: [...allTags],
+        includeUntagged: true,
+      },
+    })),
   tagFilterIsActive: () => {
     const s = get();
-    return s.selectedTags.length !== allTags.length || !s.includeUntagged;
+    return (
+      s.tagFilter.selected.length !== allTags.length ||
+      !s.tagFilter.includeUntagged
+    );
   },
-
-  includeUntagged: true,
-  setIncludeUntagged: (value) => set({ includeUntagged: value }),
 
   // status filter
   selectedStatuses: [...timeCategories],
@@ -83,7 +99,6 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   resetAllFilters: () => {
     const s = get();
     s.selectAllTags();
-    s.setIncludeUntagged(true);
     s.selectAllStatuses();
   },
 }));

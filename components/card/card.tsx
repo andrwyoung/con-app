@@ -60,10 +60,10 @@ const Card = forwardRef<
           </Draggable>
         )}
 
-        <div className="flex flex-col ml-4 mr-10">
+        <div className="flex flex-col ml-12">
           <CardInfo info={info} />
         </div>
-        <div className="absolute right-8 bottom-1.5 flex flex-col gap-1 text-primary-muted transition-all">
+        <div className="absolute right-8 bottom-0.5 flex flex-col gap-0.5 text-primary-muted transition-all">
           <IoLocate
             aria-label="Fly to Location"
             title="Fly to Location"

@@ -11,8 +11,16 @@ export default function StatusFilter() {
 
   const selectAllStatuses = useFilterStore((s) => s.selectAllStatuses);
   const clearStatusFilter = useFilterStore((s) => s.clearStatusFilter);
+  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive);
 
   const toggleStatus = (tag: string) => {
+    // if all are selected and one is selected. ONLY select that one
+    const isDefault = !statusFilterIsActive();
+    if (isDefault) {
+      setSelectedStatuses([tag]);
+      return;
+    }
+
     if (selectedStatuses.includes(tag)) {
       setSelectedStatuses(selectedStatuses.filter((t) => t !== tag));
     } else {
@@ -35,6 +43,7 @@ export default function StatusFilter() {
       title="Status"
       selectAll={selectAllStatuses}
       deselectAll={clearStatusFilter}
+      filterIsActive={statusFilterIsActive()}
     >
       <div className="space-y-2">
         <div>
@@ -46,6 +55,7 @@ export default function StatusFilter() {
                 text={TIME_CATEGORY_LABELS[tag]}
                 isChecked={selectedStatuses.includes(tag)}
                 onChange={() => toggleStatus(tag)}
+                isMuted={statusFilterIsActive()}
               />
             ))}
           </div>
@@ -60,6 +70,7 @@ export default function StatusFilter() {
                 text={TIME_CATEGORY_LABELS[tag]}
                 isChecked={selectedStatuses.includes(tag)}
                 onChange={() => toggleStatus(tag)}
+                isMuted={statusFilterIsActive()}
               />
             ))}
           </div>
