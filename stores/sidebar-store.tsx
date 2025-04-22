@@ -1,7 +1,12 @@
+import {
+  MonthWithWeekends,
+  WeekendBucket,
+} from "@/lib/calendar/generate-weekends";
 import { ConventionInfo } from "@/types/types";
 import { create, StateCreator } from "zustand";
 
-export type SidebarMode = "search" | "filter" | "map";
+export type ExploreSidebarMode = "search" | "filter" | "map";
+export type PlanSidebarMode = "search" | "calendar";
 
 export function useScopedSelectedCardsStore(scope: "explore" | "plan") {
   return scope === "explore"
@@ -57,24 +62,48 @@ export const usePlanSelectedCardsStore = create<SelectedCardsStore>(
   createSelectedCardsStoreInitializer()
 );
 
-type SidebarStore = {
-  initialized: boolean;
-  setInitialized: () => void;
-
-  sidebarMode: SidebarMode;
-  setSidebarMode: (mode: SidebarMode) => void;
+type ExploreSidebarStore = {
+  sidebarMode: ExploreSidebarMode;
+  setSidebarMode: (mode: ExploreSidebarMode) => void;
 
   selectedClusterId: number | null;
   setSelectedClusterId: (id: number | null) => void;
 };
 
-export const useSidebarStore = create<SidebarStore>((set) => ({
-  initialized: false,
-  setInitialized: () => set({ initialized: true }),
-
+export const useExploreSidebarStore = create<ExploreSidebarStore>((set) => ({
   sidebarMode: "filter",
   setSidebarMode: (mode) => set({ sidebarMode: mode }),
 
   selectedClusterId: null,
   setSelectedClusterId: (id) => set({ selectedClusterId: id }),
+}));
+
+type PlanSidebarStore = {
+  sidebarMode: PlanSidebarMode;
+  setSidebarMode: (mode: PlanSidebarMode) => void;
+
+  selectedMonth: MonthWithWeekends | null;
+  setSelectedMonth: (id: MonthWithWeekends | null) => void;
+
+  selectedWeekend: WeekendBucket | null;
+  setSelectedWeekend: (id: WeekendBucket | null) => void;
+};
+
+export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
+  sidebarMode: "calendar",
+  setSidebarMode: (mode) => set({ sidebarMode: mode }),
+
+  selectedMonth: null,
+  setSelectedMonth: (month) =>
+    set(() => ({
+      selectedMonth: month,
+      selectedWeekend: null,
+    })),
+
+  selectedWeekend: null,
+  setSelectedWeekend: (weekend) =>
+    set(() => ({
+      selectedWeekend: weekend,
+      selectedMonth: null,
+    })),
 }));

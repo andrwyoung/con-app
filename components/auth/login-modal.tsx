@@ -8,7 +8,7 @@ import EmailStep from "./steps/email-step";
 import { AnimatePresence, motion } from "framer-motion";
 import ResetPasswordStep from "./steps/reset-password-step";
 import CheckEmailStep from "./steps/check-email-step";
-import { useUIStore } from "@/stores/ui-store";
+import { useModalUIStore } from "@/stores/ui-store";
 
 export type authStep =
   | "email"
@@ -19,7 +19,8 @@ export type authStep =
   | "closed";
 
 export default function LoginModal() {
-  const { setLoginModalStep: setStep, loginModalStep: step } = useUIStore();
+  const { setLoginModalStep: setStep, loginModalStep: step } =
+    useModalUIStore();
 
   const [email, setEmail] = useState<string>(""); // keep track of email throughout flow
   const isOpen = step !== "closed";

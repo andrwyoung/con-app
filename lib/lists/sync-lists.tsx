@@ -1,4 +1,4 @@
-import { ListStore, useListStore } from "@/stores/use-list-store";
+import { ListStore, useListStore } from "@/stores/list-store";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "../supabase/client";
 import { useEventStore } from "@/stores/all-events-store";

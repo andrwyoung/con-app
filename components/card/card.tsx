@@ -31,7 +31,7 @@ const Card = forwardRef<
   const flyTo = useMapStore((s) => s.flyTo);
 
   const baseClass =
-    "relative flex flex-row cursor-pointer border border-primary-darker/40 items-center w-full h-16 rounded-lg px-4 py-1 overflow-hidden transition-all transform group select-none";
+    "relative flex flex-row cursor-pointer border border-input items-center w-full h-16 rounded-lg px-4 py-1 overflow-hidden transition-all transform group select-none";
   const variantClass =
     type === "recommendation"
       ? selected
@@ -39,6 +39,10 @@ const Card = forwardRef<
         : "bg-white hover:scale-[1.01] shadow-xs"
       : type === "hover"
       ? "bg-primary-light shadow-lg"
+      : type === "list"
+      ? selected
+        ? "outline-3 outline-primary bg-secondary-light"
+        : "bg-secondary-lightest hover:scale-[1.01] shadow-xs"
       : selected
       ? "outline-3 outline-secondary bg-primary-light"
       : "bg-primary-lightest hover:scale-[1.01] shadow-xs";

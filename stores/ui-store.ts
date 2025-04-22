@@ -1,8 +1,9 @@
 import { authStep } from "@/components/auth/login-modal";
+import { FilterKey } from "@/components/sidebar-panel/modes/filter-mode";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
-type UIStore = {
+type ModalUIStore = {
   loginModalStep: authStep;
   onboardingOpen: boolean;
   profileOpen: boolean;
@@ -11,12 +12,9 @@ type UIStore = {
   setOnboardingOpen: (open: boolean) => void;
   setProfileOpen: (open: boolean) => void;
   anyModalOpen: () => boolean;
-
-  shouldScrollToLocation: boolean;
-  setShouldScrollToLocation: (val: boolean) => void;
 };
   
-export const useUIStore = create<UIStore>((set, get) => ({
+export const useModalUIStore = create<ModalUIStore>((set, get) => ({
   loginModalStep: "closed",
   onboardingOpen: false,
   profileOpen: false,
@@ -29,9 +27,29 @@ export const useUIStore = create<UIStore>((set, get) => ({
     const s = get();
     return s.loginModalStep !== "closed"  || s.onboardingOpen || s.profileOpen;
   },
+}));
 
-  shouldScrollToLocation: false,
-  setShouldScrollToLocation: (val) => set({ shouldScrollToLocation: val}),
+
+type ExploreUIStore = {
+  shownFilters: FilterKey[];
+  setShownFilters: (key: FilterKey[]) => void;
+
+  showRecomended: boolean;
+  setShowRecomended: (r: boolean) => void;
+
+  showListPanel: boolean;
+  setShowListPanel: (r: boolean) => void;
+};
+
+export const useExploreUIStore = create<ExploreUIStore>((set) => ({
+  shownFilters: [],
+  setShownFilters: (key) => set({ shownFilters: key }),
+
+  showRecomended: true,
+  setShowRecomended: (r) => set({ showRecomended: r }),
+
+  showListPanel: true,
+  setShowListPanel: (r) => set({ showListPanel: r }),
 }));
 
 

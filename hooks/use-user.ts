@@ -2,15 +2,13 @@
 // and then store it locally
 
 "use client";
-import { ensureDefaultListsExist, fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
+import { fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
 import { supabaseAnon } from "@/lib/supabase/client";
-import { useListStore } from "@/stores/use-list-store";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect } from "react";
 
 export function useUser() {
   const { user, setUser, setProfile } = useUserStore();
-  const resetLists = useListStore.getState().resetLists;
 
   useEffect(() => {
     const fetchProfile = async (userId: string) => {

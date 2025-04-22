@@ -13,7 +13,7 @@ import { useUserStore } from "@/stores/user-store";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import WelcomeModal from "../onboarding/welcome-modal";
 import { toast } from "sonner";
-import { useListStore } from "@/stores/use-list-store";
+import { useListStore } from "@/stores/list-store";
 
 function DropdownButton({
   children,

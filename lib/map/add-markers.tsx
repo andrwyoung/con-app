@@ -2,9 +2,9 @@
 // very messy file....sorry
 
 import {
-  SidebarMode,
+  ExploreSidebarMode,
   useExploreSelectedCardsStore,
-  useSidebarStore,
+  useExploreSidebarStore,
 } from "@/stores/sidebar-store";
 import { useMapStore } from "@/stores/map-store";
 import { ConventionInfo } from "@/types/types";
@@ -18,7 +18,7 @@ export default function addMarkersToMap(
   filteredDict: Record<string, ConventionInfo>,
   setSelectedCon: (c: ConventionInfo | null) => void,
   setSelectedClusterId: (id: number | null) => void,
-  setSidebarMode: (mode: SidebarMode) => void,
+  setSidebarMode: (mode: ExploreSidebarMode) => void,
   setFocusedEvents: (e: ConventionInfo[]) => void
 ) {
   let hoveredPointId: string | number | null = null;
@@ -372,7 +372,8 @@ export default function addMarkersToMap(
       // clear any clicked currently clicked points
       clearSelectedPointHighlight();
 
-      const selectedClusterId = useSidebarStore.getState().selectedClusterId;
+      const selectedClusterId =
+        useExploreSidebarStore.getState().selectedClusterId;
       if (selectedClusterId !== clusterId) {
         // highlight clicked cluster on mapbox
         map.setFilter("clusters-clicked", [

@@ -1,7 +1,9 @@
 import { Tables } from "@/types/supabase";
 import { TimeCategory } from "@/lib/helpers/event-recency";
+import { Weekend } from "@/lib/calendar/determine-weekend";
 
 export type Scope = "explore" | "plan";
+
 
 export type ConLocation = {
   latitude: number;
@@ -29,6 +31,7 @@ export type ConventionInfo = {
 
   // my generated info
   timeCategory?: TimeCategory;
+  weekend?: Weekend | null;
 }
 
 // when grabbing details panel

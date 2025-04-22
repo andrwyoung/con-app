@@ -42,7 +42,7 @@ export const useListStore = create<ListStore>((set, get) => ({
     const withDefaults = ensureAllDefaultsExist(newLists);
     set({ lists: withDefaults });
   },
-  resetLists: () => set({ lists: DEFAULT_LISTS, showingNow: DEFAULT_LIST }),
+  resetLists: () => set({ lists: DEFAULT_LISTS }),
 
   showingNow: DEFAULT_LIST,
   setShowingNow: (listId) => set({ showingNow: listId }),

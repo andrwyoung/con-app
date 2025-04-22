@@ -6,7 +6,7 @@ import { ConLocation, ConventionInfo, Scope } from "@/types/types";
 import React, { useEffect, useRef } from "react";
 import { CardVariant } from "../card";
 import { useMapStore } from "@/stores/map-store";
-import { useUIStore } from "@/stores/ui-store";
+import { useModalUIStore } from "@/stores/ui-store";
 import { MAX_CARDS } from "@/lib/constants";
 
 import { FlatCardList } from "./grouped-card-list";
@@ -34,7 +34,7 @@ export default function CardList({
   const flyTo = useMapStore((s) => s.flyTo);
 
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
-  const anyModalOpen = useUIStore((s) => s.anyModalOpen());
+  const anyModalOpen = useModalUIStore((s) => s.anyModalOpen());
 
   // build out the sorted results
   const { flattened } = useSortedAndGrouped({

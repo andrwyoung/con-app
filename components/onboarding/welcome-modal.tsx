@@ -7,13 +7,13 @@ import { FiMapPin } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { miniConfetti } from "@/lib/utils";
 import { supabaseAnon } from "@/lib/supabase/client";
-import { useUIStore } from "@/stores/ui-store";
+import { useModalUIStore } from "@/stores/ui-store";
 
 export default function WelcomeModal() {
   const profile = useUserStore((s) => s.profile);
   const setProfile = useUserStore((s) => s.setProfile);
 
-  const { setOnboardingOpen, onboardingOpen } = useUIStore();
+  const { setOnboardingOpen, onboardingOpen } = useModalUIStore();
 
   useEffect(() => {
     if (!profile || profile.has_never_logged_in === false) return;

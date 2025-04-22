@@ -20,14 +20,14 @@ import { useFilterStore } from "@/stores/filter-store";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import {
   useExploreSelectedCardsStore,
-  useSidebarStore,
+  useExploreSidebarStore,
 } from "@/stores/sidebar-store";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { allEvents: eventDict } = useEventStore();
-  const { setSidebarMode, setSelectedClusterId } = useSidebarStore();
+  const { setSidebarMode, setSelectedClusterId } = useExploreSidebarStore();
   const { setFocusedEvents, selectedCon, setSelectedCon } =
     useExploreSelectedCardsStore();
 

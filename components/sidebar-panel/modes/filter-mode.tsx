@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useFilterStore, useFilterUIStore } from "@/stores/filter-store";
+import { useFilterStore } from "@/stores/filter-store";
 import FilterToggleButton from "./filters/filter-helpers";
 import { FaCaretDown } from "react-icons/fa6";
 import TagsFilter from "./filters/tag-filter";
@@ -10,6 +10,7 @@ import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
 import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
 import { Scope } from "@/types/types";
+import { useExploreUIStore } from "@/stores/ui-store";
 
 export type FilterKey = "tags" | "time" | "distance" | "status";
 
@@ -28,7 +29,7 @@ function FilterPanel({ type }: { type: FilterKey }) {
 
 export default function FilterMode({ scope }: { scope: Scope }) {
   const { shownFilters, setShownFilters, showRecomended, setShowRecomended } =
-    useFilterUIStore();
+    useExploreUIStore();
 
   const filterBar: FilterKey[] = ["tags", "status"];
   const numberOfCons = Object.keys(

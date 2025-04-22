@@ -3,7 +3,7 @@ import { useEventStore } from "@/stores/all-events-store";
 import { useMapStore } from "@/stores/map-store";
 import {
   useExploreSelectedCardsStore,
-  useSidebarStore,
+  useExploreSidebarStore,
 } from "@/stores/sidebar-store";
 import { ConLocation } from "@/types/types";
 import { useSearchParams } from "next/navigation";
@@ -44,9 +44,6 @@ export default function useInitMapData() {
       }
 
       setInitialized(true);
-
-      // things ok to do after initialization
-      useSidebarStore.getState().setInitialized(); // just so ?conId doesn't break
 
       const end = performance.now();
       console.log(`useInitMapData finished in ${Math.round(end - start)}ms`);

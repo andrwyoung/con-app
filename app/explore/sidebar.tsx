@@ -5,32 +5,32 @@ import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "../../components/sidebar-panel/modes/search-mode";
 import {
   useExploreSelectedCardsStore,
-  useSidebarStore,
+  useExploreSidebarStore,
 } from "@/stores/sidebar-store";
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
-import { useEffect, useState } from "react";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
-import { useDragStore } from "@/stores/ui-store";
-import Card from "@/components/card/card";
-import { ConventionInfo } from "@/types/types";
-import { useListStore } from "@/stores/use-list-store";
+import { useEffect } from "react";
+import { useDragStore, useExploreUIStore } from "@/stores/ui-store";
 import { FaChevronRight } from "react-icons/fa6";
 import ListPanel from "@/components/list-panel/list-panel";
 import { useMapPinsStore } from "@/stores/map-store";
 import { useScopedSearchStore } from "@/stores/search-store";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEventStore } from "@/stores/all-events-store";
+import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
 
 export type sidebarModes = "search" | "filter";
 
 export default function Sidebar() {
   const router = useRouter();
 
-  const { sidebarMode: mode, initialized } = useSidebarStore();
+  const sidebarMode = useExploreSidebarStore((s) => s.sidebarMode);
   const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
-  const { activeCon, setActiveCon } = useDragStore();
+  const { activeCon } = useDragStore();
 
-  const { addToList, showingNow } = useListStore();
-  const [isExtensionOpen, setIsExtensionOpen] = useState(false);
+  const initialized = useEventStore((s) => s.initialized);
+
+  const { showListPanel, setShowListPanel } = useExploreUIStore();
 
   const { searchState } = useScopedSearchStore("explore");
 
@@ -48,65 +48,70 @@ export default function Sidebar() {
   // if there's a search then set mode to search
   useEffect(() => {
     if (searchState.context) {
-      useSidebarStore.getState().setSidebarMode("search");
+      useExploreSidebarStore.getState().setSidebarMode("search");
     } else {
-      useSidebarStore.getState().setSidebarMode("filter");
+      useExploreSidebarStore.getState().setSidebarMode("filter");
       useMapPinsStore.getState().clearTempPins();
     }
   }, [searchState.context]);
 
   return (
-    <DndContext
-      onDragStart={({ active }) => {
-        const con = active?.data?.current?.con;
-        setIsExtensionOpen(true);
-        setActiveCon(con ?? null);
-      }}
-      onDragEnd={(event) => {
-        if (event.over && event.over.id === "droppable") {
-          addToList(showingNow, activeCon as ConventionInfo);
-        }
-        setActiveCon(null);
-      }}
-    >
-      <DragOverlay>
-        {activeCon && (
-          <div className="w-68">
-            <Card info={activeCon} selected type="hover" />
-          </div>
-        )}
-      </DragOverlay>
+    <DragContextWrapper scope={"explore"}>
       <div className="relative">
         <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6">
-          <SearchBar key={mode} scope={"explore"} />
+          <SearchBar key={sidebarMode} scope={"explore"} />
           {/* <StatusDotTester /> */}
-          {mode === "search" && <SearchMode scope="explore" />}
-          {mode === "filter" && <FilterMode scope="explore" />}
+          {sidebarMode === "search" && <SearchMode scope="explore" />}
+          {sidebarMode === "filter" && <FilterMode scope="explore" />}
         </div>
 
-        <ListPanel
-          isOpen={isExtensionOpen}
-          draggedCon={activeCon}
-          scope="explore"
-        />
+        <AnimatePresence initial={false}>
+          {showListPanel && (
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{
+                x: 0,
+                opacity: 1,
+                transition: { duration: 0.5, ease: "easeOut" },
+              }}
+              exit={{
+                x: -50,
+                opacity: 0,
+                transition: { duration: 0.25, ease: "easeIn" },
+              }}
+              className="origin-left flex flex-col absolute top-0 left-[calc(100%+0.6rem)] gap-2 -z-2"
+            >
+              <div className="flex">
+                <div className="border rounded-lg shadow-xl  px-5 py-6 w-80 bg-white">
+                  <ListPanel draggedCon={activeCon} scope="explore" />
+                </div>
 
-        <button
-          onClick={() => setIsExtensionOpen((prev) => !prev)}
-          className={`absolute top-4 transition-all duration-300 cursor-pointer hover:bg-primary-lightest
-             bg-white border-r border-b  border-gray-200 rounded-r-lg px-2 py-8 z-1 ${
-               isExtensionOpen
-                 ? "left-[calc(100%+20.2rem)]"
-                 : "left-[calc(100%-0.05rem)]"
-             }`}
-          style={{
-            boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <span className="rotate-90 origin-center text-sm tracking-wide">
-            <FaChevronRight className={isExtensionOpen ? "rotate-180" : ""} />
-          </span>
-        </button>
+                <button
+                  title="Close List Panel"
+                  onClick={() => setShowListPanel(false)}
+                  className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-primary-lightest hover:text-primary-darker
+                bg-secondary-light border-r border-b left-[calc(100%-0.05rem)] border-secondary hover:border-primary rounded-r-lg px-2 py-8 z-1"
+                  style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
+                >
+                  <FaChevronRight className="rotate-180 " />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!showListPanel && (
+          <button
+            title="Open List Panel"
+            onClick={() => setShowListPanel(true)}
+            className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-secondary-lightest hover:text-secondary
+            bg-primary-light border-r border-b left-[calc(100%-0.05rem)] border-primary hover:border-secondary rounded-r-lg px-2 py-8 z-1"
+            style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
+          >
+            <FaChevronRight />
+          </button>
+        )}
       </div>
-    </DndContext>
+    </DragContextWrapper>
   );
 }

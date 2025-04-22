@@ -1,28 +1,33 @@
 "use client";
 import Sidebar from "@/app/explore/sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMapStore } from "@/stores/map-store";
-import { useUIStore } from "@/stores/ui-store";
+import { useModalUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
 import { useSearchParams } from "next/navigation";
 import { useExploreSearchStore } from "@/stores/search-store";
 import {
   useExploreSelectedCardsStore,
-  useSidebarStore,
+  useExploreSidebarStore,
 } from "@/stores/sidebar-store";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
     useExploreSelectedCardsStore.getState();
 
-  const isModalOpen = useUIStore.getState().anyModalOpen();
+  const isModalOpen = useModalUIStore.getState().anyModalOpen();
   const searchParams = useSearchParams();
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     // if url says /explore?login=true
     const showLogin = searchParams.get("login") === "true";
     if (showLogin) {
-      useUIStore.getState().setLoginModalStep("email");
+      useModalUIStore.getState().setLoginModalStep("email");
     }
   }, [searchParams]);
 
@@ -40,7 +45,7 @@ export default function ExplorePage() {
 
         const { selectedCon, setSelectedCon } =
           useExploreSelectedCardsStore.getState();
-        const { sidebarMode } = useSidebarStore.getState();
+        const { sidebarMode } = useExploreSidebarStore.getState();
 
         console.log("escape pressed! selected con:", selectedCon);
 
@@ -76,7 +81,7 @@ export default function ExplorePage() {
       <div className="absolute z-8 top-[13%] left-[2%]">
         <Sidebar />
       </div>
-      {selectedCon && (
+      {hasMounted && selectedCon && (
         <div className="absolute right-[2%] top-[13%] z-5">
           <DetailsPanel
             con={selectedCon}

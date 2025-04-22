@@ -27,6 +27,28 @@ export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
     latitude: 37.7749, longitude: -122.4194
 };
 
+
+
+export enum Weekday {
+  SUNDAY = 0,
+  MONDAY = 1,
+  TUESDAY = 2,
+  WEDNESDAY = 3,
+  THURSDAY = 4,
+  FRIDAY = 5,
+  SATURDAY = 6,
+}
+
+// calendar consts
+export const YEARS_MINUS = 2;
+export const YEARS_PLUS = 1;
+export const START_OF_WEEK = Weekday.TUESDAY;
+// if saturday is in a weekend, then it is visually considered a part of that month
+export const WEEKEND_ANCHOR = Weekday.SATURDAY;
+// these are just concerned with labeling
+export const START_OF_WEEKEND_LABEL = Weekday.FRIDAY;
+export const END_OF_WEEKEND_LABEL = Weekday.SUNDAY;
+
 // list consts
 export const SPECIAL_LIST_KEYS = ["planning", "interested"] as const;
 export const DEFAULT_LIST = "planning";

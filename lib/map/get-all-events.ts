@@ -5,6 +5,7 @@
 import { supabaseAnon } from "@/lib/supabase/client";
 import { ConventionInfo } from "@/types/types";
 import { getEventTimeCategory } from "../helpers/event-recency";
+import { getWeekend } from "../calendar/determine-weekend";
 
 export default async function getAllEvents(): Promise<ConventionInfo[]> {
   try {
@@ -31,10 +32,11 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
       }
     }
 
-    const normalizedData = (allData ?? []).map((event) => {
+    const normalizedData: ConventionInfo[] = (allData ?? []).map((event) => {
       return {
         ...event,
         timeCategory: getEventTimeCategory(event.event_status, event.year, event.start_date, event.end_date),
+        weekend: getWeekend(event.start_date, event.end_date),
       };
     });
 

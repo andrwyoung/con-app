@@ -4,7 +4,8 @@ import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
 import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
-import { useFilterStore, useFilterUIStore } from "@/stores/filter-store";
+import { useFilterStore } from "@/stores/filter-store";
+import { useExploreUIStore } from "@/stores/ui-store";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -23,7 +24,7 @@ export default function DetailsSection({
   details: FullConventionDetails;
 }) {
   const setTagFilter = useFilterStore((s) => s.setTagFilter);
-  const setShownFilters = useFilterUIStore((s) => s.setShownFilters);
+  const setShownFilters = useExploreUIStore((s) => s.setShownFilters);
 
   const latestYear = [...details.convention_years].sort(
     (a, b) => b.year - a.year

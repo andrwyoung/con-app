@@ -1,4 +1,4 @@
-import { UserList } from "@/stores/use-list-store";
+import { UserList } from "@/stores/list-store";
 
 // determines naming conventions for new lists
 export function generateNewListNames({

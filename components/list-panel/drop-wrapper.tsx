@@ -1,4 +1,4 @@
-import { useListStore } from "@/stores/use-list-store";
+import { useListStore } from "@/stores/list-store";
 import { ConventionInfo } from "@/types/types";
 import { useDroppable } from "@dnd-kit/core";
 

@@ -1,7 +1,7 @@
 import { ConventionInfo } from "@/types/types";
 
 import { CardVariant } from "./card";
-import { useListStore } from "@/stores/use-list-store";
+import { useListStore } from "@/stores/list-store";
 import { useUserStore } from "@/stores/user-store";
 import { toast } from "sonner";
 import { SPECIAL_LIST_KEYS } from "@/lib/constants";
@@ -13,6 +13,7 @@ import {
   SharedMenuSubContent,
   SharedMenuSubTrigger,
 } from "../ui/shared-menu";
+import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 
 export default function CardContextMenu({
   con,
@@ -46,7 +47,7 @@ export default function CardContextMenu({
     addToList(newListId, con);
     setShowingNow(newListId);
 
-    toast.success(`Added ${con.name} to new List: ${label}`);
+    toastAddedToList(con.name, label);
   }
 
   function handleAddToList(listId: string) {
@@ -54,12 +55,12 @@ export default function CardContextMenu({
 
     // make sure not already in there
     if (alreadyInList(listId, con)) {
-      toast.error(`Already in list ${listLabel}`);
+      toastAlreadyInList(con.name, listLabel);
       return;
     }
 
     addToList(listId, con);
-    toast.success(`Added ${con.name} to ${listLabel}`);
+    toastAddedToList(con.name, listLabel);
     console.log("Added", con.name, "to list", listLabel);
   }
 
