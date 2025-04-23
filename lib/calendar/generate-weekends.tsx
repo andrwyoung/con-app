@@ -7,8 +7,10 @@ import {
   getYear,
   getMonth,
   startOfYear,
+  addMonths,
+  startOfMonth,
 } from "date-fns";
-import { START_OF_WEEK, YEARS_MINUS, YEARS_PLUS } from "../constants";
+import { START_OF_WEEK, YEARS_MINUS } from "../constants";
 
 export type WeekendBucket = {
   year: number;
@@ -28,7 +30,7 @@ export function generateWeekendsByMonth(
   currentDate = new Date()
 ): MonthWithWeekends[] {
   const start = startOfYear(addYears(currentDate, -YEARS_MINUS));
-  const end = startOfYear(addYears(currentDate, YEARS_PLUS + 1));
+  const end = startOfMonth(addMonths(currentDate, 8));
 
   const result: Record<string, MonthWithWeekends> = {};
   let current = start;
@@ -71,5 +73,8 @@ export function generateWeekendsByMonth(
     current = addDays(current, 7); // next Tuesday
   }
 
-  return Object.values(result);
+  const allMonths = Object.values(result);
+
+  allMonths.pop(); // remove final month
+  return allMonths;
 }

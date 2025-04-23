@@ -5,10 +5,9 @@ import {
   grabConsFromSupabase,
 } from "@/lib/calendar/grab-weekend";
 import { useEventStore } from "@/stores/all-events-store";
-import {
-  usePlanSelectedCardsStore,
-  usePlanSidebarStore,
-} from "@/stores/sidebar-store";
+import { useListStore } from "@/stores/list-store";
+import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import { usePlanGeneralUIStore, usePlanUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,11 +22,11 @@ export default function Calendar() {
   const setSelectedCalendarCons = usePlanSidebarStore(
     (s) => s.setSelectedCalendarCons
   );
-  const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
 
-  const allEvents = useEventStore((s) => s.allEvents);
-  const initialized = useEventStore((s) => s.initialized);
+  const lists = useListStore((s) => s.lists);
+  const showingNow = usePlanGeneralUIStore((s) => s.showingNow);
+  const eventsInitailized = useEventStore((s) => s.initialized);
 
   const janRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const monthRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -42,31 +41,22 @@ export default function Calendar() {
   >(new Map());
 
   // select current year on init
+  const { scrolledToToday, setScrolledToToday } = usePlanUIStore();
   useEffect(() => {
-    if (!thisWeekend || selectedWeekend || selectedMonth) {
+    if (!thisWeekend || scrolledToToday) {
       return;
     }
-
-    const fetchConventions = async () => {
-      setSelectedWeekend(thisWeekend);
-      const conYears = await grabConsFromSupabase(
-        thisWeekend.weekendStart,
-        thisWeekend.weekendEnd
-      );
-      setSelectedCalendarCons(getConWithYear(conYears));
-    };
-
-    fetchConventions();
+    setSelectedWeekend(thisWeekend);
+    setScrolledToToday(true);
   }, [
     months,
     thisWeekend,
-    setSelectedCalendarCons,
     setSelectedWeekend,
-    selectedMonth,
-    selectedWeekend,
+    scrolledToToday,
+    setScrolledToToday,
   ]);
 
-  // scroll into view when selecting a weekend
+  // scroll into view when selecting a map item (a month or a weekend-dot)
   useEffect(() => {
     if (!selectedWeekend && !selectedMonth) return;
 
@@ -90,24 +80,25 @@ export default function Calendar() {
     }
   }, [months, selectedWeekend, selectedMonth]);
 
-  // if someone external selects on a con, also select that weekend
-  useEffect(() => {
-    if (!selectedCon || !selectedCon.weekend) return;
+  // // if someone external selects on a con, also select that weekend
+  // useEffect(() => {
+  //   if (!selectedCon || !selectedCon.weekend) return;
 
-    const matchingWeekend = allWeekends.find(
-      (w) =>
-        w.weekend === selectedCon.weekend?.weekend &&
-        w.year === selectedCon.weekend?.year
-    );
+  //   const matchingWeekend = allWeekends.find(
+  //     (w) =>
+  //       w.weekend === selectedCon.weekend?.weekend &&
+  //       w.year === selectedCon.weekend?.year
+  //   );
 
-    if (!matchingWeekend) return;
+  //   if (!matchingWeekend) return;
 
-    setSelectedWeekend(matchingWeekend);
-  }, [selectedCon, setSelectedWeekend, allWeekends]);
+  //   setSelectedWeekend(matchingWeekend);
+  // }, [selectedCon, setSelectedWeekend, allWeekends]);
 
   // if selectedWeekend or selectedMonth change, then populate the sidebar
   useEffect(() => {
     const fetchConventions = async () => {
+      console.log("fetching the weekend/month");
       if (selectedWeekend) {
         const conYears = await grabConsFromSupabase(
           selectedWeekend.weekendStart,
@@ -132,15 +123,20 @@ export default function Calendar() {
       setSelectedCalendarCons([]);
     };
 
-    fetchConventions();
-  }, [selectedWeekend, selectedMonth, setSelectedCalendarCons]);
+    if (eventsInitailized) {
+      fetchConventions();
+    }
+  }, [
+    selectedWeekend,
+    selectedMonth,
+    setSelectedCalendarCons,
+    eventsInitailized,
+  ]);
 
   // mapping all conventions to their weekend
   useEffect(() => {
-    if (!initialized) return;
-
     const map = new Map<string, ConventionInfo[]>();
-    const consArray = Object.values(allEvents);
+    const consArray = lists[showingNow].items;
 
     for (const con of consArray) {
       const key = con.weekend
@@ -155,7 +151,7 @@ export default function Calendar() {
     }
 
     setWeekendConMap(map);
-  }, [initialized, allEvents]);
+  }, [lists, showingNow]);
 
   // scrolling behavior: keep current year in the header
   useEffect(() => {
@@ -256,6 +252,7 @@ export default function Calendar() {
               <CalendarMonthRow monthData={month} conMap={weekendConMap} />
             </div>
           ))}
+          <div className="h-40 shrink-0" />
         </div>
       </div>
     </>

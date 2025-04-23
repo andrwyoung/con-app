@@ -98,8 +98,6 @@ export function CalendarWeekendDot({
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(now.getDate() - 60);
 
-  const isRecentPast = weekendData.weekendEnd >= thirtyDaysAgo;
-
   const handleWeekendDotClick = async () => {
     if (isSelectedWeekend) {
       setSelectedWeekend(null);
@@ -133,7 +131,11 @@ export function CalendarWeekendDot({
         title="Number of Cons"
         className="select-none text-sm text-primary-muted"
       >
-        {isRecentPast && count != 0 ? count : ""}
+        {count != 0 ? (
+          <div className="w-2 h-2 bg-secondary rounded-full" />
+        ) : (
+          ""
+        )}
       </h1>
     </div>
   );

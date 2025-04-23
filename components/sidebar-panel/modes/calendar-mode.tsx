@@ -23,6 +23,8 @@ export default function CalendarMode() {
 
   const [inListCons, setInListCons] = useState<ConventionInfo[]>([]);
   const [notInListCons, setNotInListCons] = useState<ConventionInfo[]>([]);
+  const somethingSelected = selectedWeekend != null || selectedMonth != null;
+  const emptyList = selectedCons.length === 0;
 
   let title = "";
   let subtitle = "";
@@ -60,16 +62,17 @@ export default function CalendarMode() {
             {title}
           </h1>
         </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            clearCalendarSelection();
-          }}
-          className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
-        >
-          Deselect
-        </button>
+        {!emptyList ? (
+          <button
+            type="button"
+            onClick={() => {
+              clearCalendarSelection();
+            }}
+            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
+          >
+            Deselect
+          </button>
+        ) : null}
       </div>
 
       {inListCons.length > 0 ? (
@@ -87,18 +90,23 @@ export default function CalendarMode() {
             Not In List ({notInListCons.length})
           </h1>
         </>
-      ) : (
+      ) : !emptyList ? (
         <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2">
           Showing {notInListCons.length} Cons
         </h1>
-      )}
+      ) : null}
 
       {selectedCons.length > 0 ? (
         <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
           <CardList items={notInListCons} scope={"plan"} />
         </div>
+      ) : somethingSelected ? (
+        <div className="text-sm text-center text-primary-muted px-2 mt-2">
+          No Cons Listed. <br />
+          Submit an update or try an earlier date
+        </div>
       ) : (
-        <div className="text-sm text-center text-primary-muted px-2">
+        <div className="text-sm text-center text-primary-muted px-2 mt-2">
           No Dates Selected. <br />
           Click on a Weekend Dot or Month.
         </div>

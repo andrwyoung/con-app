@@ -1,4 +1,4 @@
-import { DEFAULT_LIST, DEFAULT_LISTS } from "@/lib/constants";
+import { DEFAULT_LISTS } from "@/lib/constants";
 import {
   addListItemToSupabase,
   removeListItemFromSupabase,
@@ -17,8 +17,6 @@ export type ListStore = {
   lists: Record<string, UserList>;
   setLists: (e: Record<string, UserList>) => void;
   resetLists: () => void;
-
-
 
   addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, itemId: number) => void;

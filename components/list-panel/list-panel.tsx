@@ -192,6 +192,9 @@ export default function ListPanel({ scope }: { scope: Scope }) {
             </div>
           )}
         </div>
+
+        <hr className="border-t border-primary-muted w-full mt-3 mb-2" />
+
         <div className="flex flex-row items-center gap-2">
           <p className="text-xs text-primary-text">Sorting by:</p>
           <Select

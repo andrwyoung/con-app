@@ -85,3 +85,12 @@ export const useExploreUIStore = create<ExploreUIStore>((set) => ({
   setShowListPanel: (r) => set({ showListPanel: r }),
 }));
 
+type PlanUIStore = {
+  scrolledToToday: boolean;
+  setScrolledToToday: (r: boolean) => void;
+};
+
+export const usePlanUIStore = create<PlanUIStore>((set) => ({
+  scrolledToToday: false,
+  setScrolledToToday: (r) => set({ scrolledToToday: r }),
+}));
