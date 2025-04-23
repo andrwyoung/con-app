@@ -18,8 +18,7 @@ export type ListStore = {
   setLists: (e: Record<string, UserList>) => void;
   resetLists: () => void;
 
-  showingNow: string;
-  setShowingNow: (listId: string) => void;
+
 
   addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, itemId: number) => void;
@@ -44,8 +43,7 @@ export const useListStore = create<ListStore>((set, get) => ({
   },
   resetLists: () => set({ lists: DEFAULT_LISTS }),
 
-  showingNow: DEFAULT_LIST,
-  setShowingNow: (listId) => set({ showingNow: listId }),
+
 
   addToList: (listId, item) => {
     const current = get().lists[listId];

@@ -22,6 +22,7 @@ import { DEFAULT_LIST, SPECIAL_LIST_KEYS } from "@/lib/constants";
 import { isSpecialListKey } from "@/lib/lists/special-list";
 import { toast } from "sonner";
 import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
+import { useScopedUIStore } from "@/stores/ui-store";
 
 const NEW_ITEM_KEY = "__new__";
 const NO_ACTION = "__dud__";
@@ -38,8 +39,7 @@ export default function ListPanel({
   const profile = useUserStore((s) => s.profile);
 
   const lists = useListStore((s) => s.lists);
-  const showingNow = useListStore((s) => s.showingNow);
-  const setShowingNow = useListStore((s) => s.setShowingNow);
+  const { showingNow, setShowingNow } = useScopedUIStore(scope);
   const createList = useListStore((s) => s.createList);
   const renameList = useListStore((s) => s.renameList);
   const deleteList = useListStore((s) => s.deleteList);

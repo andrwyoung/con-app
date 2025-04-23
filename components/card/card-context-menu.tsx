@@ -14,6 +14,8 @@ import {
   SharedMenuSubTrigger,
 } from "../ui/shared-menu";
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
+import { usePathname } from "next/navigation";
+import { useScopedUIStore } from "@/stores/ui-store";
 
 export default function CardContextMenu({
   con,
@@ -30,10 +32,14 @@ export default function CardContextMenu({
   const createList = useListStore((s) => s.createList);
 
   const removeFromList = useListStore((s) => s.removeFromList);
-  const setShowingNow = useListStore((s) => s.setShowingNow);
-  const showingNow = useListStore((s) => s.showingNow);
   const alreadyInList = useListStore((s) => s.alreadyInList);
   const lists = useListStore((s) => s.lists);
+
+  const pathname = usePathname();
+  const scope = pathname?.includes("/explore") ? "explore" : "plan";
+
+  const setShowingNow = useScopedUIStore(scope).setShowingNow;
+  const showingNow = useScopedUIStore(scope).showingNow;
 
   function handleAddToNewList() {
     if (!profile?.username) return;

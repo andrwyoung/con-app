@@ -1,6 +1,6 @@
 import { FaCaretDown } from "react-icons/fa6";
-import { FilterKey } from "../filter-mode";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { FilterKey } from "../filter-section";
 
 interface FilterToggleButtonProps {
   filter: FilterKey;

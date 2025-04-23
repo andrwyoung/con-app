@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ConventionInfo, ConLocation } from "@/types/types";
+import { ConventionInfo, ConLocation, ConventionYear } from "@/types/types";
 import { groupByStatus, sortEvents } from "@/lib/helpers/sort-cons";
 import {
   TIME_CATEGORY_LABELS,
@@ -10,7 +10,7 @@ import { SortType } from "@/types/search-types";
 
 export type FlatItem =
   | { type: "label"; label: string }
-  | { type: "card"; con: ConventionInfo };
+  | { type: "card"; con: ConventionInfo; conYear?: ConventionYear };
 
 function flattenWithHeaders(
   grouped: Record<TimeCategory, ConventionInfo[]>
@@ -28,13 +28,13 @@ function flattenWithHeaders(
   });
 }
 
-export function useSortedAndGrouped({
+export function useSortedAndGrouped<T extends ConventionInfo = ConventionInfo>({
   items,
   sortOption,
   userLocation,
   currentLocation,
 }: {
-  items: ConventionInfo[];
+  items: T[];
   sortOption: SortType;
   userLocation?: ConLocation;
   currentLocation?: ConLocation;
@@ -54,7 +54,11 @@ export function useSortedAndGrouped({
 
   const flattened: FlatItem[] = useMemo(() => {
     if (grouped) return flattenWithHeaders(grouped);
-    return flat.map((con) => ({ type: "card", con }));
+    return flat.map((con) => ({
+      type: "card",
+      con,
+      conYear: "year" in con ? (con as any).year : undefined,
+    }));
   }, [grouped, flat]);
 
   return { flattened };

@@ -1,6 +1,6 @@
 // the cards themselves. representing a single convention
 import React, { forwardRef } from "react";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, ConventionYear } from "@/types/types";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { ZOOM_USE_DEFAULT } from "@/lib/constants";
@@ -23,11 +23,12 @@ const Card = forwardRef<
   HTMLDivElement,
   {
     info: ConventionInfo;
+    yearInfo?: ConventionYear;
     selected?: boolean;
     onClick?: () => void;
     type?: CardVariant;
   }
->(({ info, selected = false, onClick, type = "default" }, ref) => {
+>(({ info, yearInfo, selected = false, onClick, type = "default" }, ref) => {
   const flyTo = useMapStore((s) => s.flyTo);
 
   const baseClass =
@@ -65,7 +66,7 @@ const Card = forwardRef<
         )}
 
         <div className="flex flex-col ml-12">
-          <CardInfo info={info} />
+          <CardInfo info={info} yearInfo={yearInfo} />
         </div>
         <div className="absolute right-8 bottom-0.5 flex flex-col gap-0.5 text-primary-muted transition-all">
           <IoLocate

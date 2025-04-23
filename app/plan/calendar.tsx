@@ -1,47 +1,101 @@
 import { CalendarMonthRow } from "@/components/calendar-panel/calendar-rows";
+import { generateWeekendsByMonth } from "@/lib/calendar/generate-weekends";
 import {
-  generateWeekendsByMonth,
-  MonthWithWeekends,
-} from "@/lib/calendar/generate-weekends";
+  getConWithYear,
+  grabConsFromSupabase,
+} from "@/lib/calendar/grab-weekend";
 import { useEventStore } from "@/stores/all-events-store";
-import { useEffect, useRef, useState } from "react";
+import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import { ConventionInfo } from "@/types/types";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export const yearStyling =
   "select-none text-primary-muted text-2xl font-semibold";
 
 export default function Calendar() {
   const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
-  const { allEvents, initialized } = useEventStore();
-  const [monthsWithCons, setMonthsWithCons] = useState<MonthWithWeekends[]>(
-    generateWeekendsByMonth()
-  );
+  const months = useMemo(() => generateWeekendsByMonth(), []);
+  const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
+  const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
+  const setSelectedCons = usePlanSidebarStore((s) => s.setSelectedCons);
+
+  const allEvents = useEventStore((s) => s.allEvents);
+  const initialized = useEventStore((s) => s.initialized);
 
   const janRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const monthRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // when allEvents have been fetched, put them in the weekend
+  const allWeekends = months.flatMap((m) => m.weekends);
+  const today = new Date();
+  const thisWeekend = allWeekends.find((w) => new Date(w.weekendEnd) >= today);
+
+  const [weekendConMap, setWeekendConMap] = useState<
+    Map<string, ConventionInfo[]>
+  >(new Map());
+
+  // select current year on init
+  useEffect(() => {
+    if (
+      !thisWeekend ||
+      (selectedWeekend &&
+        thisWeekend.weekend === selectedWeekend.weekend &&
+        thisWeekend.year === selectedWeekend.year)
+    ) {
+      return;
+    }
+
+    const fetchConventions = async () => {
+      setSelectedWeekend(thisWeekend);
+      const conYears = await grabConsFromSupabase(
+        thisWeekend.weekendStart,
+        thisWeekend.weekendEnd
+      );
+      setSelectedCons(getConWithYear(conYears));
+    };
+
+    fetchConventions();
+  }, [months]);
+
+  // scroll into view when selecting a weekend
+  useEffect(() => {
+    if (!selectedWeekend) return;
+
+    const matchingMonth = months.find((m) =>
+      m.weekends.some(
+        (w) =>
+          w.weekend === selectedWeekend.weekend &&
+          w.year === selectedWeekend.year
+      )
+    );
+
+    if (matchingMonth) {
+      const scrollEl =
+        monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
+      scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [months, selectedWeekend]);
+
+  // put weekends into the weekend
   useEffect(() => {
     if (!initialized) return;
 
+    const map = new Map<string, ConventionInfo[]>();
     const consArray = Object.values(allEvents);
-    const freshMonths = generateWeekendsByMonth();
 
-    console.log("generating weekends with ", consArray.length, " events");
+    for (const con of consArray) {
+      const key = con.weekend
+        ? `${con.weekend.year}-${con.weekend.weekend}`
+        : null;
+      if (!key) continue;
 
-    const bucketed = freshMonths.map((month) => ({
-      ...month,
-      weekends: month.weekends.map((weekend) => ({
-        ...weekend,
-        cons: consArray.filter(
-          (con) =>
-            con.weekend?.weekend === weekend.weekend &&
-            con.weekend?.year === weekend.year
-        ),
-      })),
-    }));
-    console.log("bucketed: ", bucketed);
+      if (!map.has(key)) {
+        map.set(key, []);
+      }
+      map.get(key)!.push(con);
+    }
 
-    setMonthsWithCons(bucketed);
+    setWeekendConMap(map);
   }, [initialized, allEvents]);
 
   // scrolling behavior: keep current year on top
@@ -80,6 +134,22 @@ export default function Calendar() {
     };
   }, [visibleYear]);
 
+  const handleScrollToToday = () => {
+    if (!thisWeekend) return;
+
+    const matchingMonth = months.find((m) =>
+      m.weekends.some(
+        (w) => w.weekend === thisWeekend.weekend && w.year === thisWeekend.year
+      )
+    );
+
+    if (matchingMonth) {
+      const scrollEl =
+        monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
+      scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <>
       <div
@@ -87,7 +157,16 @@ export default function Calendar() {
       grid grid-cols-[auto_1fr_1fr] items-end gap-4 border-b select-none"
       >
         <h1 className={`${yearStyling}`}>{visibleYear}</h1>
-        <h1 className="text-right font-semibold text-primary-text text-sm"></h1>
+        <div className="col-start-2 justify-self-end">
+          <button
+            type="button"
+            onClick={handleScrollToToday}
+            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 border-2 border-primary rounded-full hover:bg-primary-light focus:outline-none"
+          >
+            Today
+          </button>
+        </div>
+
         <div className="flex flex-col">
           <h1 className="font-semibold text-primary-muted text-sm">
             Weekend Number:
@@ -100,21 +179,22 @@ export default function Calendar() {
         </div>
       </div>
       <div className="relative">
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10" />
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-10" />
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-5" />
 
         <div
           ref={scrollContainerRef}
           className="flex flex-col gap-8 h-full max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-none p-4 overscroll-contain scroll-smooth"
         >
-          {monthsWithCons.map((month) => (
+          {months.map((month) => (
             <div
               key={`${month.year}-${month.month}`}
               ref={(el) => {
                 if (month.month === 1) janRefs.current[month.year] = el;
+                monthRefs.current[`${month.year}-${month.month}`] = el;
               }}
             >
-              <CalendarMonthRow monthData={month} />
+              <CalendarMonthRow monthData={month} conMap={weekendConMap} />
             </div>
           ))}
         </div>

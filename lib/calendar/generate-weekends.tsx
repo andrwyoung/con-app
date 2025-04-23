@@ -9,7 +9,6 @@ import {
   startOfYear,
 } from "date-fns";
 import { START_OF_WEEK, YEARS_MINUS, YEARS_PLUS } from "../constants";
-import { ConventionInfo } from "@/types/types";
 
 export type WeekendBucket = {
   year: number;
@@ -17,7 +16,6 @@ export type WeekendBucket = {
   label: string;
   weekendStart: Date;
   weekendEnd: Date;
-  cons?: ConventionInfo[];
 };
 
 export type MonthWithWeekends = {
@@ -43,9 +41,9 @@ export function generateWeekendsByMonth(
   const weekendCounterByYear: Record<number, number> = {};
 
   while (isBefore(current, end)) {
-    const tuesday = current;
-    const saturday = addDays(tuesday, 4);
-    const monday = addDays(tuesday, 6);
+    const monday = current;
+    const saturday = addDays(monday, 5);
+    const sunday = addDays(monday, 6);
 
     const saturdayMonth = getMonth(saturday) + 1;
     const saturdayYear = getYear(saturday);
@@ -65,8 +63,8 @@ export function generateWeekendsByMonth(
     result[key].weekends.push({
       year: saturdayYear,
       weekend: currentCount,
-      weekendStart: tuesday,
-      weekendEnd: monday,
+      weekendStart: monday,
+      weekendEnd: sunday,
       label: `Weekend of ${format(saturday, "MMM d, yyyy")}`,
     });
 

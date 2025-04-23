@@ -1,49 +1,18 @@
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useFilterStore } from "@/stores/filter-store";
-import FilterToggleButton from "./filters/filter-helpers";
 import { FaCaretDown } from "react-icons/fa6";
-import TagsFilter from "./filters/tag-filter";
-import StatusFilter from "./filters/status-filter";
 import CardList from "../../card/card-list/card-list";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
 import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
 import { Scope } from "@/types/types";
 import { useExploreUIStore } from "@/stores/ui-store";
-
-export type FilterKey = "tags" | "time" | "distance" | "status";
-
-function FilterPanel({ type }: { type: FilterKey }) {
-  switch (type) {
-    case "tags":
-      return <TagsFilter />;
-    // case "distance":
-    //   return <DistanceFilter />;
-    case "status":
-      return <StatusFilter />;
-    default:
-      return null;
-  }
-}
+import FilterSection from "./filter-section";
 
 export default function FilterMode({ scope }: { scope: Scope }) {
-  const { shownFilters, setShownFilters, showRecomended, setShowRecomended } =
-    useExploreUIStore();
-
-  const filterBar: FilterKey[] = ["tags", "status"];
-  const numberOfCons = Object.keys(
-    useFilterStore((s) => s.filteredItems)
-  ).length;
-
+  const { showRecomended, setShowRecomended } = useExploreUIStore();
   const filteredItems = useFilterStore((s) => s.filteredItems);
-
-  const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
-  const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive());
-  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive());
-  const activeCount = [tagFilterIsActive, statusFilterIsActive].filter(
-    Boolean
-  ).length;
 
   const {
     focusedEvents,
@@ -64,78 +33,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
 
   return (
     <div className="flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-      <div className="flex-none py-2 px-2">
-        <div className="flex flex-row justify-between items-baseline">
-          <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
-            Filters
-          </h1>
-          {activeCount > 0 && (
-            <button
-              className="text-xs text-rose-400 hover:underline cursor-pointer hover:text-rose-600 transition-colors"
-              onClick={() => {
-                resetAllFilters();
-                setShownFilters([]);
-              }}
-            >
-              Reset All Filters
-            </button>
-          )}
-        </div>
-        <p className="text-xs text-primary-muted mb-3">
-          showing:
-          {activeCount === 0
-            ? ` all ${numberOfCons} cons • no filters applied`
-            : ` ${numberOfCons} cons • ${activeCount} filter${
-                activeCount === 1 ? "" : "s"
-              }
-               applied`}
-        </p>
-        <div className="flex flex-wrap justify-center gap-x-3 gap-y-2">
-          {filterBar.map((filter) => {
-            const isShown = shownFilters.includes(filter);
-
-            // check if filter is active
-            const isActive = (() => {
-              switch (filter) {
-                case "tags":
-                  return tagFilterIsActive;
-                // case "distance":
-                //   return statusFilterIsActive;
-                case "status":
-                  return statusFilterIsActive;
-                default:
-                  return false;
-              }
-            })();
-
-            return (
-              <FilterToggleButton
-                key={filter}
-                filter={filter}
-                isShown={isShown}
-                isActive={isActive}
-                toggle={() => setShownFilters(isShown ? [] : [filter])}
-              />
-            );
-          })}
-        </div>
-      </div>
-      <div className="overflow-y-auto flex-none scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-        <AnimatePresence initial={false}>
-          {shownFilters.map((key) => (
-            <motion.div
-              key={key}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="overflow-y-scroll scrollbar-none"
-            >
-              <FilterPanel type={key} key={key} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+      <FilterSection scope={scope} />
 
       <hr className="border-t border-primary-muted w-full mt-2 mb-2" />
 

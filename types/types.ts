@@ -5,6 +5,10 @@ import { Weekend } from "@/lib/calendar/determine-weekend";
 export type Scope = "explore" | "plan";
 
 
+export type ConventionWithYear = ConventionInfo & {
+  year: ConventionYear;
+};
+
 export type ConLocation = {
   latitude: number;
   longitude: number;

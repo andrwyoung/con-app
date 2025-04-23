@@ -14,7 +14,7 @@ import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
 import { useCardListKeyboardNav } from "@/hooks/use-card-list-keyboard";
 import { SortType } from "@/types/search-types";
 
-export default function CardList({
+export default function CardList<T extends ConventionInfo = ConventionInfo>({
   items,
   sortOption = "raw",
   currentLocation = null,
@@ -22,7 +22,7 @@ export default function CardList({
   type = "default",
   scope,
 }: {
-  items: ConventionInfo[];
+  items: T[];
   sortOption?: SortType;
   currentLocation?: ConLocation | null;
   userLocation?: ConLocation;

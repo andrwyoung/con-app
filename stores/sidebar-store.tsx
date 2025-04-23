@@ -2,7 +2,11 @@ import {
   MonthWithWeekends,
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
-import { ConventionInfo } from "@/types/types";
+import {
+  ConventionInfo,
+  ConventionWithYear,
+  ConventionYear,
+} from "@/types/types";
 import { create, StateCreator } from "zustand";
 
 export type ExploreSidebarMode = "search" | "filter" | "map";
@@ -87,6 +91,9 @@ type PlanSidebarStore = {
 
   selectedWeekend: WeekendBucket | null;
   setSelectedWeekend: (id: WeekendBucket | null) => void;
+
+  selectedCons: ConventionWithYear[];
+  setSelectedCons: (cons: ConventionWithYear[]) => void;
 };
 
 export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
@@ -106,4 +113,7 @@ export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
       selectedWeekend: weekend,
       selectedMonth: null,
     })),
+
+  selectedCons: [],
+  setSelectedCons: (cons) => set({ selectedCons: cons }),
 }));

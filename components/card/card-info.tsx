@@ -6,7 +6,7 @@ import {
   TIME_CATEGORY_LABELS,
   TimeCategory,
 } from "@/lib/helpers/event-recency";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, ConventionYear } from "@/types/types";
 import { FaStar } from "react-icons/fa6";
 
 export function StatusDotTester() {
@@ -57,7 +57,13 @@ function StatusDot({ status }: { status: TimeCategory }) {
   );
 }
 
-export default function CardInfo({ info }: { info: ConventionInfo }) {
+export default function CardInfo({
+  info,
+  yearInfo,
+}: {
+  info: ConventionInfo;
+  yearInfo?: ConventionYear;
+}) {
   return (
     <>
       <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-4">
@@ -67,10 +73,20 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
       <div className="text-xs text-primary-muted line-clamp-1 mr-9">
         {formatShortLocation(info.location)}
       </div>
-      <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
-        <StatusDot status={info.timeCategory ?? "unknown"} />
-        {formatEventDates(info.year, info.start_date, info.end_date)}
-      </div>
+      {yearInfo && yearInfo.year ? (
+        <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
+          {formatEventDates(
+            yearInfo.year,
+            yearInfo.start_date ?? undefined,
+            yearInfo.end_date ?? undefined
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
+          <StatusDot status={info.timeCategory ?? "unknown"} />
+          {formatEventDates(info.year, info.start_date, info.end_date)}
+        </div>
+      )}
     </>
   );
 }
