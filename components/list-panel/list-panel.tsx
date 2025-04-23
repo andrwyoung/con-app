@@ -79,7 +79,7 @@ export default function ListPanel({
   }
 
   return (
-    <Droppable item={draggedCon ?? undefined}>
+    <Droppable item={draggedCon ?? undefined} scope={scope}>
       <div className="flex flex-col mb-4">
         <div className="flex flex-row justify-between items-baseline">
           <h1 className="font-bold uppercase text-sm text-primary-muted">

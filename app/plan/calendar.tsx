@@ -36,12 +36,7 @@ export default function Calendar() {
 
   // select current year on init
   useEffect(() => {
-    if (
-      !thisWeekend ||
-      (selectedWeekend &&
-        thisWeekend.weekend === selectedWeekend.weekend &&
-        thisWeekend.year === selectedWeekend.year)
-    ) {
+    if (!thisWeekend) {
       return;
     }
 
@@ -55,7 +50,7 @@ export default function Calendar() {
     };
 
     fetchConventions();
-  }, [months]);
+  }, [months, thisWeekend, setSelectedCons, setSelectedWeekend]);
 
   // scroll into view when selecting a weekend
   useEffect(() => {

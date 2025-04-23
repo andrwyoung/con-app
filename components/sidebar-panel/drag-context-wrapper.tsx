@@ -1,7 +1,11 @@
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import { useListStore } from "@/stores/list-store";
 import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
-import { useDragStore, useExploreUIStore } from "@/stores/ui-store";
+import {
+  useDragStore,
+  useExploreUIStore,
+  useScopedUIStore,
+} from "@/stores/ui-store";
 import { Scope } from "@/types/types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import React from "react";
@@ -14,7 +18,8 @@ export default function DragContextWrapper({
   children: React.ReactNode;
   scope: Scope;
 }) {
-  const { addToList, showingNow, alreadyInList, lists } = useListStore();
+  const { addToList, alreadyInList, lists } = useListStore();
+  const { showingNow } = useScopedUIStore(scope);
   const { setSelectedCon } = useScopedSelectedCardsStore(scope);
   const setActiveCon = useDragStore((s) => s.setActiveCon);
   const activeCon = useDragStore((s) => s.activeCon);
