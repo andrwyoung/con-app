@@ -40,7 +40,7 @@ export enum Weekday {
 }
 
 // calendar consts
-export const YEARS_MINUS = 1;
+export const YEARS_MINUS = 2;
 export const YEARS_PLUS = 1;
 export const START_OF_WEEK = Weekday.MONDAY;
 // if saturday is in a weekend, then it is visually considered a part of that month

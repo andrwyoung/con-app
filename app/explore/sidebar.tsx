@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect } from "react";
-import { useDragStore, useExploreUIStore } from "@/stores/ui-store";
+import { useExploreUIStore } from "@/stores/ui-store";
 import { FaChevronRight } from "react-icons/fa6";
 import ListPanel from "@/components/list-panel/list-panel";
 import { useMapPinsStore } from "@/stores/map-store";
@@ -26,7 +26,6 @@ export default function Sidebar() {
 
   const sidebarMode = useExploreSidebarStore((s) => s.sidebarMode);
   const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
-  const { activeCon } = useDragStore();
 
   const initialized = useEventStore((s) => s.initialized);
 
@@ -83,7 +82,7 @@ export default function Sidebar() {
             >
               <div className="flex">
                 <div className="border rounded-lg shadow-xl  px-5 py-6 w-80 bg-white">
-                  <ListPanel draggedCon={activeCon} scope="explore" />
+                  <ListPanel scope="explore" />
                 </div>
 
                 <button

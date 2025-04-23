@@ -3,12 +3,8 @@ import {
   MonthWithWeekends,
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
-import {
-  getConWithYear,
-  grabConsFromSupabase,
-} from "@/lib/calendar/grab-weekend";
 import { usePlanSidebarStore } from "@/stores/sidebar-store";
-import { ConventionInfo, ConventionYear } from "@/types/types";
+import { ConventionInfo } from "@/types/types";
 
 export function CalendarMonthRow({
   monthData,
@@ -19,7 +15,6 @@ export function CalendarMonthRow({
 }) {
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
   const setSelectedMonth = usePlanSidebarStore((s) => s.setSelectedMonth);
-  const setSelectedCons = usePlanSidebarStore((s) => s.setSelectedCons);
 
   const isSelectedMonth =
     selectedMonth?.year === monthData.year &&
@@ -35,21 +30,8 @@ export function CalendarMonthRow({
   const handleMonthClick = async () => {
     if (isSelectedMonth) {
       setSelectedMonth(null);
-      setSelectedCons([]);
     } else {
       setSelectedMonth(monthData);
-      const first = monthData.weekends[0];
-      const last = monthData.weekends[monthData.weekends.length - 1];
-
-      if (!first || !last) return; // handle empty case just in case
-
-      const conYears: ConventionYear[] = await grabConsFromSupabase(
-        first.weekendStart,
-        last.weekendEnd
-      );
-      console.log("conYears: ", conYears);
-
-      setSelectedCons(getConWithYear(conYears));
     }
   };
 
@@ -103,7 +85,6 @@ export function CalendarWeekendDot({
 }) {
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
-  const setSelectedCons = usePlanSidebarStore((s) => s.setSelectedCons);
 
   const isSelectedWeekend =
     isSelectedMonth ||
@@ -122,15 +103,8 @@ export function CalendarWeekendDot({
   const handleWeekendDotClick = async () => {
     if (isSelectedWeekend) {
       setSelectedWeekend(null);
-      setSelectedCons([]);
     } else {
       setSelectedWeekend(weekendData);
-      const conYears: ConventionYear[] = await grabConsFromSupabase(
-        weekendData.weekendStart,
-        weekendData.weekendEnd
-      );
-
-      setSelectedCons(getConWithYear(conYears));
     }
   };
 
@@ -155,8 +129,11 @@ export function CalendarWeekendDot({
             : "bg-primary hover:bg-primary-darker/80"
         }`}
       ></div>
-      <h1 title="Number of Cons" className="select-none">
-        {isRecentPast ? count : "-"}
+      <h1
+        title="Number of Cons"
+        className="select-none text-sm text-primary-muted"
+      >
+        {isRecentPast && count != 0 ? count : ""}
       </h1>
     </div>
   );

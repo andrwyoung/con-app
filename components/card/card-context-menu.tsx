@@ -4,7 +4,7 @@ import { CardVariant } from "./card";
 import { useListStore } from "@/stores/list-store";
 import { useUserStore } from "@/stores/user-store";
 import { toast } from "sonner";
-import { SPECIAL_LIST_KEYS } from "@/lib/constants";
+import { DEFAULT_ZOOM, SPECIAL_LIST_KEYS } from "@/lib/constants";
 import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
 import {
   SharedMenuItem,
@@ -14,8 +14,11 @@ import {
   SharedMenuSubTrigger,
 } from "../ui/shared-menu";
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
-import { usePathname } from "next/navigation";
 import { useScopedUIStore } from "@/stores/ui-store";
+import { useExploreSelectedCardsStore } from "@/stores/sidebar-store";
+import { useRouter } from "next/navigation";
+import { useMapStore } from "@/stores/map-store";
+import { useCurrentScope } from "@/hooks/use-current-scope";
 
 export default function CardContextMenu({
   con,
@@ -35,11 +38,15 @@ export default function CardContextMenu({
   const alreadyInList = useListStore((s) => s.alreadyInList);
   const lists = useListStore((s) => s.lists);
 
-  const pathname = usePathname();
-  const scope = pathname?.includes("/explore") ? "explore" : "plan";
+  const router = useRouter();
+  const scope = useCurrentScope();
 
   const setShowingNow = useScopedUIStore(scope).setShowingNow;
   const showingNow = useScopedUIStore(scope).showingNow;
+  const setSelectedExploreCon = useExploreSelectedCardsStore(
+    (s) => s.setSelectedCon
+  );
+  const flyTo = useMapStore((s) => s.flyTo);
 
   function handleAddToNewList() {
     if (!profile?.username) return;
@@ -141,6 +148,23 @@ export default function CardContextMenu({
       >
         Copy Link
       </SharedMenuItem>
+      {scope === "plan" ? (
+        <SharedMenuItem
+          type={menuType}
+          onClick={() => {
+            setSelectedExploreCon(con); // this is Explore page's setSelected
+            router.push(`/explore`);
+            flyTo?.(
+              { latitude: con.location_lat, longitude: con.location_long },
+              DEFAULT_ZOOM
+            );
+          }}
+        >
+          View on Map
+        </SharedMenuItem>
+      ) : (
+        ""
+      )}
     </>
   );
 }

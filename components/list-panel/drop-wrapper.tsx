@@ -1,23 +1,23 @@
 import { useListStore } from "@/stores/list-store";
-import { useScopedUIStore } from "@/stores/ui-store";
-import { ConventionInfo, Scope } from "@/types/types";
+import { useDragStore, useScopedUIStore } from "@/stores/ui-store";
+import { Scope } from "@/types/types";
 import { useDroppable } from "@dnd-kit/core";
 
 export default function Droppable({
-  item,
   children,
   scope,
 }: {
-  item: ConventionInfo | undefined;
   children: React.ReactNode;
   scope: Scope;
 }) {
   const { showingNow } = useScopedUIStore(scope);
+  const draggedCon = useDragStore((s) => s.activeCon);
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
   const validDrop =
-    item && !useListStore.getState().alreadyInList(showingNow, item);
+    draggedCon &&
+    !useListStore.getState().alreadyInList(showingNow, draggedCon);
 
   return (
     <div ref={setNodeRef}>

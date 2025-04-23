@@ -34,6 +34,7 @@ export const miniConfetti = () => {
   });
 }
 
+
 export function translateAuthError(message: string): string {
   if (!message) return "Something went wrong. Please try again.";
 

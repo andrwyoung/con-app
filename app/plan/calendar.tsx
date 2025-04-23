@@ -5,7 +5,10 @@ import {
   grabConsFromSupabase,
 } from "@/lib/calendar/grab-weekend";
 import { useEventStore } from "@/stores/all-events-store";
-import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import {
+  usePlanSelectedCardsStore,
+  usePlanSidebarStore,
+} from "@/stores/sidebar-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -17,7 +20,11 @@ export default function Calendar() {
   const months = useMemo(() => generateWeekendsByMonth(), []);
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
-  const setSelectedCons = usePlanSidebarStore((s) => s.setSelectedCons);
+  const setSelectedCalendarCons = usePlanSidebarStore(
+    (s) => s.setSelectedCalendarCons
+  );
+  const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
+  const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
 
   const allEvents = useEventStore((s) => s.allEvents);
   const initialized = useEventStore((s) => s.initialized);
@@ -36,7 +43,7 @@ export default function Calendar() {
 
   // select current year on init
   useEffect(() => {
-    if (!thisWeekend) {
+    if (!thisWeekend || selectedWeekend || selectedMonth) {
       return;
     }
 
@@ -46,32 +53,89 @@ export default function Calendar() {
         thisWeekend.weekendStart,
         thisWeekend.weekendEnd
       );
-      setSelectedCons(getConWithYear(conYears));
+      setSelectedCalendarCons(getConWithYear(conYears));
     };
 
     fetchConventions();
-  }, [months, thisWeekend, setSelectedCons, setSelectedWeekend]);
+  }, [
+    months,
+    thisWeekend,
+    setSelectedCalendarCons,
+    setSelectedWeekend,
+    selectedMonth,
+    selectedWeekend,
+  ]);
 
   // scroll into view when selecting a weekend
   useEffect(() => {
-    if (!selectedWeekend) return;
+    if (!selectedWeekend && !selectedMonth) return;
 
-    const matchingMonth = months.find((m) =>
-      m.weekends.some(
-        (w) =>
-          w.weekend === selectedWeekend.weekend &&
-          w.year === selectedWeekend.year
-      )
-    );
+    let matchingMonth = null;
+    if (selectedWeekend) {
+      matchingMonth = months.find((m) =>
+        m.weekends.some(
+          (w) =>
+            w.weekend === selectedWeekend.weekend &&
+            w.year === selectedWeekend.year
+        )
+      );
+    } else if (selectedMonth) {
+      matchingMonth = selectedMonth;
+    }
 
     if (matchingMonth) {
       const scrollEl =
         monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
       scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [months, selectedWeekend]);
+  }, [months, selectedWeekend, selectedMonth]);
 
-  // put weekends into the weekend
+  // if someone external selects on a con, also select that weekend
+  useEffect(() => {
+    if (!selectedCon || !selectedCon.weekend) return;
+
+    const matchingWeekend = allWeekends.find(
+      (w) =>
+        w.weekend === selectedCon.weekend?.weekend &&
+        w.year === selectedCon.weekend?.year
+    );
+
+    if (!matchingWeekend) return;
+
+    setSelectedWeekend(matchingWeekend);
+  }, [selectedCon, setSelectedWeekend, allWeekends]);
+
+  // if selectedWeekend or selectedMonth change, then populate the sidebar
+  useEffect(() => {
+    const fetchConventions = async () => {
+      if (selectedWeekend) {
+        const conYears = await grabConsFromSupabase(
+          selectedWeekend.weekendStart,
+          selectedWeekend.weekendEnd
+        );
+        setSelectedCalendarCons(getConWithYear(conYears));
+        return;
+      }
+
+      if (selectedMonth && selectedMonth.weekends.length > 0) {
+        const first = selectedMonth.weekends[0];
+        const last = selectedMonth.weekends[selectedMonth.weekends.length - 1];
+        const conYears = await grabConsFromSupabase(
+          first.weekendStart,
+          last.weekendEnd
+        );
+        setSelectedCalendarCons(getConWithYear(conYears));
+        return;
+      }
+
+      // If neither is selected, clear results
+      setSelectedCalendarCons([]);
+    };
+
+    fetchConventions();
+  }, [selectedWeekend, selectedMonth, setSelectedCalendarCons]);
+
+  // mapping all conventions to their weekend
   useEffect(() => {
     if (!initialized) return;
 
@@ -93,7 +157,7 @@ export default function Calendar() {
     setWeekendConMap(map);
   }, [initialized, allEvents]);
 
-  // scrolling behavior: keep current year on top
+  // scrolling behavior: keep current year in the header
   useEffect(() => {
     const handleScroll = () => {
       const containerTop =

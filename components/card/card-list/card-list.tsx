@@ -1,17 +1,12 @@
 // the expandable scrollable list that shows cards
-// responsible for any keybaord navigation interactions too
-
 import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
 import { ConLocation, ConventionInfo, Scope } from "@/types/types";
 import React, { useEffect, useRef } from "react";
 import { CardVariant } from "../card";
-import { useMapStore } from "@/stores/map-store";
-import { useModalUIStore } from "@/stores/ui-store";
 import { MAX_CARDS } from "@/lib/constants";
 
 import { FlatCardList } from "./grouped-card-list";
 import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
-import { useCardListKeyboardNav } from "@/hooks/use-card-list-keyboard";
 import { SortType } from "@/types/search-types";
 
 export default function CardList<T extends ConventionInfo = ConventionInfo>({
@@ -29,12 +24,10 @@ export default function CardList<T extends ConventionInfo = ConventionInfo>({
   type?: CardVariant;
   scope: Scope;
 }) {
-  const { setSelectedCon, selectedCon, selectedIndex, setSelectedIndex } =
+  const { setSelectedCon, selectedCon, setSelectedIndex } =
     useScopedSelectedCardsStore(scope);
-  const flyTo = useMapStore((s) => s.flyTo);
 
   const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
-  const anyModalOpen = useModalUIStore((s) => s.anyModalOpen());
 
   // build out the sorted results
   const { flattened } = useSortedAndGrouped({
@@ -52,17 +45,17 @@ export default function CardList<T extends ConventionInfo = ConventionInfo>({
     );
   }, [flattened]);
 
-  // keyboard nav
-  useCardListKeyboardNav({
-    flattened,
-    selectedIndex,
-    selectedCon,
-    setSelectedCon,
-    setSelectedIndex,
-    cardRefs: cardRefs.current,
-    flyTo,
-    anyModalOpen,
-  });
+  // DISABLED: keyboard nav got too complicated for multiple lists
+  // useCardListKeyboardNav({
+  //   flattened,
+  //   selectedIndex,
+  //   selectedCon,
+  //   setSelectedCon,
+  //   setSelectedIndex,
+  //   cardRefs: cardRefs.current,
+  //   flyTo,
+  //   anyModalOpen,
+  // });
 
   // reset index when list changes
   useEffect(() => {

@@ -6,13 +6,14 @@ import {
   ConventionInfo,
   ConventionWithYear,
   ConventionYear,
+  Scope,
 } from "@/types/types";
 import { create, StateCreator } from "zustand";
 
 export type ExploreSidebarMode = "search" | "filter" | "map";
 export type PlanSidebarMode = "search" | "calendar";
 
-export function useScopedSelectedCardsStore(scope: "explore" | "plan") {
+export function useScopedSelectedCardsStore(scope: Scope) {
   return scope === "explore"
     ? useExploreSelectedCardsStore()
     : usePlanSelectedCardsStore();
@@ -92,8 +93,10 @@ type PlanSidebarStore = {
   selectedWeekend: WeekendBucket | null;
   setSelectedWeekend: (id: WeekendBucket | null) => void;
 
-  selectedCons: ConventionWithYear[];
-  setSelectedCons: (cons: ConventionWithYear[]) => void;
+  selectedCalendarCons: ConventionWithYear[];
+  setSelectedCalendarCons: (cons: ConventionWithYear[]) => void;
+
+  clearCalendarSelection: () => void;
 };
 
 export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
@@ -114,6 +117,13 @@ export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
       selectedMonth: null,
     })),
 
-  selectedCons: [],
-  setSelectedCons: (cons) => set({ selectedCons: cons }),
+  selectedCalendarCons: [],
+  setSelectedCalendarCons: (cons) => set({ selectedCalendarCons: cons }),
+
+  clearCalendarSelection: () =>
+    set(() => ({
+      selectedMonth: null,
+      selectedWeekend: null,
+      selectedCalendarCons: [],
+    })),
 }));

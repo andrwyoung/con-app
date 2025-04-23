@@ -6,6 +6,7 @@ import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { useFilterStore } from "@/stores/filter-store";
 import { useExploreGeneralUIStore } from "@/stores/ui-store";
+import { useCurrentScope } from "@/hooks/use-current-scope";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -24,7 +25,8 @@ export default function DetailsSection({
   details: FullConventionDetails;
 }) {
   const setTagFilter = useFilterStore((s) => s.setTagFilter);
-  const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters); //TODO: generalize figuring out whether it's /explore or /plan
+  const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
+  const scope = useCurrentScope();
 
   const latestYear = [...details.convention_years].sort(
     (a, b) => b.year - a.year
@@ -93,19 +95,30 @@ export default function DetailsSection({
             <div className="flex flex-wrap gap-1 text-xs">
               {details.tags?.map((tagRaw) => {
                 const tag = tagRaw.trim();
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      setTagFilter([tag], false);
-                      setShownFilters(["tags"]);
-                    }}
-                    className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
-                  >
-                    #{tag}
-                  </button>
-                );
+                if (scope === "unknown") {
+                  return (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => {
+                        setTagFilter([tag], false);
+                        setShownFilters(["tags"]);
+                      }}
+                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
+                    >
+                      #{tag}
+                    </button>
+                  );
+                } else {
+                  return (
+                    <div
+                      key={tag}
+                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted"
+                    >
+                      #{tag}
+                    </div>
+                  );
+                }
               })}
             </div>
           </div>

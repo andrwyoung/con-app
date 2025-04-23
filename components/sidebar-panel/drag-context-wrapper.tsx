@@ -6,7 +6,7 @@ import {
   useExploreUIStore,
   useScopedUIStore,
 } from "@/stores/ui-store";
-import { Scope } from "@/types/types";
+import { cleanConventionInfo, Scope } from "@/types/types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import React from "react";
 import Card from "../card/card";
@@ -40,7 +40,7 @@ export default function DragContextWrapper({
             toastAlreadyInList(activeCon.name, label);
             return;
           }
-          addToList(showingNow, activeCon);
+          addToList(showingNow, cleanConventionInfo(activeCon));
           setSelectedCon(activeCon);
           toastAddedToList(activeCon.name, label);
         }

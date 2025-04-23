@@ -32,7 +32,7 @@ export function FlatCardList({
           <Card
             key={item.con.id}
             info={item.con}
-            yearInfo={item.conYear}
+            yearInfo={type === "list" ? undefined : item.conYear}
             selected={selectedCon?.id === item.con.id}
             onClick={() => {
               const isSelected = selectedCon?.id === item.con.id;

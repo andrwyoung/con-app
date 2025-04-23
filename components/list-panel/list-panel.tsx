@@ -1,5 +1,5 @@
 import { useListStore } from "@/stores/list-store";
-import { ConventionInfo, Scope } from "@/types/types";
+import { Scope } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import Droppable from "./drop-wrapper";
 import CardList from "../card/card-list/card-list";
@@ -23,17 +23,13 @@ import { isSpecialListKey } from "@/lib/lists/special-list";
 import { toast } from "sonner";
 import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
 import { useScopedUIStore } from "@/stores/ui-store";
+import { getSortLabel, LIST_SORT_OPTIONS } from "@/lib/helpers/sort-options";
+import { SortType } from "@/types/search-types";
 
 const NEW_ITEM_KEY = "__new__";
 const NO_ACTION = "__dud__";
 
-export default function ListPanel({
-  draggedCon,
-  scope,
-}: {
-  draggedCon: ConventionInfo | null;
-  scope: Scope;
-}) {
+export default function ListPanel({ scope }: { scope: Scope }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const profile = useUserStore((s) => s.profile);
@@ -45,6 +41,7 @@ export default function ListPanel({
   const deleteList = useListStore((s) => s.deleteList);
 
   const [isSyncing, setIsSyncing] = useState(false);
+  const [sortMode, setSortMode] = useState<SortType>("raw");
 
   // if current list was removed somehow, fall back to "planning"
   useEffect(() => {
@@ -79,7 +76,7 @@ export default function ListPanel({
   }
 
   return (
-    <Droppable item={draggedCon ?? undefined} scope={scope}>
+    <Droppable scope={scope}>
       <div className="flex flex-col mb-4">
         <div className="flex flex-row justify-between items-baseline">
           <h1 className="font-bold uppercase text-sm text-primary-muted">
@@ -195,6 +192,24 @@ export default function ListPanel({
             </div>
           )}
         </div>
+        <div className="flex flex-row items-center gap-2">
+          <p className="text-xs text-primary-text">Sorting by:</p>
+          <Select
+            onValueChange={(value) => setSortMode(value as SortType)}
+            value={sortMode}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue>{getSortLabel(sortMode)}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {LIST_SORT_OPTIONS.map(({ value, label }) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {lists[showingNow].items.length === 0 ? (
@@ -209,7 +224,12 @@ export default function ListPanel({
             scrollbar-thin scrollbar-thumb-rounded scrollbar-track-transparent scrollbar-thumb-secondary-lightest
             }`}
         >
-          <CardList items={lists[showingNow].items} type="list" scope={scope} />
+          <CardList
+            items={lists[showingNow].items}
+            type="list"
+            scope={scope}
+            sortOption={sortMode}
+          />
         </div>
       )}
     </Droppable>

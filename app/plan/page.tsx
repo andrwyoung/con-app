@@ -63,7 +63,7 @@ export default function PlanPage() {
         >
           <div className="flex justify-center items-start min-w-[max-content] gap-8">
             <div className="relative flex-shrink-0 disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
-              <ListPanel draggedCon={null} scope="plan" />
+              <ListPanel scope="plan" />
             </div>
             <div className="flex-shrink-0 disable-scroll-override mr-12">
               <Calendar />

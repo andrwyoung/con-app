@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { SORT_OPTIONS, getSortLabel } from "@/lib/helpers/sort-options";
+import { SEARCH_SORT_OPTIONS, getSortLabel } from "@/lib/helpers/sort-options";
 import { useScopedSearchStore } from "@/stores/search-store";
 import { SortType } from "@/types/search-types";
 import { Scope } from "@/types/types";
@@ -58,7 +58,7 @@ export default function SearchBarWrapper({
               <SelectValue>{getSortLabel(sortMode)}</SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {SORT_OPTIONS.map(({ value, label }) => (
+              {SEARCH_SORT_OPTIONS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>

@@ -1,3 +1,36 @@
+import { format } from "date-fns";
+import {
+  MonthWithWeekends,
+  WeekendBucket,
+} from "../calendar/generate-weekends";
+
+// Apr, 25
+export function formatMonthYear(monthData: MonthWithWeekends): string {
+  const date = new Date(monthData.year, monthData.month - 1);
+  return format(date, "MMMM, yyy");
+}
+
+// Aug 18–24, 2025
+export function formatWeekendRange(weekend: WeekendBucket): string {
+  const start = weekend.weekendStart;
+  const end = weekend.weekendEnd;
+
+  const startMonth = format(start, "MMM");
+  const endMonth = format(end, "MMM");
+  const startDay = format(start, "d");
+  const endDay = format(end, "d");
+  const year = format(end, "yyyy");
+
+  const isSameMonth = start.getMonth() === end.getMonth();
+
+  const monthPart = isSameMonth
+    ? `${startMonth} ${startDay}–${endDay}`
+    : `${startMonth} ${startDay} – ${endMonth} ${endDay}`;
+
+  return `${monthPart}, ${year}`;
+}
+
+// Aug 15, '25 or Dec 26-28, '24
 export function formatEventDates(
   year: number,
   start?: string,
@@ -46,6 +79,7 @@ export function formatEventDates(
   return `${startStr} – ${endStr}, '${String(endDate.getFullYear()).slice(-2)}`;
 }
 
+// August 15 - August 16
 export function formatEventMonthRange(start?: string, end?: string): string {
   if (!start || !end) return "";
 
@@ -63,6 +97,7 @@ export function formatEventMonthRange(start?: string, end?: string): string {
   return `${startStr} – ${endStr}`;
 }
 
+// get rid of USA for the card info
 export function formatShortLocation(fullAddress: string): string {
   const parts = fullAddress.split(",").map((p) => p.trim());
   if (parts.length < 2) return fullAddress;
