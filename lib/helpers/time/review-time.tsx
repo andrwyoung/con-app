@@ -1,5 +1,8 @@
+import { parseISO } from "date-fns";
+
 export function formatReviewDate(dateInput: Date | string): string {
-  const date = new Date(dateInput);
+  const date =
+    typeof dateInput === "string" ? parseISO(`${dateInput}`) : dateInput;
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMinutes = diffMs / (1000 * 60);

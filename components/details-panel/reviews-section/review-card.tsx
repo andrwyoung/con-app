@@ -1,4 +1,4 @@
-import { formatReviewDate } from "@/lib/helpers/review-time";
+import { formatReviewDate } from "@/lib/helpers/time/review-time";
 import { useUserStore } from "@/stores/user-store";
 import { Review } from "@/types/review-types";
 import { FiEdit3 } from "react-icons/fi";

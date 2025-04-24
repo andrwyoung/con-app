@@ -3,7 +3,9 @@ import { getDistance } from "../utils";
 import { SortType } from "@/types/search-types";
 
 export function getStartDate(event: ConventionInfo): Date {
-  return new Date(event.start_date ?? `${event.year}-01-01`);
+  return event.start_date
+  ? new Date(`${event.start_date}T00:00:00`)
+  : new Date(event.year, 0, 1);
 }
 
 // for the special sort of status

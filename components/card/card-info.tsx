@@ -1,11 +1,11 @@
 import {
   formatEventDates,
   formatShortLocation,
-} from "@/lib/helpers/display-formatters";
+} from "@/lib/helpers/time/date-formatters";
 import {
   TIME_CATEGORY_LABELS,
   TimeCategory,
-} from "@/lib/helpers/event-recency";
+} from "@/lib/helpers/time/event-recency";
 import { ConventionInfo, ConventionYear } from "@/types/types";
 import { FaStar } from "react-icons/fa6";
 

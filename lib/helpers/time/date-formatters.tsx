@@ -1,8 +1,8 @@
-import { format } from "date-fns";
 import {
   MonthWithWeekends,
   WeekendBucket,
-} from "../calendar/generate-weekends";
+} from "@/lib/calendar/generate-weekends";
+import { format, parseISO } from "date-fns";
 
 // Apr, 25
 export function formatMonthYear(monthData: MonthWithWeekends): string {
@@ -39,8 +39,8 @@ export function formatEventDates(
   if (!start || !end) {
     return year.toString();
   }
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = parseISO(start);
+  const endDate = parseISO(end);
 
   const sameDay =
     startDate.getFullYear() === endDate.getFullYear() &&
@@ -83,8 +83,8 @@ export function formatEventDates(
 export function formatEventMonthRange(start?: string, end?: string): string {
   if (!start || !end) return "";
 
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = parseISO(start);
+  const endDate = parseISO(end);
 
   const options: Intl.DateTimeFormatOptions = {
     month: "long",

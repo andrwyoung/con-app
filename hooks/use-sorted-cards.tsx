@@ -5,7 +5,7 @@ import {
   TIME_CATEGORY_LABELS,
   timeCategories,
   TimeCategory,
-} from "@/lib/helpers/event-recency";
+} from "@/lib/helpers/time/event-recency";
 import { SortType } from "@/types/search-types";
 
 export type FlatItem =

@@ -8,12 +8,13 @@ import { useExploreGeneralUIStore, useModalUIStore } from "@/stores/ui-store";
 import { useCurrentScope } from "@/hooks/use-current-scope";
 import { MdEdit } from "react-icons/md";
 import EditConventionModal from "../edit-modal/edit-con-modal";
+import { parseISO } from "date-fns";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
 
   const now = new Date();
-  const lastEnd = new Date(endDate);
+  const lastEnd = parseISO(endDate);
   const daysSinceEnd =
     (now.getTime() - lastEnd.getTime()) / (1000 * 60 * 60 * 24);
 

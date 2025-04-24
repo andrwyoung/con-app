@@ -34,7 +34,7 @@ export default function Caly() {
 
   const allWeekends = months.flatMap((m) => m.weekends);
   const today = new Date();
-  const thisWeekend = allWeekends.find((w) => new Date(w.weekendEnd) >= today);
+  const thisWeekend = allWeekends.find((w) => w.weekendEnd >= today);
 
   const [weekendConMap, setWeekendConMap] = useState<
     Map<string, ConventionInfo[]>
@@ -206,10 +206,10 @@ export default function Caly() {
   };
 
   return (
-    <>
+    <div className="border-b rounded-lg">
       <div
         className="sticky top-0 z-10 px-4 py-2 font-bold bg-gradient-to-b from-white to-transparent
-      grid grid-cols-[auto_1fr_1fr] items-end gap-4 border-b select-none"
+      grid grid-cols-[auto_1fr_1fr] items-end gap-4 border select-none rounded-t"
       >
         <h1 className={`${yearStyling}`}>{visibleYear}</h1>
         <div className="col-start-2 justify-self-end">
@@ -234,12 +234,12 @@ export default function Caly() {
         </div>
       </div>
       <div className="relative">
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5" />
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-5" />
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5 rounded-lg" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-5 rounded-lg" />
 
         <div
           ref={scrollContainerRef}
-          className="flex flex-col gap-8 h-full max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-none p-4 overscroll-contain scroll-smooth"
+          className="flex flex-col gap-8 h-full max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-none p-4 "
         >
           {months.map((month) => (
             <div
@@ -255,6 +255,6 @@ export default function Caly() {
           <div className="h-40 shrink-0" />
         </div>
       </div>
-    </>
+    </div>
   );
 }

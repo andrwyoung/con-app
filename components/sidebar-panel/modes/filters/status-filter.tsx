@@ -3,7 +3,7 @@ import { CheckField, FilterSection } from "./filter-helpers";
 import {
   TIME_CATEGORY_LABELS,
   TimeCategory,
-} from "@/lib/helpers/event-recency";
+} from "@/lib/helpers/time/event-recency";
 
 export default function StatusFilter() {
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);

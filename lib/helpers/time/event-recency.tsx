@@ -4,7 +4,8 @@ import {
   DAYS_UNTIL_DISCONTINUED,
   DAYS_UNTIL_SOON,
   DAYS_UNTIL_UPCOMING,
-} from "../constants";
+} from "../../constants";
+import { parseISO } from "date-fns";
 
 export const timeCategories = [
   "here",
@@ -58,15 +59,15 @@ export function getEventTimeCategory(
   const now = new Date();
 
   const end = endDate
-    ? new Date(endDate)
+    ? parseISO(endDate)
     : year
-    ? new Date(`${year}-12-31`)
+    ? new Date(year, 11, 31) // dec 31
     : null;
 
   const start = startDate
-    ? new Date(startDate)
+    ? parseISO(startDate)
     : year
-    ? new Date(`${year}-01-01`)
+    ? new Date(year, 0, 1) // jan 1
     : null;
 
   if (!start || !end) return "unknown";
@@ -90,9 +91,9 @@ export function getEventTimeCategory(
 
 export function getDaysUntilEvent(info: ConventionInfo): number | null {
   const start = info.start_date
-    ? new Date(info.start_date)
+    ? parseISO(info.start_date)
     : info.year
-    ? new Date(`${info.year}-01-01`)
+    ? new Date(info.year, 0, 1) // jan 1
     : null;
 
   if (!start) return null;

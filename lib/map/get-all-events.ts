@@ -4,7 +4,7 @@
 
 import { supabaseAnon } from "@/lib/supabase/client";
 import { ConventionInfo } from "@/types/types";
-import { getEventTimeCategory } from "../helpers/event-recency";
+import { getEventTimeCategory } from "../helpers/time/event-recency";
 import { getWeekend } from "../calendar/determine-weekend";
 
 export default async function getAllEvents(): Promise<ConventionInfo[]> {

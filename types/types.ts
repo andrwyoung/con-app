@@ -1,5 +1,5 @@
 import { Tables } from "@/types/supabase";
-import { TimeCategory } from "@/lib/helpers/event-recency";
+import { TimeCategory } from "@/lib/helpers/time/event-recency";
 import { Weekend } from "@/lib/calendar/determine-weekend";
 
 export type Scope = "explore" | "plan" | "share" | "unknown";
