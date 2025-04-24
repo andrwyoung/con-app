@@ -8,6 +8,7 @@ import {
   TimeCategory,
 } from "@/lib/helpers/event-recency";
 import { MdEdit } from "react-icons/md";
+import { useModalUIStore } from "@/stores/ui-store";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
@@ -94,6 +95,7 @@ export default function YearGallery({
   location: string;
   showMissing: boolean;
 }) {
+  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(false);
   const [atEnd, setAtEnd] = useState(true);
@@ -178,12 +180,13 @@ export default function YearGallery({
                   <span>Unknown</span>
                   <div className="flex flex-row gap-0.5 text-secondary-darker ">
                     <MdEdit className="translate-y-[1px]" />
-                    <a
-                      href="mailto:andrew@jonadrew.com"
+                    <button
+                      type="button"
+                      onClick={() => setEditingModalPage("dates")}
                       className="text-xs cursor-pointer hover:underline"
                     >
                       Submit an update
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>

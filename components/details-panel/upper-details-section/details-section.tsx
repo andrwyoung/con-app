@@ -1,12 +1,13 @@
 import { FullConventionDetails } from "@/types/types";
-import React from "react";
 import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
 import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { useFilterStore } from "@/stores/filter-store";
-import { useExploreGeneralUIStore } from "@/stores/ui-store";
+import { useExploreGeneralUIStore, useModalUIStore } from "@/stores/ui-store";
 import { useCurrentScope } from "@/hooks/use-current-scope";
+import { MdEdit } from "react-icons/md";
+import EditConventionModal from "../edit-modal/edit-con-modal";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -26,6 +27,7 @@ export default function DetailsSection({
 }) {
   const setTagFilter = useFilterStore((s) => s.setTagFilter);
   const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
+  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
   const scope = useCurrentScope();
 
   const latestYear = [...details.convention_years].sort(
@@ -41,9 +43,23 @@ export default function DetailsSection({
   return (
     <>
       <div className="px-2 flex flex-col gap-2 text-sm mb-6">
-        <h3 className="text-primary-muted font-semibold uppercase">
-          Description
-        </h3>
+        <div className="flex flex-row justify-between">
+          <h3 className="text-primary-muted font-semibold uppercase">
+            Description
+          </h3>
+          <div className="flex flex-row gap-0.5 text-secondary-darker ">
+            <EditConventionModal conDetails={details} />
+            <MdEdit className="translate-y-[1px]" />
+            <button
+              type="button"
+              onClick={() => setEditingModalPage("editor")}
+              className="text-xs cursor-pointer hover:underline"
+            >
+              Edit Info
+            </button>
+          </div>
+        </div>
+
         {details.cs_description ? (
           <p className="leading-6 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
             {details.cs_description}

@@ -14,7 +14,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 export const yearStyling =
   "select-none text-primary-muted text-2xl font-semibold";
 
-export default function Calendar() {
+export default function Caly() {
   const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
   const months = useMemo(() => generateWeekendsByMonth(), []);
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);

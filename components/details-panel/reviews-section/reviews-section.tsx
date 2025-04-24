@@ -10,11 +10,11 @@ export default function ReviewsSection({ id }: { id: number }) {
   const [reviews, setReviews] = useState<Review[]>([]);
 
   const [editReview, setEditReview] = useState<Review | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const handleEdit = (review: Review) => {
     setEditReview(review);
-    setIsModalOpen(true);
+    setIsReviewModalOpen(true);
   };
 
   // grab con data from database
@@ -47,15 +47,15 @@ export default function ReviewsSection({ id }: { id: number }) {
               conId={id}
               onSubmitted={refreshReviews}
               initialReview={editReview}
-              isOpen={isModalOpen}
+              isOpen={isReviewModalOpen}
               setIsOpen={(open) => {
-                setIsModalOpen(open);
+                setIsReviewModalOpen(open);
                 if (!open) setEditReview(null); // reset when closing
               }}
             />
             <button
               type="button"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsReviewModalOpen(true)}
               className="bg-primary-lightest cursor-pointer text-primary-text border-2 border-primary 
             uppercase text-xs px-4 py-1 rounded-full hover:bg-primary focus:outline-none"
             >

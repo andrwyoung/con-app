@@ -1,4 +1,5 @@
 import { authStep } from "@/components/auth/login-modal";
+import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-modal";
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
 import { DEFAULT_LIST } from "@/lib/constants";
 import { ConventionInfo, Scope } from "@/types/types";
@@ -6,10 +7,12 @@ import { create, StateCreator } from "zustand";
 
 type ModalUIStore = {
   loginModalStep: authStep;
+  editingModalPage: EditorSteps;
   onboardingOpen: boolean;
   profileOpen: boolean;
 
   setLoginModalStep: (step: authStep) => void;
+  setEditingModalPage: (step: EditorSteps) => void;
   setOnboardingOpen: (open: boolean) => void;
   setProfileOpen: (open: boolean) => void;
   anyModalOpen: () => boolean;
@@ -17,10 +20,12 @@ type ModalUIStore = {
   
 export const useModalUIStore = create<ModalUIStore>((set, get) => ({
   loginModalStep: "closed",
+  editingModalPage: "closed",
   onboardingOpen: false,
   profileOpen: false,
 
   setLoginModalStep: (step) => set({ loginModalStep: step }),
+  setEditingModalPage: (step) => set({ editingModalPage: step }),
   setOnboardingOpen: (open) => set({ onboardingOpen: open }),
   setProfileOpen: (open) => set({ profileOpen: open }),
 

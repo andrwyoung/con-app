@@ -1,4 +1,4 @@
-import { yearStyling } from "@/app/plan/calendar";
+import { yearStyling } from "@/app/plan/caly";
 import {
   MonthWithWeekends,
   WeekendBucket,

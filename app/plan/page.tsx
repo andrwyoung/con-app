@@ -10,7 +10,7 @@ import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "@/components/sidebar-panel/modes/search-mode";
 import { usePlanSearchStore } from "@/stores/search-store";
 import CalendarMode from "@/components/sidebar-panel/modes/calendar-mode";
-import Calendar from "./calendar";
+import Caly from "./caly";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
 
 export default function PlanPage() {
@@ -66,7 +66,7 @@ export default function PlanPage() {
               <ListPanel scope="plan" />
             </div>
             <div className="flex-shrink-0 disable-scroll-override mr-12">
-              <Calendar />
+              <Caly />
             </div>
 
             <div className="flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg shadow-lg w-86 max-h-[calc(100vh-12rem)] bg-white px-5 py-6">
