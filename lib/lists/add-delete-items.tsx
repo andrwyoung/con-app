@@ -1,5 +1,6 @@
 import { supabaseAnon } from "../supabase/client";
 import { useUserStore } from "@/stores/user-store";
+import { log } from "../utils";
 
 export async function addListItemToSupabase({
   listId,
@@ -31,7 +32,7 @@ export async function addListItemToSupabase({
     throw error;
   }
 
-  console.log("added: ", conventionId);
+  log("added: ", conventionId);
 }
 
 export async function updateListItemInSupabase({
@@ -65,7 +66,7 @@ export async function updateListItemInSupabase({
     throw error;
   }
 
-  console.log("Updated item:", conventionId, "with", { status, notes });
+  log("Updated item:", conventionId, "with", { status, notes });
 }
 
 export async function removeListItemFromSupabase({
@@ -93,5 +94,5 @@ export async function removeListItemFromSupabase({
     throw error;
   }
 
-  console.log("deleted: ", conventionId);
+  log("deleted: ", conventionId);
 }

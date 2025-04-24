@@ -15,7 +15,7 @@ import {
   DEFAULT_ZOOM_FAR,
   ZOOM_USE_DEFAULT,
 } from "@/lib/constants";
-import { getDistance } from "@/lib/utils";
+import { getDistance, log } from "@/lib/utils";
 import { useFilterStore } from "@/stores/filter-store";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import {
@@ -98,7 +98,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
 
   // whenever filteredData changes, regenerate the GeoJSON
   useEffect(() => {
-    console.log("filteredData has changed. updating!");
+    log("filteredData has changed. updating!");
     if (!mapRef.current || !mapRef.current.getSource("events")) return;
 
     const source = mapRef.current.getSource("events") as mapboxgl.GeoJSONSource;
@@ -125,11 +125,11 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   // here's where the markers are rendered
   //
   useEffect(() => {
-    console.log("dict-map", eventDict, mapRef.current);
+    log("dict-map", eventDict, mapRef.current);
     if (!mapRef.current || !eventDict || Object.keys(eventDict).length === 0)
       return;
 
-    console.log("selectedTags", tagFilter.selected);
+    log("selectedTags", tagFilter.selected);
 
     addMarkersToMap(
       mapRef.current!,

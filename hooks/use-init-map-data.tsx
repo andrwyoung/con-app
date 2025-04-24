@@ -1,4 +1,5 @@
 import getInitialLocation from "@/lib/map/get-initial-location";
+import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useMapStore } from "@/stores/map-store";
 import {
@@ -46,7 +47,7 @@ export default function useInitMapData() {
       setInitialized(true);
 
       const end = performance.now();
-      console.log(`useInitMapData finished in ${Math.round(end - start)}ms`);
+      log(`useInitMapData finished in ${Math.round(end - start)}ms`);
     };
 
     init();

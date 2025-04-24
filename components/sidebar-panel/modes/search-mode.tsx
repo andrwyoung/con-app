@@ -7,6 +7,7 @@ import { SortType } from "@/types/search-types";
 import { Scope } from "@/types/types";
 import { useScopedSearchStore } from "@/stores/search-store";
 import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { log } from "@/lib/utils";
 
 const TITLE_DEFAULT = "Search Results";
 
@@ -36,7 +37,7 @@ export default function SearchMode({ scope }: { scope: Scope }) {
     setNumResults(results.length);
     if (!first_result) return;
 
-    console.log("searchbar results: ", results);
+    log("searchbar results: ", results);
 
     // if searchbar has a preferred default sort, start with that
     setSortOption(searchState.context?.sort ?? DEFAULT_SORT);

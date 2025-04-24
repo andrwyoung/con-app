@@ -2,6 +2,7 @@ import { authStep } from "@/components/auth/login-modal";
 import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-modal";
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
 import { DEFAULT_LIST } from "@/lib/constants";
+import { log } from "@/lib/utils";
 import { ConventionInfo, Scope } from "@/types/types";
 import { create, StateCreator } from "zustand";
 
@@ -41,7 +42,7 @@ export const useDragStore = create<{
   setActiveCon: (con: ConventionInfo | null) => void;
 }>((set) => ({
   activeCon: null,
-  setActiveCon: (con) => {console.log("dragging con:", con); set({ activeCon: con })},
+  setActiveCon: (con) => {log("dragging con:", con); set({ activeCon: con })},
 }));
 
 // overlapping UI stores
@@ -86,7 +87,7 @@ export const useExploreUIStore = create<ExploreUIStore>((set) => ({
   showRecomended: true,
   setShowRecomended: (r) => set({ showRecomended: r }),
 
-  showListPanel: true,
+  showListPanel:false,
   setShowListPanel: (r) => set({ showListPanel: r }),
 }));
 

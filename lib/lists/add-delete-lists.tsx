@@ -1,5 +1,6 @@
 import { supabaseAnon } from "../supabase/client";
 import { useUserStore } from "@/stores/user-store";
+import { log } from "../utils";
 
 export async function createListInSupabase({
   listId,
@@ -34,7 +35,7 @@ export async function createListInSupabase({
     throw error;
   }
 
-  console.log("Created list:", listId, "with special_type:", specialType);
+  log("Created list:", listId, "with special_type:", specialType);
 }
 
 export async function renameListInSupabase({
@@ -59,7 +60,7 @@ export async function renameListInSupabase({
     throw error;
   }
 
-  console.log("Renamed list:", listId, "to", newLabel);
+  log("Renamed list:", listId, "to", newLabel);
 }
 
 export async function deleteListFromSupabase({ listId }: { listId: string }) {
@@ -79,5 +80,5 @@ export async function deleteListFromSupabase({ listId }: { listId: string }) {
     throw error;
   }
 
-  console.log("Deleted list and its related items:", listId);
+  log("Deleted list and its related items:", listId);
 }

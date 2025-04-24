@@ -14,6 +14,7 @@ import {
   useScopedSearchStore,
   useSearchHistoryStore,
 } from "@/stores/search-store";
+import { log } from "@/lib/utils";
 
 type DropdownItem = {
   id: string;
@@ -90,7 +91,7 @@ export default function Searchbar({ scope }: { scope: Scope }) {
       }
 
       const res = grabConventions(searchbarText, allEvents);
-      console.log(res);
+      log(res);
 
       if (res.length === 0) {
         setSuggestionResults([
@@ -124,7 +125,7 @@ export default function Searchbar({ scope }: { scope: Scope }) {
   const runFullSearch = async (termOverride?: string) => {
     const term = termOverride ?? searchbarText;
     if (!term.trim()) return;
-    console.log("running full search");
+    log("running full search");
 
     const res = grabConventions(term, allEvents);
 
@@ -168,11 +169,11 @@ export default function Searchbar({ scope }: { scope: Scope }) {
   const onSearchHere = () => {
     const center = getCurrentCenter?.();
     if (!center) {
-      console.log("could not locate cons in area");
+      console.error("could not locate cons in area");
       return;
     }
 
-    console.log("searching in the area...");
+    log("searching in the area...");
     const res = grabNearbyConventions(
       {
         latitude: center.latitude,
@@ -180,7 +181,7 @@ export default function Searchbar({ scope }: { scope: Scope }) {
       },
       allEvents
     );
-    console.log("searched in area. got:", res);
+    log("searched in area. got:", res);
 
     setSearchState({
       type: "current-location",
@@ -196,7 +197,7 @@ export default function Searchbar({ scope }: { scope: Scope }) {
   const onSearchNearMe = () => {
     const center = useMapStore.getState().userLocation;
     if (!center) {
-      console.log("could not location your location");
+      log("could not location your location");
       return;
     }
     const res = grabNearbyConventions(

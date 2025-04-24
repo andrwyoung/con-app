@@ -4,6 +4,7 @@ import {
   getConWithYear,
   grabConsFromSupabase,
 } from "@/lib/calendar/grab-weekend";
+import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useListStore } from "@/stores/list-store";
 import { usePlanSidebarStore } from "@/stores/sidebar-store";
@@ -98,7 +99,7 @@ export default function Caly() {
   // if selectedWeekend or selectedMonth change, then populate the sidebar
   useEffect(() => {
     const fetchConventions = async () => {
-      console.log("fetching the weekend/month");
+      log("fetching the weekend/month");
       if (selectedWeekend) {
         const conYears = await grabConsFromSupabase(
           selectedWeekend.weekendStart,

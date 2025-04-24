@@ -4,6 +4,7 @@
 
 import { Persona } from "@/components/auth/steps/signup-step";
 import { createClientSudo } from "../supabase/server";
+import { log } from "../utils";
 
 export async function signupUser({
   finalEmail: email,
@@ -62,7 +63,7 @@ export async function signupUser({
   });
 
   if (profileError) {
-    console.log(profileError);
+    log(profileError);
     return { error: "Failed to save user profile." };
   }
 

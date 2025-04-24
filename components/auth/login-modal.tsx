@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import ResetPasswordStep from "./steps/reset-password-step";
 import CheckEmailStep from "./steps/check-email-step";
 import { useModalUIStore } from "@/stores/ui-store";
+import { log } from "@/lib/utils";
 
 export type authStep =
   | "email"
@@ -38,7 +39,7 @@ export default function LoginModal() {
 
       // disallow going backwards if on these 2 steps
       if (step === "check-email" || step === "reset-password") {
-        console.log("here!");
+        log("here!");
         window.history.pushState({ step }, "");
         return;
       }
@@ -59,7 +60,7 @@ export default function LoginModal() {
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        console.log(open);
+        log(open);
         if (!open) {
           setStep("closed"); // reset when closed
           window.history.replaceState({}, "", window.location.pathname); // reset history when closed

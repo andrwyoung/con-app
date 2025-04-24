@@ -4,6 +4,7 @@
 "use client";
 import { fetchUserListsFromSupabase, syncAllListsToSupabase } from "@/lib/lists/sync-lists";
 import { supabaseAnon } from "@/lib/supabase/client";
+import { log } from "@/lib/utils";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect } from "react";
 
@@ -59,7 +60,7 @@ export function useUser() {
 
       if (user) {
         supabaseAnon.auth.getSession().then(({ data: session }) => {
-          console.log("Current Supabase session:", session);
+          log("Current Supabase session:", session);
       });
 
       void fetchProfile(user.id);

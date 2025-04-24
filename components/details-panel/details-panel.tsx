@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import DetailsSection from "./upper-details-section/details-section";
 import ReviewsSection from "./reviews-section/reviews-section";
+import { log } from "@/lib/utils";
 
 export default function DetailsPanel({
   con,
@@ -18,7 +19,7 @@ export default function DetailsPanel({
   useEffect(() => {
     const init = async () => {
       const conDetails = await grabAllDetails(con.id);
-      console.log("details panel full con data:", conDetails);
+      log("details panel full con data:", conDetails);
 
       setDetails(conDetails);
     };

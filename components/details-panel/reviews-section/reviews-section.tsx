@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import ReviewCard from "./review-card";
 import ReviewModal from "./review-modal";
 import { Review } from "@/types/review-types";
+import { log } from "@/lib/utils";
 
 export default function ReviewsSection({ id }: { id: number }) {
   const profile = useUserStore((s) => s.profile);
@@ -21,7 +22,7 @@ export default function ReviewsSection({ id }: { id: number }) {
   useEffect(() => {
     const init = async () => {
       const allReviews = await grabAllReviewsForConvention(id);
-      console.log("all reviews", allReviews);
+      log("all reviews", allReviews);
 
       setReviews(allReviews);
     };

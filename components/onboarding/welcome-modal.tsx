@@ -36,7 +36,7 @@ export default function WelcomeModal() {
         .eq("user_id", profile.user_id);
 
       if (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     }, 600);
 

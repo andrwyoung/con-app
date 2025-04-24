@@ -1,5 +1,6 @@
 import { DEFAULT_LOCATION } from "@/lib/constants";
 import { ConLocation } from "@/types/types";
+import { log } from "../utils";
 
 export default async function getInitialLocation(): Promise<ConLocation> {
   // 1: try browser GPS 
@@ -14,14 +15,14 @@ export default async function getInitialLocation(): Promise<ConLocation> {
   //     { timeout: 5000 }
   //   );
   // });
-  // console.log("Trying to browser GPS:", browserLoc);
+  // log("Trying to browser GPS:", browserLoc);
   // if (browserLoc) return browserLoc;
 
   // 2: if that doesn't work, then try getting location from IP address
   try {
     const res = await fetch("https://ipapi.co/json");
     const data = await res.json();
-    console.log("Trying to IP address loc", data);
+    log("Trying to IP address loc", data);
     return { latitude: data.latitude, longitude: data.longitude };
   } catch {
     // 3 if none of those work, just default to showing SF lol

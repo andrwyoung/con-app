@@ -19,6 +19,7 @@ import { useExploreSelectedCardsStore } from "@/stores/sidebar-store";
 import { useRouter } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
 import { useCurrentScope } from "@/hooks/use-current-scope";
+import { log } from "@/lib/utils";
 
 export default function CardContextMenu({
   con,
@@ -74,7 +75,7 @@ export default function CardContextMenu({
 
     addToList(listId, con);
     toastAddedToList(con.name, listLabel);
-    console.log("Added", con.name, "to list", listLabel);
+    log("Added", con.name, "to list", listLabel);
   }
 
   return (

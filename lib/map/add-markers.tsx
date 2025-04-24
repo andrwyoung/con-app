@@ -12,6 +12,7 @@ import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 import { MAX_SEARCH_BATCH_SIZE } from "../constants";
 import { isPointTooCloseToEdge } from "./map-helpers";
+import { log } from "../utils";
 
 export default function addMarkersToMap(
   map: mapboxgl.Map,
@@ -24,7 +25,7 @@ export default function addMarkersToMap(
   let hoveredPointId: string | number | null = null;
   let hoveredClusterId: number | null = null;
 
-  console.log("dict-marker", filteredDict);
+  log("dict-marker", filteredDict);
   const events = Object?.values(filteredDict);
 
   // SECTION: Constants
@@ -62,7 +63,7 @@ export default function addMarkersToMap(
   //
 
   map.on("load", () => {
-    console.log("events length?", events.length);
+    log("events length?", events.length);
 
     // this is where we destructure all our events into mapbox's syntax
     const geoJsonData: FeatureCollection<Point, GeoJsonProperties> = {
@@ -81,7 +82,7 @@ export default function addMarkersToMap(
       })),
     };
 
-    console.log("GeoJSON length:", geoJsonData.features.length);
+    log("GeoJSON length:", geoJsonData.features.length);
     if (map.getSource("events")) {
       // if "events" already exists, don't recreate it. rather just update it
       (map.getSource("events") as mapboxgl.GeoJSONSource).setData(geoJsonData);
@@ -335,7 +336,7 @@ export default function addMarkersToMap(
             });
           }
 
-          console.log("Convention clicked:", props);
+          log("Convention clicked:", props);
           // KEY LINE: here's where we give the info to sidebar
           setSidebarMode("filter");
           setFocusedEvents([filteredDict[clickedId]]);
@@ -395,14 +396,14 @@ export default function addMarkersToMap(
 
             const conList =
               leaves?.map((f) => f.properties?.id).filter(Boolean) ?? [];
-            console.log("Cluster contains:", conList);
+            log("Cluster contains:", conList);
 
             const fullCons = conList
               .map((id) => filteredDict[id])
               .filter((c): c is ConventionInfo => !!c);
 
             // KEY LINE: here's where we return all the cluster points back to sidebar
-            console.log("EventInfo: ", fullCons);
+            log("EventInfo: ", fullCons);
             setFocusedEvents(fullCons);
           }
         );

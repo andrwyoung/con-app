@@ -7,6 +7,7 @@ import {
   SPECIAL_LIST_KEYS,
   UNKNOWN_CONVENTION,
 } from "../constants";
+import { log } from "../utils";
 
 export async function syncAllListsToSupabase() {
   const userId = useUserStore.getState().user?.id;
@@ -15,7 +16,7 @@ export async function syncAllListsToSupabase() {
   const lists = useListStore.getState().lists;
 
   for (const [listId, { label, items }] of Object.entries(lists)) {
-    console.log(
+    log(
       "looping through uploading",
       listId,
       " for ",
@@ -98,7 +99,7 @@ export async function ensureDefaultListsExist(userId: string) {
   );
 
   if (missingDefaults.length === 0) {
-    console.log("All default lists already exist.");
+    log("All default lists already exist.");
     return;
   }
 
@@ -115,7 +116,7 @@ export async function ensureDefaultListsExist(userId: string) {
   if (insertError) {
     console.error("Failed to insert default lists:", insertError);
   } else {
-    console.log(
+    log(
       "Inserted default lists:",
       inserts.map((i) => i.list_id)
     );
@@ -136,7 +137,7 @@ export async function fetchUserListsFromSupabase(userId: string) {
     return;
   }
 
-  console.log("fetched lists from supabase: ", listMeta);
+  log("fetched lists from supabase: ", listMeta);
   // guard if they default lists don't exist
   if (!listMeta?.length) {
     console.warn("No user lists found. Using default.");
@@ -154,7 +155,7 @@ export async function fetchUserListsFromSupabase(userId: string) {
     return;
   }
 
-  console.log("fetched items from supabase: ", listItems);
+  log("fetched items from supabase: ", listItems);
 
   const parsedLists: ListStore["lists"] = {};
 
@@ -175,7 +176,7 @@ export async function fetchUserListsFromSupabase(userId: string) {
     list.items.push(eventsDict[item.convention_id] ?? UNKNOWN_CONVENTION);
   }
 
-  console.log("setting lists: ", parsedLists);
+  log("setting lists: ", parsedLists);
 
   useListStore.getState().setLists(parsedLists);
 }

@@ -24,6 +24,12 @@ export const fireConfetti = (e?: React.MouseEvent) => {
   });
 };
 
+export const log = (...args: unknown[]) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(...args);
+  }
+};
+
 export const miniConfetti = () => {
   confetti({
     particleCount: 50,

@@ -10,6 +10,7 @@ import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
 } from "@/stores/sidebar-store";
+import { log } from "@/lib/utils";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -47,7 +48,7 @@ export default function ExplorePage() {
           useExploreSelectedCardsStore.getState();
         const { sidebarMode } = useExploreSidebarStore.getState();
 
-        console.log("escape pressed! selected con:", selectedCon);
+        log("escape pressed! selected con:", selectedCon);
 
         // 1st escape deselects con
         // 2nd escape changes mode back to filter
