@@ -20,7 +20,6 @@ import {
 } from "@/stores/sidebar-store";
 import { useRouter } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
-import { useCurrentScope } from "@/hooks/use-current-scope";
 import { log } from "@/lib/utils";
 
 export default function CardContextMenu({

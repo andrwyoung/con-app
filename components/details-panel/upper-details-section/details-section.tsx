@@ -5,7 +5,6 @@ import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { useFilterStore } from "@/stores/filter-store";
 import { useExploreGeneralUIStore, useModalUIStore } from "@/stores/ui-store";
-import { useCurrentScope } from "@/hooks/use-current-scope";
 import { MdEdit } from "react-icons/md";
 import EditConventionModal from "../edit-modal/edit-con-modal";
 import { parseISO } from "date-fns";

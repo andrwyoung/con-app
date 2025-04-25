@@ -15,7 +15,6 @@ import { useMapStore } from "@/stores/map-store";
 import { DEFAULT_ZOOM } from "@/lib/constants";
 import { getRealDates, getRealYear } from "@/lib/calendar/grab-real-dates";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
-import { start } from "repl";
 
 export default function DetailsPanel({
   scope,

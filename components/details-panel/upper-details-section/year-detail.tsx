@@ -1,7 +1,7 @@
 import { ConventionYear, Scope } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
-import { IoCaretBack, IoLocate } from "react-icons/io5";
+import { IoCaretBack } from "react-icons/io5";
 import { getEventTimeCategory } from "@/lib/helpers/time/event-recency";
 import { MdEdit } from "react-icons/md";
 import { useModalUIStore } from "@/stores/ui-store";
@@ -12,8 +12,6 @@ import {
   useScopedSelectedCardsStore,
 } from "@/stores/sidebar-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
-import { log } from "@/lib/utils";
-import { getRealDates } from "@/lib/calendar/grab-real-dates";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 
 // style if depending on what type it is
