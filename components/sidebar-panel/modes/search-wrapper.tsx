@@ -42,7 +42,8 @@ export default function SearchBarWrapper({
           <button
             type="button"
             onClick={() => setSearchState(null)}
-            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
+            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 rounded-full 
+            hover:bg-primary-light focus:outline-none outline-2 outline-primary"
           >
             Reset
           </button>

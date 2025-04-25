@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/types";
 
 import { CardVariant } from "./card";
 import { useListStore } from "@/stores/list-store";
@@ -27,10 +27,12 @@ export default function CardContextMenu({
   con,
   cardType,
   menuType = "context",
+  scope,
 }: {
   con: ConventionInfo;
   cardType: CardVariant;
   menuType: "context" | "dropdown";
+  scope: Scope;
 }) {
   const profile = useUserStore((s) => s.profile);
 
@@ -42,7 +44,6 @@ export default function CardContextMenu({
   const lists = useListStore((s) => s.lists);
 
   const router = useRouter();
-  const scope = useCurrentScope();
 
   const setShowingNow = useListStore((s) => s.setShowingNow);
   const showingNow = useListStore((s) => s.showingNow);

@@ -85,6 +85,7 @@ export default function ExplorePage() {
       {hasMounted && selectedCon && (
         <div className="absolute right-[2%] top-[13%] z-5">
           <DetailsPanel
+            scope="explore"
             con={selectedCon}
             onClose={() => setSelectedCon(null)}
           />

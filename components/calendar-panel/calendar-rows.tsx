@@ -15,6 +15,7 @@ export function CalendarMonthRow({
 }) {
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
   const setSelectedMonth = usePlanSidebarStore((s) => s.setSelectedMonth);
+  const setSidebarMode = usePlanSidebarStore((s) => s.setSidebarMode);
 
   const isSelectedMonth =
     selectedMonth?.year === monthData.year &&
@@ -28,6 +29,7 @@ export function CalendarMonthRow({
   });
 
   const handleMonthClick = async () => {
+    setSidebarMode("calendar");
     if (isSelectedMonth) {
       setSelectedMonth(null);
     } else {
@@ -85,6 +87,7 @@ export function CalendarWeekendDot({
 }) {
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
+  const setSidebarMode = usePlanSidebarStore((s) => s.setSidebarMode);
 
   const isSelectedWeekend =
     isSelectedMonth ||
@@ -101,6 +104,7 @@ export function CalendarWeekendDot({
   const isOver120DaysOut = daysUntilWeekend > 140;
 
   const handleWeekendDotClick = async () => {
+    setSidebarMode("calendar");
     if (isSelectedWeekend) {
       setSelectedWeekend(null);
     } else {

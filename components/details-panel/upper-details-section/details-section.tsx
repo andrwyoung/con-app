@@ -1,4 +1,4 @@
-import { FullConventionDetails } from "@/types/types";
+import { FullConventionDetails, Scope } from "@/types/types";
 import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
 import { FaLink } from "react-icons/fa6";
@@ -22,8 +22,10 @@ function shouldShowMissingCard(endDate: string | undefined): boolean {
 }
 
 export default function DetailsSection({
+  scope,
   details,
 }: {
+  scope: Scope;
   details: FullConventionDetails;
 }) {
   const setTagFilter = useFilterStore((s) => s.setTagFilter);
@@ -31,7 +33,6 @@ export default function DetailsSection({
   const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
   const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
   const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
-  const scope = useCurrentScope();
 
   const latestYear = [...details.convention_years].sort(
     (a, b) => b.year - a.year
@@ -79,6 +80,7 @@ export default function DetailsSection({
           details.venue &&
           details.location && (
             <YearGallery
+              scope={scope}
               currentYear={latestYear.year as number}
               allYears={details.convention_years}
               venue={details.venue}

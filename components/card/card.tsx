@@ -16,6 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useCurrentScope } from "@/hooks/use-current-scope";
 
 export type CardVariant =
   | "default"
@@ -34,6 +35,8 @@ const Card = forwardRef<
   }
 >(({ info, selected = false, onClick, type = "default" }, ref) => {
   const flyTo = useMapStore((s) => s.flyTo);
+
+  const scope = useCurrentScope();
 
   const baseClass =
     "relative flex flex-row cursor-pointer border border-input items-center w-full h-16 rounded-lg px-4 py-1 overflow-hidden transition-all transform group select-none";
@@ -68,22 +71,25 @@ const Card = forwardRef<
         </div>
         <div className="absolute right-0 bottom-0 items-end flex text-primary-muted transition-all">
           <div className="flex flex-col mr-1.5 mb-1 gap-1">
-            <IoLocate
-              aria-label="Fly to Location"
-              title="Fly to Location"
-              className="hover:scale-110 hover:text-primary-text cursor-default"
-              onClick={(e) => {
-                // if the target button is clicked, then fly to it. but don't deselect the card itself
-                if (selected) e.stopPropagation();
-                flyTo?.(
-                  {
-                    longitude: info.location_long,
-                    latitude: info.location_lat,
-                  },
-                  ZOOM_USE_DEFAULT
-                );
-              }}
-            />
+            {scope === "explore" ? (
+              <IoLocate
+                aria-label="Fly to Location"
+                title="Fly to Location"
+                className="hover:scale-110 hover:text-primary-text cursor-default"
+                onClick={(e) => {
+                  // if the target button is clicked, then fly to it. but don't deselect the card itself
+                  if (selected) e.stopPropagation();
+                  flyTo?.(
+                    {
+                      longitude: info.location_long,
+                      latitude: info.location_lat,
+                    },
+                    ZOOM_USE_DEFAULT
+                  );
+                }}
+              />
+            ) : null}
+
             <DropdownMenu>
               <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} asChild>
                 <FiMenu
@@ -97,6 +103,7 @@ const Card = forwardRef<
                   cardType={type}
                   con={info}
                   menuType="dropdown"
+                  scope={scope}
                 />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -111,7 +118,12 @@ const Card = forwardRef<
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <CardContextMenu cardType={type} con={info} menuType="context" />
+        <CardContextMenu
+          cardType={type}
+          con={info}
+          menuType="context"
+          scope={scope}
+        />
       </ContextMenuContent>
     </ContextMenu>
   );

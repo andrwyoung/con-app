@@ -15,6 +15,7 @@ export const MAX_CARDS = 100;
 export const SPECIAL_CON_ID = {
     NO_RESULTS: -1,
     UNKNOWN_CON: -999,
+    FUTURE_CON: 9999
 }
 
 // search consts

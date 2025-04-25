@@ -57,7 +57,10 @@ export default function Sidebar() {
   return (
     <DragContextWrapper scope={"explore"}>
       <div className="relative">
-        <div className="flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6">
+        <div
+          className={`flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6
+         ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
+        >
           <SearchBar key={sidebarMode} scope={"explore"} />
           {/* <StatusDotTester /> */}
           {sidebarMode === "search" && <SearchMode scope="explore" />}
@@ -104,7 +107,7 @@ export default function Sidebar() {
             title="Open List Panel"
             onClick={() => setShowListPanel(true)}
             className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-secondary-lightest hover:text-secondary
-            bg-primary-light border-r border-b left-[calc(100%-0.05rem)] border-primary hover:border-secondary rounded-r-lg px-2 py-8 z-1"
+            bg-primary-light border-r border-b left-[calc(100%-0.05rem)] border-primary hover:border-secondary rounded-r-lg px-2 py-8 -z-1"
             style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
           >
             <FaChevronRight />

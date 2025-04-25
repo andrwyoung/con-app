@@ -146,7 +146,11 @@ export default function PlanPage() {
               <Caly />
             </div>
 
-            <div className="flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg shadow-lg w-86 max-h-[calc(100vh-12rem)] bg-white px-5 py-6">
+            <div
+              className={`flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
+                shadow-lg w-86 max-h-[calc(100vh-12rem)] px-5 py-6 bg-white
+              ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
+            >
               <SearchBar key={sidebarMode} scope={"plan"} />
               {/* <StatusDotTester /> */}
               {sidebarMode === "search" && <SearchMode scope="plan" />}
@@ -159,6 +163,7 @@ export default function PlanPage() {
             {selectedCon && (
               <div className="flex-shrink-0 disable-scroll-override">
                 <DetailsPanel
+                  scope="plan"
                   con={selectedCon}
                   onClose={() => setSelectedCon(null)}
                 />
