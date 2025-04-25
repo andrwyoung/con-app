@@ -27,7 +27,9 @@ export default function DetailsSection({
   details: FullConventionDetails;
 }) {
   const setTagFilter = useFilterStore((s) => s.setTagFilter);
+  const tagFilter = useFilterStore((s) => s.tagFilter);
   const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
+  const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
   const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
   const scope = useCurrentScope();
 
@@ -112,14 +114,23 @@ export default function DetailsSection({
             <div className="flex flex-wrap gap-1 text-xs">
               {details.tags?.map((tagRaw) => {
                 const tag = tagRaw.trim();
-                if (scope === "unknown") {
+                if (scope === "explore") {
                   return (
                     <button
                       key={tag}
                       type="button"
                       onClick={() => {
-                        setTagFilter([tag], false);
-                        setShownFilters(["tags"]);
+                        if (
+                          tagFilter.selected.length === 1 &&
+                          tagFilter.selected[0] === tag &&
+                          tagFilter.includeUntagged === false
+                        ) {
+                          resetAllFilters();
+                          setShownFilters([]);
+                        } else {
+                          setTagFilter([tag], false);
+                          setShownFilters(["tags"]);
+                        }
                       }}
                       className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
                     >

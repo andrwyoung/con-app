@@ -1,50 +1,32 @@
-import { parseISO, startOfYear, addWeeks, addDays, format } from "date-fns";
-import {
-  END_OF_WEEKEND_LABEL,
-  START_OF_WEEK,
-  START_OF_WEEKEND_LABEL,
-  Weekday,
-} from "../constants";
-import { generateWeekendsByMonth } from "./generate-weekends";
+import { parseISO } from "date-fns";
+import { generateWeekendsByMonth, WeekendBucket } from "./generate-weekends";
 
-export type Weekend = {
-  year: number;
-  weekend: number;
-};
+// simple module-level cache
+let cachedWeekendBuckets: WeekendBucket[] | null = null;
 
-function daysUntil(targetDay: Weekday): number {
-  return (targetDay - START_OF_WEEK + 7) % 7;
-}
-
-export function formatWeekendLabel(year: number, weekend: number): string {
-  const weekendStart = addWeeks(startOfYear(new Date(year, 0, 1)), weekend);
-
-  const adjustedStart = addDays(weekendStart, START_OF_WEEK);
-  const friday = addDays(adjustedStart, daysUntil(START_OF_WEEKEND_LABEL));
-  const sunday = addDays(adjustedStart, daysUntil(END_OF_WEEKEND_LABEL));
-
-  return `${format(friday, "MMM d")}–${format(sunday, "MMM d")}`;
-}
-
-export function getWeekend(
+export function findWeekendBucket(
   startDateStr?: string | null,
   endDateStr?: string | null
-): Weekend | null {
+): WeekendBucket | null {
   const rawDate = startDateStr ?? endDateStr;
   if (!rawDate) return null;
 
   try {
     const date = parseISO(rawDate);
-    const allMonths = generateWeekendsByMonth(date); // up to 8 months from current
-    const allWeekends = allMonths.flatMap((m) => m.weekends);
 
-    const match = allWeekends.find(
+    // memoize all weekends only once
+    if (!cachedWeekendBuckets) {
+      const allMonths = generateWeekendsByMonth(date);
+      cachedWeekendBuckets = allMonths.flatMap((m) => m.weekends);
+    }
+
+    const match = cachedWeekendBuckets.find(
       (bucket) => date >= bucket.weekendStart && date <= bucket.weekendEnd
     );
 
-    return match ? { year: match.year, weekend: match.weekend } : null;
+    return match ?? null;
   } catch (err) {
-    console.warn("Could not calculate weekend:", err);
+    console.warn("Could not calculate weekend bucket:", err);
     return null;
   }
 }

@@ -74,7 +74,7 @@ const Card = forwardRef<
               className="hover:scale-110 hover:text-primary-text cursor-default"
               onClick={(e) => {
                 // if the target button is clicked, then fly to it. but don't deselect the card itself
-                e.stopPropagation();
+                if (selected) e.stopPropagation();
                 flyTo?.(
                   {
                     longitude: info.location_long,

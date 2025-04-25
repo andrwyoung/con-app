@@ -1,5 +1,4 @@
 import { Tables } from "@/types/supabase";
-import { Weekend } from "@/lib/calendar/determine-weekend";
 import { TimeCategory } from "./time-types";
 
 export type Scope = "explore" | "plan" | "share" | "unknown";
@@ -8,6 +7,11 @@ export type ConLocation = {
   latitude: number;
   longitude: number;
 };
+
+export type Weekend = {
+  year: number,
+  weekend: number,
+}
 
 export type ConventionInfo = {
   // from conventions

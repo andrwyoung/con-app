@@ -3,9 +3,9 @@
 // and we need to grab all of it anyways for the map. so we'll just keep it in local store afterwards
 
 import { supabaseAnon } from "@/lib/supabase/client";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo, Weekend } from "@/types/types";
 import { getEventTimeCategory } from "../helpers/time/event-recency";
-import { getWeekend } from "../calendar/determine-weekend";
+import { findWeekendBucket } from "../calendar/determine-weekend";
 
 export default async function getAllEvents(): Promise<ConventionInfo[]> {
   try {
@@ -36,7 +36,10 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
       return {
         ...event,
         timeCategory: getEventTimeCategory(event.event_status, event.year, event.start_date, event.end_date),
-        weekend: getWeekend(event.start_date, event.end_date),
+        weekend: (() => {
+          const bucket = findWeekendBucket(event.start_date, event.end_date);
+          return bucket ? { year: bucket.year, weekend: bucket.weekend } as Weekend: null;
+        })(),
       };
     });
 

@@ -65,9 +65,12 @@ export async function grabConsFromSupabase(
 export function getConWithYear(conYears: ConventionYear[]): ConventionInfo[] {
   const allEvents = useEventStore.getState().allEvents;
 
+  // look up the year in our dict. and be sure to also change the convention_year_id
   return conYears.flatMap((cy) => {
     const info = allEvents[cy.convention_id];
-    return info ? [{ ...info, specificYear: cy }] : [];
+    return info
+      ? [{ ...info, specificYear: cy, convention_year_id: cy.id }]
+      : [];
   });
 }
 
@@ -118,6 +121,7 @@ export async function grabPredictedConsFromSupabase(
       const info = allEvents[cy.convention_id];
       if (!info) return null;
 
+      // there are predictions, so it's important we strip out any associated years
       const cloned = { ...info };
       delete cloned.specificYear;
       delete (cloned as ConventionInfo).convention_year_id;

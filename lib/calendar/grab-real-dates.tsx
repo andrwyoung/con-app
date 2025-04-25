@@ -1,0 +1,35 @@
+import { ConventionInfo } from "@/types/types";
+import { log } from "../utils";
+
+export function getRealDates(con: ConventionInfo): {
+  start_date: string | null;
+  end_date: string | null;
+} {
+  if (con.specificYear) {
+    return {
+      start_date: con.specificYear.start_date,
+      end_date: con.specificYear.end_date,
+    };
+  }
+
+  // if it's a prediction (on wishlist) then add a year to the previous year's con
+  if (!con.convention_year_id && con.start_date && con.end_date) {
+    log("convention has no id. so true dates are a year ahead");
+    const start = new Date(con.start_date);
+    const end = new Date(con.end_date);
+
+    start.setFullYear(start.getFullYear() + 1);
+    end.setFullYear(end.getFullYear() + 1);
+
+    return {
+      start_date: start.toISOString().split("T")[0],
+      end_date: end.toISOString().split("T")[0],
+    };
+  }
+
+  log("con has no specific year and isn't null. returning real dates");
+  return {
+    start_date: con.start_date ?? null,
+    end_date: con.end_date ?? null,
+  };
+}

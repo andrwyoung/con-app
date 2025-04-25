@@ -3,6 +3,7 @@ import Card, { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";
 import { FlatItem } from "@/hooks/use-sorted-cards";
 import { getConventionYearId } from "@/lib/lists/helper-functions";
+import { useEffect } from "react";
 
 export function FlatCardList({
   items,
@@ -19,6 +20,26 @@ export function FlatCardList({
   cardRefs: React.RefObject<HTMLDivElement>[];
   type: CardVariant;
 }) {
+  // scrolling cards into view
+  useEffect(() => {
+    if (selectedCon) {
+      const selectedIndex = items.findIndex(
+        (item) =>
+          item.type !== "label" &&
+          item.con.id === selectedCon.id &&
+          item.con.convention_year_id === selectedCon.convention_year_id
+      );
+
+      const ref = cardRefs[selectedIndex];
+      if (ref?.current) {
+        ref.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+    }
+  }, [selectedCon, items, cardRefs]);
+
   return (
     <div className="flex flex-col gap-3 pr-1 m-1">
       {items.slice(0, MAX_CARDS).map((item: FlatItem, i: number) =>
@@ -33,9 +54,14 @@ export function FlatCardList({
           <Card
             key={`${item.con.id}-${getConventionYearId(item.con) ?? "base"}`}
             info={item.con}
-            selected={selectedCon?.id === item.con.id}
+            selected={
+              selectedCon?.id === item.con.id &&
+              selectedCon?.convention_year_id === item.con.convention_year_id
+            }
             onClick={() => {
-              const isSelected = selectedCon?.id === item.con.id;
+              const isSelected =
+                selectedCon?.id === item.con.id &&
+                selectedCon?.convention_year_id === item.con.convention_year_id;
               setSelectedCon(isSelected ? null : item.con);
               setSelectedIndex(isSelected ? -1 : i);
             }}

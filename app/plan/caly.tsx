@@ -1,10 +1,15 @@
 import { CalendarMonthRow } from "@/components/calendar-panel/calendar-rows";
+import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 import { generateWeekendsByMonth } from "@/lib/calendar/generate-weekends";
+import { getRealDates } from "@/lib/calendar/grab-real-dates";
 import { fetchAndSetCons } from "@/lib/calendar/grab-weekend";
 import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useListStore } from "@/stores/list-store";
-import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import {
+  usePlanSelectedCardsStore,
+  usePlanSidebarStore,
+} from "@/stores/sidebar-store";
 import { usePlanGeneralUIStore, usePlanUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,6 +25,9 @@ export default function Caly() {
   const setSelectedCalendarCons = usePlanSidebarStore(
     (s) => s.setSelectedCalendarCons
   );
+  const clearCalendarSelection = usePlanSidebarStore(
+    (s) => s.clearCalendarSelection
+  );
   const setSelectedCalendarPredictions = usePlanSidebarStore(
     (s) => s.setSelectedCalendarPredictions
   );
@@ -28,6 +36,7 @@ export default function Caly() {
   const lists = useListStore((s) => s.lists);
   const showingNow = usePlanGeneralUIStore((s) => s.showingNow);
   const eventsInitailized = useEventStore((s) => s.initialized);
+  const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
 
   const janRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const monthRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -106,7 +115,7 @@ export default function Caly() {
       }
 
       // If neither is selected, clear results
-      setSelectedCalendarCons([]);
+      clearCalendarSelection();
     };
 
     if (eventsInitailized) {
@@ -118,7 +127,17 @@ export default function Caly() {
     setSelectedCalendarCons,
     eventsInitailized,
     setSelectedCalendarPredictions,
+    clearCalendarSelection,
   ]);
+
+  // when an items gets selected, highlight it
+  useEffect(() => {
+    if (selectedCon) {
+      const { start_date, end_date } = getRealDates(selectedCon);
+      const bucket = findWeekendBucket(start_date, end_date);
+      setSelectedWeekend(bucket);
+    }
+  }, [selectedCon]);
 
   // scrolling behavior: keep current year in the header
   useEffect(() => {

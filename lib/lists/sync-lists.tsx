@@ -178,9 +178,18 @@ export async function fetchUserListsFromSupabase(userId: string) {
 
     let enrichedCon: ConventionInfo;
 
+    // KEY SECTION (also kind of fragile lol): we keep track of if it's
+    // historical or predictive based off of the convention_year_id
+    //
+    // if convention_year exists, then make sure ConventionInfo has that ID as truth
     if (item.convention_year) {
-      enrichedCon = { ...con, specificYear: item.convention_year };
+      enrichedCon = {
+        ...con,
+        specificYear: item.convention_year,
+        convention_year_id: item.convention_year?.id,
+      };
     } else {
+      // if convention_year wasn't specified, then it must be a prediction
       enrichedCon = { ...con };
       delete (enrichedCon as ConventionInfo).specificYear;
       delete (enrichedCon as ConventionInfo).convention_year_id;

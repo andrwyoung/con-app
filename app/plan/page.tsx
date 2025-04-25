@@ -142,9 +142,6 @@ export default function PlanPage() {
           className="overflow-x-auto w-full pt-30 px-24 h-screen  scrollbar-track-transparent"
         >
           <div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
-            <div className="relative flex-shrink-0 disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
-              <ListPanel scope="plan" />
-            </div>
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>
@@ -154,6 +151,9 @@ export default function PlanPage() {
               {/* <StatusDotTester /> */}
               {sidebarMode === "search" && <SearchMode scope="plan" />}
               {sidebarMode === "calendar" && <CalendarMode />}
+            </div>
+            <div className="relative flex-shrink-0 disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
+              <ListPanel scope="plan" />
             </div>
 
             {selectedCon && (
