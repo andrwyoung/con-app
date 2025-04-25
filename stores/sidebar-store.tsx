@@ -2,12 +2,8 @@ import {
   MonthWithWeekends,
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
-import {
-  ConventionInfo,
-  ConventionWithYear,
-  ConventionYear,
-  Scope,
-} from "@/types/types";
+import { log } from "@/lib/utils";
+import { ConventionInfo, Scope } from "@/types/types";
 import { create, StateCreator } from "zustand";
 
 export type ExploreSidebarMode = "search" | "filter" | "map";
@@ -38,7 +34,10 @@ type SelectedCardsStore = {
 function createSelectedCardsStoreInitializer(): StateCreator<SelectedCardsStore> {
   return (set) => ({
     selectedCon: null,
-    setSelectedCon: (con) => set({ selectedCon: con }),
+    setSelectedCon: (con) => {
+      set({ selectedCon: con });
+      log("ConventionInfo: ", con);
+    },
 
     selectedIndex: -1,
     setSelectedIndex: (index) => set({ selectedIndex: index }),
@@ -93,8 +92,10 @@ type PlanSidebarStore = {
   selectedWeekend: WeekendBucket | null;
   setSelectedWeekend: (id: WeekendBucket | null) => void;
 
-  selectedCalendarCons: ConventionWithYear[];
-  setSelectedCalendarCons: (cons: ConventionWithYear[]) => void;
+  selectedCalendarCons: ConventionInfo[];
+  setSelectedCalendarCons: (cons: ConventionInfo[]) => void;
+  selectedCalendarPredictions: ConventionInfo[];
+  setSelectedCalendarPredictions: (cons: ConventionInfo[]) => void;
 
   clearCalendarSelection: () => void;
 };
@@ -120,10 +121,15 @@ export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
   selectedCalendarCons: [],
   setSelectedCalendarCons: (cons) => set({ selectedCalendarCons: cons }),
 
+  selectedCalendarPredictions: [],
+  setSelectedCalendarPredictions: (cons) =>
+    set({ selectedCalendarPredictions: cons }),
+
   clearCalendarSelection: () =>
     set(() => ({
       selectedMonth: null,
       selectedWeekend: null,
       selectedCalendarCons: [],
+      selectedCalendarPredictions: [],
     })),
 }));

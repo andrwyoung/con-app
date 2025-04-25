@@ -15,7 +15,10 @@ import {
 } from "../ui/shared-menu";
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import { useScopedUIStore } from "@/stores/ui-store";
-import { useExploreSelectedCardsStore } from "@/stores/sidebar-store";
+import {
+  useExploreSelectedCardsStore,
+  useScopedSelectedCardsStore,
+} from "@/stores/sidebar-store";
 import { useRouter } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
 import { useCurrentScope } from "@/hooks/use-current-scope";
@@ -44,6 +47,7 @@ export default function CardContextMenu({
 
   const setShowingNow = useScopedUIStore(scope).setShowingNow;
   const showingNow = useScopedUIStore(scope).showingNow;
+  const setSelectedCon = useScopedSelectedCardsStore(scope).setSelectedCon;
   const setSelectedExploreCon = useExploreSelectedCardsStore(
     (s) => s.setSelectedCon
   );
@@ -61,6 +65,8 @@ export default function CardContextMenu({
     addToList(newListId, con);
     setShowingNow(newListId);
 
+    setSelectedCon(con);
+
     toastAddedToList(con.name, label);
   }
 
@@ -73,8 +79,10 @@ export default function CardContextMenu({
       return;
     }
 
+    setShowingNow(listId);
     addToList(listId, con);
     toastAddedToList(con.name, listLabel);
+    setSelectedCon(con);
     log("Added", con.name, "to list", listLabel);
   }
 
@@ -132,7 +140,7 @@ export default function CardContextMenu({
         <>
           <SharedMenuItem
             type={menuType}
-            onClick={() => removeFromList(showingNow, con.id)}
+            onClick={() => removeFromList(showingNow, con)}
           >
             Remove From List
           </SharedMenuItem>

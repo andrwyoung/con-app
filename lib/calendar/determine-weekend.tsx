@@ -1,18 +1,11 @@
-import {
-  parseISO,
-  startOfWeek,
-  differenceInCalendarWeeks,
-  startOfYear,
-  addWeeks,
-  addDays,
-  format,
-} from "date-fns";
+import { parseISO, startOfYear, addWeeks, addDays, format } from "date-fns";
 import {
   END_OF_WEEKEND_LABEL,
   START_OF_WEEK,
   START_OF_WEEKEND_LABEL,
   Weekday,
 } from "../constants";
+import { generateWeekendsByMonth } from "./generate-weekends";
 
 export type Weekend = {
   year: number;
@@ -42,22 +35,14 @@ export function getWeekend(
 
   try {
     const date = parseISO(rawDate);
-    const startOfWindow = startOfWeek(date, { weekStartsOn: START_OF_WEEK });
+    const allMonths = generateWeekendsByMonth(date); // up to 8 months from current
+    const allWeekends = allMonths.flatMap((m) => m.weekends);
 
-    const weekend = differenceInCalendarWeeks(
-      startOfWindow,
-      startOfYear(date),
-      {
-        weekStartsOn: START_OF_WEEK,
-      }
+    const match = allWeekends.find(
+      (bucket) => date >= bucket.weekendStart && date <= bucket.weekendEnd
     );
 
-    const res = {
-      year: date.getFullYear(),
-      weekend,
-    } as Weekend;
-
-    return res;
+    return match ? { year: match.year, weekend: match.weekend } : null;
   } catch (err) {
     console.warn("Could not calculate weekend:", err);
     return null;

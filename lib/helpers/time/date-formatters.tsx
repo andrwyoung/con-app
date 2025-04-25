@@ -5,12 +5,14 @@ import {
 import { format, parseISO } from "date-fns";
 
 // Apr, 25
+// for plan mode when you click on a month
 export function formatMonthYear(monthData: MonthWithWeekends): string {
   const date = new Date(monthData.year, monthData.month - 1);
   return format(date, "MMMM, yyy");
 }
 
 // Aug 18–24, 2025
+// for plan mode when you click on a weekend
 export function formatWeekendRange(weekend: WeekendBucket): string {
   const start = weekend.weekendStart;
   const end = weekend.weekendEnd;
@@ -31,16 +33,16 @@ export function formatWeekendRange(weekend: WeekendBucket): string {
 }
 
 // Aug 15, '25 or Dec 26-28, '24
+// for small card info
 export function formatEventDates(
   year: number,
   start?: string,
   end?: string
 ): string {
-  if (!start || !end) {
-    return year.toString();
-  }
+  if (!start) return year.toString();
+
   const startDate = parseISO(start);
-  const endDate = parseISO(end);
+  const endDate = end ? parseISO(end) : startDate; // if end date is null, default to same day event
 
   const sameDay =
     startDate.getFullYear() === endDate.getFullYear() &&
@@ -80,11 +82,11 @@ export function formatEventDates(
 }
 
 // August 15 - August 16
+// used for the year cards
 export function formatEventMonthRange(start?: string, end?: string): string {
-  if (!start || !end) return "";
+  if (!start) return ""; // start date is neccesary
 
   const startDate = parseISO(start);
-  const endDate = parseISO(end);
 
   const options: Intl.DateTimeFormatOptions = {
     month: "long",
@@ -92,6 +94,15 @@ export function formatEventMonthRange(start?: string, end?: string): string {
   };
 
   const startStr = startDate.toLocaleDateString("en-US", options);
+
+  // now figure out end date. we allow end to be null for same day events
+  if (!end) return startStr;
+
+  const endDate = parseISO(end);
+  if (startDate.getTime() === endDate.getTime()) {
+    return startStr;
+  }
+
   const endStr = endDate.toLocaleDateString("en-US", options);
 
   return `${startStr} – ${endStr}`;

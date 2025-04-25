@@ -12,6 +12,9 @@ import { useEffect, useState } from "react";
 
 export default function CalendarMode() {
   const selectedCons = usePlanSidebarStore((s) => s.selectedCalendarCons);
+  const selectedCalendarPredictions = usePlanSidebarStore(
+    (s) => s.selectedCalendarPredictions
+  );
   const clearCalendarSelection = usePlanSidebarStore(
     (s) => s.clearCalendarSelection
   );
@@ -76,42 +79,56 @@ export default function CalendarMode() {
         ) : null}
       </div>
 
-      {inListCons.length > 0 ? (
-        <>
+      <div
+        className="overflow-y-auto flex-grow flex flex-col gap-2
+       scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
+      >
+        {inListCons.length > 0 ? (
+          <>
+            <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2">
+              In Current List ({inListCons.length})
+            </h1>
+            <CardList items={inListCons} scope={"plan"} />
+
+            <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2 mt-1">
+              Not In List ({notInListCons.length})
+            </h1>
+          </>
+        ) : !emptyList ? (
           <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2">
-            In Current List ({inListCons.length})
+            Showing {notInListCons.length} Cons
           </h1>
-          <div className="flex flex-col min-h-0 flex-none">
-            <div className="overflow-y-auto max-h-[12rem] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-              <CardList items={inListCons} scope={"plan"} />
-            </div>
-          </div>
+        ) : null}
 
-          <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2 mt-1">
-            Not In List ({notInListCons.length})
-          </h1>
-        </>
-      ) : !emptyList ? (
-        <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2">
-          Showing {notInListCons.length} Cons
-        </h1>
-      ) : null}
-
-      {selectedCons.length > 0 ? (
-        <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+        {selectedCons.length > 0 ? (
           <CardList items={notInListCons} scope={"plan"} />
-        </div>
-      ) : somethingSelected ? (
-        <div className="text-sm text-center text-primary-muted px-2 mt-2">
-          No Cons Listed. <br />
-          Submit an update or try an earlier date
-        </div>
-      ) : (
-        <div className="text-sm text-center text-primary-muted px-2 mt-2">
-          No Dates Selected. <br />
-          Click on a Weekend Dot or Month.
-        </div>
-      )}
+        ) : somethingSelected ? (
+          <div className="text-sm text-center text-primary-muted px-2 my-2">
+            No Cons Scheduled.
+          </div>
+        ) : (
+          <div className="text-sm text-center text-primary-muted px-2 mt-2">
+            No Dates Selected. <br />
+            Click on a Weekend Dot or Month.
+          </div>
+        )}
+
+        {selectedCalendarPredictions.length > 0 && (
+          <>
+            <h1
+              title="Happened Last Time around this time"
+              className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2"
+            >
+              Predictions ({selectedCalendarPredictions.length})
+            </h1>
+            <CardList
+              items={selectedCalendarPredictions}
+              type="prediction"
+              scope={"plan"}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

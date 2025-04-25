@@ -64,10 +64,10 @@ export type Database = {
           convention_id: number
           created_at: string
           end_date: string | null
-          event_status: string | null
+          event_status: string
           id: string
           length_days: number | null
-          start_date: string | null
+          start_date: string
           table_price: number | null
           updated_at: string | null
           year: number
@@ -84,10 +84,10 @@ export type Database = {
           convention_id: number
           created_at?: string
           end_date?: string | null
-          event_status?: string | null
+          event_status?: string
           id?: string
           length_days?: number | null
-          start_date?: string | null
+          start_date: string
           table_price?: number | null
           updated_at?: string | null
           year: number
@@ -104,10 +104,10 @@ export type Database = {
           convention_id?: number
           created_at?: string
           end_date?: string | null
-          event_status?: string | null
+          event_status?: string
           id?: string
           length_days?: number | null
-          start_date?: string | null
+          start_date?: string
           table_price?: number | null
           updated_at?: string | null
           year?: number
@@ -134,7 +134,6 @@ export type Database = {
           address: string | null
           created_at: string
           cs_description: string | null
-          description: string | null
           facebook_url: string | null
           fancons_link: string | null
           id: number
@@ -158,7 +157,6 @@ export type Database = {
           address?: string | null
           created_at?: string
           cs_description?: string | null
-          description?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -182,7 +180,6 @@ export type Database = {
           address?: string | null
           created_at?: string
           cs_description?: string | null
-          description?: string | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -351,6 +348,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_convention_years_id_fkey"
+            columns: ["convention_years_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["convention_year_id"]
+          },
+          {
             foreignKeyName: "reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -362,8 +366,10 @@ export type Database = {
       user_convention_list_items: {
         Row: {
           convention_id: number
+          convention_year_id: string | null
           created_at: string
           list_id: string
+          list_item_id: string
           notes: string | null
           sort_order: number | null
           status: string | null
@@ -372,8 +378,10 @@ export type Database = {
         }
         Insert: {
           convention_id: number
+          convention_year_id?: string | null
           created_at?: string
           list_id: string
+          list_item_id?: string
           notes?: string | null
           sort_order?: number | null
           status?: string | null
@@ -382,8 +390,10 @@ export type Database = {
         }
         Update: {
           convention_id?: number
+          convention_year_id?: string | null
           created_at?: string
           list_id?: string
+          list_item_id?: string
           notes?: string | null
           sort_order?: number | null
           status?: string | null
@@ -404,6 +414,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "latest_convention_years"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_convention_list_items_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "convention_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_convention_list_items_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["convention_year_id"]
           },
         ]
       }
@@ -566,6 +590,7 @@ export type Database = {
     Views: {
       latest_convention_years: {
         Row: {
+          convention_year_id: string | null
           end_date: string | null
           event_status: string | null
           id: number | null

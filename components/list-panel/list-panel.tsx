@@ -51,16 +51,16 @@ export default function ListPanel({ scope }: { scope: Scope }) {
     }
   }, [lists, showingNow, setShowingNow]);
 
-  // when new items are added, scroll to bottom
-  const itemCount = lists[showingNow]?.items.length;
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [itemCount]);
+  // // when new items are added, scroll to bottom
+  // const itemCount = lists[showingNow]?.items.length;
+  // useEffect(() => {
+  //   if (scrollRef.current) {
+  //     scrollRef.current.scrollTo({
+  //       top: scrollRef.current.scrollHeight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // }, [itemCount]);
 
   // determines naming conventions for new lists
   function handleNewList() {

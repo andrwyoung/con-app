@@ -2,6 +2,7 @@ import { ConventionInfo } from "@/types/types";
 import Card, { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";
 import { FlatItem } from "@/hooks/use-sorted-cards";
+import { getConventionYearId } from "@/lib/lists/helper-functions";
 
 export function FlatCardList({
   items,
@@ -30,9 +31,8 @@ export function FlatCardList({
           </h3>
         ) : (
           <Card
-            key={item.con.id}
+            key={`${item.con.id}-${getConventionYearId(item.con) ?? "base"}`}
             info={item.con}
-            yearInfo={type === "list" ? undefined : item.conYear}
             selected={selectedCon?.id === item.con.id}
             onClick={() => {
               const isSelected = selectedCon?.id === item.con.id;

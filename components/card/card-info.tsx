@@ -2,11 +2,8 @@ import {
   formatEventDates,
   formatShortLocation,
 } from "@/lib/helpers/time/date-formatters";
-import {
-  TIME_CATEGORY_LABELS,
-  TimeCategory,
-} from "@/lib/helpers/time/event-recency";
-import { ConventionInfo, ConventionYear } from "@/types/types";
+import { TIME_CATEGORY_LABELS, TimeCategory } from "@/types/time-types";
+import { ConventionInfo } from "@/types/types";
 import { FaStar } from "react-icons/fa6";
 
 export function StatusDotTester() {
@@ -57,29 +54,40 @@ function StatusDot({ status }: { status: TimeCategory }) {
   );
 }
 
-export default function CardInfo({
-  info,
-  yearInfo,
-}: {
-  info: ConventionInfo;
-  yearInfo?: ConventionYear;
-}) {
+export default function CardInfo({ info }: { info: ConventionInfo }) {
   return (
     <>
-      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-4">
+      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-8">
         {info.name}
       </div>
 
       <div className="text-xs text-primary-muted line-clamp-1 mr-9">
         {formatShortLocation(info.location)}
       </div>
-      {yearInfo && yearInfo.year ? (
-        <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
+      {info.specificYear && info.specificYear.year != info.year ? (
+        <div className="flex flex-row items-baseline gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
           {formatEventDates(
-            yearInfo.year,
-            yearInfo.start_date ?? undefined,
-            yearInfo.end_date ?? undefined
+            info.specificYear.year,
+            info.specificYear.start_date ?? undefined,
+            info.specificYear.end_date ?? undefined
           )}
+          <div className="px-2  bg-stone-400 rounded-lg text-white">
+            Historical
+          </div>
+        </div>
+      ) : !info.convention_year_id ? (
+        <div className="flex flex-row items-baseline gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8 overflow-hidden">
+          <strong className="shrink-0">Last:</strong>
+          <p className="truncate whitespace-nowrap overflow-hidden max-w-24">
+            {formatEventDates(
+              info.year,
+              info.start_date ?? undefined,
+              info.end_date ?? undefined
+            )}
+          </p>
+          <div className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap">
+            Prediction
+          </div>
         </div>
       ) : (
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">

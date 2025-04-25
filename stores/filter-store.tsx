@@ -1,4 +1,4 @@
-import { timeCategories } from "@/lib/helpers/time/event-recency";
+import { timeCategories } from "@/types/time-types";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 

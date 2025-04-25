@@ -6,6 +6,7 @@ export const DAYS_UNTIL_DISCONTINUED = 550
 export const DAYS_SINCE_RECENT = 7;
 export const DAYS_UNTIL_SOON = 7;
 export const DAYS_UNTIL_UPCOMING = 30;
+export const DAYS_UNTIL_PREDICTIONS = 60;
 
 // sidebar consts
 export const DROPDOWN_RESULTS = 5;

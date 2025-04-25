@@ -1,40 +1,41 @@
 import { useMemo } from "react";
 import { ConventionInfo, ConLocation, ConventionYear } from "@/types/types";
 import { groupByStatus, sortEvents } from "@/lib/helpers/sort-cons";
-import {
-  TIME_CATEGORY_LABELS,
-  timeCategories,
-  TimeCategory,
-} from "@/lib/helpers/time/event-recency";
+
 import { SortType } from "@/types/search-types";
+import {
+  EXTENDED_TIME_CATEGORY_LABELS,
+  ExtendedTimeCategories,
+  extendedTimeCategories,
+} from "@/types/time-types";
 
 export type FlatItem =
   | { type: "label"; label: string }
-  | { type: "card"; con: ConventionInfo; conYear?: ConventionYear };
+  | { type: "card"; con: ConventionInfo };
 
 function flattenWithHeaders(
-  grouped: Record<TimeCategory, ConventionInfo[]>
+  grouped: Record<ExtendedTimeCategories, ConventionInfo[]>
 ): FlatItem[] {
-  return timeCategories.flatMap((category) => {
+  return extendedTimeCategories.flatMap((category) => {
     const cons = grouped[category] ?? [];
     if (!cons.length) return [];
     return [
       {
         type: "label",
-        label: TIME_CATEGORY_LABELS[category] ?? category,
+        label: EXTENDED_TIME_CATEGORY_LABELS[category] ?? category,
       } as const,
       ...cons.map((con) => ({ type: "card", con } as const)),
     ];
   });
 }
 
-export function useSortedAndGrouped<T extends ConventionInfo = ConventionInfo>({
+export function useSortedAndGrouped({
   items,
   sortOption,
   userLocation,
   currentLocation,
 }: {
-  items: T[];
+  items: ConventionInfo[];
   sortOption: SortType;
   userLocation?: ConLocation;
   currentLocation?: ConLocation;
@@ -57,7 +58,6 @@ export function useSortedAndGrouped<T extends ConventionInfo = ConventionInfo>({
     return flat.map((con) => ({
       type: "card",
       con,
-      conYear: "year" in con ? (con as any).year : undefined,
     }));
   }, [grouped, flat]);
 

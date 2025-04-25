@@ -1,9 +1,6 @@
 import { useFilterStore } from "@/stores/filter-store";
 import { CheckField, FilterSection } from "./filter-helpers";
-import {
-  TIME_CATEGORY_LABELS,
-  TimeCategory,
-} from "@/lib/helpers/time/event-recency";
+import { TIME_CATEGORY_LABELS, TimeCategory } from "@/types/time-types";
 
 export default function StatusFilter() {
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);

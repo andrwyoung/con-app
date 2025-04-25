@@ -30,7 +30,7 @@ export function generateWeekendsByMonth(
   currentDate = new Date()
 ): MonthWithWeekends[] {
   const start = startOfYear(addYears(currentDate, -YEARS_MINUS));
-  const end = startOfMonth(addMonths(currentDate, 8));
+  const end = startOfMonth(addMonths(currentDate, 10));
 
   const result: Record<string, MonthWithWeekends> = {};
   let current = start;

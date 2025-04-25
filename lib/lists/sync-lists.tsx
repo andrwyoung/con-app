@@ -8,6 +8,9 @@ import {
   UNKNOWN_CONVENTION,
 } from "../constants";
 import { log } from "../utils";
+import { ConventionInfo, ConventionYear, UserListItem } from "@/types/types";
+import { addListItemToSupabase } from "./add-delete-items";
+import { getConventionYearId } from "./helper-functions";
 
 export async function syncAllListsToSupabase() {
   const userId = useUserStore.getState().user?.id;
@@ -44,25 +47,14 @@ export async function syncAllListsToSupabase() {
     }
 
     // 2. uploading each item in the list
-    const itemInserts = items
-      .filter((item) => typeof item.id === "number")
-      .map((item) => ({
-        user_id: userId,
-        list_id: listId,
-        convention_id: item.id,
-      }));
 
-    if (itemInserts.length > 0) {
-      const { error: itemError } = await supabaseAnon
-        .from("user_convention_list_items")
-        .upsert(itemInserts, { onConflict: "user_id, list_id, convention_id" });
-
-      if (itemError) {
-        console.error(
-          `Failed to upsert items for list "${listId}":`,
-          itemError
-        );
-      }
+    for (const item of items) {
+      const itemYearId = getConventionYearId(item);
+      await addListItemToSupabase({
+        listId,
+        conventionId: item.id,
+        conventionYearId: itemYearId,
+      });
     }
   }
 }
@@ -127,6 +119,7 @@ export async function fetchUserListsFromSupabase(userId: string) {
   // Always make sure default list shells exist
   await ensureDefaultListsExist(userId);
 
+  // 1: grab all the lists
   const { data: listMeta, error: listError } = await supabaseAnon
     .from("user_convention_lists")
     .select("*")
@@ -145,15 +138,22 @@ export async function fetchUserListsFromSupabase(userId: string) {
     return;
   }
 
-  const { data: listItems, error: itemError } = await supabaseAnon
+  // 2: grab all items in the list. including the convention_year if it has it
+  const { data, error: itemError } = await supabaseAnon
     .from("user_convention_list_items")
-    .select("*")
+    .select("*, convention_year:convention_year_id(*)")
     .eq("user_id", userId);
 
   if (itemError) {
     console.error("Error fetching list items:", itemError);
     return;
   }
+
+  // cast for safety and readability
+  type SupabaseListItemWithYear = UserListItem & {
+    convention_year: ConventionYear | null;
+  };
+  const listItems = data as SupabaseListItemWithYear[];
 
   log("fetched items from supabase: ", listItems);
 
@@ -169,11 +169,24 @@ export async function fetchUserListsFromSupabase(userId: string) {
   await useEventStore.getState().ensureInitialized();
   const eventsDict = useEventStore.getState().allEvents;
 
+  // 3: since we only have convention ids (+ ConventionYear), grab the ConventionInfo too
   for (const item of listItems) {
     const list = parsedLists[item.list_id];
     if (!list) continue;
 
-    list.items.push(eventsDict[item.convention_id] ?? UNKNOWN_CONVENTION);
+    const con = eventsDict[item.convention_id] ?? UNKNOWN_CONVENTION;
+
+    let enrichedCon: ConventionInfo;
+
+    if (item.convention_year) {
+      enrichedCon = { ...con, specificYear: item.convention_year };
+    } else {
+      enrichedCon = { ...con };
+      delete (enrichedCon as ConventionInfo).specificYear;
+      delete (enrichedCon as ConventionInfo).convention_year_id;
+    }
+
+    list.items.push(enrichedCon as ConventionInfo);
   }
 
   log("setting lists: ", parsedLists);

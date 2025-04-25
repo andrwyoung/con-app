@@ -6,10 +6,11 @@ import {
   useExploreUIStore,
   useScopedUIStore,
 } from "@/stores/ui-store";
-import { cleanConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import React from "react";
 import Card from "../card/card";
+import { log } from "@/lib/utils";
 
 export default function DragContextWrapper({
   children,
@@ -29,8 +30,12 @@ export default function DragContextWrapper({
   return (
     <DndContext
       onDragStart={({ active }) => {
-        const con = active?.data?.current?.con;
+        const con = active?.data?.current?.con as
+          | ConventionInfo
+          | null
+          | undefined;
         if (scope === "explore") setShowListPanel(true);
+        if (con?.specificYear) log("con has a specific year");
         setActiveCon(con ?? null);
       }}
       onDragEnd={(event) => {
@@ -40,9 +45,12 @@ export default function DragContextWrapper({
             toastAlreadyInList(activeCon.name, label);
             return;
           }
-          addToList(showingNow, cleanConventionInfo(activeCon));
+
+          addToList(showingNow, activeCon);
           setSelectedCon(activeCon);
           toastAddedToList(activeCon.name, label);
+
+          log("your lists: ", lists);
         }
         setActiveCon(null);
       }}

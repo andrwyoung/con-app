@@ -5,11 +5,13 @@ import { log } from "../utils";
 export async function addListItemToSupabase({
   listId,
   conventionId,
+  conventionYearId,
   status,
   notes,
 }: {
   listId: string;
   conventionId: number;
+  conventionYearId: string | null;
   status?: string;
   notes?: string;
 }) {
@@ -23,6 +25,7 @@ export async function addListItemToSupabase({
       user_id: userId,
       list_id: listId,
       convention_id: conventionId,
+      convention_year_id: conventionYearId,
       status: status ?? null,
       notes: notes ?? null,
     });
@@ -32,17 +35,19 @@ export async function addListItemToSupabase({
     throw error;
   }
 
-  log("added: ", conventionId);
+  log("added: ", conventionId, "with id: ", conventionYearId);
 }
 
 export async function updateListItemInSupabase({
   listId,
   conventionId,
+  conventionYearId,
   status,
   notes,
 }: {
   listId: string;
   conventionId: number;
+  conventionYearId: string | null;
   status?: string;
   notes?: string;
 }) {
@@ -54,11 +59,13 @@ export async function updateListItemInSupabase({
     .update({
       status: status ?? null,
       notes: notes ?? null,
+      convention_year_id: conventionYearId,
     })
     .match({
       user_id: userId,
       list_id: listId,
       convention_id: conventionId,
+      convention_year_id: conventionYearId,
     });
 
   if (error) {
@@ -66,15 +73,21 @@ export async function updateListItemInSupabase({
     throw error;
   }
 
-  log("Updated item:", conventionId, "with", { status, notes });
+  log("Updated item:", conventionId, "with", {
+    status,
+    notes,
+    conventionYearId,
+  });
 }
 
 export async function removeListItemFromSupabase({
   listId,
   conventionId,
+  conventionYearId,
 }: {
   listId: string;
   conventionId: number;
+  conventionYearId: string | null;
 }) {
   const userId = useUserStore.getState().user?.id;
   // skip if user isn't logged in
@@ -87,6 +100,7 @@ export async function removeListItemFromSupabase({
       user_id: userId,
       list_id: listId,
       convention_id: conventionId,
+      convention_year_id: conventionYearId,
     });
 
   if (error) {
@@ -94,5 +108,5 @@ export async function removeListItemFromSupabase({
     throw error;
   }
 
-  log("deleted: ", conventionId);
+  log("deleted: ", conventionId, " with year id: ", conventionYearId);
 }

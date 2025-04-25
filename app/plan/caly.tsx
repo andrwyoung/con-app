@@ -1,9 +1,6 @@
 import { CalendarMonthRow } from "@/components/calendar-panel/calendar-rows";
 import { generateWeekendsByMonth } from "@/lib/calendar/generate-weekends";
-import {
-  getConWithYear,
-  grabConsFromSupabase,
-} from "@/lib/calendar/grab-weekend";
+import { fetchAndSetCons } from "@/lib/calendar/grab-weekend";
 import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useListStore } from "@/stores/list-store";
@@ -22,6 +19,9 @@ export default function Caly() {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
   const setSelectedCalendarCons = usePlanSidebarStore(
     (s) => s.setSelectedCalendarCons
+  );
+  const setSelectedCalendarPredictions = usePlanSidebarStore(
+    (s) => s.setSelectedCalendarPredictions
   );
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
 
@@ -57,83 +57,6 @@ export default function Caly() {
     setScrolledToToday,
   ]);
 
-  // scroll into view when selecting a map item (a month or a weekend-dot)
-  useEffect(() => {
-    if (!selectedWeekend && !selectedMonth) return;
-
-    let matchingMonth = null;
-    if (selectedWeekend) {
-      matchingMonth = months.find((m) =>
-        m.weekends.some(
-          (w) =>
-            w.weekend === selectedWeekend.weekend &&
-            w.year === selectedWeekend.year
-        )
-      );
-    } else if (selectedMonth) {
-      matchingMonth = selectedMonth;
-    }
-
-    if (matchingMonth) {
-      const scrollEl =
-        monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
-      scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [months, selectedWeekend, selectedMonth]);
-
-  // // if someone external selects on a con, also select that weekend
-  // useEffect(() => {
-  //   if (!selectedCon || !selectedCon.weekend) return;
-
-  //   const matchingWeekend = allWeekends.find(
-  //     (w) =>
-  //       w.weekend === selectedCon.weekend?.weekend &&
-  //       w.year === selectedCon.weekend?.year
-  //   );
-
-  //   if (!matchingWeekend) return;
-
-  //   setSelectedWeekend(matchingWeekend);
-  // }, [selectedCon, setSelectedWeekend, allWeekends]);
-
-  // if selectedWeekend or selectedMonth change, then populate the sidebar
-  useEffect(() => {
-    const fetchConventions = async () => {
-      log("fetching the weekend/month");
-      if (selectedWeekend) {
-        const conYears = await grabConsFromSupabase(
-          selectedWeekend.weekendStart,
-          selectedWeekend.weekendEnd
-        );
-        setSelectedCalendarCons(getConWithYear(conYears));
-        return;
-      }
-
-      if (selectedMonth && selectedMonth.weekends.length > 0) {
-        const first = selectedMonth.weekends[0];
-        const last = selectedMonth.weekends[selectedMonth.weekends.length - 1];
-        const conYears = await grabConsFromSupabase(
-          first.weekendStart,
-          last.weekendEnd
-        );
-        setSelectedCalendarCons(getConWithYear(conYears));
-        return;
-      }
-
-      // If neither is selected, clear results
-      setSelectedCalendarCons([]);
-    };
-
-    if (eventsInitailized) {
-      fetchConventions();
-    }
-  }, [
-    selectedWeekend,
-    selectedMonth,
-    setSelectedCalendarCons,
-    eventsInitailized,
-  ]);
-
   // mapping all conventions to their weekend
   useEffect(() => {
     const map = new Map<string, ConventionInfo[]>();
@@ -153,6 +76,49 @@ export default function Caly() {
 
     setWeekendConMap(map);
   }, [lists, showingNow]);
+
+  // KEY SECTION: if selectedWeekend or selectedMonth change, then populate the sidebar
+  useEffect(() => {
+    const fetchConventions = async () => {
+      // weekends
+      log("fetching the weekend/month");
+      if (selectedWeekend) {
+        fetchAndSetCons(
+          selectedWeekend.weekendStart,
+          selectedWeekend.weekendEnd,
+          setSelectedCalendarCons,
+          setSelectedCalendarPredictions
+        );
+        return;
+      }
+
+      // months
+      if (selectedMonth && selectedMonth.weekends.length > 0) {
+        const first = selectedMonth.weekends[0];
+        const last = selectedMonth.weekends[selectedMonth.weekends.length - 1];
+        fetchAndSetCons(
+          first.weekendStart,
+          last.weekendEnd,
+          setSelectedCalendarCons,
+          setSelectedCalendarPredictions
+        );
+        return;
+      }
+
+      // If neither is selected, clear results
+      setSelectedCalendarCons([]);
+    };
+
+    if (eventsInitailized) {
+      fetchConventions();
+    }
+  }, [
+    selectedWeekend,
+    selectedMonth,
+    setSelectedCalendarCons,
+    eventsInitailized,
+    setSelectedCalendarPredictions,
+  ]);
 
   // scrolling behavior: keep current year in the header
   useEffect(() => {
@@ -189,6 +155,30 @@ export default function Caly() {
       }
     };
   }, [visibleYear]);
+
+  // scroll into view when selecting a map item (a month or a weekend-dot)
+  useEffect(() => {
+    if (!selectedWeekend && !selectedMonth) return;
+
+    let matchingMonth = null;
+    if (selectedWeekend) {
+      matchingMonth = months.find((m) =>
+        m.weekends.some(
+          (w) =>
+            w.weekend === selectedWeekend.weekend &&
+            w.year === selectedWeekend.year
+        )
+      );
+    } else if (selectedMonth) {
+      matchingMonth = selectedMonth;
+    }
+
+    if (matchingMonth) {
+      const scrollEl =
+        monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
+      scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [months, selectedWeekend, selectedMonth]);
 
   const handleScrollToToday = () => {
     if (!thisWeekend) return;

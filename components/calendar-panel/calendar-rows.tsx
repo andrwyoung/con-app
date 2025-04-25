@@ -95,8 +95,10 @@ export function CalendarWeekendDot({
   const isThisWeekend =
     now >= weekendData.weekendStart && now <= weekendData.weekendEnd;
   const hasPassed = weekendData.weekendEnd < now;
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(now.getDate() - 60);
+  const daysUntilWeekend = Math.floor(
+    (weekendData.weekendStart.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const isOver120DaysOut = daysUntilWeekend > 140;
 
   const handleWeekendDotClick = async () => {
     if (isSelectedWeekend) {
@@ -124,6 +126,8 @@ export function CalendarWeekendDot({
             ? "bg-primary-lightest hover:bg-primary-light"
             : isThisWeekend
             ? "bg-secondary hover:bg-secondary-darker/80"
+            : isOver120DaysOut
+            ? "bg-primary-light hover:bg-primary/80"
             : "bg-primary hover:bg-primary-darker/80"
         }`}
       ></div>

@@ -9,7 +9,7 @@ import { FlatCardList } from "./grouped-card-list";
 import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
 import { SortType } from "@/types/search-types";
 
-export default function CardList<T extends ConventionInfo = ConventionInfo>({
+export default function CardList({
   items,
   sortOption = "raw",
   currentLocation = null,
@@ -17,7 +17,7 @@ export default function CardList<T extends ConventionInfo = ConventionInfo>({
   type = "default",
   scope,
 }: {
-  items: T[];
+  items: ConventionInfo[];
   sortOption?: SortType;
   currentLocation?: ConLocation | null;
   userLocation?: ConLocation;

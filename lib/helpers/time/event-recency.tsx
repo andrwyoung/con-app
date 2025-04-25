@@ -6,32 +6,7 @@ import {
   DAYS_UNTIL_UPCOMING,
 } from "../../constants";
 import { parseISO } from "date-fns";
-
-export const timeCategories = [
-  "here",
-  "postponed",
-  "soon",
-  "upcoming",
-  "recent",
-  "past",
-  "discontinued",
-  "cancelled",
-  "unknown",
-] as const;
-
-export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
-  here: "Now",
-  postponed: "Postponed",
-  soon: "Soon",
-  upcoming: "Upcoming",
-  recent: "Just Ended",
-  past: "Earlier",
-  discontinued: "Discontinued",
-  cancelled: "Cancelled",
-  unknown: "Unknown",
-};
-
-export type TimeCategory = (typeof timeCategories)[number];
+import { TimeCategory } from "@/types/time-types";
 
 export function daysUntil(upcomingDate: Date): number {
   return Math.ceil(

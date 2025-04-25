@@ -2,13 +2,11 @@ import { ConventionYear } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
 import { IoCaretBack } from "react-icons/io5";
-import {
-  getEventTimeCategory,
-  TimeCategory,
-} from "@/lib/helpers/time/event-recency";
+import { getEventTimeCategory } from "@/lib/helpers/time/event-recency";
 import { MdEdit } from "react-icons/md";
 import { useModalUIStore } from "@/stores/ui-store";
 import { formatEventMonthRange } from "@/lib/helpers/time/date-formatters";
+import { TimeCategory } from "@/types/time-types";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
