@@ -230,7 +230,7 @@ export default function Caly() {
 
         <div
           ref={scrollContainerRef}
-          className="flex flex-col gap-8 h-full max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-none p-4 "
+          className="flex flex-col gap-8 h-full max-h-[calc(100vh-20rem)] overflow-y-auto scrollbar-none p-4 "
         >
           {months.map((month) => (
             <div

@@ -5,13 +5,48 @@ import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
 } from "@/stores/sidebar-store";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "@/components/sidebar-panel/modes/search-mode";
 import { usePlanSearchStore } from "@/stores/search-store";
 import CalendarMode from "@/components/sidebar-panel/modes/calendar-mode";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
 import Caly from "./caly";
+import { IoCaretBack } from "react-icons/io5";
+
+function ScrollButton({
+  direction,
+  scrollRef,
+  disabled,
+}: {
+  direction: "left" | "right";
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+  disabled?: boolean;
+}) {
+  const isLeft = direction === "left";
+
+  return (
+    <button
+      onClick={() => {
+        if (disabled) return;
+        scrollRef.current?.scrollBy({
+          left: isLeft ? -400 : 400,
+          behavior: "smooth",
+        });
+      }}
+      disabled={disabled}
+      className={`bg-white cursor-pointer border-gray-300 rounded-full p-2 hover:scale-105 text-primary-text transition-transform ${
+        isLeft ? "" : "rotate-180"
+      } ${
+        disabled
+          ? "opacity-40 cursor-default hover:scale-100"
+          : "hover:bg-primary-lightest"
+      }`}
+    >
+      <IoCaretBack className="w-6 h-6" />
+    </button>
+  );
+}
 
 export default function PlanPage() {
   const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
@@ -20,7 +55,23 @@ export default function PlanPage() {
   const searchState = usePlanSearchStore((s) => s.searchState);
 
   const sidebarMode = usePlanSidebarStore((s) => s.sidebarMode);
+  const [canScroll, setCanScroll] = useState(false);
+  const [atScrollStart, setAtScrollStart] = useState(true);
+  const [atScrollEnd, setAtScrollEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const checkScroll = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const scrollable = el.scrollWidth > el.clientWidth;
+    const atStart = el.scrollLeft <= 0;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+
+    setCanScroll((prev) => (prev !== scrollable ? scrollable : prev));
+    setAtScrollStart((prev) => (prev !== atStart ? atStart : prev));
+    setAtScrollEnd((prev) => (prev !== atEnd ? atEnd : prev));
+  }, []);
 
   // scrolling = horizontal scroll
   useEffect(() => {
@@ -40,10 +91,21 @@ export default function PlanPage() {
       }
     };
 
+    el.addEventListener("scroll", checkScroll);
     el.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("resize", checkScroll);
+    checkScroll(); // initial check on mount
 
-    return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll]);
+
+  useEffect(() => {
+    checkScroll();
+  }, [selectedCon, checkScroll]);
 
   // if there's a search then set mode to search
   useEffect(() => {
@@ -57,15 +119,33 @@ export default function PlanPage() {
   return (
     <DragContextWrapper scope={"plan"}>
       <div className="relative">
+        {canScroll && (
+          <div className="absolute bottom-8 shadow-lg rounded-lg p-2 bg-white border border-muted left-1/2 -translate-x-1/2 z-10 flex gap-4">
+            <ScrollButton
+              direction="left"
+              scrollRef={scrollRef}
+              disabled={atScrollStart}
+            />
+            <h3 className="text-sm self-center text-primary-text font-semibold uppercase">
+              Scroll
+            </h3>
+            <ScrollButton
+              direction="right"
+              scrollRef={scrollRef}
+              disabled={atScrollEnd}
+            />
+          </div>
+        )}
+
         <div
           ref={scrollRef}
-          className="overflow-x-auto w-full pt-32 px-24 h-screen  scrollbar-track-transparent"
+          className="overflow-x-auto w-full pt-30 px-24 h-screen  scrollbar-track-transparent"
         >
-          <div className="flex justify-center items-start min-w-[max-content] gap-8 mx-24">
+          <div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
             <div className="relative flex-shrink-0 disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
               <ListPanel scope="plan" />
             </div>
-            <div className="flex-shrink-0 disable-scroll-override mr-8">
+            <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>
 
