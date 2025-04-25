@@ -51,6 +51,7 @@ export function FlatCardList({
             {item.label}
           </h3>
         ) : (
+          // the logic here is complicated...sorry
           <Card
             key={`${item.con.id}-${getConventionYearId(item.con) ?? "base"}`}
             info={item.con}
@@ -66,7 +67,11 @@ export function FlatCardList({
               setSelectedIndex(isSelected ? -1 : i);
             }}
             ref={cardRefs[i]}
-            type={type}
+            type={
+              !item.con.convention_year_id && type != "list"
+                ? "prediction"
+                : type
+            }
           />
         )
       )}

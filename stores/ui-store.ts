@@ -3,6 +3,7 @@ import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-moda
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
 import { DEFAULT_LIST } from "@/lib/constants";
 import { log } from "@/lib/utils";
+import { SortType } from "@/types/search-types";
 import { ConventionInfo, Scope } from "@/types/types";
 import { create, StateCreator } from "zustand";
 
@@ -45,23 +46,24 @@ export const useDragStore = create<{
   setActiveCon: (con) => {log("dragging con:", con); set({ activeCon: con })},
 }));
 
+
 // overlapping UI stores
 export function useScopedUIStore(scope: Scope): SearchStore {
   return scope === "explore" ? useExploreGeneralUIStore() : usePlanGeneralUIStore();
 }
 
 type SearchStore = {
+  listSortType: SortType;
+  setListSortType: (sort: SortType) => void;
+
   shownFilters: FilterKey[];
   setShownFilters: (key: FilterKey[]) => void;
-
-  showingNow: string;
-  setShowingNow: (listId: string) => void;
 };
 
 function createUIStoreInitializer(): StateCreator<SearchStore> {
   return (set) => ({
-    showingNow: DEFAULT_LIST,
-    setShowingNow: (listId) => set({ showingNow: listId }),
+    listSortType: "raw",
+    setListSortType: (sort) => set({listSortType: sort}),
 
     shownFilters: [],
     setShownFilters: (key) => set({ shownFilters: key }),

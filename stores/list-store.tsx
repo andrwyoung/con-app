@@ -1,4 +1,4 @@
-import { DEFAULT_LISTS } from "@/lib/constants";
+import { DEFAULT_LIST, DEFAULT_LISTS } from "@/lib/constants";
 import {
   addListItemToSupabase,
   removeListItemFromSupabase,
@@ -26,6 +26,9 @@ export type ListStore = {
   setLists: (e: Record<string, UserList>) => void;
   resetLists: () => void;
 
+  showingNow: string;
+  setShowingNow: (listId: string) => void;
+
   addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, item: ConventionInfo) => void;
   alreadyInList: (listId: string, item: ConventionInfo) => boolean;
@@ -50,6 +53,9 @@ export const useListStore = create<ListStore>((set, get) => ({
     set({ lists: withDefaults });
   },
   resetLists: () => set({ lists: DEFAULT_LISTS }),
+
+  showingNow: DEFAULT_LIST,
+  setShowingNow: (listId) => set({ showingNow: listId }),
 
   addToList: (listId, con) => {
     const current = get().lists[listId];

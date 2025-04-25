@@ -10,7 +10,7 @@ import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
 } from "@/stores/sidebar-store";
-import { usePlanGeneralUIStore, usePlanUIStore } from "@/stores/ui-store";
+import { usePlanUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ export default function Caly() {
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
 
   const lists = useListStore((s) => s.lists);
-  const showingNow = usePlanGeneralUIStore((s) => s.showingNow);
+  const showingNow = useListStore((s) => s.showingNow);
   const eventsInitailized = useEventStore((s) => s.initialized);
   const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
 
@@ -72,9 +72,9 @@ export default function Caly() {
     const consArray = lists[showingNow].items;
 
     for (const con of consArray) {
-      const key = con.weekend
-        ? `${con.weekend.year}-${con.weekend.weekend}`
-        : null;
+      const { start_date, end_date } = getRealDates(con);
+      const bucket = findWeekendBucket(start_date, end_date);
+      const key = bucket ? `${bucket.year}-${bucket.weekend}` : null;
       if (!key) continue;
 
       if (!map.has(key)) {
@@ -137,7 +137,7 @@ export default function Caly() {
       const bucket = findWeekendBucket(start_date, end_date);
       setSelectedWeekend(bucket);
     }
-  }, [selectedCon]);
+  }, [selectedCon, setSelectedWeekend]);
 
   // scrolling behavior: keep current year in the header
   useEffect(() => {

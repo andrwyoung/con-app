@@ -6,7 +6,6 @@ import {
 
 import { useListStore } from "@/stores/list-store";
 import { usePlanSidebarStore } from "@/stores/sidebar-store";
-import { usePlanGeneralUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useState } from "react";
 
@@ -23,10 +22,13 @@ export default function CalendarMode() {
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
 
   const lists = useListStore((s) => s.lists);
-  const showingNow = usePlanGeneralUIStore((s) => s.showingNow);
+  const showingNow = useListStore((s) => s.showingNow);
 
   const [inListCons, setInListCons] = useState<ConventionInfo[]>([]);
   const [notInListCons, setNotInListCons] = useState<ConventionInfo[]>([]);
+  const [notInListPredictions, setNotInListPredictions] = useState<
+    ConventionInfo[]
+  >([]);
   const somethingSelected = selectedWeekend != null || selectedMonth != null;
   const emptyList = selectedCons.length === 0;
 
@@ -43,17 +45,38 @@ export default function CalendarMode() {
   useEffect(() => {
     const currentList = lists[showingNow]?.items ?? [];
 
-    const inList = selectedCons.filter((con) =>
-      currentList.some((c) => c.id === con.id)
-    );
+    const inList: ConventionInfo[] = [];
+    const notInList: ConventionInfo[] = [];
+    const notInListPredictions: ConventionInfo[] = [];
 
-    const notInList = selectedCons.filter(
-      (con) => !currentList.some((c) => c.id === con.id)
-    );
+    selectedCons.forEach((con) => {
+      const isInList = currentList.some(
+        (c) =>
+          c.id === con.id && c.convention_year_id === con.convention_year_id
+      );
+      if (isInList) {
+        inList.push(con);
+      } else {
+        notInList.push(con);
+      }
+    });
+
+    selectedCalendarPredictions.forEach((con) => {
+      const isInList = currentList.some(
+        (c) =>
+          c.id === con.id && c.convention_year_id === con.convention_year_id
+      );
+      if (isInList) {
+        inList.push(con);
+      } else {
+        notInListPredictions.push(con);
+      }
+    });
 
     setInListCons(inList);
     setNotInListCons(notInList);
-  }, [selectedCons, lists, showingNow]);
+    setNotInListPredictions(notInListPredictions);
+  }, [selectedCons, selectedCalendarPredictions, lists, showingNow]);
 
   return (
     <div className="flex flex-col min-h-0 mt-2 gap-2">
@@ -91,7 +114,7 @@ export default function CalendarMode() {
             <CardList items={inListCons} scope={"plan"} />
 
             <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2 mt-1">
-              Not In List ({notInListCons.length})
+              Scheduled Cons ({notInListCons.length})
             </h1>
           </>
         ) : !emptyList ? (
@@ -113,16 +136,16 @@ export default function CalendarMode() {
           </div>
         )}
 
-        {selectedCalendarPredictions.length > 0 && (
+        {notInListPredictions.length > 0 && (
           <>
             <h1
               title="Happened Last Time around this time"
               className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2"
             >
-              Predictions ({selectedCalendarPredictions.length})
+              Predictions ({notInListPredictions.length})
             </h1>
             <CardList
-              items={selectedCalendarPredictions}
+              items={notInListPredictions}
               type="prediction"
               scope={"plan"}
             />

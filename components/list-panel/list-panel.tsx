@@ -35,13 +35,15 @@ export default function ListPanel({ scope }: { scope: Scope }) {
   const profile = useUserStore((s) => s.profile);
 
   const lists = useListStore((s) => s.lists);
-  const { showingNow, setShowingNow } = useScopedUIStore(scope);
+  const showingNow = useListStore((s) => s.showingNow);
+  const setShowingNow = useListStore((s) => s.setShowingNow);
   const createList = useListStore((s) => s.createList);
   const renameList = useListStore((s) => s.renameList);
   const deleteList = useListStore((s) => s.deleteList);
 
   const [isSyncing, setIsSyncing] = useState(false);
-  const [sortMode, setSortMode] = useState<SortType>("raw");
+  const { listSortType: sortMode, setListSortType: setSortMode } =
+    useScopedUIStore(scope);
 
   // if current list was removed somehow, fall back to "planning"
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
   }
 
   return (
-    <Droppable scope={scope}>
+    <Droppable>
       <div className="flex flex-col mb-4">
         <div className="flex flex-row justify-between items-baseline">
           <h1 className="font-bold uppercase text-sm text-primary-muted">

@@ -27,6 +27,8 @@ export function getRealDates(con: ConventionInfo): {
     };
   }
 
+  // this use case should only be reached if you added a list from Explore page
+  // and haven't yet synced or refreshed the list
   log("con has no specific year and isn't null. returning real dates");
   return {
     start_date: con.start_date ?? null,

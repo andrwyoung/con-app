@@ -14,7 +14,6 @@ import {
   SharedMenuSubTrigger,
 } from "../ui/shared-menu";
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
-import { useScopedUIStore } from "@/stores/ui-store";
 import {
   useExploreSelectedCardsStore,
   useScopedSelectedCardsStore,
@@ -45,8 +44,8 @@ export default function CardContextMenu({
   const router = useRouter();
   const scope = useCurrentScope();
 
-  const setShowingNow = useScopedUIStore(scope).setShowingNow;
-  const showingNow = useScopedUIStore(scope).showingNow;
+  const setShowingNow = useListStore((s) => s.setShowingNow);
+  const showingNow = useListStore((s) => s.showingNow);
   const setSelectedCon = useScopedSelectedCardsStore(scope).setSelectedCon;
   const setSelectedExploreCon = useExploreSelectedCardsStore(
     (s) => s.setSelectedCon
