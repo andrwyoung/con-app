@@ -13,7 +13,6 @@ import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
 } from "@/stores/page-store";
-import { usePlanUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -53,21 +52,23 @@ export default function Caly() {
     Map<string, ConventionInfo[]>
   >(new Map());
 
-  // select current year on init
-  const { scrolledToToday, setScrolledToToday } = usePlanUIStore();
-  useEffect(() => {
-    if (!thisWeekend || scrolledToToday) {
-      return;
-    }
-    setSelectedWeekend(thisWeekend);
-    setScrolledToToday(true);
-  }, [
-    months,
-    thisWeekend,
-    setSelectedWeekend,
-    scrolledToToday,
-    setScrolledToToday,
-  ]);
+  // // select current year on init
+  // const { scrolledToToday, setScrolledToToday } = usePlanUIStore();
+  // useEffect(() => {
+  //   log("here's what thisWeekend looks like: ", thisWeekend);
+  //   if (!thisWeekend || scrolledToToday) {
+  //     return;
+  //   }
+  //   log("setting scrolledToToday to be true");
+  //   setSelectedWeekend(thisWeekend);
+  //   setScrolledToToday(true);
+  // }, [
+  //   months,
+  //   thisWeekend,
+  //   setSelectedWeekend,
+  //   scrolledToToday,
+  //   setScrolledToToday,
+  // ]);
 
   // mapping all conventions to their weekend
   useEffect(() => {

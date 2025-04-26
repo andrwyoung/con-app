@@ -4,6 +4,7 @@
 // we have useScopedSelectedCardsStore because some of the things explore and plan need are similar
 // but most are different
 
+import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 import {
   MonthWithWeekends,
   WeekendBucket,
@@ -128,7 +129,10 @@ export const usePlanSidebarStore = create<PlanSidebarStore>((set) => ({
       selectedWeekend: null,
     })),
 
-  selectedWeekend: null,
+  selectedWeekend: (() => {
+    const today = new Date();
+    return findWeekendBucket(today.toISOString().split("T")[0]);
+  })(),
   setSelectedWeekend: (weekend) =>
     set(() => ({
       selectedWeekend: weekend,
