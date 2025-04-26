@@ -1,4 +1,5 @@
 // login-modal is the modal itself. logic for each step is in ./steps
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";

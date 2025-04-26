@@ -1,3 +1,5 @@
+// CRUD operations for list items
+
 import { supabaseAnon } from "../supabase/client";
 import { useUserStore } from "@/stores/user-store";
 import { log } from "../utils";

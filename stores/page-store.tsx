@@ -1,3 +1,9 @@
+// all things related to that specific page's logic (the ui stuff is in ui-store)
+// from selecting conventions to which mode the sidebar is in
+
+// we have useScopedSelectedCardsStore because some of the things explore and plan need are similar
+// but most are different
+
 import {
   MonthWithWeekends,
   WeekendBucket,
@@ -8,6 +14,10 @@ import { create, StateCreator } from "zustand";
 
 export type ExploreSidebarMode = "search" | "filter" | "map";
 export type PlanSidebarMode = "search" | "calendar";
+
+// SECTION: scoped stores
+//
+//
 
 export function useScopedSelectedCardsStore(scope: Scope) {
   return scope === "explore"
@@ -66,6 +76,11 @@ export const usePlanSelectedCardsStore = create<SelectedCardsStore>(
   createSelectedCardsStoreInitializer()
 );
 
+// SECTION: individiual stores
+//
+//
+// explore store
+
 type ExploreSidebarStore = {
   sidebarMode: ExploreSidebarMode;
   setSidebarMode: (mode: ExploreSidebarMode) => void;
@@ -81,6 +96,8 @@ export const useExploreSidebarStore = create<ExploreSidebarStore>((set) => ({
   selectedClusterId: null,
   setSelectedClusterId: (id) => set({ selectedClusterId: id }),
 }));
+
+// plan store
 
 type PlanSidebarStore = {
   sidebarMode: PlanSidebarMode;

@@ -1,7 +1,9 @@
+import { getSortOptionsFor } from "@/types/sort-types";
 import { ConventionInfo } from "@/types/types";
 
 export const MAX_SEARCH_BATCH_SIZE = 500;
 
+// how we keep track of TimeCategory
 export const DAYS_UNTIL_DISCONTINUED = 550
 export const DAYS_SINCE_RECENT = 7;
 export const DAYS_UNTIL_SOON = 7;
@@ -41,15 +43,15 @@ export enum Weekday {
   SATURDAY = 6,
 }
 
-// calendar consts
+// calendar consts...I actually don't use like the majority of these lol
 export const YEARS_MINUS = 2;
 export const YEARS_PLUS = 1;
 export const START_OF_WEEK = Weekday.MONDAY;
-// if saturday is in a weekend, then it is visually considered a part of that month
 export const WEEKEND_ANCHOR = Weekday.SATURDAY;
 // these are just concerned with labeling
 export const START_OF_WEEKEND_LABEL = Weekday.FRIDAY;
 export const END_OF_WEEKEND_LABEL = Weekday.SUNDAY;
+
 
 // list consts
 export const SPECIAL_LIST_KEYS = ["planning", "interested"] as const;
@@ -58,6 +60,11 @@ export const DEFAULT_LISTS = {
     planning: { label: "My Plan", items: [] },
     interested: { label: "Interested", items: [] },
   };
+export const LIST_SORT_OPTIONS = getSortOptionsFor(["raw", "status", "alpha"])
+export const SEARCH_SORT_OPTIONS = getSortOptionsFor(["status", "distance-me", "alpha", "chron", "rev-chron"]);
+export const CALENDAR_SORT_OPTIONS = getSortOptionsFor(["distance-me", "alpha"]); // unused yet
+
+
 
 export const UNKNOWN_CONVENTION: ConventionInfo = {
     id: -1,

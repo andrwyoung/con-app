@@ -1,3 +1,6 @@
+// the 1 time welcome modal
+// note that it's docked in navbar.tsx
+
 "use client";
 import React, { useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";

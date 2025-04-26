@@ -1,9 +1,11 @@
+// all things related to keeping UI persitant
+// including the controls to opening/closing modals
+
 import { authStep } from "@/components/auth/login-modal";
 import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-modal";
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
-import { DEFAULT_LIST } from "@/lib/constants";
 import { log } from "@/lib/utils";
-import { SortType } from "@/types/search-types";
+import { SortType } from "@/types/sort-types";
 import { ConventionInfo, Scope } from "@/types/types";
 import { create, StateCreator } from "zustand";
 

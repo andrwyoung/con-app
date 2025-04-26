@@ -9,7 +9,7 @@ import { useExploreSearchStore } from "@/stores/search-store";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { log } from "@/lib/utils";
 
 export default function ExplorePage() {

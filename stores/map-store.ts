@@ -1,5 +1,7 @@
 // map store so all components in explore can access it
-import { ConLocation, Convention, ConventionInfo } from "@/types/types";
+// really is mainly functions that we need
+
+import { ConLocation, ConventionInfo } from "@/types/types";
 import { create } from "zustand";
 
 

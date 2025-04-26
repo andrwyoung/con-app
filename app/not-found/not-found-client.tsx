@@ -1,3 +1,6 @@
+// had to make a seperate "use client" component since not-found.tsx can't have
+// metadata if it's also a client component
+
 "use client";
 import { Button } from "@/components/ui/button";
 import { fireConfetti } from "@/lib/utils";

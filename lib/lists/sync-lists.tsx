@@ -1,3 +1,7 @@
+// KEY SECTION: especially fetchUserListsFromSupabase
+// this file is the one responsible for grabbing the latest data from Supabase
+// as well as initializing the default lists for users if they don't exist
+
 import { ListStore, useListStore } from "@/stores/list-store";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "../supabase/client";
@@ -12,6 +16,9 @@ import { ConventionInfo, ConventionYear, UserListItem } from "@/types/types";
 import { addListItemToSupabase } from "./add-delete-items";
 import { getConventionYearId } from "./helper-functions";
 
+// really only used once on first login just so they don't have to recompile their lists on first signup?
+// idk if anyone will even use this lol
+// if there are issues with this function we should scrap immediately
 export async function syncAllListsToSupabase() {
   const userId = useUserStore.getState().user?.id;
   if (!userId) return;

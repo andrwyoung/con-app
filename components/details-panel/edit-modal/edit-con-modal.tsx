@@ -1,3 +1,6 @@
+// the all purpose panel to give suggestions for upcoming cons and stuff
+// all logic is the corresponding pages
+
 import { FullConventionDetails } from "@/types/types";
 import { Dialog, DialogContent } from "../../ui/dialog";
 

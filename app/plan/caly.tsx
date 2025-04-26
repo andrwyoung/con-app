@@ -1,15 +1,18 @@
+// the scrollable calendar itself
+// in charge of all the logic related to selected and scrolling cons (lots of useEffects)
+
 import { CalendarMonthRow } from "@/components/calendar-panel/calendar-rows";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 import { generateWeekendsByMonth } from "@/lib/calendar/generate-weekends";
 import { getRealDates } from "@/lib/calendar/grab-real-dates";
-import { fetchAndSetCons } from "@/lib/calendar/grab-weekend";
+import { fetchAndSetCons } from "@/lib/calendar/grab-sidebar-cons";
 import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useListStore } from "@/stores/list-store";
 import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { usePlanUIStore } from "@/stores/ui-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useMemo, useRef, useState } from "react";

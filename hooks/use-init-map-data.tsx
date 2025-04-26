@@ -5,7 +5,7 @@ import { useMapStore } from "@/stores/map-store";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { ConLocation } from "@/types/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

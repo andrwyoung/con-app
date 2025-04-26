@@ -4,7 +4,7 @@ import ListPanel from "@/components/list-panel/list-panel";
 import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import React, { useEffect, useRef, useState } from "react";
 import SearchBar from "../../components/sidebar-panel/searchbar";
 import SearchMode from "@/components/sidebar-panel/modes/search-mode";

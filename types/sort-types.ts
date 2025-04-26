@@ -1,6 +1,19 @@
-import { SortType } from "@/types/search-types";
+// all the ways you can sort things
+
+export type SortType =
+  | "alpha"
+  | "chron"
+  | "rev-chron"
+  | "just-passed"
+  | "upcoming"
+  | "status"
+  | "distance"
+  | "distance-me"
+  | "raw";
 
 
+// sortOption are just all the human readable names of SortType
+// and is a subtype of SortType
 export type SortOption = {
   label: string;
   value: SortType;
@@ -15,16 +28,12 @@ const SortOptions: SortOption[] = [
   { value: "alpha", label: "Alphabetical" },
 ];
 
-function getSortOptionsFor(
+export function getSortOptionsFor(
   values: SortType[],
   options: SortOption[] = SortOptions
 ): SortOption[] {
   return options.filter((opt) => values.includes(opt.value));
 }
-
-export const LIST_SORT_OPTIONS = getSortOptionsFor(["raw", "status", "alpha"])
-export const SEARCH_SORT_OPTIONS = getSortOptionsFor(["status", "distance-me", "alpha", "chron", "rev-chron"]);
-export const CALENDAR_SORT_OPTIONS = getSortOptionsFor(["distance-me", "alpha"]);
 
 export function getSortLabel(
   value: SortType,

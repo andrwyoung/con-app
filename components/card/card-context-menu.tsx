@@ -5,7 +5,7 @@ import { useListStore } from "@/stores/list-store";
 import { useUserStore } from "@/stores/user-store";
 import { toast } from "sonner";
 import { DEFAULT_ZOOM, SPECIAL_LIST_KEYS } from "@/lib/constants";
-import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
+import { generateNewListNames } from "@/lib/lists/create-new-list-names";
 import {
   SharedMenuItem,
   SharedMenuSeparator,
@@ -17,7 +17,7 @@ import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import {
   useExploreSelectedCardsStore,
   useScopedSelectedCardsStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { useRouter } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
 import { log } from "@/lib/utils";

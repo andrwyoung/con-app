@@ -1,3 +1,6 @@
+// given a start and end date, set the global store to contain all the conventions scheduled between those dates
+// additionally, grab some predictions (if relevant) to display too
+
 import { ConventionInfo, ConventionYear } from "@/types/types";
 import { supabaseAnon } from "../supabase/client";
 import { useEventStore } from "@/stores/all-events-store";

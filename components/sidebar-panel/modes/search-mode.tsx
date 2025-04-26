@@ -3,11 +3,11 @@ import { DEFAULT_SORT, ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import CardList from "../../card/card-list/card-list";
 import SearchBarWrapper from "./search-wrapper";
-import { SortType } from "@/types/search-types";
 import { Scope } from "@/types/types";
 import { useScopedSearchStore } from "@/stores/search-store";
-import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { log } from "@/lib/utils";
+import { SortType } from "@/types/sort-types";
 
 const TITLE_DEFAULT = "Search Results";
 

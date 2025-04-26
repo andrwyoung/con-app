@@ -6,7 +6,7 @@ import SearchMode from "../../components/sidebar-panel/modes/search-mode";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect } from "react";

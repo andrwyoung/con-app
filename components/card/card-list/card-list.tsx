@@ -1,5 +1,7 @@
 // the expandable scrollable list that shows cards
-import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+// it got broken up into FlatCardsList to make this file simpler (when keyboard nav was still a thing)
+
+import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { ConLocation, ConventionInfo, Scope } from "@/types/types";
 import React, { useEffect, useRef } from "react";
 import { CardVariant } from "../card";
@@ -7,7 +9,7 @@ import { MAX_CARDS } from "@/lib/constants";
 
 import { FlatCardList } from "./grouped-card-list";
 import { useSortedAndGrouped } from "@/hooks/use-sorted-cards";
-import { SortType } from "@/types/search-types";
+import { SortType } from "@/types/sort-types";
 
 export default function CardList({
   items,
@@ -56,6 +58,7 @@ export default function CardList({
   //   flyTo,
   //   anyModalOpen,
   // });
+  //
 
   // reset index when list changes
   useEffect(() => {

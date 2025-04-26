@@ -1,3 +1,5 @@
+// used so that we only flyTo their location if it's far enough to the screen's edge
+
 import mapboxgl from "mapbox-gl";
 
 export function isPointTooCloseToEdge(

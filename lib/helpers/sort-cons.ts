@@ -1,7 +1,7 @@
 import { ConventionInfo } from "@/types/types";
 import { getDistance } from "../utils";
-import { SortType } from "@/types/search-types";
 import { ExtendedTimeCategories } from "@/types/time-types";
+import { SortType } from "@/types/sort-types";
 
 export function getStartDate(event: ConventionInfo): Date {
   return event.latest_start_date

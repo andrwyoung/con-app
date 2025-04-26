@@ -591,18 +591,18 @@ export type Database = {
       latest_convention_years: {
         Row: {
           convention_year_id: string | null
-          end_date: string | null
           event_status: string | null
           id: number | null
+          latest_end_date: string | null
+          latest_start_date: string | null
+          latest_year: number | null
           location: string | null
           location_lat: number | null
           location_long: number | null
           name: string | null
           slug: string | null
-          start_date: string | null
           tags: string[] | null
           venue: string | null
-          year: number | null
         }
         Relationships: []
       }

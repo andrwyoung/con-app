@@ -1,13 +1,15 @@
+// hook to abstract out sorting logic from the card list
+
 import { useMemo } from "react";
-import { ConventionInfo, ConLocation, ConventionYear } from "@/types/types";
+import { ConventionInfo, ConLocation } from "@/types/types";
 import { groupByStatus, sortEvents } from "@/lib/helpers/sort-cons";
 
-import { SortType } from "@/types/search-types";
 import {
   EXTENDED_TIME_CATEGORY_LABELS,
   ExtendedTimeCategories,
   extendedTimeCategories,
 } from "@/types/time-types";
+import { SortType } from "@/types/sort-types";
 
 export type FlatItem =
   | { type: "label"; label: string }

@@ -21,7 +21,7 @@ import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 
 export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);

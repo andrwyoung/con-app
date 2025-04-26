@@ -1,5 +1,5 @@
 // grab ALL events from supabase
-// we run this only once in the beginning since the data is really not that big (~2000)
+// we run this only once in the beginning since the data is really not that big (<3000)
 // and we need to grab all of it anyways for the map. so we'll just keep it in local store afterwards
 
 import { supabaseAnon } from "@/lib/supabase/client";
@@ -32,6 +32,8 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
       }
     }
 
+    // this is where we add extra, generated fields like timeCategory or weekend
+    // it's not neccesary but just helpful for filtering and stuff
     const normalizedData: ConventionInfo[] = (allData ?? []).map((event) => {
       return {
         ...event,

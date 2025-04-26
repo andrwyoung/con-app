@@ -1,6 +1,6 @@
 import { useListStore } from "@/stores/list-store";
 import { Scope } from "@/types/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Droppable from "./drop-wrapper";
 import CardList from "../card/card-list/card-list";
 import {
@@ -18,20 +18,21 @@ import InlineEditText from "../ui/inline-edit-text";
 import { MdOutlineSync } from "react-icons/md";
 import { fetchUserListsFromSupabase } from "@/lib/lists/sync-lists";
 import { FiTrash2 } from "react-icons/fi";
-import { DEFAULT_LIST, SPECIAL_LIST_KEYS } from "@/lib/constants";
+import {
+  DEFAULT_LIST,
+  LIST_SORT_OPTIONS,
+  SPECIAL_LIST_KEYS,
+} from "@/lib/constants";
 import { isSpecialListKey } from "@/lib/lists/special-list";
 import { toast } from "sonner";
-import { generateNewListNames } from "@/lib/lists/creat-new-list-names";
+import { generateNewListNames } from "@/lib/lists/create-new-list-names";
 import { useScopedUIStore } from "@/stores/ui-store";
-import { getSortLabel, LIST_SORT_OPTIONS } from "@/lib/helpers/sort-options";
-import { SortType } from "@/types/search-types";
+import { getSortLabel, SortType } from "@/types/sort-types";
 
 const NEW_ITEM_KEY = "__new__";
 const NO_ACTION = "__dud__";
 
 export default function ListPanel({ scope }: { scope: Scope }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   const profile = useUserStore((s) => s.profile);
 
   const lists = useListStore((s) => s.lists);
@@ -52,17 +53,6 @@ export default function ListPanel({ scope }: { scope: Scope }) {
       setShowingNow(DEFAULT_LIST);
     }
   }, [lists, showingNow, setShowingNow]);
-
-  // // when new items are added, scroll to bottom
-  // const itemCount = lists[showingNow]?.items.length;
-  // useEffect(() => {
-  //   if (scrollRef.current) {
-  //     scrollRef.current.scrollTo({
-  //       top: scrollRef.current.scrollHeight,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // }, [itemCount]);
 
   // determines naming conventions for new lists
   function handleNewList() {
@@ -96,8 +86,11 @@ export default function ListPanel({ scope }: { scope: Scope }) {
           <Select
             onValueChange={(value) => {
               if (value === NEW_ITEM_KEY) {
+                // NEW_ITEM_KEY will never conflict with value because value is
+                // always "${username}-list-5" or "planning" or "interested"
                 handleNewList();
               } else if (value === NO_ACTION) {
+                // this is only here because <Select> always returns something on change
                 return;
               } else {
                 setShowingNow(value);
@@ -111,6 +104,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Default Lists</SelectLabel>
+                {/* always show default lists first */}
                 {SPECIAL_LIST_KEYS.map((key) => (
                   <SelectItem key={key} value={key}>
                     {lists[key].label}
@@ -119,6 +113,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
               </SelectGroup>
               <SelectGroup>
                 <SelectSeparator />
+                {/* then if they're logged in then show their personal lists */}
                 {profile ? (
                   <>
                     <SelectLabel>My Lists</SelectLabel>
@@ -132,6 +127,8 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                           {list.label}
                         </SelectItem>
                       ))}
+
+                    {/* we do NEW_ITEM_KEY because we can't do an onClick in SelectItem */}
                     <SelectItem
                       value={NEW_ITEM_KEY}
                       className="text-primary-muted"
@@ -140,6 +137,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                     </SelectItem>
                   </>
                 ) : (
+                  // might remove this. kind of redundant, but it's like a CTA
                   <SelectItem value={NO_ACTION} className="text-primary-muted">
                     Sign in to make new lists
                   </SelectItem>
@@ -160,7 +158,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                     useListStore.getState().lists
                   ).length;
 
-                  // simulate spin duration even if fetch is fast
+                  // syncing itself is like instant. but fake loading for UX
                   setTimeout(() => {
                     setIsSyncing(false);
                     toast.success(
@@ -224,7 +222,6 @@ export default function ListPanel({ scope }: { scope: Scope }) {
         </div>
       ) : (
         <div
-          ref={scrollRef}
           className={`overflow-y-auto flex-grow max-h-[calc(100vh-24rem)] 
             scrollbar-thin scrollbar-thumb-rounded scrollbar-track-transparent scrollbar-thumb-secondary-lightest
             }`}

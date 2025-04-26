@@ -1,6 +1,8 @@
+// what happens when things are dragged
+
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import { useListStore } from "@/stores/list-store";
-import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { useDragStore, useExploreUIStore } from "@/stores/ui-store";
 import { ConventionInfo, Scope } from "@/types/types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";

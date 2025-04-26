@@ -1,6 +1,8 @@
+// determines naming conventions for new lists
+// it's long cause I was kind of picky haha
+
 import { UserList } from "@/stores/list-store";
 
-// determines naming conventions for new lists
 export function generateNewListNames({
   lists,
   username,

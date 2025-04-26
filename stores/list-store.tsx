@@ -1,3 +1,5 @@
+// the global store to keep track of all activity related to how lists are built and maintained
+
 import { DEFAULT_LIST, DEFAULT_LISTS } from "@/lib/constants";
 import {
   addListItemToSupabase,
@@ -26,6 +28,7 @@ export type ListStore = {
   setLists: (e: Record<string, UserList>) => void;
   resetLists: () => void;
 
+  // showingNow is global on purpose
   showingNow: string;
   setShowingNow: (listId: string) => void;
 

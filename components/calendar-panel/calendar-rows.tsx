@@ -1,9 +1,12 @@
+// the individual rows and dots of the calendar view
+// in charge of just sending up whenever something gets clicked
+
 import { yearStyling } from "@/app/plan/caly";
 import {
   MonthWithWeekends,
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
-import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import { usePlanSidebarStore } from "@/stores/page-store";
 import { ConventionInfo } from "@/types/types";
 
 export function CalendarMonthRow({

@@ -1,3 +1,6 @@
+// mostly ui related things to do with rendering title cards depending on
+// the conventions it's told to render
+
 import CardList from "@/components/card/card-list/card-list";
 import {
   formatMonthYear,
@@ -5,7 +8,7 @@ import {
 } from "@/lib/helpers/time/date-formatters";
 
 import { useListStore } from "@/stores/list-store";
-import { usePlanSidebarStore } from "@/stores/sidebar-store";
+import { usePlanSidebarStore } from "@/stores/page-store";
 import { ConventionInfo } from "@/types/types";
 import { useEffect, useState } from "react";
 
@@ -42,6 +45,7 @@ export default function CalendarMode() {
     title = formatWeekendRange(selectedWeekend);
   }
 
+  // seperates lists to display based on if something is in my list
   useEffect(() => {
     const currentList = lists[showingNow]?.items ?? [];
 

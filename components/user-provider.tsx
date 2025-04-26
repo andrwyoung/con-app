@@ -1,5 +1,6 @@
-// wrapper file for the sole purpose of initializing useUser() on top level
+// the sole purpose of file is to initialize useUser() on top level
 // without needing to have layout.tsx be a Client component
+
 "use client";
 
 import { useUser } from "@/hooks/use-user";

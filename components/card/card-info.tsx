@@ -1,3 +1,5 @@
+// all the text on the cards
+
 import {
   formatEventDates,
   formatShortLocation,

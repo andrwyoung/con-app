@@ -1,3 +1,6 @@
+// grab all information from supabase for the detail panel
+// this is because we only store basic data on each con and need to fetch the rest
+
 import type { FullConventionDetails } from "@/types/types";
 import { supabaseAnon } from "../supabase/client";
 

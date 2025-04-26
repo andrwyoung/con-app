@@ -1,4 +1,5 @@
 // the cards themselves. representing a single convention
+
 import React, { forwardRef } from "react";
 import { ConventionInfo } from "@/types/types";
 import { IoLocate } from "react-icons/io5";

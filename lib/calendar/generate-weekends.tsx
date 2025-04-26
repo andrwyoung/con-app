@@ -1,3 +1,5 @@
+// generate the scaffolding on which we group and show the weeks inside the calendar view
+
 import {
   addYears,
   addDays,
@@ -70,7 +72,7 @@ export function generateWeekendsByMonth(
       label: `Weekend of ${format(saturday, "MMM d, yyyy")}`,
     });
 
-    current = addDays(current, 7); // next Tuesday
+    current = addDays(current, 7); // next week. first day
   }
 
   const allMonths = Object.values(result);

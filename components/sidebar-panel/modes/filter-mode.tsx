@@ -5,7 +5,7 @@ import { FaCaretDown } from "react-icons/fa6";
 import CardList from "../../card/card-list/card-list";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
-import { useScopedSelectedCardsStore } from "@/stores/sidebar-store";
+import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { Scope } from "@/types/types";
 import { useExploreUIStore } from "@/stores/ui-store";
 import FilterSection from "./filter-section";

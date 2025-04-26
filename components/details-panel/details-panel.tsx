@@ -10,7 +10,7 @@ import {
   useExploreSidebarStore,
   usePlanSidebarStore,
   useScopedSelectedCardsStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { useMapStore } from "@/stores/map-store";
 import { DEFAULT_ZOOM } from "@/lib/constants";
 import { getRealDates, getRealYear } from "@/lib/calendar/grab-real-dates";

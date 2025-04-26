@@ -1,3 +1,5 @@
+// give the ability for something to be dragged
+
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { ConventionInfo } from "@/types/types";

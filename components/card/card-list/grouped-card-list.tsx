@@ -20,7 +20,7 @@ export function FlatCardList({
   cardRefs: React.RefObject<HTMLDivElement>[];
   type: CardVariant;
 }) {
-  // scrolling cards into view
+  // for scrolling cards into view when selected
   useEffect(() => {
     if (selectedCon) {
       const selectedIndex = items.findIndex(
@@ -51,11 +51,11 @@ export function FlatCardList({
             {item.label}
           </h3>
         ) : (
-          // the logic here is complicated...sorry
           <Card
             key={`${item.con.id}-${getConventionYearId(item.con) ?? "base"}`}
             info={item.con}
             selected={
+              // a convention must match both id and convention_year_id to be the same
               selectedCon?.id === item.con.id &&
               selectedCon?.convention_year_id === item.con.convention_year_id
             }
@@ -68,6 +68,7 @@ export function FlatCardList({
             }}
             ref={cardRefs[i]}
             type={
+              // allow prediction to have it's natural color everywhere except in lists
               !item.con.convention_year_id && type != "list"
                 ? "prediction"
                 : type

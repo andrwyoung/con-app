@@ -1,15 +1,5 @@
+import { SortType } from "./sort-types";
 import { ConLocation } from "./types";
-
-export type SortType =
-  | "alpha"
-  | "chron"
-  | "rev-chron"
-  | "just-passed"
-  | "upcoming"
-  | "status"
-  | "distance"
-  | "distance-me"
-  | "raw";
 
 export type SearchType = "typed" | "clicked" | "current-location" | "near-me";
 

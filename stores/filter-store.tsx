@@ -1,3 +1,6 @@
+// used for only map mode (currently). keeps track of which filters are active as well as
+// all the filtered items themselves
+
 import { timeCategories } from "@/types/time-types";
 import { ConventionInfo } from "@/types/types";
 import { create } from "zustand";

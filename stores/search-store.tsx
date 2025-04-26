@@ -1,3 +1,6 @@
+// all results assocatied with the store
+// it's useScopedSearchStore is used so the searches from one page don't affect the other
+
 import { DROPDOWN_RESULTS } from "@/lib/constants";
 import { SearchContext, SearchState } from "@/types/search-types";
 import { ConventionInfo, Scope } from "@/types/types";

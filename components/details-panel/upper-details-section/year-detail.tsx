@@ -1,3 +1,5 @@
+// the rotating year gallery in the details panel
+
 import { ConventionYear, Scope } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
@@ -10,7 +12,7 @@ import { TimeCategory } from "@/types/time-types";
 import {
   usePlanSidebarStore,
   useScopedSelectedCardsStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 
@@ -74,6 +76,7 @@ function YearDetail({
                   : ""
               }`}
               onClick={() => {
+                // let them click on the dates to scroll there. but only in plan mode
                 if (scope === "plan") {
                   const bucket = findWeekendBucket(
                     conYear.start_date,
@@ -136,7 +139,7 @@ export default function YearGallery({
   const [activeYear, setActiveYear] = useState(currentYear);
   const sortedYears = [
     ...allYears.map((y) => y.year),
-    ...(showMissing ? [SPECIAL_CON_ID.FUTURE_CON] : []),
+    ...(showMissing ? [SPECIAL_CON_ID.FUTURE_CON] : []), // let it scroll to missing conveniton if exists
   ].sort((a, b) => a - b);
 
   const scrollToYear = (year: number) => {
@@ -162,22 +165,6 @@ export default function YearGallery({
       scrollToYear(prevYear);
     }
   };
-
-  // // default to end of scroll
-  // useEffect(() => {
-  //   if (allYears.length === 0) return;
-
-  //   const latestYear = Math.max(...allYears.map((y) => y.year));
-  //   const el = yearRefs.current[latestYear];
-
-  //   if (el) {
-  //     el.scrollIntoView({ behavior: "smooth", inline: "center" });
-  //     setActiveYear(latestYear); // update active year properly too
-  //   } else if (scrollRef.current) {
-  //     // fallback if somehow no ref
-  //     scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
-  //   }
-  // }, [allYears]);
 
   // detect when scroll is at far left/right
   useEffect(() => {
@@ -252,6 +239,7 @@ export default function YearGallery({
             />
           ))}
         {showMissing && (
+          // show the extra card if it's sufficiently far out and has no upcoming dates
           <div
             ref={(el) => {
               yearRefs.current[SPECIAL_CON_ID.FUTURE_CON] = el;

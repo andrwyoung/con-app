@@ -9,11 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { SEARCH_SORT_OPTIONS, getSortLabel } from "@/lib/helpers/sort-options";
+import { SortType, getSortLabel } from "@/types/sort-types";
 import { useScopedSearchStore } from "@/stores/search-store";
-import { SortType } from "@/types/search-types";
 import { Scope } from "@/types/types";
 import React from "react";
+import { SEARCH_SORT_OPTIONS } from "@/lib/constants";
 
 export default function SearchBarWrapper({
   title,

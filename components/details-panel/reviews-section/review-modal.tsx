@@ -1,3 +1,6 @@
+// the panel that let's then write a review
+// and I decided to combine the editing functionality with it too
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

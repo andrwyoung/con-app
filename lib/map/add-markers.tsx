@@ -5,7 +5,7 @@ import {
   ExploreSidebarMode,
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
-} from "@/stores/sidebar-store";
+} from "@/stores/page-store";
 import { useMapStore } from "@/stores/map-store";
 import { ConventionInfo } from "@/types/types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";

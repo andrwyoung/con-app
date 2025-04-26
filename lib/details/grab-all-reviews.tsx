@@ -1,3 +1,6 @@
+// grab all reviews made for a specific convention
+// used for the details panel
+
 import { Review } from "@/types/review-types";
 import { supabaseAnon } from "../supabase/client";
 
