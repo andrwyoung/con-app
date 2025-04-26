@@ -17,8 +17,8 @@ export function getConventionDates(item: ConventionInfo): {
   }
 
   return {
-    start_date: item.start_date ?? null,
-    end_date: item.end_date ?? null,
+    start_date: item.latest_start_date ?? null,
+    end_date: item.latest_end_date ?? null,
   };
 }
 

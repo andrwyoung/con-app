@@ -1,6 +1,5 @@
 // map store so all components in explore can access it
 import { ConLocation, Convention, ConventionInfo } from "@/types/types";
-import { Marker } from "mapbox-gl";
 import { create } from "zustand";
 
 

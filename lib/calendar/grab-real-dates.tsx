@@ -13,10 +13,10 @@ export function getRealDates(con: ConventionInfo): {
   }
 
   // if it's a prediction (on wishlist) then add a year to the previous year's con
-  if (!con.convention_year_id && con.start_date && con.end_date) {
+  if (!con.convention_year_id && con.latest_start_date && con.latest_end_date) {
     log("convention has no id. so true dates are a year ahead");
-    const start = new Date(con.start_date);
-    const end = new Date(con.end_date);
+    const start = new Date(con.latest_start_date);
+    const end = new Date(con.latest_end_date);
 
     start.setFullYear(start.getFullYear() + 1);
     end.setFullYear(end.getFullYear() + 1);
@@ -31,8 +31,8 @@ export function getRealDates(con: ConventionInfo): {
   // and haven't yet synced or refreshed the list
   log("con has no specific year and isn't null. returning real dates");
   return {
-    start_date: con.start_date ?? null,
-    end_date: con.end_date ?? null,
+    start_date: con.latest_start_date ?? null,
+    end_date: con.latest_end_date ?? null,
   };
 }
 
@@ -41,12 +41,12 @@ export function getRealYear(con: ConventionInfo): number | null {
     return con.specificYear.year;
   }
 
-  if (!con.convention_year_id && con.start_date) {
+  if (!con.convention_year_id && con.latest_start_date) {
     // Prediction: add +1 year to the latest known start_date
-    const start = new Date(con.start_date);
+    const start = new Date(con.latest_start_date);
     return start.getFullYear() + 1;
   }
 
   // Fallback to the latest real con year
-  return con.year ?? null;
+  return con.latest_year ?? null;
 }

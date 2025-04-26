@@ -71,7 +71,7 @@ export const UNKNOWN_CONVENTION: ConventionInfo = {
   
     tags: [],
   
-    year: 1999,
+    latest_year: 1999,
   
     timeCategory: "unknown",
   };

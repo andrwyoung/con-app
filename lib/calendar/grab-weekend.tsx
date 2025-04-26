@@ -115,7 +115,7 @@ export async function grabPredictedConsFromSupabase(
   return (data as ConventionYear[])
     .filter((cy) => {
       const info = allEvents[cy.convention_id];
-      return info?.year === cy.year; // keep only if the latest year is this one
+      return info?.latest_year === cy.year; // keep only if the latest year is this one
     })
     .map((cy) => {
       const info = allEvents[cy.convention_id];

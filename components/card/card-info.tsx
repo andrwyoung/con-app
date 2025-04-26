@@ -64,7 +64,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
       <div className="text-xs text-primary-muted line-clamp-1 mr-9">
         {formatShortLocation(info.location)}
       </div>
-      {info.specificYear && info.specificYear.year != info.year ? (
+      {info.specificYear && info.specificYear.year != info.latest_year ? (
         <div className="flex flex-row items-baseline gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
           {formatEventDates(
             info.specificYear.year,
@@ -80,9 +80,9 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
           <strong className="shrink-0">Last:</strong>
           <p className="truncate whitespace-nowrap overflow-hidden max-w-24">
             {formatEventDates(
-              info.year,
-              info.start_date ?? undefined,
-              info.end_date ?? undefined
+              info.latest_year,
+              info.latest_start_date ?? undefined,
+              info.latest_end_date ?? undefined
             )}
           </p>
           <div className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap">
@@ -92,7 +92,11 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
       ) : (
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
           <StatusDot status={info.timeCategory ?? "unknown"} />
-          {formatEventDates(info.year, info.start_date, info.end_date)}
+          {formatEventDates(
+            info.latest_year,
+            info.latest_start_date,
+            info.latest_end_date
+          )}
         </div>
       )}
     </>

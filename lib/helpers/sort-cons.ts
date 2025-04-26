@@ -4,9 +4,9 @@ import { SortType } from "@/types/search-types";
 import { ExtendedTimeCategories } from "@/types/time-types";
 
 export function getStartDate(event: ConventionInfo): Date {
-  return event.start_date
-    ? new Date(`${event.start_date}T00:00:00`)
-    : new Date(event.year, 0, 1);
+  return event.latest_start_date
+    ? new Date(`${event.latest_start_date}T00:00:00`)
+    : new Date(event.latest_year, 0, 1);
 }
 
 // for the special sort of status
@@ -15,7 +15,7 @@ export function groupByStatus(
 ): Record<string, ConventionInfo[]> {
   const grouped = items.reduce((acc, item) => {
     const status: ExtendedTimeCategories =
-    item.specificYear?.year && item.specificYear.year !== item.year
+    item.specificYear?.year && item.specificYear.year !== item.latest_year
       ? "historical"
       : !item.convention_year_id
       ? "prediction"

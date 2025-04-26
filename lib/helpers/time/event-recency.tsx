@@ -65,10 +65,10 @@ export function getEventTimeCategory(
 }
 
 export function getDaysUntilEvent(info: ConventionInfo): number | null {
-  const start = info.start_date
-    ? parseISO(info.start_date)
-    : info.year
-    ? new Date(info.year, 0, 1) // jan 1
+  const start = info.latest_start_date
+    ? parseISO(info.latest_start_date)
+    : info.latest_year
+    ? new Date(info.latest_year, 0, 1) // jan 1
     : null;
 
   if (!start) return null;

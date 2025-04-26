@@ -28,9 +28,9 @@ export type ConventionInfo = {
 
   // from convention_years
   convention_year_id?: string;
-  start_date?: string;
-  end_date?: string;
-  year: number;
+  latest_start_date?: string;
+  latest_end_date?: string;
+  latest_year: number;
   event_status: string;
 
   // my generated info

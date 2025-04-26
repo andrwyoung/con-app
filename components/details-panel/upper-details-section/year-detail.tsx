@@ -207,7 +207,7 @@ export default function YearGallery({
     } else if (selectedCon.specificYear?.year) {
       scrollToYear(selectedCon.specificYear.year);
     } else {
-      scrollToYear(selectedCon.year);
+      scrollToYear(selectedCon.latest_year);
     }
   }, [selectedCon, allYears]);
 

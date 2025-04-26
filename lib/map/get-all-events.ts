@@ -35,9 +35,9 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
     const normalizedData: ConventionInfo[] = (allData ?? []).map((event) => {
       return {
         ...event,
-        timeCategory: getEventTimeCategory(event.event_status, event.year, event.start_date, event.end_date),
+        timeCategory: getEventTimeCategory(event.event_status, event.latest_year, event.latest_start_date, event.latest_end_date),
         weekend: (() => {
-          const bucket = findWeekendBucket(event.start_date, event.end_date);
+          const bucket = findWeekendBucket(event.latest_start_date, event.latest_end_date);
           return bucket ? { year: bucket.year, weekend: bucket.weekend } as Weekend: null;
         })(),
       };
