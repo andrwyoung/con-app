@@ -11,6 +11,7 @@ import {
   useExploreSidebarStore,
 } from "@/stores/page-store";
 import { log } from "@/lib/utils";
+import SidebarBackground from "@/components/sidebar-background";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -78,17 +79,20 @@ export default function ExplorePage() {
   }, [isModalOpen, clearSelectedEvents]);
 
   return (
-    <div className="w-screen h-screen font-extrabold">
+    <div className="w-screen h-screen font-extrabold relative">
       <div className="absolute z-8 top-[13%] left-[2%]">
         <Sidebar />
       </div>
       {hasMounted && selectedCon && (
         <div className="absolute right-[2%] top-[13%] z-5">
-          <DetailsPanel
-            scope="explore"
-            con={selectedCon}
-            onClose={() => setSelectedCon(null)}
-          />
+          <div className="relative">
+            <SidebarBackground />
+            <DetailsPanel
+              scope="explore"
+              con={selectedCon}
+              onClose={() => setSelectedCon(null)}
+            />
+          </div>
         </div>
       )}
     </div>

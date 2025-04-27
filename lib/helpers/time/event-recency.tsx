@@ -5,7 +5,7 @@ import {
   DAYS_UNTIL_SOON,
   DAYS_UNTIL_UPCOMING,
 } from "../../constants";
-import { parseISO } from "date-fns";
+import { parseISO, startOfDay } from "date-fns";
 import { TimeCategory } from "@/types/time-types";
 
 export function daysUntil(upcomingDate: Date): number {
@@ -31,22 +31,26 @@ export function getEventTimeCategory(
 
   if (eventStatus === "EventCancelled") return "cancelled";
 
-  const now = new Date();
+  const now = startOfDay(new Date());
 
   const end = endDate
-    ? parseISO(endDate)
+    ? startOfDay(parseISO(endDate))
     : year
-    ? new Date(year, 11, 31) // dec 31
+    ? startOfDay(new Date(year, 11, 31)) // dec 31
     : null;
 
   const start = startDate
-    ? parseISO(startDate)
+    ? startOfDay(parseISO(startDate))
     : year
-    ? new Date(year, 0, 1) // jan 1
+    ? startOfDay(new Date(year, 0, 1)) // jan 1
     : null;
 
   if (!start || !end) return "unknown";
 
+  // 1. check if it's happening now
+  if (start <= now && end >= now) return "here";
+
+  // 2. if it already ended, check how recently
   if (end < now) {
     const daysSinceEnded = daysFrom(end);
     if (daysSinceEnded <= DAYS_SINCE_RECENT) return "recent";
@@ -54,10 +58,12 @@ export function getEventTimeCategory(
     return "past";
   }
 
+  // 3. special case for postponed events. only care if it's not passed yet
   if (eventStatus === "EventPostponed") return "postponed";
 
+  // 4. check how soon it is
   const daysTill = daysUntil(start);
-  if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "here";
+  // if (daysTill <= DAYS_UNTIL_SOON && daysTill >= 0) return "here"; // a week out is considered "here"
   if (daysTill <= DAYS_UNTIL_UPCOMING && daysTill > DAYS_UNTIL_SOON)
     return "soon";
 

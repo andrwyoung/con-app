@@ -18,6 +18,7 @@ import { useScopedSearchStore } from "@/stores/search-store";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEventStore } from "@/stores/all-events-store";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
+import SidebarBackground from "@/components/sidebar-background";
 
 export type sidebarModes = "search" | "filter";
 
@@ -57,8 +58,9 @@ export default function Sidebar() {
   return (
     <DragContextWrapper scope={"explore"}>
       <div className="relative">
+        <SidebarBackground />
         <div
-          className={`flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6
+          className={`flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6 
          ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
         >
           <SearchBar key={sidebarMode} scope={"explore"} />
@@ -84,19 +86,22 @@ export default function Sidebar() {
               className="origin-left flex flex-col absolute top-0 left-[calc(100%+0.6rem)] gap-2 -z-2"
             >
               <div className="flex">
-                <div className="border rounded-lg shadow-xl  px-5 py-6 w-80 bg-white">
+                <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-80 bg-white">
+                  <SidebarBackground />
                   <ListPanel scope="explore" />
                 </div>
 
-                <button
-                  title="Close List Panel"
-                  onClick={() => setShowListPanel(false)}
-                  className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-primary-lightest hover:text-primary-darker
+                <div className="relative">
+                  <button
+                    title="Close List Panel"
+                    onClick={() => setShowListPanel(false)}
+                    className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-primary-lightest hover:text-primary-darker
                 bg-secondary-light border-r border-b left-[calc(100%-0.05rem)] border-secondary hover:border-primary rounded-r-lg px-2 py-8 z-1"
-                  style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
-                >
-                  <FaChevronRight className="rotate-180 " />
-                </button>
+                    style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
+                  >
+                    <FaChevronRight className="rotate-180 " />
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
