@@ -80,7 +80,7 @@ export default function ExplorePage() {
 
   return (
     <div className="w-screen h-screen font-extrabold relative">
-      <div className="absolute z-8 top-[13%] left-[2%]">
+      <div className="absolute z-8 top-0 left-0 md:top-[13%] md:left-[2%]">
         <Sidebar />
       </div>
       {hasMounted && selectedCon && (

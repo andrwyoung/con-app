@@ -124,7 +124,7 @@ export default function PlanPage() {
     <DragContextWrapper scope={"plan"}>
       <div className="relative">
         {canScroll && (
-          <div className="absolute bottom-8 shadow-lg rounded-lg p-2 bg-white border border-muted left-1/2 -translate-x-1/2 z-15 flex gap-4">
+          <div className="hidden md:flex absolute bottom-8 shadow-lg rounded-lg p-2 bg-white border border-muted left-1/2 -translate-x-1/2 z-15 gap-4">
             <ScrollButton
               direction="left"
               scrollRef={scrollRef}
@@ -145,11 +145,7 @@ export default function PlanPage() {
           ref={scrollRef}
           className="overflow-x-auto w-full pt-30 px-24 h-screen  scrollbar-track-transparent"
         >
-          <motion.div
-            layout
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]"
-          >
+          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>

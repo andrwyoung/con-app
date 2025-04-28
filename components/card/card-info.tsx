@@ -77,7 +77,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
             title="Historical Convention"
             className="px-2  bg-stone-400 rounded-lg text-white"
           >
-            Hist
+            Hist.
           </div>
         </div>
       ) : !info.convention_year_id ? (
@@ -94,7 +94,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
             title="Future Prediction"
             className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap"
           >
-            Fut
+            Fut.
           </div>
         </div>
       ) : (

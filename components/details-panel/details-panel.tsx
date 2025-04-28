@@ -90,7 +90,10 @@ export default function DetailsPanel({
         >
           <TbFocus className="w-3 h-3" />
           <p className="text-xs">
-            Focus {scope === "plan" && selectedCon && getRealYear(selectedCon)}
+            Focus{" "}
+            {scope === "plan" && selectedCon
+              ? `(${getRealYear(selectedCon)})`
+              : ""}
           </p>
         </button>
 

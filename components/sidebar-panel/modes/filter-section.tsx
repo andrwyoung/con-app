@@ -39,8 +39,8 @@ export default function FilterSection({ scope }: { scope: Scope }) {
 
   return (
     <>
-      <div className="flex-none py-2 px-2">
-        <div className="flex flex-row justify-between items-baseline">
+      <div className="flex-none py-0.5 md:py-2 px-2">
+        <div className="hidden md:flex flex-row justify-between items-baseline">
           <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted">
             Filters
           </h1>

@@ -60,7 +60,7 @@ export default function Sidebar() {
       <div className="relative">
         <SidebarBackground />
         <div
-          className={`flex flex-col gap-2 w-80 max-h-[calc(100vh-12rem)] border rounded-lg shadow-xl bg-white px-5 py-6 
+          className={`flex flex-col gap-2 w-screen md:w-80 max-h-[calc(100vh-12rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-5 pt-5 pb-3 md:py-6 
          ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
         >
           <SearchBar key={sidebarMode} scope={"explore"} />
@@ -68,23 +68,24 @@ export default function Sidebar() {
           {sidebarMode === "search" && <SearchMode scope="explore" />}
           {sidebarMode === "filter" && <FilterMode scope="explore" />}
         </div>
+        <div className="hidden lg:block">
+          <ListWrapper
+            setShowListPanel={setShowListPanel}
+            showListPanel={showListPanel}
+          >
+            <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-86 bg-white">
+              <SidebarBackground />
+              <ListPanel scope="explore" />
+            </div>
+          </ListWrapper>
 
-        <ListWrapper
-          setShowListPanel={setShowListPanel}
-          showListPanel={showListPanel}
-        >
-          <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-86 bg-white">
-            <SidebarBackground />
-            <ListPanel scope="explore" />
-          </div>
-        </ListWrapper>
-
-        {!showListPanel && (
-          <SidebarToggleButton
-            title="Open List Panel"
-            onClick={() => setShowListPanel(true)}
-          />
-        )}
+          {!showListPanel && (
+            <SidebarToggleButton
+              title="Open List Panel"
+              onClick={() => setShowListPanel(true)}
+            />
+          )}
+        </div>
       </div>
     </DragContextWrapper>
   );

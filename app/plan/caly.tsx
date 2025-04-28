@@ -223,9 +223,11 @@ export default function Caly() {
     <div className="border-b rounded-lg">
       <div
         className="sticky top-0 z-10 px-4 py-2 font-bold bg-gradient-to-b from-white to-transparent
-      grid grid-cols-[auto_1fr_1fr] items-end gap-4 border select-none rounded-t"
+      grid grid-cols-[1fr_auto_1fr] items-end gap-4 border select-none rounded-t"
       >
-        <h1 className={`${yearStyling}`}>{visibleYear}</h1>
+        <div className="flex items-center min-w-[4rem]">
+          <h1 className={`${yearStyling}`}>{visibleYear}</h1>
+        </div>
         <div className="col-start-2 justify-self-end">
           <button
             type="button"

@@ -41,15 +41,17 @@ export function CalendarMonthRow({
   };
 
   return (
-    <div className="grid grid-cols-[auto_1fr_1fr] items-start gap-4">
+    <div className="grid grid-cols-[0fr_6rem_1fr] md:grid-cols-[3rem_7rem_1fr] items-start gap-4">
       <h1
-        className={`${yearStyling} ${monthData.month === 1 ? "" : "opacity-0"}`}
+        className={` hidden md:block ${yearStyling} ${
+          monthData.month === 1 ? "" : "opacity-0"
+        }`}
       >
         {monthData.year}
       </h1>
       <h1
         title={`Cons in ${monthName}, ${monthData.year}`}
-        className={`col-start-2 text-lg select-none
+        className={`col-start-2 text-md md:text-lg select-none
        font-sans-header font-semibold text-right cursor-pointer transition-all duration-150 origin-right ${
          isSelectedMonth
            ? "text-secondary"
@@ -122,22 +124,28 @@ export function CalendarWeekendDot({
       className="flex flex-col items-center gap-2"
     >
       <div
-        className={`w-4.5 h-4.5 rounded-full cursor-pointer transition-all duration-150  hover:scale-110 ${
-          isSelectedWeekend
-            ? isThisWeekend
-              ? " outline-4 outline-secondary-darker/80 border-none"
-              : " outline-4 outline-secondary border-none"
-            : " active:scale-80"
-        } ${
+        className={`w-5 md:w-16 h-5 md:h-6 flex items-center gap-1 justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-115
+          text-xs text-primary-text ${
+            isSelectedWeekend
+              ? isThisWeekend
+                ? " outline-4 outline-secondary-darker/80 border-none"
+                : " outline-4 outline-secondary border-none"
+              : " active:scale-90"
+          } ${
           hasPassed
-            ? "bg-primary-lightest hover:bg-primary-light"
+            ? "bg-primary-lightest hover:bg-primary"
             : isThisWeekend
             ? "bg-secondary hover:bg-secondary-darker/80"
             : isOver120DaysOut
             ? "bg-primary-light hover:bg-primary/80"
             : "bg-primary hover:bg-primary-darker/80"
         }`}
-      ></div>
+      >
+        {/* <FaRegCalendar className="text-primary-text/60 w-3 h-3" /> */}
+        <p className="hidden md:block">
+          Sat {weekendData.weekendDay.getDate()}
+        </p>
+      </div>
       <h1
         title="Number of Cons"
         className="select-none text-sm text-primary-muted"

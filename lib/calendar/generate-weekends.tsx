@@ -20,6 +20,7 @@ export type WeekendBucket = {
   label: string;
   weekendStart: Date;
   weekendEnd: Date;
+  weekendDay: Date;
 };
 
 export type MonthWithWeekends = {
@@ -69,6 +70,7 @@ export function generateWeekendsByMonth(
       weekend: currentCount,
       weekendStart: monday,
       weekendEnd: sunday,
+      weekendDay: saturday,
       label: `Weekend of ${format(saturday, "MMM d, yyyy")}`,
     });
 

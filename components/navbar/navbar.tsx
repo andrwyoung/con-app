@@ -41,51 +41,52 @@ export default function NavBar() {
   const resetLists = useListStore((s) => s.resetLists);
 
   return (
-    <div
-      className={`absolute left-0 top-0 w-screen bg-gradient-to-b from-gray-600 to-transparent pt-4 pb-6 px-8 z-10 ${
-        pathname?.startsWith("/about") ? "hidden" : "block"
-      }`}
-    >
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center gap-6">
-          <Toggler />
-          <Link
-            href="/about"
-            className="text-md hidden md:block text-white font-bold transition-all hover:text-primary hover:scale-105"
-          >
-            About
-          </Link>
-        </div>
-        <div
-          className="hidden select-none lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
-          onClick={fireConfetti}
-        >
-          ConCaly
-        </div>
-
-        {user ? (
-          <Popover>
-            <PopoverTrigger asChild>
-              <div className="flex cursor-pointer flex-row gap-2 items-center group transition-all duration-200 hover:scale-105">
-                <button
-                  type="button"
-                  className="text-white font-bold cursor-pointer text-lg group-hover:text-primary"
-                >
-                  {profile?.username}
-                </button>
-                <Avatar>
-                  <AvatarImage
-                    src="https://github.com/andrwyoung.png"
-                    className="shadow-inner shadow-black/20"
-                  />
-                </Avatar>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              className="w-32 p-2 text-sm bg-white shadow-lg rounded-md"
+    <>
+      <div
+        className={`hidden md:block absolute left-0 top-0 w-screen bg-gradient-to-b from-gray-600 to-transparent pt-4 pb-6 px-8 z-10 ${
+          pathname?.startsWith("/about") ? "hidden" : "block"
+        }`}
+      >
+        <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center gap-6">
+            <Toggler />
+            <Link
+              href="/about"
+              className="text-md hidden md:block text-white font-bold transition-all hover:text-primary hover:scale-105"
             >
-              {/* <DropdownButton>
+              About
+            </Link>
+          </div>
+          <div
+            className="hidden select-none lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
+            onClick={fireConfetti}
+          >
+            ConCaly
+          </div>
+
+          {user ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex cursor-pointer flex-row gap-2 items-center group transition-all duration-200 hover:scale-105">
+                  <button
+                    type="button"
+                    className="text-white font-bold cursor-pointer text-lg group-hover:text-primary"
+                  >
+                    {profile?.username}
+                  </button>
+                  <Avatar>
+                    <AvatarImage
+                      src="https://github.com/andrwyoung.png"
+                      className="shadow-inner shadow-black/20"
+                    />
+                  </Avatar>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                className="w-32 p-2 text-sm bg-white shadow-lg rounded-md"
+              >
+                {/* <DropdownButton>
                 <FiFile />
                 Profile
               </DropdownButton>
@@ -93,25 +94,29 @@ export default function NavBar() {
                 <FiGrid />
                 Settings
               </DropdownButton> */}
-              <DropdownButton
-                onClick={async () => {
-                  await supabaseAnon.auth.signOut();
-                  resetLists();
-                  toast.success("Succesfully Logged Out");
-                }}
-              >
-                <FiLock />
-                Log out
-              </DropdownButton>
-            </PopoverContent>
-          </Popover>
-        ) : (
-          // if user is not logged in
-          <LoginModal />
-        )}
+                <DropdownButton
+                  onClick={async () => {
+                    await supabaseAnon.auth.signOut();
+                    resetLists();
+                    toast.success("Succesfully Logged Out");
+                  }}
+                >
+                  <FiLock />
+                  Log out
+                </DropdownButton>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            // if user is not logged in
+            <LoginModal />
+          )}
+        </div>
+        {/* gotta put the welcome modal somewhere... */}
+        {profile && <WelcomeModal />}
       </div>
-      {/* gotta put the welcome modal somewhere... */}
-      {profile && <WelcomeModal />}
-    </div>
+      <div className="block md:hidden absolute bottom-0 right-0 w-screen z-10">
+        <Toggler />
+      </div>
+    </>
   );
 }
