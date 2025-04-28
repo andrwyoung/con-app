@@ -3,7 +3,7 @@
 import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import { useListStore } from "@/stores/list-store";
 import { useScopedSelectedCardsStore } from "@/stores/page-store";
-import { useDragStore, useExploreUIStore } from "@/stores/ui-store";
+import { useDragStore, useExploreGeneralUIStore } from "@/stores/ui-store";
 import { ConventionInfo, Scope } from "@/types/types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import React from "react";
@@ -23,7 +23,7 @@ export default function DragContextWrapper({
   const setActiveCon = useDragStore((s) => s.setActiveCon);
   const activeCon = useDragStore((s) => s.activeCon);
 
-  const setShowListPanel = useExploreUIStore((s) => s.setShowListPanel);
+  const setShowListPanel = useExploreGeneralUIStore((s) => s.setShowListPanel);
 
   return (
     <DndContext

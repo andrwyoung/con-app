@@ -60,6 +60,9 @@ type SearchStore = {
 
   shownFilters: FilterKey[];
   setShownFilters: (key: FilterKey[]) => void;
+
+  showListPanel: boolean;
+  setShowListPanel: (r: boolean) => void;
 };
 
 function createUIStoreInitializer(): StateCreator<SearchStore> {
@@ -69,6 +72,9 @@ function createUIStoreInitializer(): StateCreator<SearchStore> {
 
     shownFilters: [],
     setShownFilters: (key) => set({ shownFilters: key }),
+
+    showListPanel:false,
+    setShowListPanel: (r) => set({ showListPanel: r }),
   });
 }
 
@@ -82,17 +88,11 @@ export const usePlanGeneralUIStore = create<SearchStore>(
 type ExploreUIStore = {
   showRecomended: boolean;
   setShowRecomended: (r: boolean) => void;
-
-  showListPanel: boolean;
-  setShowListPanel: (r: boolean) => void;
 };
 
 export const useExploreUIStore = create<ExploreUIStore>((set) => ({
   showRecomended: true,
   setShowRecomended: (r) => set({ showRecomended: r }),
-
-  showListPanel:false,
-  setShowListPanel: (r) => set({ showListPanel: r }),
 }));
 
 type PlanUIStore = {

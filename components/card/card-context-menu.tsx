@@ -21,6 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
 import { log } from "@/lib/utils";
+import { useScopedUIStore } from "@/stores/ui-store";
 
 export default function CardContextMenu({
   con,
@@ -50,6 +51,9 @@ export default function CardContextMenu({
   const setSelectedExploreCon = useExploreSelectedCardsStore(
     (s) => s.setSelectedCon
   );
+
+  const setShowListPanel = useScopedUIStore(scope).setShowListPanel;
+
   const flyTo = useMapStore((s) => s.flyTo);
 
   function handleAddToNewList() {
@@ -59,6 +63,8 @@ export default function CardContextMenu({
       lists,
       username: profile.username,
     });
+
+    setShowListPanel(true);
 
     createList(newListId, label);
     addToList(newListId, con);
@@ -78,6 +84,8 @@ export default function CardContextMenu({
       return;
     }
 
+    setShowListPanel(true);
+
     setShowingNow(listId);
     addToList(listId, con);
     toastAddedToList(con.name, listLabel);
@@ -87,17 +95,17 @@ export default function CardContextMenu({
 
   return (
     <>
-      {cardType !== "list" ? (
-        <>
-          <SharedMenuSub type={menuType}>
-            <SharedMenuSubTrigger type={menuType}>
-              Add To List
-            </SharedMenuSubTrigger>
-            <SharedMenuSubContent
-              type={menuType}
-              className="w-44 max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
-            >
-              {SPECIAL_LIST_KEYS.map((listId) => (
+      <>
+        <SharedMenuSub type={menuType}>
+          <SharedMenuSubTrigger type={menuType}>
+            Add To List
+          </SharedMenuSubTrigger>
+          <SharedMenuSubContent
+            type={menuType}
+            className="w-44 max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
+          >
+            {SPECIAL_LIST_KEYS.filter((listId) => listId !== showingNow).map(
+              (listId) => (
                 <SharedMenuItem
                   type={menuType}
                   key={listId}
@@ -105,37 +113,40 @@ export default function CardContextMenu({
                 >
                   {lists[listId].label}
                 </SharedMenuItem>
-              ))}
-              {profile && (
-                <>
-                  <SharedMenuSeparator type={menuType} />
-                  {Object.entries(lists)
-                    .filter(([key]) =>
-                      key.startsWith(`${profile.username}-list-`)
-                    )
-                    .map(([listId, list]) => (
-                      <SharedMenuItem
-                        type={menuType}
-                        key={listId}
-                        onClick={() => handleAddToList(listId)}
-                        className="truncate line-clamp-1"
-                      >
-                        {list.label}
-                      </SharedMenuItem>
-                    ))}
-                  <SharedMenuItem
-                    type={menuType}
-                    className="text-primary-muted"
-                    onClick={handleAddToNewList}
-                  >
-                    + Add to New List
-                  </SharedMenuItem>
-                </>
-              )}
-            </SharedMenuSubContent>
-          </SharedMenuSub>
-        </>
-      ) : (
+              )
+            )}
+            {profile && (
+              <>
+                <SharedMenuSeparator type={menuType} />
+                {Object.entries(lists)
+                  .filter(
+                    ([key]) =>
+                      key.startsWith(`${profile.username}-list-`) &&
+                      key !== showingNow
+                  )
+                  .map(([listId, list]) => (
+                    <SharedMenuItem
+                      type={menuType}
+                      key={listId}
+                      onClick={() => handleAddToList(listId)}
+                      className="truncate line-clamp-1"
+                    >
+                      {list.label}
+                    </SharedMenuItem>
+                  ))}
+                <SharedMenuItem
+                  type={menuType}
+                  className="text-primary-muted"
+                  onClick={handleAddToNewList}
+                >
+                  + Add to New List
+                </SharedMenuItem>
+              </>
+            )}
+          </SharedMenuSubContent>
+        </SharedMenuSub>
+      </>
+      {cardType === "list" && (
         <>
           <SharedMenuItem
             type={menuType}

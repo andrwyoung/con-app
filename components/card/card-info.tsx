@@ -59,7 +59,7 @@ function StatusDot({ status }: { status: TimeCategory }) {
 export default function CardInfo({ info }: { info: ConventionInfo }) {
   return (
     <>
-      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-8">
+      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-6">
         {info.name}
       </div>
 
@@ -73,8 +73,11 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
             info.specificYear.start_date ?? undefined,
             info.specificYear.end_date ?? undefined
           )}
-          <div className="px-2  bg-stone-400 rounded-lg text-white">
-            Historical
+          <div
+            title="Historical Convention"
+            className="px-2  bg-stone-400 rounded-lg text-white"
+          >
+            Hist
           </div>
         </div>
       ) : !info.convention_year_id ? (
@@ -87,8 +90,11 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
               info.latest_end_date ?? undefined
             )}
           </p>
-          <div className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap">
-            Prediction
+          <div
+            title="Future Prediction"
+            className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap"
+          >
+            Fut
           </div>
         </div>
       ) : (

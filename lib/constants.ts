@@ -55,10 +55,11 @@ export const END_OF_WEEKEND_LABEL = Weekday.SUNDAY;
 
 // list consts
 export const SPECIAL_LIST_KEYS = ["planning", "interested"] as const;
-export const DEFAULT_LIST = "planning";
+export const DEFAULT_LIST = "interested";
+export const STAR_LIST = "interested";
 export const DEFAULT_LISTS = {
+    interested: { label: "Saved Items", items: [] },
     planning: { label: "My Plan", items: [] },
-    interested: { label: "Interested", items: [] },
   };
 export const LIST_SORT_OPTIONS = getSortOptionsFor(["raw", "status", "alpha"])
 export const SEARCH_SORT_OPTIONS = getSortOptionsFor(["status", "distance-me", "alpha", "chron", "rev-chron"]);

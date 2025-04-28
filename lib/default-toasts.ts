@@ -7,3 +7,7 @@ export function toastAddedToList(conName: string, listName: string) {
 export function toastAlreadyInList(conName: string, listName: string) {
     toast.error(`"${conName}" is already in "${listName}"`);
 }
+
+export function toastRemovedFromList(conName: string, listName: string) {
+    toast.error(`Removed "${conName}" from "${listName}"`);
+}

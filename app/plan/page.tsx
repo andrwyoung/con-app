@@ -13,6 +13,9 @@ import CalendarMode from "@/components/sidebar-panel/modes/calendar-mode";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
 import Caly from "./caly";
 import { IoCaretBack } from "react-icons/io5";
+import { usePlanGeneralUIStore } from "@/stores/ui-store";
+import { AnimatePresence, motion } from "framer-motion";
+import SidebarToggleButton from "@/components/list-panel/toggle-button";
 
 function ScrollButton({
   direction,
@@ -53,6 +56,7 @@ export default function PlanPage() {
   const setSelectedCon = usePlanSelectedCardsStore((s) => s.setSelectedCon);
 
   const searchState = usePlanSearchStore((s) => s.searchState);
+  const { showListPanel, setShowListPanel } = usePlanGeneralUIStore();
 
   const sidebarMode = usePlanSidebarStore((s) => s.sidebarMode);
   const [canScroll, setCanScroll] = useState(false);
@@ -120,7 +124,7 @@ export default function PlanPage() {
     <DragContextWrapper scope={"plan"}>
       <div className="relative">
         {canScroll && (
-          <div className="absolute bottom-8 shadow-lg rounded-lg p-2 bg-white border border-muted left-1/2 -translate-x-1/2 z-10 flex gap-4">
+          <div className="absolute bottom-8 shadow-lg rounded-lg p-2 bg-white border border-muted left-1/2 -translate-x-1/2 z-15 flex gap-4">
             <ScrollButton
               direction="left"
               scrollRef={scrollRef}
@@ -141,27 +145,62 @@ export default function PlanPage() {
           ref={scrollRef}
           className="overflow-x-auto w-full pt-30 px-24 h-screen  scrollbar-track-transparent"
         >
-          <div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
+          <motion.div
+            layout
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]"
+          >
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>
 
             <div
-              className={`flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
-                shadow-lg w-86 max-h-[calc(100vh-12rem)] px-5 py-6 bg-white
+              className={`relative flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
+                shadow-lg w-86 max-h-[calc(100vh-14rem)] px-5 py-6 bg-white z-10
               ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
             >
               <SearchBar key={sidebarMode} scope={"plan"} />
               {/* <StatusDotTester /> */}
               {sidebarMode === "search" && <SearchMode scope="plan" />}
               {sidebarMode === "calendar" && <CalendarMode />}
-            </div>
-            <div className="relative flex-shrink-0 disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
-              <ListPanel scope="plan" />
+
+              {!showListPanel && (
+                <SidebarToggleButton
+                  title="Open List Panel"
+                  onClick={() => setShowListPanel(true)}
+                />
+              )}
             </div>
 
+            <AnimatePresence initial={false}>
+              {showListPanel && (
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                    transition: { duration: 0.5, ease: "easeOut" },
+                  }}
+                  exit={{
+                    x: -50,
+                    opacity: 0,
+                    transition: { duration: 0.25, ease: "easeIn" },
+                  }}
+                >
+                  <div className="relative flex-shrink-0 flex flex-col disable-scroll-override border rounded-lg shadow-lg px-5 py-6 w-86 bg-white">
+                    <ListPanel scope="plan" />
+                    <SidebarToggleButton
+                      title="Close List Panel"
+                      onClick={() => setShowListPanel(false)}
+                      direction="left"
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {selectedCon && (
-              <div className="flex-shrink-0 disable-scroll-override">
+              <div className="flex-shrink-0 disable-scroll-override ml-8">
                 <DetailsPanel
                   scope="plan"
                   con={selectedCon}
@@ -169,7 +208,7 @@ export default function PlanPage() {
                 />
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
         <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-white to-transparent z-8" />
         <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-8" />

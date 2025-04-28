@@ -35,6 +35,7 @@ export type ListStore = {
   addToList: (listId: string, item: ConventionInfo) => void;
   removeFromList: (listId: string, item: ConventionInfo) => void;
   alreadyInList: (listId: string, item: ConventionInfo) => boolean;
+  getListName: (listId: string) => string;
 
   createList: (id: string, label: string) => void;
   renameList: (id: string, newLabel: string) => void;
@@ -55,7 +56,10 @@ export const useListStore = create<ListStore>((set, get) => ({
     const withDefaults = ensureAllDefaultsExist(newLists);
     set({ lists: withDefaults });
   },
-  resetLists: () => set({ lists: DEFAULT_LISTS }),
+  getListName: (listId) => {
+    return get().lists[listId].label;
+  },
+  resetLists: () => set({ lists: DEFAULT_LISTS, showingNow: DEFAULT_LIST }),
 
   showingNow: DEFAULT_LIST,
   setShowingNow: (listId) => set({ showingNow: listId }),

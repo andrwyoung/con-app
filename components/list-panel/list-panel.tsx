@@ -69,7 +69,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
 
   return (
     <Droppable>
-      <div className="flex flex-col mb-4">
+      <div className="flex flex-col">
         <div className="flex flex-row justify-between items-baseline">
           <h1 className="font-bold uppercase text-sm text-primary-muted">
             My lists
@@ -193,45 +193,46 @@ export default function ListPanel({ scope }: { scope: Scope }) {
           )}
         </div>
 
-        <hr className="border-t border-primary-muted w-full mt-3 mb-2" />
-
-        <div className="flex flex-row items-center gap-2">
-          <p className="text-xs text-primary-text">Sorting by:</p>
-          <Select
-            onValueChange={(value) => setSortMode(value as SortType)}
-            value={sortMode}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue>{getSortLabel(sortMode)}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {LIST_SORT_OPTIONS.map(({ value, label }) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <hr className="border-t border-primary-muted w-full mt-3 mb-3" />
       </div>
 
       {lists[showingNow].items.length === 0 ? (
         <div className="text-sm text-center text-primary-muted px-2">
           No cons in this list. <br />
-          Drag your favorite cons here!
+          Star some cons!
         </div>
       ) : (
-        <div
-          className={`overflow-y-auto flex-grow max-h-[calc(100vh-24rem)] 
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row items-center gap-2">
+            <p className="text-xs text-primary-text">Sorting by:</p>
+            <Select
+              onValueChange={(value) => setSortMode(value as SortType)}
+              value={sortMode}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue>{getSortLabel(sortMode)}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {LIST_SORT_OPTIONS.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div
+            className={`overflow-y-auto flex-grow max-h-[calc(100vh-25rem)] 
             scrollbar-thin scrollbar-thumb-rounded scrollbar-track-transparent scrollbar-thumb-secondary-lightest
             }`}
-        >
-          <CardList
-            items={lists[showingNow].items}
-            type="list"
-            scope={scope}
-            sortOption={sortMode}
-          />
+          >
+            <CardList
+              items={lists[showingNow].items}
+              type="list"
+              scope={scope}
+              sortOption={sortMode}
+            />
+          </div>{" "}
         </div>
       )}
     </Droppable>

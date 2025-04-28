@@ -10,15 +10,15 @@ import {
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect } from "react";
-import { useExploreUIStore } from "@/stores/ui-store";
-import { FaChevronRight } from "react-icons/fa6";
+import { useExploreGeneralUIStore } from "@/stores/ui-store";
 import ListPanel from "@/components/list-panel/list-panel";
 import { useMapPinsStore } from "@/stores/map-store";
 import { useScopedSearchStore } from "@/stores/search-store";
-import { AnimatePresence, motion } from "framer-motion";
 import { useEventStore } from "@/stores/all-events-store";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
 import SidebarBackground from "@/components/sidebar-background";
+import ListWrapper from "@/components/list-panel/list-wrapper";
+import SidebarToggleButton from "@/components/list-panel/toggle-button";
 
 export type sidebarModes = "search" | "filter";
 
@@ -30,7 +30,7 @@ export default function Sidebar() {
 
   const initialized = useEventStore((s) => s.initialized);
 
-  const { showListPanel, setShowListPanel } = useExploreUIStore();
+  const { showListPanel, setShowListPanel } = useExploreGeneralUIStore();
 
   const { searchState } = useScopedSearchStore("explore");
 
@@ -69,54 +69,21 @@ export default function Sidebar() {
           {sidebarMode === "filter" && <FilterMode scope="explore" />}
         </div>
 
-        <AnimatePresence initial={false}>
-          {showListPanel && (
-            <motion.div
-              initial={{ x: -100, opacity: 0 }}
-              animate={{
-                x: 0,
-                opacity: 1,
-                transition: { duration: 0.5, ease: "easeOut" },
-              }}
-              exit={{
-                x: -50,
-                opacity: 0,
-                transition: { duration: 0.25, ease: "easeIn" },
-              }}
-              className="origin-left flex flex-col absolute top-0 left-[calc(100%+0.6rem)] gap-2 -z-2"
-            >
-              <div className="flex">
-                <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-80 bg-white">
-                  <SidebarBackground />
-                  <ListPanel scope="explore" />
-                </div>
-
-                <div className="relative">
-                  <button
-                    title="Close List Panel"
-                    onClick={() => setShowListPanel(false)}
-                    className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-primary-lightest hover:text-primary-darker
-                bg-secondary-light border-r border-b left-[calc(100%-0.05rem)] border-secondary hover:border-primary rounded-r-lg px-2 py-8 z-1"
-                    style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
-                  >
-                    <FaChevronRight className="rotate-180 " />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <ListWrapper
+          setShowListPanel={setShowListPanel}
+          showListPanel={showListPanel}
+        >
+          <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-86 bg-white">
+            <SidebarBackground />
+            <ListPanel scope="explore" />
+          </div>
+        </ListWrapper>
 
         {!showListPanel && (
-          <button
+          <SidebarToggleButton
             title="Open List Panel"
             onClick={() => setShowListPanel(true)}
-            className="absolute top-4 transition-all duration-300 cursor-pointer hover:bg-secondary-lightest hover:text-secondary
-            bg-primary-light border-r border-b left-[calc(100%-0.05rem)] border-primary hover:border-secondary rounded-r-lg px-2 py-8 -z-1"
-            style={{ boxShadow: "4px 2px 4px -2px rgba(0, 0, 0, 0.1)" }}
-          >
-            <FaChevronRight />
-          </button>
+          />
         )}
       </div>
     </DragContextWrapper>
