@@ -228,7 +228,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
             </Select>
           </div>
           <div
-            className={`overflow-y-auto flex-grow max-h-[calc(100vh-25rem)] 
+            className={`overflow-y-auto flex-grow max-h-[calc(100dvh-25rem)] 
             scrollbar-thin scrollbar-thumb-rounded scrollbar-track-transparent scrollbar-thumb-secondary-lightest
             }`}
           >

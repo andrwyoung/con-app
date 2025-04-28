@@ -145,14 +145,14 @@ export default function PlanPage() {
           ref={scrollRef}
           className="overflow-x-auto w-full pt-30 px-24 h-screen-dvh scrollbar-track-transparent"
         >
-          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
+          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100dvh-20rem)]">
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>
 
             <div
               className={`relative flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
-                shadow-lg w-86 max-h-[calc(100vh-14rem)] px-5 py-6 bg-white z-10
+                shadow-lg w-86 max-h-[calc(100dvh-14rem)] px-5 py-6 bg-white z-10
               ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
             >
               <SearchBar key={sidebarMode} scope={"plan"} />

@@ -60,7 +60,7 @@ export default function Sidebar() {
       <div className="relative">
         <SidebarBackground />
         <div
-          className={`flex flex-col gap-2 w-screen md:w-80 md:max-h-[calc(100vh-12rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-5 pt-5 pb-3 md:py-6 
+          className={`flex flex-col gap-2 w-screen md:w-80  md:max-h-[calc(100dvh-12rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-5 pt-5 pb-3 md:py-6 
          ${
            sidebarMode === "search"
              ? "outline-2 outline-primary h-screen-dvh"

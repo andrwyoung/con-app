@@ -13,6 +13,7 @@ import {
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
 import Toggler from "@/components/navbar/toggler";
+import MobileDrawer from "./mobile-drawer";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -102,10 +103,10 @@ export default function ExplorePage() {
       <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
         <Toggler />
       </div>
-      {/* 
+
       <div className="block md:hidden z-20">
         <MobileDrawer />
-      </div> */}
+      </div>
     </div>
   );
 }

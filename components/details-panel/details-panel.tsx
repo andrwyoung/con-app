@@ -80,7 +80,7 @@ export default function DetailsPanel({
   }
 
   return (
-    <div className="w-96 max-h-[calc(100vh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
+    <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
       <div className="flex flex-row items-center justify-between gap-2 z-10 p-4 pb-2 ">
         <button
           type="button"

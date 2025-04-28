@@ -32,7 +32,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
   }, [filteredItems, focusedEvents, setFilteredFocusedEvents]);
 
   return (
-    <div className="flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+    <div className="flex flex-col min-h-0 max-h-[calc(100dvh-18rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
       <FilterSection scope={scope} />
 
       <hr className="hidden md:block border-t border-primary-muted w-full mt-2 mb-2" />
@@ -64,7 +64,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
           </div>
 
           {filteredFocusedEvents.length > 0 ? (
-            <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent max-h-screen">
+            <div className="hidden md:block overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
               <CardList
                 items={filteredFocusedEvents}
                 sortOption="status"
@@ -72,7 +72,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
               />
             </div>
           ) : (
-            <div className="text-sm text-center text-primary-muted px-2">
+            <div className="hidden md:block text-sm text-center text-primary-muted px-2">
               No events selected. <br />
               Try removing filters
             </div>

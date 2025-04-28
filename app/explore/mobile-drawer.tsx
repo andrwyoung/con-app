@@ -1,10 +1,9 @@
 import { useExploreSelectedCardsStore } from "@/stores/page-store";
-import { useExploreSearchStore } from "@/stores/search-store";
 import { useExploreUIStore } from "@/stores/ui-store";
 import React, { useEffect, useRef, useState } from "react";
 import CardList from "@/components/card/card-list/card-list";
 
-export type DrawerMode = "closed" | "search" | "select" | "details";
+export type DrawerMode = "closed" | "select" | "details";
 
 export default function MobileDrawer() {
   const { showMobileDrawer, setShowMobileDrawer } = useExploreUIStore();
@@ -18,54 +17,24 @@ export default function MobileDrawer() {
   const selectedMapItems = useExploreSelectedCardsStore(
     (s) => s.filteredFocusedEvents
   );
-  const searchResults = useExploreSearchStore((s) => s.results);
 
   // SECTION: Selecting con behavior
   //
   //
 
-  // Always show details if selectedCon exists
   useEffect(() => {
     if (selectedCon) {
       setMode("details");
       setShowMobileDrawer(true);
-      setTranslateY(0);
-    }
-  }, [selectedCon, setShowMobileDrawer]);
-
-  // Show select mode if selectedMapItems exist, but only if not showing details
-  useEffect(() => {
-    if (!selectedCon && selectedMapItems.length > 0) {
+    } else if (selectedMapItems.length > 0) {
       setMode("select");
       setShowMobileDrawer(true);
-      setTranslateY(0);
-    }
-  }, [selectedMapItems, selectedCon, setShowMobileDrawer]);
-
-  // Show search mode if searchResults exist, but only if not showing details or select
-  useEffect(() => {
-    if (
-      !selectedCon &&
-      selectedMapItems.length === 0 &&
-      searchResults.length > 0
-    ) {
-      setMode("search");
-      setShowMobileDrawer(true);
-      setTranslateY(0);
-    }
-  }, [searchResults, selectedCon, selectedMapItems, setShowMobileDrawer]);
-
-  // If none, close drawer
-  useEffect(() => {
-    if (
-      !selectedCon &&
-      selectedMapItems.length === 0 &&
-      searchResults.length === 0
-    ) {
+    } else {
       setMode(null);
       setShowMobileDrawer(false);
     }
-  }, [selectedCon, selectedMapItems, searchResults, setShowMobileDrawer]);
+    setTranslateY(0);
+  }, [selectedCon, selectedMapItems, setShowMobileDrawer]);
 
   // SECTION: closing the drawer behavior
   //
@@ -126,14 +95,6 @@ export default function MobileDrawer() {
           </div>
           <div className="flex px-2 flex-col max-h-[calc(70vh-3rem)] overflow-y-auto">
             {mode == "details" && selectedCon?.name}
-            {mode == "search" && (
-              <CardList
-                items={searchResults}
-                scope="explore"
-                sortOption="status"
-              />
-            )}
-
             {mode == "select" && (
               <CardList
                 items={selectedMapItems}

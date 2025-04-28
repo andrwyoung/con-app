@@ -411,6 +411,7 @@ export default function addMarkersToMap(
         // let sidebar mode know what's up
         setSelectedClusterId(clusterId);
         setSidebarMode("filter");
+        setSelectedCon(null);
       } else {
         setSelectedClusterId(null);
         setFocusedEvents([]);
