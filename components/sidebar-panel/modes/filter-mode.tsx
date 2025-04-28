@@ -41,11 +41,11 @@ export default function FilterMode({ scope }: { scope: Scope }) {
         <>
           <div className="flex-none flex flex-row justify-between px-1 pt-2 pb-4 items-baseline">
             <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted px-1">
-              Selected (
               {filteredFocusedEvents.length > 0
-                ? filteredFocusedEvents.length
-                : "none"}
-              )
+                ? `${filteredFocusedEvents.length} ${
+                    filteredFocusedEvents.length === 1 ? "Con" : "Cons"
+                  } Selected`
+                : "None Selected"}
             </h1>
 
             <button

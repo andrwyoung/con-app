@@ -54,7 +54,10 @@ const Card = forwardRef<
   const setSelectedCon = useScopedSelectedCardsStore(scope).setSelectedCon;
 
   const isStarred = useListStore((s) =>
-    s.lists[STAR_LIST].items.some((c) => c.id === info.id)
+    s.lists[STAR_LIST].items.some(
+      (c) =>
+        c.id === info.id && c.convention_year_id === info.convention_year_id
+    )
   );
 
   const baseClass =
@@ -129,16 +132,12 @@ const Card = forwardRef<
               <FiTrash2
                 aria-label="Remove From List"
                 title="Remove From List"
-                className={`h-4.5 w-4.5 hover:scale-110 transition-transform hover:text-primary-text hover:rotate-6 ${
-                  shrinking ? "animate-shrink-pop" : ""
-                }`}
+                className={`h-4.5 w-4.5 hover:scale-110 transition-transform hover:text-primary-text hover:rotate-6 
+                `}
                 onClick={(e) => {
                   e.stopPropagation();
                   removeFromList(showingNow, info);
                   toastRemovedFromList(info.name, getListName(showingNow));
-
-                  setShrinking(true);
-                  setTimeout(() => setShrinking(false), 400);
                 }}
               />
             )}
