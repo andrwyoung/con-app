@@ -88,11 +88,17 @@ export const usePlanGeneralUIStore = create<SearchStore>(
 type ExploreUIStore = {
   showRecomended: boolean;
   setShowRecomended: (r: boolean) => void;
+
+  showMobileDrawer: boolean;
+  setShowMobileDrawer: (r: boolean) => void;
 };
 
 export const useExploreUIStore = create<ExploreUIStore>((set) => ({
   showRecomended: true,
   setShowRecomended: (r) => set({ showRecomended: r }),
+
+  showMobileDrawer: false,
+  setShowMobileDrawer: (r) => set({ showMobileDrawer: r }),
 }));
 
 type PlanUIStore = {

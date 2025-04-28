@@ -12,6 +12,7 @@ import {
 } from "@/stores/page-store";
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
+import MobileDrawer from "./mobile-drawer";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -83,18 +84,24 @@ export default function ExplorePage() {
       <div className="absolute z-8 top-0 left-0 md:top-[13%] md:left-[2%]">
         <Sidebar />
       </div>
-      {hasMounted && selectedCon && (
-        <div className="absolute right-[2%] top-[13%] z-5">
-          <div className="relative">
-            <SidebarBackground />
-            <DetailsPanel
-              scope="explore"
-              con={selectedCon}
-              onClose={() => setSelectedCon(null)}
-            />
+      <div className="hidden md:block">
+        {hasMounted && selectedCon && (
+          <div className="absolute right-[2%] top-[13%] z-5">
+            <div className="relative">
+              <SidebarBackground />
+              <DetailsPanel
+                scope="explore"
+                con={selectedCon}
+                onClose={() => setSelectedCon(null)}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      <div className="block md:hidden z-20">
+        <MobileDrawer />
+      </div>
     </div>
   );
 }
