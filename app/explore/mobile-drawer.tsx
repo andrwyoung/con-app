@@ -8,6 +8,7 @@ export type DrawerMode = "closed" | "search" | "select" | "details";
 
 export default function MobileDrawer() {
   const { showMobileDrawer, setShowMobileDrawer } = useExploreUIStore();
+  const [mode, setMode] = useState<DrawerMode | null>(null);
 
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
@@ -19,10 +20,56 @@ export default function MobileDrawer() {
   );
   const searchResults = useExploreSearchStore((s) => s.results);
 
+  // SECTION: Selecting con behavior
+  //
+  //
+
+  // Always show details if selectedCon exists
   useEffect(() => {
-    setTranslateY(0);
-    setShowMobileDrawer(true);
+    if (selectedCon) {
+      setMode("details");
+      setShowMobileDrawer(true);
+      setTranslateY(0);
+    }
+  }, [selectedCon, setShowMobileDrawer]);
+
+  // Show select mode if selectedMapItems exist, but only if not showing details
+  useEffect(() => {
+    if (!selectedCon && selectedMapItems.length > 0) {
+      setMode("select");
+      setShowMobileDrawer(true);
+      setTranslateY(0);
+    }
+  }, [selectedMapItems, selectedCon, setShowMobileDrawer]);
+
+  // Show search mode if searchResults exist, but only if not showing details or select
+  useEffect(() => {
+    if (
+      !selectedCon &&
+      selectedMapItems.length === 0 &&
+      searchResults.length > 0
+    ) {
+      setMode("search");
+      setShowMobileDrawer(true);
+      setTranslateY(0);
+    }
+  }, [searchResults, selectedCon, selectedMapItems, setShowMobileDrawer]);
+
+  // If none, close drawer
+  useEffect(() => {
+    if (
+      !selectedCon &&
+      selectedMapItems.length === 0 &&
+      searchResults.length === 0
+    ) {
+      setMode(null);
+      setShowMobileDrawer(false);
+    }
   }, [selectedCon, selectedMapItems, searchResults, setShowMobileDrawer]);
+
+  // SECTION: closing the drawer behavior
+  //
+  //
 
   function handleTouchStart(e: React.TouchEvent) {
     setStartY(e.touches[0].clientY);
@@ -78,11 +125,22 @@ export default function MobileDrawer() {
             <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 mb-4" />
           </div>
           <div className="flex px-2 flex-col max-h-[calc(70vh-3rem)] overflow-y-auto">
-            <CardList
-              items={searchResults}
-              scope="explore"
-              sortOption="status"
-            />
+            {mode == "details" && selectedCon?.name}
+            {mode == "search" && (
+              <CardList
+                items={searchResults}
+                scope="explore"
+                sortOption="status"
+              />
+            )}
+
+            {mode == "select" && (
+              <CardList
+                items={selectedMapItems}
+                scope="explore"
+                sortOption="status"
+              />
+            )}
           </div>
         </div>
       </div>

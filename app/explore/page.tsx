@@ -12,7 +12,6 @@ import {
 } from "@/stores/page-store";
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
-import MobileDrawer from "./mobile-drawer";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -98,10 +97,10 @@ export default function ExplorePage() {
           </div>
         )}
       </div>
-
+      {/* 
       <div className="block md:hidden z-20">
         <MobileDrawer />
-      </div>
+      </div> */}
     </div>
   );
 }

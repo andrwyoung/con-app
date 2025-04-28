@@ -16,6 +16,8 @@ type SearchStore = {
 
   searchState: SearchState;
   setSearchState: (ctx: SearchContext | null) => void;
+
+  clearSearch: () => void;
 };
 
 function createSearchStoreInitializer(): StateCreator<SearchStore> {
@@ -27,6 +29,8 @@ function createSearchStoreInitializer(): StateCreator<SearchStore> {
       context: null,
     },
     setSearchState: (ctx) => set({ searchState: { context: ctx } }),
+
+    clearSearch: () => set({ results: [], searchState: { context: null } }),
   });
 }
 

@@ -49,7 +49,7 @@ export default function SearchBarWrapper({
           </button>
         </div>
 
-        <div className="hidden md:flex flex-row px-2 items-center gap-2">
+        <div className="flex flex-row px-2 items-center gap-2">
           <p className="text-xs text-primary-text">Sorting by:</p>
           <Select
             onValueChange={(value) => setSortMode(value as SortType)}
@@ -68,7 +68,7 @@ export default function SearchBarWrapper({
           </Select>
         </div>
       </div>
-      <div className="hidden md:block">{children}</div>
+      {children}
     </>
   );
 }
