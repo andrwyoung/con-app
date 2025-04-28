@@ -8,6 +8,7 @@ export type DrawerMode = "closed" | "select" | "details";
 export default function MobileDrawer() {
   const { showMobileDrawer, setShowMobileDrawer } = useExploreUIStore();
   const [mode, setMode] = useState<DrawerMode | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
@@ -41,11 +42,13 @@ export default function MobileDrawer() {
   //
 
   function handleTouchStart(e: React.TouchEvent) {
+    setIsDragging(true);
     setStartY(e.touches[0].clientY);
   }
 
   function handleTouchMove(e: React.TouchEvent) {
     if (startY === null) return;
+    e.preventDefault();
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
     if (diff > 0) {
@@ -54,6 +57,8 @@ export default function MobileDrawer() {
   }
 
   function handleTouchEnd(e: React.TouchEvent) {
+    setIsDragging(false);
+
     if (startY === null) return;
 
     const endY = e.changedTouches[0].clientY;
@@ -75,12 +80,15 @@ export default function MobileDrawer() {
       <div
         ref={drawerRef}
         className={`fixed bottom-0 left-0 right-0 z-50 w-full max-h-[70vh] rounded-t-lg bg-white shadow-t-lg 
-          transition-transform duration-300 md:hidden  border-t-2 border-primary
+           duration-300 md:hidden  border-t-2 border-primary
+          ${isDragging ? "transition-none" : "transition-transform"}
           ${showMobileDrawer ? "translate-y-0" : "translate-y-full"}
         `}
         style={{
-          transform: showMobileDrawer
+          transform: isDragging
             ? `translateY(${translateY}px)`
+            : showMobileDrawer
+            ? "translateY(0)"
             : "translateY(100%)",
         }}
       >
