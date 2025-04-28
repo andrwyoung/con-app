@@ -70,19 +70,24 @@ export default function ListPanel({ scope }: { scope: Scope }) {
   return (
     <Droppable>
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between items-baseline">
-          <h1 className="font-bold uppercase text-sm text-primary-muted">
-            My lists
-          </h1>
+        <div className="flex flex-row justify-between items-center">
+          {/* <h1 className="font-bold uppercase text-sm text-primary-muted">
+            Your lists
+          </h1> */}
           <InlineEditText
             value={lists[showingNow].label}
             onChange={(newLabel) => renameList(showingNow, newLabel)}
           />
+          {!profile && (
+            <p className="px-1 text-xs text-primary-muted text-right">
+              Sign in to save
+              <br />
+              your lists
+            </p>
+          )}
         </div>
-        <p className="text-xs text-primary-muted mb-2">
-          {profile ? `` : `Sign in to save and create new lists`}
-        </p>
-        <div className="flex gap-2 items-center justify-between">
+
+        <div className="px-1 flex gap-2 items-center justify-between">
           <Select
             onValueChange={(value) => {
               if (value === NEW_ITEM_KEY) {
@@ -139,7 +144,8 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                 ) : (
                   // might remove this. kind of redundant, but it's like a CTA
                   <SelectItem value={NO_ACTION} className="text-primary-muted">
-                    Sign in to make new lists
+                    Sign in to make <br />
+                    custom lists
                   </SelectItem>
                 )}
               </SelectGroup>

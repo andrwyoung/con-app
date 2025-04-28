@@ -33,7 +33,7 @@ export default function InlineEditText({
 
   return (
     <div
-      className={`max-w-[12rem] overflow-x-auto text-right border p-1 rounded-md whitespace-nowrap font-bold tracking-wide text-xl text-primary-text ${
+      className={`max-w-[12rem] overflow-x-auto text-left border p-1 rounded-md whitespace-nowrap font-bold tracking-wide text-xl text-primary-text ${
         isEditing ? "border-input shadow-sm" : "border-transparent"
       }`}
     >
@@ -48,7 +48,7 @@ export default function InlineEditText({
             if (e.key === "Enter") e.currentTarget.blur();
             if (e.key === "Escape") setIsEditing(false);
           }}
-          className="w-full bg-transparent text-right focus:outline-none "
+          className="w-full bg-transparent text-left focus:outline-none "
         />
       ) : (
         <span
