@@ -143,7 +143,7 @@ export default function PlanPage() {
 
         <div
           ref={scrollRef}
-          className="overflow-x-auto w-full pt-30 px-24 h-screen  scrollbar-track-transparent"
+          className="overflow-x-auto w-full pt-30 px-24 h-screen-dvh scrollbar-track-transparent"
         >
           <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100vh-20rem)]">
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">

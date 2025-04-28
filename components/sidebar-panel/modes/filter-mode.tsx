@@ -64,7 +64,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
           </div>
 
           {filteredFocusedEvents.length > 0 ? (
-            <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
+            <div className="overflow-y-auto flex-grow scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent max-h-screen">
               <CardList
                 items={filteredFocusedEvents}
                 sortOption="status"

@@ -80,7 +80,7 @@ export default function ExplorePage() {
   }, [isModalOpen, clearSelectedEvents]);
 
   return (
-    <div className="w-screen h-screen font-extrabold relative">
+    <div className="w-screen h-screen-dvh font-extrabold relative">
       <div className="absolute z-8 top-0 left-0 md:top-[13%] md:left-[2%]">
         <Sidebar />
       </div>

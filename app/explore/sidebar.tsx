@@ -62,7 +62,9 @@ export default function Sidebar() {
         <div
           className={`flex flex-col gap-2 w-screen md:w-80 md:max-h-[calc(100vh-12rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-5 pt-5 pb-3 md:py-6 
          ${
-           sidebarMode === "search" ? "outline-2 outline-primary h-screen" : ""
+           sidebarMode === "search"
+             ? "outline-2 outline-primary h-screen-dvh"
+             : ""
          }`}
         >
           <SearchBar key={sidebarMode} scope={"explore"} />
