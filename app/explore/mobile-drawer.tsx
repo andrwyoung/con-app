@@ -68,6 +68,7 @@ export default function MobileDrawer() {
       setShowMobileDrawer(false); // fully close
     } else if (endY > screenHeight * 0.4) {
       setTranslateY(screenHeight * 0.4); // snap to 40% open
+      setIsDragging(true);
     } else {
       setTranslateY(0); // snap fully open
     }
@@ -79,7 +80,7 @@ export default function MobileDrawer() {
     <>
       <div
         ref={drawerRef}
-        className={`fixed bottom-0 left-0 right-0 z-50 w-full max-h-[70vh] rounded-t-lg bg-white shadow-t-lg 
+        className={`touch-none fixed bottom-0 left-0 right-0 z-50 w-full max-h-[60dvh] rounded-t-lg bg-white shadow-t-lg 
            duration-300 md:hidden  border-t-2 border-primary
           ${isDragging ? "transition-none" : "transition-transform"}
           ${showMobileDrawer ? "translate-y-0" : "translate-y-full"}
