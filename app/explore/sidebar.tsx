@@ -27,6 +27,9 @@ export default function Sidebar() {
 
   const sidebarMode = useExploreSidebarStore((s) => s.sidebarMode);
   const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
+  const filteredFocusedEvents = useExploreSelectedCardsStore(
+    (s) => s.filteredFocusedEvents
+  );
 
   const initialized = useEventStore((s) => s.initialized);
 
@@ -67,7 +70,14 @@ export default function Sidebar() {
              : ""
          }`}
         >
-          <SearchBar key={sidebarMode} scope={"explore"} />
+          <div
+            className={
+              filteredFocusedEvents.length > 0 ? "hidden md:block" : "block"
+            }
+          >
+            <SearchBar key={sidebarMode} scope="explore" />
+          </div>
+
           {/* <StatusDotTester /> */}
           {sidebarMode === "search" && <SearchMode scope="explore" />}
           {sidebarMode === "filter" && <FilterMode scope="explore" />}

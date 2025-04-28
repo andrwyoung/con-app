@@ -197,11 +197,13 @@ export default function PlanPage() {
 
             {selectedCon && (
               <div className="flex-shrink-0 disable-scroll-override ml-8">
-                <DetailsPanel
-                  scope="plan"
-                  con={selectedCon}
-                  onClose={() => setSelectedCon(null)}
-                />
+                <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
+                  <DetailsPanel
+                    scope="plan"
+                    con={selectedCon}
+                    onClose={() => setSelectedCon(null)}
+                  />
+                </div>
               </div>
             )}
           </motion.div>

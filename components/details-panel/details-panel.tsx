@@ -80,8 +80,8 @@ export default function DetailsPanel({
   }
 
   return (
-    <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
-      <div className="flex flex-row items-center justify-between gap-2 z-10 p-4 pb-2 ">
+    <>
+      <div className="hidden md:flex flex-row items-center justify-between gap-2 z-10 p-4 pb-2 ">
         <button
           type="button"
           title="Focus on Convention"
@@ -125,6 +125,6 @@ export default function DetailsPanel({
           <ReviewsSection id={con.id} />
         </div>
       </div>
-    </div>
+    </>
   );
 }

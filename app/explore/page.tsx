@@ -90,11 +90,13 @@ export default function ExplorePage() {
           <div className="absolute right-[2%] top-[13%] z-5">
             <div className="relative">
               <SidebarBackground />
-              <DetailsPanel
-                scope="explore"
-                con={selectedCon}
-                onClose={() => setSelectedCon(null)}
-              />
+              <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
+                <DetailsPanel
+                  scope="explore"
+                  con={selectedCon}
+                  onClose={() => setSelectedCon(null)}
+                />
+              </div>
             </div>
           </div>
         )}

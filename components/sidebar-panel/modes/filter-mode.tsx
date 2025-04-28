@@ -5,14 +5,20 @@ import { FaCaretDown } from "react-icons/fa6";
 import CardList from "../../card/card-list/card-list";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import Recommendations from "./recomendations";
-import { useScopedSelectedCardsStore } from "@/stores/page-store";
+import {
+  useExploreSelectedCardsStore,
+  useScopedSelectedCardsStore,
+} from "@/stores/page-store";
 import { Scope } from "@/types/types";
 import { useExploreUIStore } from "@/stores/ui-store";
 import FilterSection from "./filter-section";
 
 export default function FilterMode({ scope }: { scope: Scope }) {
   const { showRecomended, setShowRecomended } = useExploreUIStore();
+
   const filteredItems = useFilterStore((s) => s.filteredItems);
+  const setSelectedCon = useExploreSelectedCardsStore((s) => s.setSelectedCon);
+  const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
 
   const {
     focusedEvents,
@@ -33,14 +39,32 @@ export default function FilterMode({ scope }: { scope: Scope }) {
 
   return (
     <div className="flex flex-col min-h-0 max-h-[calc(100dvh-18rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
-      <FilterSection scope={scope} />
+      <div
+        className={
+          filteredFocusedEvents.length > 0 ? "hidden md:block" : "block"
+        }
+      >
+        <FilterSection scope={scope} />
+      </div>
 
       <hr className="hidden md:block border-t border-primary-muted w-full mt-2 mb-2" />
 
       {focusedEvents.length > 0 ? (
         <>
           <div className="flex-none flex flex-row justify-between px-1 pt-2 pb-4 items-baseline">
-            <h1 className="text-sm font-semibold uppercase tracking-wide text-primary-muted px-1">
+            {/* Mobile-only version */}
+            <h1 className="block md:hidden text-sm font-semibold uppercase tracking-wide text-primary-muted px-1">
+              {selectedCon
+                ? "Convention Details"
+                : filteredFocusedEvents.length > 0
+                ? `${filteredFocusedEvents.length} ${
+                    filteredFocusedEvents.length === 1 ? "Con" : "Cons"
+                  } Selected`
+                : "None Selected"}
+            </h1>
+
+            {/* Desktop-only version */}
+            <h1 className="hidden md:block text-sm font-semibold uppercase tracking-wide text-primary-muted px-1">
               {filteredFocusedEvents.length > 0
                 ? `${filteredFocusedEvents.length} ${
                     filteredFocusedEvents.length === 1 ? "Con" : "Cons"
@@ -52,7 +76,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
               type="button"
               onClick={() => {
                 setFocusedEvents([]);
-                // setSelectedCon(null);
+                setSelectedCon(null);
                 useMapStore.getState().clearSelectedPointHighlight?.();
                 useMapStore.getState().clearClickedClusterHighlight?.();
                 useMapPinsStore.getState().clearTempPins();

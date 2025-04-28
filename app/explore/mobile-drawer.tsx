@@ -2,6 +2,7 @@ import { useExploreSelectedCardsStore } from "@/stores/page-store";
 import { useExploreUIStore } from "@/stores/ui-store";
 import React, { useEffect, useRef, useState } from "react";
 import CardList from "@/components/card/card-list/card-list";
+import DetailsPanel from "@/components/details-panel/details-panel";
 
 export type DrawerMode = "closed" | "select" | "details";
 
@@ -17,6 +18,9 @@ export default function MobileDrawer() {
   const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
   const selectedMapItems = useExploreSelectedCardsStore(
     (s) => s.filteredFocusedEvents
+  );
+  const clearSelectedEvents = useExploreSelectedCardsStore(
+    (s) => s.clearSelectedEvents
   );
 
   // SECTION: Selecting con behavior
@@ -65,6 +69,7 @@ export default function MobileDrawer() {
     const screenHeight = window.innerHeight;
 
     if (endY > screenHeight * 0.7) {
+      clearSelectedEvents();
       setShowMobileDrawer(false); // fully close
     } else if (endY > screenHeight * 0.4) {
       setTranslateY(screenHeight * 0.4); // snap to 40% open
@@ -103,7 +108,17 @@ export default function MobileDrawer() {
             <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 mb-4" />
           </div>
           <div className="flex px-2 flex-col max-h-[calc(70vh-3rem)] overflow-y-auto">
-            {mode == "details" && selectedCon?.name}
+            {mode == "details" && selectedCon && (
+              <div className="flex flex-col flex-1 min-h-0 pb-18">
+                <DetailsPanel
+                  scope="explore"
+                  con={selectedCon}
+                  onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+              </div>
+            )}
             {mode == "select" && (
               <CardList
                 items={selectedMapItems}
