@@ -114,9 +114,6 @@ export default function NavBar() {
         {/* gotta put the welcome modal somewhere... */}
         {profile && <WelcomeModal />}
       </div>
-      <div className="block md:hidden absolute bottom-0 right-0 w-screen z-10">
-        <Toggler />
-      </div>
     </>
   );
 }

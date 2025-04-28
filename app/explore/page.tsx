@@ -12,6 +12,7 @@ import {
 } from "@/stores/page-store";
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
+import Toggler from "@/components/navbar/toggler";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -96,6 +97,10 @@ export default function ExplorePage() {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
+        <Toggler />
       </div>
       {/* 
       <div className="block md:hidden z-20">
