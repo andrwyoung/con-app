@@ -13,6 +13,7 @@ export default function MobileDrawer() {
 
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
+  const [startTranslateY, setStartTranslateY] = useState(0);
   const drawerRef = useRef<HTMLDivElement>(null);
 
   const selectedCon = useExploreSelectedCardsStore((s) => s.selectedCon);
@@ -48,6 +49,7 @@ export default function MobileDrawer() {
   function handleTouchStart(e: React.TouchEvent) {
     setIsDragging(true);
     setStartY(e.touches[0].clientY);
+    setStartTranslateY(translateY); // remember where we started!
   }
 
   function handleTouchMove(e: React.TouchEvent) {
@@ -55,8 +57,10 @@ export default function MobileDrawer() {
     e.preventDefault();
     const currentY = e.touches[0].clientY;
     const diff = currentY - startY;
-    if (diff > 0) {
-      setTranslateY(diff);
+    const newTranslateY = startTranslateY + diff;
+
+    if (newTranslateY >= 0) {
+      setTranslateY(newTranslateY);
     }
   }
 
@@ -97,14 +101,14 @@ export default function MobileDrawer() {
           : "translateY(100%)",
       }}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full pb-6">
         <div
           className="p-4 w-full"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 mb-4" />
+          <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 my-2" />
         </div>
         <div className="flex-1 min-h-0 flex px-2 flex-col overflow-y-auto">
           {mode == "details" && selectedCon && (

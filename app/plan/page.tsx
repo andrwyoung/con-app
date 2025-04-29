@@ -16,6 +16,7 @@ import { IoCaretBack } from "react-icons/io5";
 import { usePlanGeneralUIStore } from "@/stores/ui-store";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
+import Toggler from "@/components/navbar/toggler";
 
 function ScrollButton({
   direction,
@@ -143,16 +144,16 @@ export default function PlanPage() {
 
         <div
           ref={scrollRef}
-          className="overflow-x-auto w-full pt-30 px-24 h-screen-dvh scrollbar-track-transparent"
+          className="overflow-x-auto w-full pt-6 md:pt-30 px-0 md:px-24 h-screen-dvh scrollbar-track-transparent"
         >
-          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mr-12 ml-12 max-h-[calc(100dvh-20rem)]">
+          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mx-2 md:mx-12 max-h-screen-dvh  md:max-h-[calc(100dvh-20rem)]">
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
               <Caly />
             </div>
 
             <div
               className={`relative flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
-                shadow-lg w-86 max-h-[calc(100dvh-14rem)] px-5 py-6 bg-white z-10
+                shadow-lg w-86 max-h-[calc(100dvh-6rem)] md:max-h-[calc(100dvh-14rem)] px-5 py-6 bg-white z-10
               ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
             >
               <SearchBar key={sidebarMode} scope={"plan"} />
@@ -208,8 +209,12 @@ export default function PlanPage() {
             )}
           </motion.div>
         </div>
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-white to-transparent z-8" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-8" />
+        <div className="hidden md:block pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-white to-transparent z-8" />
+        <div className="hidden md:block pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-8" />
+
+        <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
+          <Toggler />
+        </div>
       </div>
     </DragContextWrapper>
   );

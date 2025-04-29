@@ -145,7 +145,7 @@ export default function YearGallery({
   const scrollToYear = (year: number) => {
     const el = yearRefs.current[year];
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", inline: "center" });
+      el.scrollIntoView({ behavior: "auto", inline: "center" });
       setActiveYear(year);
     }
   };
