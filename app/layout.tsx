@@ -31,8 +31,7 @@ export const metadata: Metadata = {
     template: "%s - ConCaly",
     default: "ConCaly",
   },
-  description:
-    "Find, track, and plan your next convention — anime, comics, gaming, and more.",
+  description: "Find and track upcoming Convention and Artist Alley deadlines",
   metadataBase: new URL("https://www.concaly.app"),
   keywords: [
     "conventions",
@@ -43,6 +42,10 @@ export const metadata: Metadata = {
     "event calendar",
     "convention schedule",
     "cosplay",
+    "artist alley",
+    "artist alley deadlines",
+    "table applications",
+    "artist convention calendar",
   ],
   applicationName: "ConCaly",
   alternates: {
@@ -58,7 +61,7 @@ export const metadata: Metadata = {
         url: "/og-image.png", // ideally a real OG image at public root
         width: 1860,
         height: 954,
-        alt: "ConCaly convention planning preview",
+        alt: "ConCaly artist alley and convention planning preview",
       },
     ],
     locale: "en_US",
