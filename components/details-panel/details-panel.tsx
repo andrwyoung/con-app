@@ -107,8 +107,8 @@ export default function DetailsPanel({
         </button>
       </div>
 
-      <div className="flex relative flex-col min-h-0 px-4 pb-6 gap-2">
-        <h2 className="text-2xl px-2 mb-4 text-primary-text font-semibold">
+      <div className="h-full flex relative flex-col min-h-0 px-4 pb-6 gap-2">
+        <h2 className="flex-none text-2xl px-2 mb-4 text-primary-text font-semibold">
           {con.name}
         </h2>
         <div className="flex-1 overflow-y-auto scrollbar-none scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">

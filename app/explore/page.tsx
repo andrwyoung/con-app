@@ -106,7 +106,7 @@ export default function ExplorePage() {
         <Toggler />
       </div>
 
-      <div className="block md:hidden z-20">
+      <div className="flex md:hidden z-20 flex-col h-full">
         <MobileDrawer />
       </div>
     </div>

@@ -71,8 +71,8 @@ export default function MobileDrawer() {
     if (endY > screenHeight * 0.7) {
       clearSelectedEvents();
       setShowMobileDrawer(false); // fully close
-    } else if (endY > screenHeight * 0.4) {
-      setTranslateY(screenHeight * 0.4); // snap to 40% open
+    } else if (endY > screenHeight * 0.5) {
+      setTranslateY(screenHeight * 0.5);
       setIsDragging(true);
     } else {
       setTranslateY(0); // snap fully open
@@ -82,53 +82,49 @@ export default function MobileDrawer() {
   }
 
   return (
-    <>
-      <div
-        ref={drawerRef}
-        className={`touch-none fixed bottom-0 left-0 right-0 z-50 w-full max-h-[60dvh] rounded-t-lg bg-white shadow-t-lg 
+    <div
+      ref={drawerRef}
+      className={`flex flex-col touch-none fixed bottom-0 left-0 right-0 z-50 w-full h-[70dvh] rounded-t-lg bg-white shadow-t-lg 
            duration-300 md:hidden  border-t-2 border-primary
           ${isDragging ? "transition-none" : "transition-transform"}
           ${showMobileDrawer ? "translate-y-0" : "translate-y-full"}
         `}
-        style={{
-          transform: isDragging
-            ? `translateY(${translateY}px)`
-            : showMobileDrawer
-            ? "translateY(0)"
-            : "translateY(100%)",
-        }}
-      >
-        <div className="">
-          <div
-            className="p-4 w-full"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 mb-4" />
-          </div>
-          <div className="flex px-2 flex-col max-h-[calc(70vh-3rem)] overflow-y-auto">
-            {mode == "details" && selectedCon && (
-              <div className="flex flex-col flex-1 min-h-0 pb-18">
-                <DetailsPanel
-                  scope="explore"
-                  con={selectedCon}
-                  onClose={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                />
-              </div>
-            )}
-            {mode == "select" && (
-              <CardList
-                items={selectedMapItems}
-                scope="explore"
-                sortOption="status"
-              />
-            )}
-          </div>
+      style={{
+        transform: isDragging
+          ? `translateY(${translateY}px)`
+          : showMobileDrawer
+          ? "translateY(0)"
+          : "translateY(100%)",
+      }}
+    >
+      <div className="flex flex-col h-full">
+        <div
+          className="p-4 w-full"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="mx-auto w-12 h-1 rounded-full bg-gray-300 mb-4" />
+        </div>
+        <div className="flex-1 min-h-0 flex px-2 flex-col overflow-y-auto">
+          {mode == "details" && selectedCon && (
+            <DetailsPanel
+              scope="explore"
+              con={selectedCon}
+              onClose={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          )}
+          {mode == "select" && (
+            <CardList
+              items={selectedMapItems}
+              scope="explore"
+              sortOption="status"
+            />
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
