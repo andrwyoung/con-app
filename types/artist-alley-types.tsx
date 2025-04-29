@@ -6,10 +6,10 @@ export type ApplicationType =
   | "expected";
 
 export const applicationTypeLabels: Record<ApplicationType, string> = {
-  unknown: "Unknown",
+  unknown: "No Info Yet",
   closed: "Closed",
   no_aa: "No Artist Alley",
-  open: "Open",
+  open: "Open!",
   expected: "Expected",
 };
 

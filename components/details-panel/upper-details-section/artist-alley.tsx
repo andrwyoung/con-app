@@ -1,10 +1,8 @@
-import { useModalUIStore } from "@/stores/ui-store";
 import {
   ApplicationType,
   applicationTypeLabels,
 } from "@/types/artist-alley-types";
 import { ConventionYear } from "@/types/types";
-import { MdEdit } from "react-icons/md";
 
 export default function ArtistAlleyStatus({
   conYear,
@@ -12,7 +10,6 @@ export default function ArtistAlleyStatus({
   conYear: ConventionYear;
 }) {
   const status = "unknown";
-  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
 
   const getPillStyle = (status: ApplicationType) => {
     switch (status) {
@@ -33,20 +30,19 @@ export default function ArtistAlleyStatus({
   return (
     <>
       <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-1">
           <h3 className="text-primary-text font-semibold uppercase text-md">
             Artist Alley
           </h3>
-          <div className="flex flex-row  text-secondary-darker ">
-            <MdEdit className="translate-y-[1px]" />
+          {/* <div className="flex flex-row  text-secondary-darker items-center ">
             <button
               type="button"
               onClick={() => setEditingModalPage("year")}
               className="text-xs cursor-pointer hover:underline"
             >
-              Edit
+              <MdEdit className="w-4 h-4" />
             </button>
-          </div>
+          </div> */}
         </div>
         <div
           className={`inline-block px-3 py-0.5 rounded-md text-sm font-semibold border-2 shadow-xs ${getPillStyle(

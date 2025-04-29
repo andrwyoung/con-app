@@ -50,23 +50,21 @@ export default function DetailsSection({
           )}
       </div>
 
-      <div className="p-4 flex flex-col gap-2 text-sm  rounded-lg">
+      <div className="p-4 flex flex-col gap-2 text-sm px-6 rounded-lg">
         <div className="flex flex-row justify-between">
           <h3 className="text-primary-muted font-semibold uppercase">
             Convention Info
           </h3>
-          <div className="flex flex-row gap-0.5 text-secondary-darker ">
-            <EditConventionModal conDetails={details} />
+          <button
+            type="button"
+            onClick={() => setEditingModalPage("editor")}
+            className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
+          >
             <MdEdit className="translate-y-[1px]" />
-            <button
-              type="button"
-              onClick={() => setEditingModalPage("editor")}
-              className="text-xs cursor-pointer hover:underline"
-            >
-              Edit General Info
-            </button>
-          </div>
+            Edit
+          </button>
         </div>
+        <EditConventionModal conDetails={details} />
 
         {details.cs_description ? (
           <p className="leading-6 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">

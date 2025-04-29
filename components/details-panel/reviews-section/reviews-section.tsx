@@ -37,8 +37,8 @@ export default function ReviewsSection({ id }: { id: number }) {
   };
 
   return (
-    <div className="flex flex-col gap-2 px-2">
-      <div className="flex flex-row justify-between items-baseline mb-4">
+    <div className="flex flex-col gap-2 ">
+      <div className="flex flex-row justify-between items-baseline mb-4 px-6">
         <h1 className="uppercase text-sm font-semibold text-primary-muted">
           Notes ({reviews.length})
         </h1>
@@ -68,14 +68,17 @@ export default function ReviewsSection({ id }: { id: number }) {
         )}
       </div>
 
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center">
         {reviews.length > 0 ? (
           reviews.map((review) => (
-            <ReviewCard
-              key={review.review_id}
-              review={review}
-              onEditClick={handleEdit}
-            />
+            <>
+              <div className="flex flex-col w-64 px-6 pt-4 border-b-2 border-primary-light last:border-none" />
+              <ReviewCard
+                key={review.review_id}
+                review={review}
+                onEditClick={handleEdit}
+              />
+            </>
           ))
         ) : (
           <p className="text-sm text-primary-muted text-center">

@@ -107,8 +107,8 @@ export default function DetailsPanel({
         </button>
       </div>
 
-      <div className="h-full flex relative flex-col min-h-0 px-4 pb-6 gap-2">
-        <h2 className="flex-none text-2xl px-2 mb-4 text-primary-text font-semibold">
+      <div className="h-full flex relative flex-col min-h-0  gap-2">
+        <h2 className="flex-none text-2xl px-6 mb-4 text-primary-text font-semibold">
           {con.name}
         </h2>
         <div className="flex-1 overflow-y-auto scrollbar-none scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
@@ -119,10 +119,9 @@ export default function DetailsPanel({
               Loading details…
             </p>
           )}
-
-          <hr className="border-t border-primary-muted mt-8 mb-4 mx-auto w-80 border-0.5" />
-
-          <ReviewsSection id={con.id} />
+          <div className="flex flex-col bg-primary-lightest/50 mt-4 pt-6 pb-6 rounded-lg">
+            <ReviewsSection id={con.id} />
+          </div>
         </div>
       </div>
     </>

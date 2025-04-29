@@ -6,17 +6,21 @@ import { FiEdit3 } from "react-icons/fi";
 export default function ReviewCard({
   review,
   onEditClick,
+  backgroundStyle,
 }: {
   review: Review;
   onEditClick: (r: Review) => void;
+  backgroundStyle?: string;
 }) {
   const profile = useUserStore((s) => s.profile);
 
   return (
-    <div className="flex flex-col w-full gap-1">
+    <div
+      className={`flex flex-col w-full px-6 py-4 rounded-lg ${backgroundStyle}`}
+    >
       <div className="flex flex-row justify-between items-center pr-2">
-        <div className="flex flex-row gap-1 items-center">
-          <h3 className="text-sm text-primary-text">
+        <div className="flex flex-row items-center">
+          <h3 className="text-sm font-semibold text-primary-text px-2">
             {review.user_profiles?.username ?? "unknown user"}
           </h3>
           {profile && profile.user_id === review.user_id && (
@@ -32,14 +36,14 @@ export default function ReviewCard({
           {formatReviewDate(review.created_at)}
         </p>
       </div>
-      <p className="text-xs leading-loose"> {review.review_text}</p>
+      <p className="text-xs mb-2 leading-loose"> {review.review_text}</p>
       {review.tags && review.tags.length > 0 && (
-        <div className="flex flex-wrap gap-y-2 gap-x-1 w-full mt-1">
+        <div className="flex flex-wrap gap-y-2 gap-x-2 w-full mt-1">
           {review.tags.map((tag) => (
             <div
               key={tag}
-              className={`rounded-full border-1 px-2 py-0.5 text-xs font-medium transition 
-                bg-primary-lightest text-primary-text border-primary-light`}
+              className={`rounded-full outline-1 px-2 py-0.5 text-xs shadow-xs font-medium transition 
+                bg-white text-primary-text outline-primary`}
             >
               {tag}
             </div>

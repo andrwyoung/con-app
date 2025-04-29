@@ -44,6 +44,7 @@ function YearDetail({
   innerRef?: (el: HTMLDivElement | null) => void;
 }) {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
+  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
 
   const category = getEventTimeCategory(
     conYear.event_status,
@@ -115,16 +116,16 @@ function YearDetail({
         <ArtistAlleyStatus conYear={conYear} />
       </div>
 
-      {/* <div className="absolute bottom-2 right-4 flex flex-row gap-0.5 text-secondary-darker ">
-        <MdEdit className="translate-y-[1px]" />
+      <div className="absolute bottom-2 right-4 flex flex-row gap-0.5 text-secondary-darker items-center">
+        <MdEdit className=" h-3 w-3" />
         <button
           type="button"
           onClick={() => setEditingModalPage("year")}
           className="text-xs cursor-pointer hover:underline"
         >
-          Edit AA
+          Edit
         </button>
-      </div> */}
+      </div>
     </div>
   );
 }
@@ -256,7 +257,7 @@ export default function YearGallery({
 
       <div
         ref={scrollRef}
-        className="overflow-x-auto space-x-4 flex snap-x snap-mandatory px-6
+        className="overflow-x-auto space-x-4 flex snap-x snap-mandatory px-12
         scrollbar-none scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
       >
         {allYears
