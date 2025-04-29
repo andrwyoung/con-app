@@ -8,17 +8,29 @@ import React from "react";
 export default function HeadersHelper({
   children,
   title,
-  description,
+  website,
 }: {
   children: React.ReactNode;
   title: string;
-  description?: React.ReactNode;
+  website?: string;
 }) {
   return (
     <>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
-        {description && <DialogDescription>{description}</DialogDescription>}
+        {website && (
+          <DialogDescription>
+            Website on file:{" "}
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-text underline hover:text-primary-darker"
+            >
+              {website}
+            </a>
+          </DialogDescription>
+        )}
       </DialogHeader>
       <div className="flex flex-col gap-4 mt-4 w-full">{children}</div>
     </>

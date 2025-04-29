@@ -15,6 +15,7 @@ import {
 } from "@/stores/page-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
+import ArtistAlleyStatus from "./artist-alley";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
@@ -43,7 +44,6 @@ function YearDetail({
   innerRef?: (el: HTMLDivElement | null) => void;
 }) {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
-  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
 
   const category = getEventTimeCategory(
     conYear.event_status,
@@ -112,31 +112,19 @@ function YearDetail({
 
         <hr className="border-t border-primary-muted my-2 mx-auto w-24 border-0.5" />
 
-        <div className="flex flex-row justify-between center">
-          <h3 className="text-primary-muted font-semibold uppercase text-sm px-2">
-            Artist Alley Info
-          </h3>
-          <div className="flex flex-row gap-0.5 text-secondary-darker ">
-            <MdEdit className="translate-y-[1px]" />
-            <button
-              type="button"
-              onClick={() => setEditingModalPage("year")}
-              className="text-xs cursor-pointer hover:underline"
-            >
-              Add AA Info
-            </button>
-          </div>
-        </div>
-        <div className="text-xs text-primary-muted grid grid-cols-2 gap-0.5">
-          <p className="col-span-2 mb-1">Application Status: Closed</p>
-
-          <p>Opened: ?</p>
-          <p>Deadline: ?</p>
-
-          <p>Link: ?</p>
-          <p>Cost: ?</p>
-        </div>
+        <ArtistAlleyStatus conYear={conYear} />
       </div>
+
+      {/* <div className="absolute bottom-2 right-4 flex flex-row gap-0.5 text-secondary-darker ">
+        <MdEdit className="translate-y-[1px]" />
+        <button
+          type="button"
+          onClick={() => setEditingModalPage("year")}
+          className="text-xs cursor-pointer hover:underline"
+        >
+          Edit AA
+        </button>
+      </div> */}
     </div>
   );
 }
@@ -244,6 +232,28 @@ export default function YearGallery({
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex flex-row gap-2 self-center text-primary-darker/80">
+        <button
+          onClick={scrollToPrevYear}
+          type="button"
+          className="cursor-pointer disabled:text-primary-light  disabled:cursor-default"
+          disabled={atStart}
+        >
+          <IoCaretBack className="w-6 h-6" />
+        </button>
+        <h3 className="text-sm self-center text-primary-darker font-semibold uppercase">
+          Convention Years
+        </h3>
+        <button
+          onClick={scrollToNextYear}
+          type="button"
+          className="cursor-pointer disabled:text-primary-light disabled:cursor-default"
+          disabled={atEnd}
+        >
+          <IoCaretBack className="w-6 h-6 transform rotate-180" />
+        </button>
+      </div>
+
       <div
         ref={scrollRef}
         className="overflow-x-auto space-x-4 flex snap-x snap-mandatory px-6
@@ -299,28 +309,6 @@ export default function YearGallery({
             </div>
           </div>
         )}
-      </div>
-
-      <div className="flex flex-row gap-2 self-center text-primary-darker/80">
-        <button
-          onClick={scrollToPrevYear}
-          type="button"
-          className="cursor-pointer disabled:text-primary-light  disabled:cursor-default"
-          disabled={atStart}
-        >
-          <IoCaretBack className="w-6 h-6" />
-        </button>
-        <h3 className="text-sm self-center text-primary-darker font-semibold uppercase">
-          Convention Years
-        </h3>
-        <button
-          onClick={scrollToNextYear}
-          type="button"
-          className="cursor-pointer disabled:text-primary-light disabled:cursor-default"
-          disabled={atEnd}
-        >
-          <IoCaretBack className="w-6 h-6 transform rotate-180" />
-        </button>
       </div>
     </div>
   );

@@ -32,7 +32,7 @@ export default function ReviewCard({
           {formatReviewDate(review.created_at)}
         </p>
       </div>
-      <p className="text-sm leading-relaxed"> {review.review_text}</p>
+      <p className="text-xs leading-loose"> {review.review_text}</p>
       {review.tags && review.tags.length > 0 && (
         <div className="flex flex-wrap gap-y-2 gap-x-1 w-full mt-1">
           {review.tags.map((tag) => (

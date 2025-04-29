@@ -1,11 +1,11 @@
 import { FullConventionDetails, Scope } from "@/types/types";
 import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
-import { useModalUIStore } from "@/stores/ui-store";
-import { MdEdit } from "react-icons/md";
-import EditConventionModal from "../edit-modal/edit-con-modal";
 import { parseISO } from "date-fns";
 import MoreDetailsSection from "./more-details-section";
+import EditConventionModal from "../edit-modal/edit-con-modal";
+import { MdEdit } from "react-icons/md";
+import { useModalUIStore } from "@/stores/ui-store";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -26,7 +26,6 @@ export default function DetailsSection({
   details: FullConventionDetails;
 }) {
   const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
-
   const latestYear = [...details.convention_years].sort(
     (a, b) => b.year - a.year
   )[0];
@@ -36,10 +35,25 @@ export default function DetailsSection({
 
   return (
     <>
-      <div className="px-2 flex flex-col gap-2 text-sm mb-6">
+      <div className="mb-6">
+        {details.convention_years.length > 0 &&
+          details.venue &&
+          details.location && (
+            <YearGallery
+              scope={scope}
+              currentYear={latestYear.year as number}
+              allYears={details.convention_years}
+              venue={details.venue}
+              location={details.location}
+              showMissing={showMissingCard}
+            />
+          )}
+      </div>
+
+      <div className="p-4 flex flex-col gap-2 text-sm  rounded-lg">
         <div className="flex flex-row justify-between">
           <h3 className="text-primary-muted font-semibold uppercase">
-            Description
+            Convention Info
           </h3>
           <div className="flex flex-row gap-0.5 text-secondary-darker ">
             <EditConventionModal conDetails={details} />
@@ -60,28 +74,11 @@ export default function DetailsSection({
           </p>
         ) : (
           <p className="text-primary-muted">
-            This con doesn’t have a description yet. Add one?
+            This con doesn’t have a description yet.
           </p>
         )}
-      </div>
-
-      <MoreDetailsSection scope={scope} details={details} />
-
-      <hr className="border-t border-primary-muted mt-8 mb-4 mx-auto w-24 border-0.5" />
-
-      <div className="my-4 mt-6">
-        {details.convention_years.length > 0 &&
-          details.venue &&
-          details.location && (
-            <YearGallery
-              scope={scope}
-              currentYear={latestYear.year as number}
-              allYears={details.convention_years}
-              venue={details.venue}
-              location={details.location}
-              showMissing={showMissingCard}
-            />
-          )}
+        <hr className="border-t border-primary-muted my-2 mx-auto w-16 border-0.5" />
+        <MoreDetailsSection scope={scope} details={details} />
       </div>
     </>
   );

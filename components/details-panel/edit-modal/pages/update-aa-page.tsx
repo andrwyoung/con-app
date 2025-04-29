@@ -10,7 +10,7 @@ import { FullConventionDetails } from "@/types/types";
 import HeadersHelper from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 
-export default function UpdateDatesPage({
+export default function UpdateAAPage({
   conDetails,
   setPage,
 }: {
@@ -31,7 +31,7 @@ export default function UpdateDatesPage({
 
   return (
     <HeadersHelper
-      title="Submit New Dates"
+      title="Add Artist Alley Info"
       website={conDetails.website ?? undefined}
     >
       <div>

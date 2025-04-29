@@ -25,7 +25,7 @@ export default function MoreDetailsSection({
       {/* <h3 className="text-primary-muted font-semibold uppercase text-sm px-2 mb-4">
         More Details
       </h3> */}
-      <div className="flex flex-col gap-2 pl-4 pr-8">
+      <div className="flex flex-col gap-2 pl-2 pr-4">
         <div className="flex flex-row justify-between items-baseline">
           {details.website && (
             <a

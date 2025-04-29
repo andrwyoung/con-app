@@ -56,11 +56,9 @@ export type Database = {
           artist_app_deadline: string | null
           artist_app_first_heard: string | null
           artist_app_link: string | null
-          artist_app_status:
-            | Database["public"]["Enums"]["ApplicationStatus"]
-            | null
+          artist_app_status: string | null
           attendance_exact: number | null
-          attendance_size: Database["public"]["Enums"]["ConventionSize"] | null
+          attendance_size: string | null
           convention_id: number
           created_at: string
           end_date: string | null
@@ -76,11 +74,9 @@ export type Database = {
           artist_app_deadline?: string | null
           artist_app_first_heard?: string | null
           artist_app_link?: string | null
-          artist_app_status?:
-            | Database["public"]["Enums"]["ApplicationStatus"]
-            | null
+          artist_app_status?: string | null
           attendance_exact?: number | null
-          attendance_size?: Database["public"]["Enums"]["ConventionSize"] | null
+          attendance_size?: string | null
           convention_id: number
           created_at?: string
           end_date?: string | null
@@ -96,11 +92,9 @@ export type Database = {
           artist_app_deadline?: string | null
           artist_app_first_heard?: string | null
           artist_app_link?: string | null
-          artist_app_status?:
-            | Database["public"]["Enums"]["ApplicationStatus"]
-            | null
+          artist_app_status?: string | null
           attendance_exact?: number | null
-          attendance_size?: Database["public"]["Enums"]["ConventionSize"] | null
+          attendance_size?: string | null
           convention_id?: number
           created_at?: string
           end_date?: string | null
