@@ -51,7 +51,7 @@ export default function EditConventionModal({
             {page === "editor" && conDetails && (
               <EditorPage conDetails={conDetails} setPage={setPage} />
             )}
-            {page === "dates" &&
+            {page === "year" &&
               conYearDetails &&
               conYearDetails.artist_app_deadline}
             {page === "confirmation" && <ConfirmationPage />}

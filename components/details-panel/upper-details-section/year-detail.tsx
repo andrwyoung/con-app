@@ -15,7 +15,6 @@ import {
 } from "@/stores/page-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
-import EditConventionModal from "../edit-modal/edit-con-modal";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
@@ -67,7 +66,7 @@ function YearDetail({
       key={conYear.year}
       className={`snap-center ${YEAR_STYLES[category].bg} rounded-lg shrink-0 w-76 p-4 relative`}
     >
-      <div className="text-sm text-primary-text flex flex-col gap-4 ">
+      <div className="text-sm text-primary-text flex flex-col gap-2">
         <div className="flex justify-between items-start">
           <span className="font-bold text-lg">{conYear.year}</span>
           <div className="flex flex-col items-end">
@@ -113,12 +112,11 @@ function YearDetail({
 
         <hr className="border-t border-primary-muted my-2 mx-auto w-24 border-0.5" />
 
-        <div className="flex flex-row justify-between center mb-2">
+        <div className="flex flex-row justify-between center">
           <h3 className="text-primary-muted font-semibold uppercase text-sm px-2">
             Artist Alley Info
           </h3>
           <div className="flex flex-row gap-0.5 text-secondary-darker ">
-            <EditConventionModal conYearDetails={conYear} />
             <MdEdit className="translate-y-[1px]" />
             <button
               type="button"
@@ -128,6 +126,15 @@ function YearDetail({
               Add AA Info
             </button>
           </div>
+        </div>
+        <div className="text-xs text-primary-muted grid grid-cols-2 gap-0.5">
+          <p className="col-span-2 mb-1">Application Status: Closed</p>
+
+          <p>Opened: ?</p>
+          <p>Deadline: ?</p>
+
+          <p>Link: ?</p>
+          <p>Cost: ?</p>
         </div>
       </div>
     </div>
@@ -191,7 +198,7 @@ export default function YearGallery({
     const index = sortedYears.indexOf(activeYear);
     if (index !== -1 && index < sortedYears.length - 1) {
       const nextYear = sortedYears[index + 1];
-      scrollToYear(nextYear);
+      scrollToYear(nextYear, true);
     }
   };
 
@@ -199,7 +206,7 @@ export default function YearGallery({
     const index = sortedYears.indexOf(activeYear);
     if (index > 0) {
       const prevYear = sortedYears[index - 1];
-      scrollToYear(prevYear);
+      scrollToYear(prevYear, true);
     }
   };
 

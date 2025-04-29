@@ -209,7 +209,7 @@ export default function PlanPage() {
               <div className="flex-shrink-0 disable-scroll-override ml-8">
                 <div
                   ref={detailsRef}
-                  className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col pt-6 md:pt-0"
+                  className="w-96 max-h-[calc(100dvh-7rem)] md:max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col pt-6 md:pt-0"
                 >
                   <DetailsPanel
                     scope="plan"
