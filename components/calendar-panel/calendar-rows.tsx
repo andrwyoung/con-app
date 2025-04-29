@@ -8,6 +8,7 @@ import {
 } from "@/lib/calendar/generate-weekends";
 import { usePlanSidebarStore } from "@/stores/page-store";
 import { ConventionInfo } from "@/types/types";
+import { FaRegCalendar } from "react-icons/fa6";
 
 export function CalendarMonthRow({
   monthData,
@@ -124,7 +125,7 @@ export function CalendarWeekendDot({
       className="flex flex-col items-center gap-2"
     >
       <div
-        className={`w-5 md:w-16 h-5 md:h-6 flex items-center gap-1 justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-115
+        className={`w-5 md:w-14 h-5 md:h-6 flex items-center gap-1 justify-center rounded-full cursor-pointer transition-all duration-200 hover:scale-115
           text-xs text-primary-text ${
             isSelectedWeekend
               ? isThisWeekend
@@ -141,10 +142,8 @@ export function CalendarWeekendDot({
             : "bg-primary hover:bg-primary-darker/80"
         }`}
       >
-        {/* <FaRegCalendar className="text-primary-text/60 w-3 h-3" /> */}
-        <p className="hidden md:block">
-          Sat {weekendData.weekendDay.getDate()}
-        </p>
+        <FaRegCalendar className="hidden md:block text-primary-text/50 w-3 h-3" />
+        <p className="hidden md:block">{weekendData.weekendDay.getDate()}</p>
       </div>
       <h1
         title="Number of Cons"

@@ -6,15 +6,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
 import { Scope } from "@/types/types";
+import ArtistAlleyFilter from "./filters/artist-alley-filter";
 
-export type FilterKey = "tags" | "time" | "distance" | "status";
+export type FilterKey = "tags" | "time" | "distance" | "status" | "apps";
 
 function FilterPanel({ type }: { type: FilterKey }) {
   switch (type) {
     case "tags":
       return <TagsFilter />;
-    // case "distance":
-    //   return <DistanceFilter />;
+    case "apps":
+      return <ArtistAlleyFilter />;
     case "status":
       return <StatusFilter />;
     default:
@@ -25,7 +26,7 @@ function FilterPanel({ type }: { type: FilterKey }) {
 export default function FilterSection({ scope }: { scope: Scope }) {
   const { shownFilters, setShownFilters } = useScopedUIStore(scope);
 
-  const filterBar: FilterKey[] = ["tags", "status"];
+  const filterBar: FilterKey[] = ["tags", "status", "apps"];
   const numberOfCons = Object.keys(
     useFilterStore((s) => s.filteredItems)
   ).length;

@@ -1,7 +1,7 @@
 // the all purpose panel to give suggestions for upcoming cons and stuff
 // all logic is the corresponding pages
 
-import { FullConventionDetails } from "@/types/types";
+import { ConventionYear, FullConventionDetails } from "@/types/types";
 import { Dialog, DialogContent } from "../../ui/dialog";
 
 import UpdateDatesPage from "./pages/update-dates-page";
@@ -10,12 +10,19 @@ import { useModalUIStore } from "@/stores/ui-store";
 import EditorPage from "./pages/full-edit-page";
 import ConfirmationPage from "./pages/confirmation-page";
 
-export type EditorSteps = "dates" | "confirmation" | "editor" | "closed";
+export type EditorSteps =
+  | "dates"
+  | "confirmation"
+  | "editor"
+  | "closed"
+  | "year";
 
 export default function EditConventionModal({
+  conYearDetails,
   conDetails,
 }: {
-  conDetails: FullConventionDetails;
+  conYearDetails?: ConventionYear;
+  conDetails?: FullConventionDetails;
 }) {
   const page = useModalUIStore((s) => s.editingModalPage);
   const setPage = useModalUIStore((s) => s.setEditingModalPage);
@@ -38,12 +45,15 @@ export default function EditConventionModal({
             exit={{ x: -50, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            {page === "dates" && (
+            {page === "dates" && conDetails && (
               <UpdateDatesPage conDetails={conDetails} setPage={setPage} />
             )}
-            {page === "editor" && (
+            {page === "editor" && conDetails && (
               <EditorPage conDetails={conDetails} setPage={setPage} />
             )}
+            {page === "dates" &&
+              conYearDetails &&
+              conYearDetails.artist_app_deadline}
             {page === "confirmation" && <ConfirmationPage />}
           </motion.div>
         </AnimatePresence>

@@ -65,6 +65,9 @@ export default function PlanPage() {
   const [atScrollEnd, setAtScrollEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const sidebarRef = useRef<HTMLDivElement | null>(null); // for Caly to scroll to the sidebar
+  const detailsRef = useRef<HTMLDivElement | null>(null); // for sidebar to scroll to details panel
+
   const checkScroll = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -110,7 +113,12 @@ export default function PlanPage() {
 
   useEffect(() => {
     checkScroll();
-  }, [selectedCon, checkScroll]);
+
+    detailsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [selectedCon, checkScroll, detailsRef]);
 
   // if there's a search then set mode to search
   useEffect(() => {
@@ -144,16 +152,17 @@ export default function PlanPage() {
 
         <div
           ref={scrollRef}
-          className="overflow-x-auto w-full pt-6 md:pt-30 px-0 md:px-24 h-screen-dvh scrollbar-track-transparent"
+          className="overflow-x-auto w-full pt-8 md:pt-30 px-6 sm:px-12 md:px-24 h-screen-dvh scrollbar-track-transparent"
         >
-          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mx-2 md:mx-12 max-h-screen-dvh  md:max-h-[calc(100dvh-20rem)]">
+          <motion.div className="flex justify-center items-start min-w-[max-content] gap-8 mx-0 md:mx-12 max-h-screen-dvh  md:max-h-[calc(100dvh-20rem)]">
             <div className="flex-shrink-0 disable-scroll-override mr-8 ">
-              <Caly />
+              <Caly sidebarRef={sidebarRef} />
             </div>
 
             <div
+              ref={sidebarRef}
               className={`relative flex-shrink-0 disable-scroll-override flex gap-2 flex-col border rounded-lg 
-                shadow-lg w-86 max-h-[calc(100dvh-6rem)] md:max-h-[calc(100dvh-14rem)] px-5 py-6 bg-white z-10
+                shadow-lg w-86 max-h-[calc(100dvh-7rem)] md:max-h-[calc(100dvh-14rem)] px-5 py-6 bg-white z-10
               ${sidebarMode === "search" ? "outline-2 outline-primary" : ""}`}
             >
               <SearchBar key={sidebarMode} scope={"plan"} />
@@ -198,7 +207,10 @@ export default function PlanPage() {
 
             {selectedCon && (
               <div className="flex-shrink-0 disable-scroll-override ml-8">
-                <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
+                <div
+                  ref={detailsRef}
+                  className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col pt-6 md:pt-0"
+                >
                   <DetailsPanel
                     scope="plan"
                     con={selectedCon}

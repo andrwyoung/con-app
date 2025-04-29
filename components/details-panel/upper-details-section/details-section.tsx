@@ -1,13 +1,11 @@
 import { FullConventionDetails, Scope } from "@/types/types";
 import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
-import { FaLink } from "react-icons/fa6";
-import SocialLinks from "./display-links";
-import { useFilterStore } from "@/stores/filter-store";
-import { useExploreGeneralUIStore, useModalUIStore } from "@/stores/ui-store";
+import { useModalUIStore } from "@/stores/ui-store";
 import { MdEdit } from "react-icons/md";
 import EditConventionModal from "../edit-modal/edit-con-modal";
 import { parseISO } from "date-fns";
+import MoreDetailsSection from "./more-details-section";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -27,10 +25,6 @@ export default function DetailsSection({
   scope: Scope;
   details: FullConventionDetails;
 }) {
-  const setTagFilter = useFilterStore((s) => s.setTagFilter);
-  const tagFilter = useFilterStore((s) => s.tagFilter);
-  const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
-  const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
   const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
 
   const latestYear = [...details.convention_years].sort(
@@ -39,9 +33,6 @@ export default function DetailsSection({
   const showMissingCard = shouldShowMissingCard(
     latestYear.end_date ?? undefined
   );
-  const cleanedTags = details.tags
-    ?.map((tag) => tag.trim())
-    .filter((tag) => tag.length > 0);
 
   return (
     <>
@@ -58,7 +49,7 @@ export default function DetailsSection({
               onClick={() => setEditingModalPage("editor")}
               className="text-xs cursor-pointer hover:underline"
             >
-              Edit Info
+              Edit General Info
             </button>
           </div>
         </div>
@@ -74,7 +65,11 @@ export default function DetailsSection({
         )}
       </div>
 
-      <div className="mb-4">
+      <MoreDetailsSection scope={scope} details={details} />
+
+      <hr className="border-t border-primary-muted mt-8 mb-4 mx-auto w-24 border-0.5" />
+
+      <div className="my-4 mt-6">
         {details.convention_years.length > 0 &&
           details.venue &&
           details.location && (
@@ -87,71 +82,6 @@ export default function DetailsSection({
               showMissing={showMissingCard}
             />
           )}
-      </div>
-
-      <h3 className="text-primary-muted font-semibold uppercase text-sm px-2 mb-4">
-        More Details
-      </h3>
-      <div className="flex flex-col gap-2 pl-4 pr-8">
-        <div className="flex flex-row justify-between items-baseline ">
-          {details.website && (
-            <a
-              href={details.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`${details.name} website`}
-              className="flex flex-row gap-2 items-center text-primary-muted text-sm font-semibold hover:text-primary-darker transition-colors"
-            >
-              <FaLink className="-rotate-5 h-5 w-5" />
-              Website
-            </a>
-          )}
-          {details.social_links && <SocialLinks links={details.social_links} />}
-        </div>
-
-        {cleanedTags && cleanedTags.length > 0 && (
-          <div className="flex flex-row items-center gap-2">
-            <p className="text-xs text-primary-muted">Tags:</p>
-            <div className="flex flex-wrap gap-1 text-xs">
-              {details.tags?.map((tagRaw) => {
-                const tag = tagRaw.trim();
-                if (scope === "explore") {
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => {
-                        if (
-                          tagFilter.selected.length === 1 &&
-                          tagFilter.selected[0] === tag &&
-                          tagFilter.includeUntagged === false
-                        ) {
-                          resetAllFilters();
-                          setShownFilters([]);
-                        } else {
-                          setTagFilter([tag], false);
-                          setShownFilters(["tags"]);
-                        }
-                      }}
-                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
-                    >
-                      #{tag}
-                    </button>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={tag}
-                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted"
-                    >
-                      #{tag}
-                    </div>
-                  );
-                }
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

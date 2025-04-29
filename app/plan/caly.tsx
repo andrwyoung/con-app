@@ -19,7 +19,32 @@ import { useEffect, useMemo, useRef, useState } from "react";
 export const yearStyling =
   "select-none text-primary-muted text-2xl font-semibold";
 
-export default function Caly() {
+const scrollElementIntoCenter = (
+  container: HTMLElement,
+  target: HTMLElement,
+  smooth: boolean = false
+) => {
+  const containerRect = container.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+
+  const scrollTop =
+    container.scrollTop +
+    (targetRect.top - containerRect.top) -
+    container.clientHeight / 2 +
+    target.clientHeight / 2;
+
+  if (smooth) {
+    container.scrollTo({ top: scrollTop, behavior: "smooth" });
+  } else {
+    container.scrollTop = scrollTop;
+  }
+};
+
+export default function Caly({
+  sidebarRef,
+}: {
+  sidebarRef: React.RefObject<HTMLDivElement | null>;
+}) {
   const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
   const months = useMemo(() => generateWeekendsByMonth(), []);
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
@@ -134,7 +159,7 @@ export default function Caly() {
     clearCalendarSelection,
   ]);
 
-  // when an items gets selected, highlight it
+  // when an items gets selected, highlight that weekend
   useEffect(() => {
     if (selectedCon) {
       const { start_date, end_date } = getRealDates(selectedCon);
@@ -199,10 +224,19 @@ export default function Caly() {
     if (matchingMonth) {
       const scrollEl =
         monthRefs.current[`${matchingMonth.year}-${matchingMonth.month}`];
-      scrollEl?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [months, selectedWeekend, selectedMonth]);
 
+      if (scrollEl && scrollContainerRef.current) {
+        scrollElementIntoCenter(scrollContainerRef.current, scrollEl, true);
+      }
+
+      sidebarRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [months, selectedWeekend, selectedMonth, sidebarRef]);
+
+  // the today button
   const handleScrollToToday = () => {
     if (!thisWeekend) return;
 
@@ -223,31 +257,18 @@ export default function Caly() {
     <div className="border-b rounded-lg">
       <div
         className="sticky top-0 z-10 px-4 py-2 font-bold bg-gradient-to-b from-white to-transparent
-      grid grid-cols-[1fr_auto_1fr] items-end gap-4 border select-none rounded-t"
+     flex flex-row justify-between items-center gap-4 border select-none rounded-t"
       >
         <div className="flex items-center min-w-[4rem]">
           <h1 className={`${yearStyling}`}>{visibleYear}</h1>
         </div>
-        <div className="col-start-2 justify-self-end">
-          <button
-            type="button"
-            onClick={handleScrollToToday}
-            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 border-2 border-primary rounded-full hover:bg-primary-light focus:outline-none"
-          >
-            Today
-          </button>
-        </div>
-
-        <div className="flex flex-col">
-          <h1 className="font-semibold text-primary-muted text-sm">
-            Weekend Number:
-          </h1>
-          <h1 className="px-1 flex gap-6 justify-start col-start-3 font-bold text-primary-muted">
-            {[1, 2, 3, 4, 5].map((num) => (
-              <span key={num}>{num}</span>
-            ))}
-          </h1>
-        </div>
+        <button
+          type="button"
+          onClick={handleScrollToToday}
+          className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 border-2 border-primary rounded-full hover:bg-primary-light focus:outline-none"
+        >
+          Today
+        </button>
       </div>
       <div className="relative">
         <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5 rounded-lg" />
@@ -255,7 +276,7 @@ export default function Caly() {
 
         <div
           ref={scrollContainerRef}
-          className="flex flex-col gap-8 h-full max-h-[calc(100dvh-20rem)] overflow-y-auto scrollbar-none p-4 "
+          className="flex flex-col gap-8 h-full max-h-[calc(100dvh-12rem)] md:max-h-[calc(100dvh-20rem)] overflow-y-auto scrollbar-none p-4 "
         >
           {months.map((month) => (
             <div

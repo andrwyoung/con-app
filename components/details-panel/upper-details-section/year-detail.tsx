@@ -15,6 +15,7 @@ import {
 } from "@/stores/page-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
+import EditConventionModal from "../edit-modal/edit-con-modal";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
@@ -43,6 +44,7 @@ function YearDetail({
   innerRef?: (el: HTMLDivElement | null) => void;
 }) {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
+  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
 
   const category = getEventTimeCategory(
     conYear.event_status,
@@ -108,6 +110,25 @@ function YearDetail({
             </a>
           </div>
         </div>
+
+        <hr className="border-t border-primary-muted my-2 mx-auto w-24 border-0.5" />
+
+        <div className="flex flex-row justify-between center mb-2">
+          <h3 className="text-primary-muted font-semibold uppercase text-sm px-2">
+            Artist Alley Info
+          </h3>
+          <div className="flex flex-row gap-0.5 text-secondary-darker ">
+            <EditConventionModal conYearDetails={conYear} />
+            <MdEdit className="translate-y-[1px]" />
+            <button
+              type="button"
+              onClick={() => setEditingModalPage("year")}
+              className="text-xs cursor-pointer hover:underline"
+            >
+              Add AA Info
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -142,12 +163,28 @@ export default function YearGallery({
     ...(showMissing ? [SPECIAL_CON_ID.FUTURE_CON] : []), // let it scroll to missing conveniton if exists
   ].sort((a, b) => a - b);
 
-  const scrollToYear = (year: number) => {
-    const el = yearRefs.current[year];
-    if (el) {
-      el.scrollIntoView({ behavior: "auto", inline: "center" });
-      setActiveYear(year);
+  const scrollToYear = (year: number, smooth: boolean = false) => {
+    const container = scrollRef.current;
+    const target = yearRefs.current[year];
+    if (!container || !target) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    // Calculate how far we need to scroll
+    const scrollLeft =
+      container.scrollLeft +
+      (targetRect.left - containerRect.left) -
+      container.clientWidth / 2 +
+      target.clientWidth / 2;
+
+    if (smooth) {
+      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    } else {
+      container.scrollLeft = scrollLeft; // jump instantly, no animation
     }
+
+    setActiveYear(year);
   };
 
   const scrollToNextYear = () => {
@@ -200,27 +237,6 @@ export default function YearGallery({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-2 self-center text-primary-darker/80">
-        <button
-          onClick={scrollToPrevYear}
-          type="button"
-          className="cursor-pointer disabled:text-primary-light  disabled:cursor-default"
-          disabled={atStart}
-        >
-          <IoCaretBack className="w-6 h-6" />
-        </button>
-        <h3 className="text-sm self-center text-primary-darker font-semibold uppercase">
-          Convention Years
-        </h3>
-        <button
-          onClick={scrollToNextYear}
-          type="button"
-          className="cursor-pointer disabled:text-primary-light disabled:cursor-default"
-          disabled={atEnd}
-        >
-          <IoCaretBack className="w-6 h-6 transform rotate-180" />
-        </button>
-      </div>
       <div
         ref={scrollRef}
         className="overflow-x-auto space-x-4 flex snap-x snap-mandatory px-6
@@ -276,6 +292,28 @@ export default function YearGallery({
             </div>
           </div>
         )}
+      </div>
+
+      <div className="flex flex-row gap-2 self-center text-primary-darker/80">
+        <button
+          onClick={scrollToPrevYear}
+          type="button"
+          className="cursor-pointer disabled:text-primary-light  disabled:cursor-default"
+          disabled={atStart}
+        >
+          <IoCaretBack className="w-6 h-6" />
+        </button>
+        <h3 className="text-sm self-center text-primary-darker font-semibold uppercase">
+          Convention Years
+        </h3>
+        <button
+          onClick={scrollToNextYear}
+          type="button"
+          className="cursor-pointer disabled:text-primary-light disabled:cursor-default"
+          disabled={atEnd}
+        >
+          <IoCaretBack className="w-6 h-6 transform rotate-180" />
+        </button>
       </div>
     </div>
   );
