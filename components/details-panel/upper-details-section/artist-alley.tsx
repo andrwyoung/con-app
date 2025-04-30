@@ -54,10 +54,11 @@ export default function ArtistAlleyStatus({
       </div>
 
       <div className="text-xs text-primary-muted grid grid-cols-2 gap-0.5">
-        <p>Deadline: {conYear.artist_app_deadline}</p>
+        {/* <p>Deadline: {conYear.artist_app_deadline}</p>
 
         <p>Link: {conYear.artist_app_link}</p>
-        <p>Cost: {conYear.artist_app_first_heard}</p>
+        <p>Cost: {conYear.artist_app_first_heard}</p> */}
+        <p>Link: {conYear.convention_id}</p>
       </div>
     </>
   );

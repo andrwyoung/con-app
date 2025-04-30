@@ -2,12 +2,12 @@
 // including the controls to opening/closing modals
 
 import { authStep } from "@/components/auth/login-modal";
-import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-modal";
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
 import { log } from "@/lib/utils";
 import { SortType } from "@/types/sort-types";
 import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
+import { EditorSteps } from "@/components/edit-modal/edit-con-modal";
 
 type ModalUIStore = {
   loginModalStep: authStep;
