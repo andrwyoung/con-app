@@ -81,7 +81,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
                 useMapStore.getState().clearClickedClusterHighlight?.();
                 useMapPinsStore.getState().clearTempPins();
               }}
-              className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
+              className="hidden md:block bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-1 rounded-full hover:bg-primary-light focus:outline-none"
             >
               {filteredFocusedEvents.length > 0 ? "deselect" : "close"}
             </button>

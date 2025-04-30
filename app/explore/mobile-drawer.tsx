@@ -75,9 +75,9 @@ export default function MobileDrawer() {
     if (endY > screenHeight * 0.7) {
       clearSelectedEvents();
       setShowMobileDrawer(false); // fully close
-    } else if (endY > screenHeight * 0.5) {
-      setTranslateY(screenHeight * 0.5);
-      setIsDragging(true);
+      // } else if (endY > screenHeight * 0.5) {
+      //   setTranslateY(screenHeight * 0.5);
+      //   setIsDragging(true);
     } else {
       setTranslateY(0); // snap fully open
     }

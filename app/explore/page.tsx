@@ -12,8 +12,7 @@ import {
 } from "@/stores/page-store";
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
-import Toggler from "@/components/navbar/toggler";
-import MobileDrawer from "./mobile-drawer";
+import MobileDrawer2 from "./mobile-drawer2";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -102,12 +101,12 @@ export default function ExplorePage() {
         )}
       </div>
 
-      <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
+      {/* <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
         <Toggler />
-      </div>
+      </div> */}
 
       <div className="flex md:hidden z-20 flex-col h-full">
-        <MobileDrawer />
+        <MobileDrawer2 />
       </div>
     </div>
   );

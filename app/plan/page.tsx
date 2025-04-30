@@ -16,7 +16,6 @@ import { IoCaretBack } from "react-icons/io5";
 import { usePlanGeneralUIStore } from "@/stores/ui-store";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
-import Toggler from "@/components/navbar/toggler";
 
 function ScrollButton({
   direction,
@@ -224,9 +223,9 @@ export default function PlanPage() {
         <div className="hidden md:block pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-white to-transparent z-8" />
         <div className="hidden md:block pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-8" />
 
-        <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
+        {/* <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
           <Toggler />
-        </div>
+        </div> */}
       </div>
     </DragContextWrapper>
   );

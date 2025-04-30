@@ -2,13 +2,14 @@
 
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { cn } from "@/lib/utils";
 
 function Drawer({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return <DrawerPrimitive.Root data-slot="drawer" modal={false} {...props} />;
+  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
 }
 
 function DrawerTrigger({
@@ -52,7 +53,7 @@ function DrawerContent({
 }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
   return (
     <DrawerPortal data-slot="drawer-portal">
-      {/* <DrawerOverlay /> */}
+      <DrawerOverlay />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
@@ -65,6 +66,9 @@ function DrawerContent({
         )}
         {...props}
       >
+        <VisuallyHidden>
+          <DrawerTitle>Mobile Drawer</DrawerTitle>
+        </VisuallyHidden>
         <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         {children}
       </DrawerPrimitive.Content>

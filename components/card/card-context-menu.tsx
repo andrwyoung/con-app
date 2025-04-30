@@ -104,25 +104,21 @@ export default function CardContextMenu({
             type={menuType}
             className="w-44 max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
           >
-            {SPECIAL_LIST_KEYS.filter((listId) => listId !== showingNow).map(
-              (listId) => (
-                <SharedMenuItem
-                  type={menuType}
-                  key={listId}
-                  onClick={() => handleAddToList(listId)}
-                >
-                  {lists[listId].label}
-                </SharedMenuItem>
-              )
-            )}
+            {SPECIAL_LIST_KEYS.map((listId) => (
+              <SharedMenuItem
+                type={menuType}
+                key={listId}
+                onClick={() => handleAddToList(listId)}
+              >
+                {lists[listId].label}
+              </SharedMenuItem>
+            ))}
             {profile && (
               <>
                 <SharedMenuSeparator type={menuType} />
                 {Object.entries(lists)
-                  .filter(
-                    ([key]) =>
-                      key.startsWith(`${profile.username}-list-`) &&
-                      key !== showingNow
+                  .filter(([key]) =>
+                    key.startsWith(`${profile.username}-list-`)
                   )
                   .map(([listId, list]) => (
                     <SharedMenuItem
