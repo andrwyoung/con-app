@@ -48,11 +48,13 @@ export default function MobileDrawer2() {
         )}
 
         {!selectedCon && selectedMapItems.length > 0 && (
-          <CardList
-            items={selectedMapItems}
-            scope="explore"
-            sortOption="status"
-          />
+          <div className="flex-1 min-h-0 flex px-2 flex-col overflow-y-auto">
+            <CardList
+              items={selectedMapItems}
+              scope="explore"
+              sortOption="status"
+            />
+          </div>
         )}
       </DrawerContent>
     </Drawer>
