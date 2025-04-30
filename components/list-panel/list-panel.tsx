@@ -78,13 +78,13 @@ export default function ListPanel({ scope }: { scope: Scope }) {
             value={lists[showingNow].label}
             onChange={(newLabel) => renameList(showingNow, newLabel)}
           />
-          {!profile && (
+          {/* {!profile && (
             <p className="px-1 text-xs text-primary-muted text-right">
               Sign in to save
               <br />
               your lists
             </p>
-          )}
+          )} */}
         </div>
 
         <div className="px-1 flex gap-2 items-center justify-between">

@@ -36,7 +36,6 @@ export default function MoreDetailsSection({
               className="flex flex-row gap-2 items-center text-primary-muted text-sm font-semibold hover:text-primary-darker transition-colors"
             >
               <FaLink className="-rotate-5 h-5 w-5" />
-              Website
             </a>
           )}
           {details.social_links && <SocialLinks links={details.social_links} />}

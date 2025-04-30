@@ -6,6 +6,7 @@ import MoreDetailsSection from "./more-details-section";
 import { MdEdit } from "react-icons/md";
 import { useModalUIStore } from "@/stores/ui-store";
 import EditConventionModal from "@/components/edit-modal/edit-con-modal";
+import { FaLink } from "react-icons/fa6";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -35,6 +36,19 @@ export default function DetailsSection({
 
   return (
     <>
+      {details.website && (
+        <a
+          href={details.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`${details.name} website`}
+          className="flex flex-row gap-1 items-center text-primary-text mb-6 mx-6 
+          text-sm font-semibold hover:text-primary-darker transition-colors"
+        >
+          <FaLink className="-rotate-5 h-4 w-4" />
+          Website
+        </a>
+      )}
       <div className="mb-6">
         {details.convention_years.length > 0 &&
           details.venue &&

@@ -112,7 +112,7 @@ export default function DetailsPanel({
       </div>
 
       <div className="h-full flex relative flex-col min-h-0  gap-2">
-        <h2 className="flex-none text-2xl px-6 mb-4 text-primary-text font-semibold">
+        <h2 className="flex-none text-2xl px-6  text-primary-text font-semibold">
           {con.name}
         </h2>
         <div className="flex-1 overflow-y-auto scrollbar-none scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
