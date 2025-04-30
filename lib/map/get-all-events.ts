@@ -6,6 +6,7 @@ import { supabaseAnon } from "@/lib/supabase/client";
 import { ConventionInfo, Weekend } from "@/types/con-types";
 import { getEventTimeCategory } from "../helpers/time/event-recency";
 import { findWeekendBucket } from "../calendar/determine-weekend";
+import { getAAStatus } from "../helpers/artist-alley/get-aa-status";
 
 export default async function getAllEvents(): Promise<ConventionInfo[]> {
   try {
@@ -42,6 +43,7 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
           const bucket = findWeekendBucket(event.latest_start_date, event.latest_end_date);
           return bucket ? { year: bucket.year, weekend: bucket.weekend } as Weekend: null;
         })(),
+        aaStatus: getAAStatus(event.latest_start_date, event.aa_open_date, event.aa_deadline, event.aa_real_release, event.aa_status_override),
       };
     });
 

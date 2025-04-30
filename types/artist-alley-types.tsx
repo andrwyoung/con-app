@@ -1,4 +1,4 @@
-export type ApplicationType =
+export type ArtistAlleyStatus =
   | "unknown"
   | "closed"
   | "no_aa"
@@ -7,7 +7,7 @@ export type ApplicationType =
   | "predicted"
   | "announced";
 
-export const applicationTypeLabels: Record<ApplicationType, string> = {
+export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> = {
   unknown: "No Info Yet",
   closed: "Closed",
   no_aa: "No Artist Alley",
@@ -17,9 +17,9 @@ export const applicationTypeLabels: Record<ApplicationType, string> = {
   announced: "Announced",
 };
 
-export const isValidApplicationType = (
+export const isValidArtistAlleyStatus = (
   status: string | null
-): status is ApplicationType => {
+): status is ArtistAlleyStatus => {
   return ["open", "closed", "no_aa", "expected", "unknown"].includes(
     status ?? "unknown"
   );

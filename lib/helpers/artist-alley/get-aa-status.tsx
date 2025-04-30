@@ -1,19 +1,13 @@
-import { ApplicationType } from "@/types/artist-alley-types";
+import { ArtistAlleyStatus } from "@/types/artist-alley-types";
 import { addMonths, isAfter, isBefore, parseISO } from "date-fns";
 
-export function computeAAStatus({
-  start_date,
-  aa_open_date,
-  aa_deadline,
-  aa_real_release,
-  aa_status_override,
-}: {
-  start_date?: string | null;
-  aa_open_date?: string | null;
-  aa_deadline?: string | null;
-  aa_real_release?: boolean | null;
-  aa_status_override?: string | null;
-}): ApplicationType {
+export function getAAStatus(
+  start_date?: string | null,
+  aa_open_date?: string | null,
+  aa_deadline?: string | null,
+  aa_real_release?: boolean | null,
+  aa_status_override?: string | null
+): ArtistAlleyStatus {
   const now = new Date();
   const open = aa_open_date ? parseISO(aa_open_date) : null;
   const deadline = aa_deadline ? parseISO(aa_deadline) : null;

@@ -1,5 +1,6 @@
 import { Tables } from "@/types/supabase";
 import { TimeCategory } from "./time-types";
+import { ArtistAlleyStatus } from "./artist-alley-types";
 
 export type Scope = "explore" | "plan" | "share" | "unknown";
 
@@ -41,6 +42,7 @@ export type ConventionInfo = {
   timeCategory?: TimeCategory;
   weekend?: Weekend | null;
   specificYear?: ConventionYear | null;
+  aaStatus?: ArtistAlleyStatus;
 }
 
 // when grabbing details panel

@@ -101,13 +101,19 @@ export default function ExplorePage() {
         )}
       </div>
 
-      {/* <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
-        <Toggler />
-      </div> */}
-
-      <div className="flex md:hidden z-20 flex-col h-full">
-        <MobileDrawer2 />
+      <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
+        {/* <Toggler /> */}
+        <SidebarBackground />
+        <div className="h-12 w-full flex items-center justify-center bg-white rounded-lg text-xs text-primary-text">
+          Mobile Experience is Limited. Try Desktop!
+        </div>
       </div>
+
+      {typeof window !== "undefined" && window.innerWidth < 768 && (
+        <div className="flex md:hidden z-20 flex-col h-full">
+          <MobileDrawer2 />
+        </div>
+      )}
     </div>
   );
 }

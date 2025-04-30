@@ -31,6 +31,9 @@ export default function Sidebar() {
     (s) => s.filteredFocusedEvents
   );
 
+  const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
+  const shownFilters = useExploreGeneralUIStore((s) => s.shownFilters);
+
   const initialized = useEventStore((s) => s.initialized);
 
   const { showListPanel, setShowListPanel } = useExploreGeneralUIStore();
@@ -82,6 +85,7 @@ export default function Sidebar() {
           {sidebarMode === "search" && <SearchMode scope="explore" />}
           {sidebarMode === "filter" && <FilterMode scope="explore" />}
         </div>
+
         <div className="hidden lg:block">
           <ListWrapper
             setShowListPanel={setShowListPanel}
@@ -100,6 +104,16 @@ export default function Sidebar() {
             />
           )}
         </div>
+
+        {shownFilters.length > 0 && (
+          <button
+            onClick={() => setShownFilters([])}
+            className="block md:hidden w-full py-2 text-sm font-medium text-primary-text bg-primary-lightest
+                    rounded-b-lg shadow-sm cursor-pointer transition z-10"
+          >
+            Collapse Filters
+          </button>
+        )}
       </div>
     </DragContextWrapper>
   );

@@ -1,6 +1,6 @@
 import {
-  ApplicationType,
-  applicationTypeLabels,
+  ArtistAlleyStatus,
+  artistAlleyStatusLabels,
 } from "@/types/artist-alley-types";
 import { ConventionYear } from "@/types/con-types";
 
@@ -11,7 +11,7 @@ export default function ArtistAlleyStatus({
 }) {
   const status = "unknown";
 
-  const getPillStyle = (status: ApplicationType) => {
+  const getPillStyle = (status: ArtistAlleyStatus) => {
     switch (status) {
       case "open":
         return "bg-green-100 text-green-800 border-green-400";
@@ -49,7 +49,7 @@ export default function ArtistAlleyStatus({
             status
           )}`}
         >
-          {applicationTypeLabels[status]}
+          {artistAlleyStatusLabels[status]}
         </div>
       </div>
 
