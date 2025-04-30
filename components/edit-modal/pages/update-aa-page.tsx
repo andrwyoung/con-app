@@ -163,7 +163,10 @@ export default function UpdateAAPage({
   };
 
   return (
-    <HeadersHelper title={`Add Artist Alley Info`}>
+    <HeadersHelper
+      title={`Add Artist Alley Info`}
+      website={conDetails.website ?? undefined}
+    >
       <div className="flex flex-col gap-1 py-4 pb-4">
         <AAWebsiteInput
           label="Application Link (or where it'll appear)"

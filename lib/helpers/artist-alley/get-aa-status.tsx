@@ -6,7 +6,8 @@ export function getAAStatus(
   aa_open_date?: string | null,
   aa_deadline?: string | null,
   aa_real_release?: boolean | null,
-  aa_status_override?: string | null
+  aa_status_override?: string | null,
+  event_status?: string | null
 ): ArtistAlleyStatus {
   const now = new Date();
   const open = aa_open_date ? parseISO(aa_open_date) : null;
@@ -24,6 +25,12 @@ export function getAAStatus(
   // EASY LOGIC
   //
 
+  // if the convention is this week or earlier, then it's for sure closed
+  if (start && now > start) return "passed";
+
+  // if the con itself is cancelled then mark closed;
+  if (event_status === "EventCancelled") return "closed";
+
   // if deadline is here, it is for sure open
   if (deadline && now <= deadline) return "open";
 
@@ -36,9 +43,6 @@ export function getAAStatus(
 
   // if the deadline has passed then it is closed
   if (deadline && now > deadline) return "closed";
-
-  // if the convention is this week or earlier, then it's for sure closed
-  if (start && now > start) return "closed";
 
   // "EXPECTED" LOGIC
   //
@@ -67,4 +71,18 @@ export function getAAStatus(
   }
 
   return "unknown";
+}
+
+export function applyRealAAStatusGuard(
+  end_date: string | null,
+  oldStatus?: ArtistAlleyStatus
+): ArtistAlleyStatus {
+  if (!end_date) return oldStatus ?? "unknown";
+  if (!oldStatus) return "unknown";
+
+  const isPast = parseISO(end_date) < new Date();
+
+  if (isPast && oldStatus !== "no_aa") return "passed";
+
+  return oldStatus;
 }

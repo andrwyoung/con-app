@@ -79,7 +79,7 @@ export default function ReviewsSection({ id }: { id: number }) {
         ) : (
           <p className="text-sm text-primary-muted text-center">
             No notes yet. <br />
-            Let others know what this convention is like!
+            What&apos;s it like tabling here?
           </p>
         )}
       </div>

@@ -15,7 +15,7 @@ import {
 } from "@/stores/page-store";
 import { SPECIAL_CON_ID } from "@/lib/constants";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
-import ArtistAlleyStatus from "./artist-alley";
+import ArtistAlleyStatusSection from "./artist-alley-section";
 
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
@@ -113,7 +113,7 @@ function YearDetail({
 
         <hr className="border-t border-primary-muted my-2 mx-auto w-24 border-0.5" />
 
-        <ArtistAlleyStatus conYear={conYear} />
+        <ArtistAlleyStatusSection conYear={conYear} />
       </div>
 
       <div className="absolute bottom-2 right-4 flex flex-row gap-0.5 text-secondary-darker items-center">

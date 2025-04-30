@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export default function NotFoundClient() {
   return (
-    <div className="min-h-screen-dvh flex flex-col items-center justify-center text-center">
+    <div className="h-screen-dvh flex flex-col items-center justify-center text-center">
       <Image src="/404.png" width={400} alt="sunflower!" height={400} />
       <p className="text-lg font-semibold my-3 max-w-xs sm:max-w-2xl">
         Hi! We couldn’t find that page...but here&apos;s a fun button:

@@ -7,22 +7,15 @@ import {
 import { TIME_CATEGORY_LABELS, TimeCategory } from "@/types/time-types";
 import { ConventionInfo } from "@/types/con-types";
 import { FaStar } from "react-icons/fa6";
+import {
+  ArtistAlleyStatus,
+  artistAlleyStatusLabels,
+  getAAStatusColor,
+} from "@/types/artist-alley-types";
+import { getRealDates } from "@/lib/calendar/grab-real-dates";
+import { applyRealAAStatusGuard } from "@/lib/helpers/artist-alley/get-aa-status";
 
-export function StatusDotTester() {
-  return (
-    <div className="p-4 flex flex-col gap-1">
-      {Object.entries(TIME_CATEGORY_LABELS).map(([key, label]) => (
-        <div key={key} className="flex items-center gap-2">
-          <StatusDot status={key as TimeCategory} />
-          <span className="text-sm text-primary-text">{label}</span>
-          <code className="text-xs text-primary-muted">({key})</code>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function StatusDot({ status }: { status: TimeCategory }) {
+export function StatusDot({ status }: { status: TimeCategory }) {
   const color =
     status === "past"
       ? "bg-violet-400"
@@ -57,9 +50,15 @@ function StatusDot({ status }: { status: TimeCategory }) {
 }
 
 export default function CardInfo({ info }: { info: ConventionInfo }) {
+  const { end_date } = getRealDates(info);
+  const realStatus: ArtistAlleyStatus = applyRealAAStatusGuard(
+    end_date,
+    info.aaStatus
+  );
+
   return (
-    <>
-      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mb-0.5 mr-6">
+    <div className="flex flex-col gap-0.5">
+      <div className="text-sm font-semibold leading-tight group-hover:text-primary-text line-clamp-1 mr-6">
         {info.name}
       </div>
 
@@ -107,6 +106,16 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
           )}
         </div>
       )}
-    </>
+      <div className="flex gap-1 text-xs text-primary-muted">
+        <strong>AA Apps:</strong>
+        <div
+          title="Artist Alley Status"
+          className={`px-2 shrink-0 rounded-full text-xs font-medium 
+            ${getAAStatusColor(realStatus)}`}
+        >
+          {artistAlleyStatusLabels[realStatus]}
+        </div>
+      </div>
+    </div>
   );
 }

@@ -4,6 +4,10 @@ import {
 } from "@/lib/calendar/generate-weekends";
 import { format, parseISO } from "date-fns";
 
+export function formatFullSingleDate(day: string): string {
+  return format(parseISO(day), "MMMM d, yyyy");
+}
+
 // Apr, 25
 // for plan mode when you click on a month
 export function formatMonthYear(monthData: MonthWithWeekends): string {

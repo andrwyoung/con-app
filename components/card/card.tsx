@@ -61,7 +61,7 @@ const Card = forwardRef<
   );
 
   const baseClass =
-    "relative flex flex-row cursor-pointer border border-input items-center w-full h-18 rounded-lg px-4 py-1 overflow-hidden transition-all transform group select-none";
+    "relative flex flex-row cursor-pointer border border-input items-center w-full h-22 rounded-lg px-4 py-1 overflow-hidden transition-all transform group select-none";
   const variantClass =
     type === "recommendation"
       ? selected

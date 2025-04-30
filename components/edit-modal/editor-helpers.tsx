@@ -10,6 +10,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Label } from "../ui/label";
+import { FaLink } from "react-icons/fa6";
 
 export default function HeadersHelper({
   children,
@@ -29,15 +30,15 @@ export default function HeadersHelper({
         <DialogDescription>
           {website && (
             <>
-              <span className="block mb-0.5">
-                Website on file:{" "}
+              <span className="flex flex-row items-center gap-1 mb-0.5 text-primary-text hover:text-primary-darker">
+                <FaLink className="h-4 w-4" />
                 <a
                   href={website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary-text underline hover:text-primary-darker"
+                  className=""
                 >
-                  {website}
+                  Website
                 </a>
               </span>
             </>
