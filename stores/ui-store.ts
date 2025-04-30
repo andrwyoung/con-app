@@ -6,7 +6,7 @@ import { EditorSteps } from "@/components/details-panel/edit-modal/edit-con-moda
 import { FilterKey } from "@/components/sidebar-panel/modes/filter-section";
 import { log } from "@/lib/utils";
 import { SortType } from "@/types/sort-types";
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
 
 type ModalUIStore = {

@@ -12,7 +12,11 @@ import {
   UNKNOWN_CONVENTION,
 } from "../constants";
 import { log } from "../utils";
-import { ConventionInfo, ConventionYear, UserListItem } from "@/types/types";
+import {
+  ConventionInfo,
+  ConventionYear,
+  UserListItem,
+} from "@/types/con-types";
 import { addListItemToSupabase } from "./add-delete-items";
 import { getConventionYearId } from "./helper-functions";
 

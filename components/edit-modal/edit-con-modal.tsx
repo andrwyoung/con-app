@@ -1,8 +1,8 @@
 // the all purpose panel to give suggestions for upcoming cons and stuff
 // all logic is the corresponding pages
 
-import { FullConventionDetails } from "@/types/types";
-import { Dialog, DialogContent } from "../../ui/dialog";
+import { FullConventionDetails } from "@/types/con-types";
+import { Dialog, DialogContent } from "../ui/dialog";
 
 import UpdateDatesPage from "./pages/update-dates-page";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { useModalUIStore } from "@/stores/ui-store";
 import EditorPage from "./pages/full-edit-page";
 import ConfirmationPage from "./pages/confirmation-page";
 import UpdateAAPage from "./pages/update-aa-page";
+import { useUserStore } from "@/stores/user-store";
 
 export type EditorSteps =
   | "dates"
@@ -25,6 +26,8 @@ export default function EditConventionModal({
 }) {
   const page = useModalUIStore((s) => s.editingModalPage);
   const setPage = useModalUIStore((s) => s.setEditingModalPage);
+  const profile = useUserStore((s) => s.profile);
+  const isAdmin = profile?.role == "ADMIN" || profile?.role == "SUDO";
 
   const isOpen = page !== "closed";
 
@@ -36,6 +39,10 @@ export default function EditConventionModal({
       }}
     >
       <DialogContent className="sm:max-w-[480px]">
+        <div className="absolute top-10 right-6 text-xs text-primary-muted flex flex-col text-right">
+          {isAdmin && <span className="uppercase">Admin</span>}
+          Editing as: {profile ? <span>{profile.username}</span> : "Anonymous"}
+        </div>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={page}

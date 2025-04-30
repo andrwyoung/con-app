@@ -5,7 +5,7 @@ import {
   formatShortLocation,
 } from "@/lib/helpers/time/date-formatters";
 import { TIME_CATEGORY_LABELS, TimeCategory } from "@/types/time-types";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { FaStar } from "react-icons/fa6";
 
 export function StatusDotTester() {

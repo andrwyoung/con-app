@@ -2,7 +2,7 @@
 // all the filtered items themselves
 
 import { timeCategories } from "@/types/time-types";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { create } from "zustand";
 
 export const topTags = ["comic", "anime", "cosplay", "gaming", "art", "manga"];

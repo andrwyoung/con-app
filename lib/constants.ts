@@ -1,5 +1,5 @@
 import { getSortOptionsFor } from "@/types/sort-types";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 
 export const MAX_SEARCH_BATCH_SIZE = 500;
 

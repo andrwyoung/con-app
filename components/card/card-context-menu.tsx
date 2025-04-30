@@ -1,4 +1,4 @@
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 
 import { CardVariant } from "./card";
 import { useListStore } from "@/stores/list-store";

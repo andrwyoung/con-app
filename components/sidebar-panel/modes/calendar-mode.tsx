@@ -9,7 +9,7 @@ import {
 
 import { useListStore } from "@/stores/list-store";
 import { usePlanSidebarStore } from "@/stores/page-store";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { useEffect, useState } from "react";
 
 export default function CalendarMode() {

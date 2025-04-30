@@ -2,7 +2,7 @@ import {
   ApplicationType,
   applicationTypeLabels,
 } from "@/types/artist-alley-types";
-import { ConventionYear } from "@/types/types";
+import { ConventionYear } from "@/types/con-types";
 
 export default function ArtistAlleyStatus({
   conYear,

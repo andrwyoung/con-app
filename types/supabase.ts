@@ -53,10 +53,12 @@ export type Database = {
       }
       convention_years: {
         Row: {
-          artist_app_deadline: string | null
-          artist_app_first_heard: string | null
-          artist_app_link: string | null
-          artist_app_status: string | null
+          aa_deadline: string | null
+          aa_link: string | null
+          aa_open_date: string | null
+          aa_real_release: boolean | null
+          aa_status_override: string | null
+          aa_table_price: number | null
           attendance_exact: number | null
           attendance_size: string | null
           convention_id: number
@@ -66,15 +68,16 @@ export type Database = {
           id: string
           length_days: number | null
           start_date: string
-          table_price: number | null
           updated_at: string | null
           year: number
         }
         Insert: {
-          artist_app_deadline?: string | null
-          artist_app_first_heard?: string | null
-          artist_app_link?: string | null
-          artist_app_status?: string | null
+          aa_deadline?: string | null
+          aa_link?: string | null
+          aa_open_date?: string | null
+          aa_real_release?: boolean | null
+          aa_status_override?: string | null
+          aa_table_price?: number | null
           attendance_exact?: number | null
           attendance_size?: string | null
           convention_id: number
@@ -84,15 +87,16 @@ export type Database = {
           id?: string
           length_days?: number | null
           start_date: string
-          table_price?: number | null
           updated_at?: string | null
           year: number
         }
         Update: {
-          artist_app_deadline?: string | null
-          artist_app_first_heard?: string | null
-          artist_app_link?: string | null
-          artist_app_status?: string | null
+          aa_deadline?: string | null
+          aa_link?: string | null
+          aa_open_date?: string | null
+          aa_real_release?: boolean | null
+          aa_status_override?: string | null
+          aa_table_price?: number | null
           attendance_exact?: number | null
           attendance_size?: string | null
           convention_id?: number
@@ -102,7 +106,6 @@ export type Database = {
           id?: string
           length_days?: number | null
           start_date?: string
-          table_price?: number | null
           updated_at?: string | null
           year?: number
         }
@@ -354,6 +357,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      suggestions_artist_alley: {
+        Row: {
+          aa_deadline: string | null
+          aa_link: string | null
+          aa_open_date: string | null
+          aa_real_release: boolean
+          aa_status: string | null
+          approval_status: string
+          approved_by: string | null
+          convention_year_id: string
+          created_at: string
+          id: string
+          merged_at: string | null
+          submitted_by: string | null
+        }
+        Insert: {
+          aa_deadline?: string | null
+          aa_link?: string | null
+          aa_open_date?: string | null
+          aa_real_release?: boolean
+          aa_status?: string | null
+          approval_status: string
+          approved_by?: string | null
+          convention_year_id: string
+          created_at?: string
+          id?: string
+          merged_at?: string | null
+          submitted_by?: string | null
+        }
+        Update: {
+          aa_deadline?: string | null
+          aa_link?: string | null
+          aa_open_date?: string | null
+          aa_real_release?: boolean
+          aa_status?: string | null
+          approval_status?: string
+          approved_by?: string | null
+          convention_year_id?: string
+          created_at?: string
+          id?: string
+          merged_at?: string | null
+          submitted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_artist_alley_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "convention_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_artist_alley_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["convention_year_id"]
           },
         ]
       }

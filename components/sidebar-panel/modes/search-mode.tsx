@@ -3,7 +3,7 @@ import { DEFAULT_SORT, ZOOM_USE_DEFAULT } from "@/lib/constants";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import CardList from "../../card/card-list/card-list";
 import SearchBarWrapper from "./search-wrapper";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import { useScopedSearchStore } from "@/stores/search-store";
 import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { log } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { getDistance } from "../utils";
 import { ExtendedTimeCategories } from "@/types/time-types";
 import { SortType } from "@/types/sort-types";

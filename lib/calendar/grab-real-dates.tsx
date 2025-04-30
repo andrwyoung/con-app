@@ -5,7 +5,7 @@
 // 2. if !convention_year_id this is an indication that this is on a wishList
 // 3. if that doesn't exist then we want the latest dates, which is just stored in ConventionInfo
 
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { log } from "../utils";
 
 export function getRealDates(con: ConventionInfo): {

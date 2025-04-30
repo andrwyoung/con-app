@@ -1,4 +1,4 @@
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import { usePathname } from "next/navigation";
 
 export function useCurrentScope(): Scope {

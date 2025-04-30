@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 
 export function getConventionYearId(item: ConventionInfo): string | null {
   if (item.specificYear?.id) return item.specificYear.id;

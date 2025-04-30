@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import Card, { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";
 import { FlatItem } from "@/hooks/use-sorted-cards";

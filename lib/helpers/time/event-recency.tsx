@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import {
   DAYS_SINCE_RECENT,
   DAYS_UNTIL_DISCONTINUED,

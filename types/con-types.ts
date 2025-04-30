@@ -22,8 +22,6 @@ export type ConventionInfo = {
   location: string;
   location_lat: number;
   location_long: number;
-
-  // for filters
   tags: string[];
 
   // from convention_years
@@ -32,6 +30,12 @@ export type ConventionInfo = {
   latest_end_date?: string;
   latest_year: number;
   event_status: string;
+
+  aa_open_date?: string;
+  aa_deadline?: string;
+  aa_real_release?: boolean;
+  aa_link?: string;
+  aa_status_override?: string;
 
   // my generated info
   timeCategory?: TimeCategory;

@@ -1,5 +1,5 @@
 import { SortType } from "./sort-types";
-import { ConLocation } from "./types";
+import { ConLocation } from "./con-types";
 
 export type SearchType = "typed" | "clicked" | "current-location" | "near-me";
 

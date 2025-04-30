@@ -3,7 +3,7 @@
 
 import { DROPDOWN_RESULTS } from "@/lib/constants";
 import { SearchContext, SearchState } from "@/types/search-types";
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
 
 export function useScopedSearchStore(scope: Scope): SearchStore {

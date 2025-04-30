@@ -13,7 +13,7 @@ import {
   usePlanSelectedCardsStore,
   usePlanSidebarStore,
 } from "@/stores/page-store";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const yearStyling =

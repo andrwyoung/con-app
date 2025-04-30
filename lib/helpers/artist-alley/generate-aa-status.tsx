@@ -1,0 +1,76 @@
+import { ApplicationType } from "@/types/artist-alley-types";
+import { addMonths, isAfter, isBefore, parseISO } from "date-fns";
+
+export function computeAAStatus({
+  start_date,
+  aa_open_date,
+  aa_deadline,
+  aa_real_release,
+  aa_status_override,
+}: {
+  start_date?: string | null;
+  aa_open_date?: string | null;
+  aa_deadline?: string | null;
+  aa_real_release?: boolean | null;
+  aa_status_override?: string | null;
+}): ApplicationType {
+  const now = new Date();
+  const open = aa_open_date ? parseISO(aa_open_date) : null;
+  const deadline = aa_deadline ? parseISO(aa_deadline) : null;
+  const start = start_date ? parseISO(start_date) : null;
+
+  // OVERRIDES
+  //
+
+  // if it is marked as no_aa then yea. there's no aa
+  if (aa_status_override === "no_aa") return "no_aa";
+  // if it's manually marked as closed, then yea, it's closed
+  if (aa_status_override === "closed") return "closed";
+
+  // EASY LOGIC
+  //
+
+  // if deadline is here, it is for sure open
+  if (deadline && now <= deadline) return "open";
+
+  // if a real release date is here it must be announced
+  if (open && now < open && aa_real_release) return "announced";
+
+  // if a real release and it passed that date, then then it is
+  // for sure open (even without an end date)
+  if (open && now >= open && aa_real_release) return "open";
+
+  // if the deadline has passed then it is closed
+  if (deadline && now > deadline) return "closed";
+
+  // if the convention is this week or earlier, then it's for sure closed
+  if (start && now > start) return "closed";
+
+  // "EXPECTED" LOGIC
+  //
+
+  // if the release date is not an official one, and
+  // it's like kind of around that date, then it's expected
+  const twoWeeksFromNow = addMonths(now, 0.5); // ~2 weeks
+  if (
+    open &&
+    !aa_real_release &&
+    (isAfter(now, open) || isBefore(open, twoWeeksFromNow)) &&
+    (!start || isAfter(start, addMonths(now, 1)))
+  ) {
+    return "expected";
+  }
+
+  // if it's a set amount of time away: like 3 months. mark as expected
+  if (
+    !open &&
+    !aa_real_release &&
+    start &&
+    isAfter(start, addMonths(now, 2)) &&
+    isBefore(start, addMonths(now, 4))
+  ) {
+    return "expected";
+  }
+
+  return "unknown";
+}

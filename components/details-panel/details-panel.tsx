@@ -1,5 +1,9 @@
 import { grabAllDetails } from "@/lib/details/grab-all-details";
-import { ConventionInfo, FullConventionDetails, Scope } from "@/types/types";
+import {
+  ConventionInfo,
+  FullConventionDetails,
+  Scope,
+} from "@/types/con-types";
 import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import DetailsSection from "./upper-details-section/details-section";

@@ -7,7 +7,7 @@ import {
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
 import { usePlanSidebarStore } from "@/stores/page-store";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { FaRegCalendar } from "react-icons/fa6";
 
 export function CalendarMonthRow({

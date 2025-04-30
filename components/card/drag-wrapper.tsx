@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Draggable({

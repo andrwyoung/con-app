@@ -1,6 +1,6 @@
 // the rotating year gallery in the details panel
 
-import { ConventionYear, Scope } from "@/types/types";
+import { ConventionYear, Scope } from "@/types/con-types";
 import { useEffect, useRef, useState } from "react";
 import { SiGooglemaps } from "react-icons/si";
 import { IoCaretBack } from "react-icons/io5";
@@ -123,7 +123,7 @@ function YearDetail({
           onClick={() => setEditingModalPage("year")}
           className="text-xs cursor-pointer hover:underline"
         >
-          Edit
+          Edit AA
         </button>
       </div>
     </div>

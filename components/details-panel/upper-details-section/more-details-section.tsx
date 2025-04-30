@@ -1,4 +1,4 @@
-import { FullConventionDetails, Scope } from "@/types/types";
+import { FullConventionDetails, Scope } from "@/types/con-types";
 import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { useFilterStore } from "@/stores/filter-store";

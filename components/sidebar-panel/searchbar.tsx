@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 import { useDebouncedCallback } from "use-debounce";
 import { DROPDOWN_RESULTS, SPECIAL_CON_ID } from "@/lib/constants";
 import { FiClock, FiMapPin, FiUser, FiX } from "react-icons/fi";

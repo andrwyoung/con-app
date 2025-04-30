@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { getDistance } from "@/lib/utils";
 import { getStartDate } from "@/lib/helpers/sort-cons";
 import { motion } from "framer-motion";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 
 export default function Recommendations({ scope }: { scope: Scope }) {
   const userLocation = useMapStore((s) => s.userLocation);

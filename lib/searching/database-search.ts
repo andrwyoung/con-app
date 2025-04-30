@@ -1,5 +1,5 @@
 // DEPRECATED: using zustland to grab conventions
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { supabaseAnon } from "../supabase/client";
 
 export const searchConventions = async (

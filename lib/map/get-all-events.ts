@@ -3,7 +3,7 @@
 // and we need to grab all of it anyways for the map. so we'll just keep it in local store afterwards
 
 import { supabaseAnon } from "@/lib/supabase/client";
-import { ConventionInfo, Weekend } from "@/types/types";
+import { ConventionInfo, Weekend } from "@/types/con-types";
 import { getEventTimeCategory } from "../helpers/time/event-recency";
 import { findWeekendBucket } from "../calendar/determine-weekend";
 

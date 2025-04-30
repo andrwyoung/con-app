@@ -1,4 +1,4 @@
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { create } from "zustand";
 import getAllEvents from "@/lib/map/get-all-events";
 

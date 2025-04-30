@@ -1,5 +1,5 @@
 import { DEFAULT_LOCATION } from "@/lib/constants";
-import { ConLocation } from "@/types/types";
+import { ConLocation } from "@/types/con-types";
 import { log } from "../utils";
 
 export default async function getInitialLocation(): Promise<ConLocation> {

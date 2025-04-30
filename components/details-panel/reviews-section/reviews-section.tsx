@@ -71,14 +71,10 @@ export default function ReviewsSection({ id }: { id: number }) {
       <div className="flex flex-col items-center">
         {reviews.length > 0 ? (
           reviews.map((review) => (
-            <>
-              <div className="flex flex-col w-64 px-6 pt-4 border-b-2 border-primary-light last:border-none" />
-              <ReviewCard
-                key={review.review_id}
-                review={review}
-                onEditClick={handleEdit}
-              />
-            </>
+            <div key={review.review_id} className="flex flex-col w-full">
+              <div className="flex flex-col w-64 px-6 pt-4 border-b-2 border-primary-light self-center last:border-none" />
+              <ReviewCard review={review} onEditClick={handleEdit} />
+            </div>
           ))
         ) : (
           <p className="text-sm text-primary-muted text-center">

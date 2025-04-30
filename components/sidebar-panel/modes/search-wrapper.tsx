@@ -11,7 +11,7 @@ import {
 
 import { SortType, getSortLabel } from "@/types/sort-types";
 import { useScopedSearchStore } from "@/stores/search-store";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import React from "react";
 import { SEARCH_SORT_OPTIONS } from "@/lib/constants";
 

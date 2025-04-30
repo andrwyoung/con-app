@@ -1,11 +1,11 @@
-import { FullConventionDetails, Scope } from "@/types/types";
+import { FullConventionDetails, Scope } from "@/types/con-types";
 import YearGallery from "./year-detail";
 import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
 import { parseISO } from "date-fns";
 import MoreDetailsSection from "./more-details-section";
-import EditConventionModal from "../edit-modal/edit-con-modal";
 import { MdEdit } from "react-icons/md";
 import { useModalUIStore } from "@/stores/ui-store";
+import EditConventionModal from "@/components/edit-modal/edit-con-modal";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
   if (!endDate) return false;
@@ -61,7 +61,7 @@ export default function DetailsSection({
             className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
           >
             <MdEdit className="translate-y-[1px]" />
-            Edit
+            Edit Con Info
           </button>
         </div>
         <EditConventionModal conDetails={details} />

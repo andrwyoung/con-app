@@ -1,7 +1,7 @@
 // the cards themselves. representing a single convention
 
 import React, { forwardRef, useState } from "react";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { IoLocate } from "react-icons/io5";
 import { useMapStore } from "@/stores/map-store";
 import { STAR_LIST, ZOOM_USE_DEFAULT } from "@/lib/constants";

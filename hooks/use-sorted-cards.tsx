@@ -1,7 +1,7 @@
 // hook to abstract out sorting logic from the card list
 
 import { useMemo } from "react";
-import { ConventionInfo, ConLocation } from "@/types/types";
+import { ConventionInfo, ConLocation } from "@/types/con-types";
 import { groupByStatus, sortEvents } from "@/lib/helpers/sort-cons";
 
 import {

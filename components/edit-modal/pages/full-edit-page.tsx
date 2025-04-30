@@ -1,6 +1,6 @@
 import React from "react";
 import HeadersHelper from "../editor-helpers";
-import { FullConventionDetails } from "@/types/types";
+import { FullConventionDetails } from "@/types/con-types";
 import { EditorSteps } from "../edit-con-modal";
 
 export default function EditorPage({

@@ -1,7 +1,7 @@
 // DEPRECATED: until I renable keyboard nav
 // things got too complicated with multiples lists showing
 
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { FlatItem } from "./use-sorted-cards";
 import { useEffect } from "react";
 

@@ -1,14 +1,9 @@
 // storing user profile info globally
 import { create } from "zustand";
 import { User } from "@supabase/supabase-js";
+import { Tables } from "@/types/supabase";
 
-type UserProfile = {
-    user_id: string;
-    username: string;
-    role: string;
-    persona: string;
-    has_never_logged_in: boolean;
-}
+export type UserProfile = Tables<"user_profiles">;
 
 type UserStore = {
     user: User | null | undefined;

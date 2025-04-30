@@ -7,7 +7,7 @@ import {
   useExploreSidebarStore,
 } from "@/stores/page-store";
 import { useMapStore } from "@/stores/map-store";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { FeatureCollection, GeoJsonProperties, Point } from "geojson";
 import { DataDrivenPropertyValueSpecification } from "mapbox-gl";
 import { MAX_SEARCH_BATCH_SIZE } from "../constants";

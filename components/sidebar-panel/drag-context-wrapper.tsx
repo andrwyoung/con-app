@@ -4,7 +4,7 @@ import { toastAddedToList, toastAlreadyInList } from "@/lib/default-toasts";
 import { useListStore } from "@/stores/list-store";
 import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { useDragStore, useExploreGeneralUIStore } from "@/stores/ui-store";
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import React from "react";
 import Card from "../card/card";

@@ -15,7 +15,7 @@ import {
   isSameListItem,
 } from "@/lib/lists/helper-functions";
 import { ensureAllDefaultsExist } from "@/lib/lists/sync-lists";
-import { ConventionInfo } from "@/types/types";
+import { ConventionInfo } from "@/types/con-types";
 import { create } from "zustand";
 
 export type UserList = {

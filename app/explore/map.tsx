@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import { ConLocation } from "@/types/types";
+import { ConLocation } from "@/types/con-types";
 import addMarkersToMap from "../../lib/map/add-markers";
 import { useMapPinsStore, useMapStore } from "@/stores/map-store";
 import { useEventStore } from "@/stores/all-events-store";

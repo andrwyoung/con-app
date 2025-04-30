@@ -1,5 +1,5 @@
 import { useListStore } from "@/stores/list-store";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import { useEffect, useState } from "react";
 import Droppable from "./drop-wrapper";
 import CardList from "../card/card-list/card-list";

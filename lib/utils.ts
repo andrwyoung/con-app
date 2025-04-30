@@ -65,3 +65,18 @@ export function translateAuthError(message: string): string {
 
   return message; // fallback to raw message if no match
 }
+
+
+export function getRandomEncouragement(): string {
+  const messages = [
+    "Nice!",
+    "Thanks!",
+    "Woah kay",
+    "Saved!",
+    "Yay",
+    ":>",
+    ":0"
+  ];
+
+  return messages[Math.floor(Math.random() * messages.length)];
+}

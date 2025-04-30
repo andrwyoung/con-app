@@ -2,7 +2,7 @@
 
 import Fuse from "fuse.js";
 import type { IFuseOptions } from "fuse.js";
-import { ConLocation, ConventionInfo } from "@/types/types";
+import { ConLocation, ConventionInfo } from "@/types/con-types";
 import { getDistance } from "../utils";
 import { IN_THE_AREA_RESULTS } from "../constants";
 

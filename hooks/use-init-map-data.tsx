@@ -6,7 +6,7 @@ import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
 } from "@/stores/page-store";
-import { ConLocation } from "@/types/types";
+import { ConLocation } from "@/types/con-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

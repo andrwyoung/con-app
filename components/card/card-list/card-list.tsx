@@ -2,7 +2,7 @@
 // it got broken up into FlatCardsList to make this file simpler (when keyboard nav was still a thing)
 
 import { useScopedSelectedCardsStore } from "@/stores/page-store";
-import { ConLocation, ConventionInfo, Scope } from "@/types/types";
+import { ConLocation, ConventionInfo, Scope } from "@/types/con-types";
 import React, { useEffect, useRef } from "react";
 import { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";

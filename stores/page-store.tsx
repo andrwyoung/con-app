@@ -10,7 +10,7 @@ import {
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
 import { log } from "@/lib/utils";
-import { ConventionInfo, Scope } from "@/types/types";
+import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
 
 export type ExploreSidebarMode = "search" | "filter" | "map";

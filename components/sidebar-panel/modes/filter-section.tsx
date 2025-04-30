@@ -5,7 +5,7 @@ import FilterToggleButton from "./filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import TagsFilter from "./filters/tag-filter";
 import StatusFilter from "./filters/status-filter";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import ArtistAlleyFilter from "./filters/artist-alley-filter";
 
 export type FilterKey = "tags" | "time" | "distance" | "status" | "apps";

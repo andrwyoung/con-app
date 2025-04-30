@@ -9,7 +9,7 @@ import {
   useExploreSelectedCardsStore,
   useScopedSelectedCardsStore,
 } from "@/stores/page-store";
-import { Scope } from "@/types/types";
+import { Scope } from "@/types/con-types";
 import { useExploreUIStore } from "@/stores/ui-store";
 import FilterSection from "./filter-section";
 
