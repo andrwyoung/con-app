@@ -137,7 +137,8 @@ export default function ExplorePage() {
       <div className="absolute bottom-10 right-8 z-50">
         <button
           onClick={handleLocate}
-          className="bg-white text-primary-text p-2 rounded-lg shadow-lg hover:bg-primary-light transition-colors cursor-pointer"
+          className="hidden md:block bg-white text-primary-text p-2 rounded-lg 
+          shadow-lg hover:bg-primary-light transition-colors cursor-pointer"
         >
           <IoLocate />
         </button>

@@ -6,7 +6,6 @@
 // 3. if that doesn't exist then we want the latest dates, which is just stored in ConventionInfo
 
 import { ConventionInfo } from "@/types/con-types";
-import { log } from "../utils";
 
 export function getRealDates(con: ConventionInfo): {
   start_date: string | null;

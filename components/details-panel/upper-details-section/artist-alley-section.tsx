@@ -54,7 +54,7 @@ export default function ArtistAlleyStatusSection({
       <div className="text-xs text-primary-muted gap-0.5 pb-4">
         {deadline && (
           <div>
-            Closed:{" "}
+            Deadline:{" "}
             <span className="text-primary-text">
               {formatFullSingleDate(deadline)}
             </span>
