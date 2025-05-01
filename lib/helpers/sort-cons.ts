@@ -38,8 +38,8 @@ export function groupByStatus(
         const aStatus = a.aaStatus;
         const bStatus = b.aaStatus;
     
-        const aPriority = aStatus === "open" || aStatus === "expected" || aStatus === "soon";
-        const bPriority = bStatus === "open" || bStatus === "expected" || bStatus === "soon";
+        const aPriority = aStatus === "open" || aStatus === "expected" || aStatus === "watch_link";
+        const bPriority = bStatus === "open" || bStatus === "expected" || bStatus === "watch_link";
     
         if (aPriority && !bPriority) return -1;
         if (!aPriority && bPriority) return 1;

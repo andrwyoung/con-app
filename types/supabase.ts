@@ -59,15 +59,13 @@ export type Database = {
           aa_real_release: boolean | null
           aa_status_override: string | null
           aa_table_price: number | null
-          aa_watch_link: boolean
-          attendance_exact: number | null
-          attendance_size: string | null
+          aa_watch_link: boolean | null
           convention_id: number
           created_at: string
           end_date: string | null
           event_status: string
+          g_link: string | null
           id: string
-          length_days: number | null
           location: string | null
           start_date: string
           updated_at: string | null
@@ -81,15 +79,13 @@ export type Database = {
           aa_real_release?: boolean | null
           aa_status_override?: string | null
           aa_table_price?: number | null
-          aa_watch_link?: boolean
-          attendance_exact?: number | null
-          attendance_size?: string | null
+          aa_watch_link?: boolean | null
           convention_id: number
           created_at?: string
           end_date?: string | null
           event_status?: string
+          g_link?: string | null
           id?: string
-          length_days?: number | null
           location?: string | null
           start_date: string
           updated_at?: string | null
@@ -103,15 +99,13 @@ export type Database = {
           aa_real_release?: boolean | null
           aa_status_override?: string | null
           aa_table_price?: number | null
-          aa_watch_link?: boolean
-          attendance_exact?: number | null
-          attendance_size?: string | null
+          aa_watch_link?: boolean | null
           convention_id?: number
           created_at?: string
           end_date?: string | null
           event_status?: string
+          g_link?: string | null
           id?: string
-          length_days?: number | null
           location?: string | null
           start_date?: string
           updated_at?: string | null
@@ -374,7 +368,7 @@ export type Database = {
           aa_deadline: string | null
           aa_link: string | null
           aa_open_date: string | null
-          aa_real_release: boolean
+          aa_real_release: boolean | null
           aa_status: string | null
           aa_status_override: string | null
           aa_watch_link: boolean | null
@@ -390,7 +384,7 @@ export type Database = {
           aa_deadline?: string | null
           aa_link?: string | null
           aa_open_date?: string | null
-          aa_real_release?: boolean
+          aa_real_release?: boolean | null
           aa_status?: string | null
           aa_status_override?: string | null
           aa_watch_link?: boolean | null
@@ -406,7 +400,7 @@ export type Database = {
           aa_deadline?: string | null
           aa_link?: string | null
           aa_open_date?: string | null
-          aa_real_release?: boolean
+          aa_real_release?: boolean | null
           aa_status?: string | null
           aa_status_override?: string | null
           aa_watch_link?: boolean | null
@@ -432,6 +426,60 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "latest_convention_years"
             referencedColumns: ["convention_year_id"]
+          },
+        ]
+      }
+      suggestions_new_year: {
+        Row: {
+          approval_status: string
+          approved_by: string | null
+          convention_id: number
+          created_at: string
+          end_date: string | null
+          g_link: string | null
+          id: string
+          merged_at: string | null
+          start_date: string
+          submitted_by: string | null
+        }
+        Insert: {
+          approval_status: string
+          approved_by?: string | null
+          convention_id: number
+          created_at?: string
+          end_date?: string | null
+          g_link?: string | null
+          id?: string
+          merged_at?: string | null
+          start_date: string
+          submitted_by?: string | null
+        }
+        Update: {
+          approval_status?: string
+          approved_by?: string | null
+          convention_id?: number
+          created_at?: string
+          end_date?: string | null
+          g_link?: string | null
+          id?: string
+          merged_at?: string | null
+          start_date?: string
+          submitted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_new_year_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "conventions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_new_year_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
           },
         ]
       }

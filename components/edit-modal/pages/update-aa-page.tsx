@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { isFuture } from "date-fns";
 import { Button } from "@/components/ui/button";
-import {
-  ArtistAlleyInfoFields,
-  FullConventionDetails,
-} from "@/types/con-types";
+import { FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { SingleDateInput } from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
-import { AAWebsiteInput, normalizeURL } from "./aa-helpers/aa-website-input";
+import { AAWebsiteInput } from "./aa-helpers/aa-website-input";
 import {
   Select,
   SelectContent,
@@ -20,14 +17,22 @@ import {
 import { Label } from "@/components/ui/label";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { log } from "@/lib/utils";
-import { checkIsAdmin } from "@/lib/editing/authen";
 import { toast } from "sonner";
 import useShakeError from "@/hooks/use-shake-error";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaCaretDown } from "react-icons/fa6";
 import { ArtistAlleyStatus } from "@/types/artist-alley-types";
 import { useUserStore } from "@/stores/user-store";
-import { NukeAAInfo } from "@/lib/editing/aa-submission";
+import { NukeAAInfo } from "@/lib/editing/nuke-aa-year";
+import {
+  ArtistAlleyInfoFields,
+  SuggestionsMetadataFields,
+} from "@/types/suggestion-types";
+import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
+import {
+  buildApprovalMetadata,
+  buildInitialMetadata,
+} from "@/lib/editing/approval-metadata";
 
 export default function UpdateAAPage({
   conDetails,
@@ -55,131 +60,133 @@ export default function UpdateAAPage({
   const [isQuickOpen, setIsQuickOpen] = useState(true);
 
   const { user, profile } = useUserStore();
+  const isAdmin = profile?.role === "ADMIN";
   const yearId = conDetails.convention_years.find((y) => y.year === year)?.id;
 
   const handleSubmit = async () => {
-    setSubmitting(true);
-
-    try {
-      if (
-        !startDate &&
-        !deadline &&
-        !appsOpen &&
-        !isWatched &&
-        (!website || website.trim() === "") &&
-        aaStatusType === "open"
-      ) {
-        triggerError("Please fill in at least one field.");
-        setSubmitting(false);
-        return;
-      }
-
-      if (website && website.trim() !== "") {
-        const cleaned = normalizeURL(website);
-        try {
-          const url = new URL(cleaned);
-          if (!["http:", "https:"].includes(url.protocol)) {
-            throw new Error();
-          }
-          setWebsite(cleaned); // overwrite state with cleaned version
-        } catch {
-          triggerError("Please enter a valid URL.");
+    await handleSubmitWrapper({
+      setSubmitting,
+      setPage,
+      tryBlock: async () => {
+        if (
+          !startDate &&
+          !deadline &&
+          !appsOpen &&
+          !isWatched &&
+          (!website || website.trim() === "") &&
+          aaStatusType === "open"
+        ) {
+          triggerError("Please fill in at least one field.");
           setSubmitting(false);
-          return;
+          throw new Error("Validation failed");
         }
-      }
 
-      const aaInfo: ArtistAlleyInfoFields = {
-        aa_watch_link: isWatched,
-        aa_status_override: aaStatusType,
-        aa_open_date: appsOpen
-          ? (startDate && startDate < new Date()
-              ? startDate
-              : new Date()
-            ).toISOString()
-          : startDate?.toISOString() ?? undefined,
-        aa_deadline: deadline?.toISOString() ?? undefined,
-        aa_real_release: appsOpen ? true : isRealRelease,
-        aa_link: website ?? undefined,
-      };
+        const cleanedWebsite = website?.trim();
 
-      // Make a new suggestion first
-      const { data: suggestionInsert, error: insertError } = await supabaseAnon
-        .from("suggestions_artist_alley")
-        .insert({
-          convention_year_id: yearId,
-          submitted_by: user?.id ?? null,
-          approval_status: "pending",
-          ...aaInfo,
-        })
-        .select()
-        .single();
+        // clean the website link a lil
+        if (cleanedWebsite && cleanedWebsite !== "") {
+          try {
+            const url = new URL(cleanedWebsite);
+            if (!["http:", "https:"].includes(url.protocol)) {
+              throw new Error();
+            }
+          } catch {
+            triggerError("Please enter a valid URL.");
+            setSubmitting(false);
+            throw new Error("Validation failed");
+          }
+        }
 
-      if (insertError) throw insertError;
-
-      // checking if admin
-      const isAdmin = await checkIsAdmin();
-      log("isAdmin?:", isAdmin);
-
-      if (isAdmin) {
-        // Update real convention_years table
-        const updates: ArtistAlleyInfoFields = {
-          aa_status_override: aaStatusType,
+        const aaInfo: ArtistAlleyInfoFields = {
           aa_watch_link: isWatched,
+          aa_status_override: aaStatusType,
+          aa_open_date: appsOpen
+            ? (startDate && startDate < new Date()
+                ? startDate
+                : new Date()
+              ).toISOString()
+            : startDate?.toISOString() ?? undefined,
+          aa_deadline: deadline?.toISOString() ?? undefined,
+          aa_real_release: appsOpen ? true : isRealRelease,
+          aa_link: cleanedWebsite ?? undefined,
         };
-        if (startDate) {
-          updates.aa_open_date = startDate.toISOString();
-          updates.aa_real_release = isRealRelease;
-        }
-        if (deadline) updates.aa_deadline = deadline.toISOString();
-        if (website !== null && website.trim() !== "") {
-          const cleanedWebsite = website?.trim();
-          if (cleanedWebsite) {
+
+        const initMetadata: SuggestionsMetadataFields = buildInitialMetadata(
+          user?.id ?? null
+        );
+
+        // Make a new suggestion first
+        const { data: suggestionInsert, error: insertError } =
+          await supabaseAnon
+            .from("suggestions_artist_alley")
+            .insert({
+              convention_year_id: yearId,
+              ...initMetadata,
+              ...aaInfo,
+            })
+            .select()
+            .single();
+
+        if (insertError) throw insertError;
+
+        log("isAdmin?:", isAdmin);
+        if (user && isAdmin) {
+          // Update real convention_years table
+          const updates: ArtistAlleyInfoFields = {
+            aa_open_date: undefined,
+            aa_deadline: undefined,
+            aa_real_release: undefined,
+            aa_link: undefined,
+            aa_watch_link: isWatched,
+            aa_status_override: aaStatusType,
+          };
+          if (startDate) {
+            updates.aa_open_date = startDate.toISOString();
+            updates.aa_real_release = isRealRelease;
+          }
+          if (deadline) updates.aa_deadline = deadline.toISOString();
+          if (website !== null && website.trim() !== "") {
             updates.aa_link = cleanedWebsite;
           }
+          if (appsOpen) {
+            const openDate =
+              startDate && startDate < new Date() ? startDate : new Date();
+            updates.aa_open_date = openDate.toISOString();
+            updates.aa_real_release = true;
+          }
+
+          const confirmed = confirm(
+            `Admin: You're changing public Artist Alley info. Are you sure?`
+          );
+          if (!confirmed) return;
+
+          await supabaseAnon
+            .from("convention_years")
+            .update(updates)
+            .eq("id", yearId);
+
+          // Also mark the suggestion as approved
+          const updatesMetadata: SuggestionsMetadataFields =
+            buildApprovalMetadata(user.id);
+
+          await supabaseAnon
+            .from("suggestions_artist_alley")
+            .update(updatesMetadata)
+            .eq("id", suggestionInsert.id);
+
+          toast.success("Admin: change pushed through!");
         }
-        if (appsOpen) {
-          const openDate =
-            startDate && startDate < new Date() ? startDate : new Date();
-          updates.aa_open_date = openDate.toISOString();
-          updates.aa_real_release = true;
-        }
 
-        await supabaseAnon
-          .from("convention_years")
-          .update(updates)
-          .eq("id", yearId);
-
-        // Also mark the suggestion as approved
-        await supabaseAnon
-          .from("suggestions_artist_alley")
-          .update({
-            approval_status: "approved",
-            approved_by: user?.id,
-            merged_at: new Date().toISOString(),
-          })
-          .eq("id", suggestionInsert.id);
-
-        toast.success("Admin: change pushed through!");
-      }
-
-      // Success → reset and move to confirmation page
-      setStartDate(undefined);
-      setDeadline(undefined);
-      setWebsite("");
-      setIsRealRelease(false);
-      setAppsOpen(false);
-      setIsWatched(false);
-      setAAStatusType("open");
-
-      toast.success("Suggestion submitted!");
-      setPage("confirmation");
-    } catch (error) {
-      console.error("Failed to submit update:", error);
-      toast.error("Failed to submit suggestion");
-    } finally {
-      setSubmitting(false);
-    }
+        // reset states
+        setStartDate(undefined);
+        setDeadline(undefined);
+        setWebsite("");
+        setIsRealRelease(false);
+        setAppsOpen(false);
+        setIsWatched(false);
+        setAAStatusType("open");
+      },
+    });
   };
 
   return (
@@ -224,7 +231,7 @@ export default function UpdateAAPage({
                 isDisabled={isWatched}
               />
               <CheckField
-                text="Watch this link"
+                text="Correct Link but no info yet"
                 isChecked={isWatched}
                 onChange={() => setIsWatched(!isWatched)}
                 isDisabled={appsOpen}
@@ -314,7 +321,7 @@ export default function UpdateAAPage({
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>{" "}
+          </AnimatePresence>
         </>
       )}
       <DialogFooter>
@@ -333,7 +340,8 @@ export default function UpdateAAPage({
           {profile?.role === "ADMIN" && (
             <button
               type="submit"
-              className="text-primary-text transition-all bg-rose-300 px-4 py-2 rounded-lg cursor-pointer text-xs hover:bg-rose-100 mt-2"
+              className="text-rose-500 transition-all outline-2 outline-rose-300 hover:outline-rose-400 hover:bg-rose-200 
+              px-3 py-1 rounded-lg cursor-pointer text-xs mt-2"
               onClick={async () => {
                 const confirmed = confirm(
                   `Are you sure you want to wipe all Artist Alley info for ${year}?`
@@ -345,7 +353,7 @@ export default function UpdateAAPage({
                 }
               }}
             >
-              Admin Action: Clear {year} AA Data
+              Admin: Clear {year} AA Data
             </button>
           )}
         </div>

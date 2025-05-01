@@ -48,7 +48,7 @@ export function getAAStatus(
   if (deadline && now > deadline) return "closed";
 
   // else there might be a link you can watch;
-  if (aa_watch_link) return "soon";
+  if (aa_watch_link) return "watch_link";
 
   // "EXPECTED" LOGIC
   //

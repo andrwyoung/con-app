@@ -104,7 +104,9 @@ export default function Recommendations({ scope }: { scope: Scope }) {
     const openOrAnnounced = withStatus
       .filter(
         (c) =>
-          c.status === "open" || c.status === "announced" || c.status === "soon"
+          c.status === "open" ||
+          c.status === "announced" ||
+          c.status === "watch_link"
       )
       .sort((a, b) => a.distance - b.distance);
 

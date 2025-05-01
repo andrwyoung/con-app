@@ -4,7 +4,8 @@ export type ArtistAlleyStatus =
   | "passed"
   | "no_aa"
   | "invite_only"
-  | "soon"
+  | "watch_link"
+  | "waitlist"
   | "open"
   | "expected"
   | "announced";
@@ -13,7 +14,8 @@ export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> = {
   unknown: "No Info Yet",
   closed: "Closed",
   passed: "Passed",
-  soon: "Look Out",
+  watch_link: "Look Out",
+  waitlist: "Waitlist",
   no_aa: "No Artist Alley",
   invite_only: "Invite Only",
   open: "Open!",
@@ -27,7 +29,8 @@ export const getAAStatusColor = (status: ArtistAlleyStatus) => {
       return "bg-green-100 text-green-800 border-green-400";
     case "expected":
       return "bg-orange-200 text-yellow-800 border-orange-300";
-    case "soon":
+    case "watch_link":
+    case "waitlist":
       return "bg-yellow-200 text-yellow-800 border-yellow-300";
     case "announced":
       return "bg-blue-100 text-green-800 border-blue-400";

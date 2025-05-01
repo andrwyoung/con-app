@@ -124,6 +124,7 @@ export function CheckField({
               : "data-[state=checked]:bg-primary-lightest data-[state=checked]:border-primary"
           }
         `}
+        id={`${text}-checkbox`}
         checked={isChecked}
         onCheckedChange={onChange}
         disabled={isDisabled}
@@ -131,6 +132,7 @@ export function CheckField({
         <CheckboxPrimitive.Indicator
           data-slot="checkbox-indicator"
           className="flex items-center justify-center text-current transition-none"
+          id={`${text}-checkbox`}
         >
           {/* <FaCheck className="size-2.5 text-primary-muted" /> */}
         </CheckboxPrimitive.Indicator>

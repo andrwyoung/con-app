@@ -55,15 +55,21 @@ export default function HeadersHelper({
 
 export function DateRangeInput({
   label,
+  subheader,
   value,
   onChange,
   placeholder = "Select a date range",
+  encouragement = "Nice!",
 }: {
   label?: string;
+  subheader?: string;
   value: DateRange | undefined;
   onChange: (range: DateRange | undefined) => void;
   placeholder?: string;
+  encouragement?: string;
 }) {
+  const [open, setOpen] = useState(false);
+
   const formatRangeLabel = () => {
     if (!value?.from) return placeholder;
     if (value.from && value.to) {
@@ -73,20 +79,38 @@ export function DateRangeInput({
   };
 
   return (
-    <Popover>
-      {label && <Label>{label}</Label>}
-      <PopoverTrigger
-        className={`min-w-128 flex flex-row w-full justify-between items-baseline text-left font-normal cursor-pointer border rounded-lg px-4 py-2 gap-4 ${
-          !value ? "text-muted-foreground" : ""
-        }`}
-      >
-        {formatRangeLabel()}
-        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar mode="range" selected={value} onSelect={onChange} />
-      </PopoverContent>
-    </Popover>
+    <div className="flex flex-col w-full gap-2 py-2">
+      <Popover open={open} onOpenChange={setOpen}>
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-row justify-between">
+            <Label className="text-primary-text">{label}</Label>
+            {value && (
+              <span className="text-green-600 text-xs ml-1">
+                ✓ {encouragement}
+              </span>
+            )}
+          </div>
+          <span className="text-xs text-primary-muted">{subheader}</span>
+        </div>
+        <PopoverTrigger
+          className={`flex flex-row justify-between items-center text-left font-normal 
+            cursor-pointer border-1 rounded-lg px-4 py-2 gap-4 text-sm ${
+              !value ? "text-primary-muted" : ""
+            }`}
+        >
+          {value ? formatRangeLabel() : <span>{placeholder}</span>}
+          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="range"
+            selected={value}
+            defaultMonth={value?.from ?? new Date()}
+            onSelect={onChange}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
 

@@ -13,14 +13,6 @@ export function useDebouncedValue<T>(value: T, delay = 300): T {
   return debounced;
 }
 
-export function normalizeURL(raw: string): string {
-  const trimmed = raw.trim();
-  if (!/^https?:\/\//i.test(trimmed)) {
-    return `https://${trimmed}`;
-  }
-  return trimmed;
-}
-
 export function AAWebsiteInput({
   label,
   website,
