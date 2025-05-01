@@ -22,7 +22,7 @@ export function getRealDates(con: ConventionInfo): {
 
   // prediction
   if (!con.convention_year_id && con.latest_start_date && con.latest_end_date) {
-    log("convention has no id. so true dates are a year ahead");
+    // log("convention has no id. so true dates are a year ahead");
     const start = new Date(con.latest_start_date);
     const end = new Date(con.latest_end_date);
 
@@ -36,7 +36,7 @@ export function getRealDates(con: ConventionInfo): {
   }
 
   // if no specicYear
-  log("con has no specific year and isn't null. returning real dates");
+  // log("con has no specific year and isn't null. returning real dates");
   return {
     start_date: con.latest_start_date ?? null,
     end_date: con.latest_end_date ?? null,

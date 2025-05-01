@@ -6,7 +6,7 @@ import { useModalUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
 import { useSearchParams } from "next/navigation";
 import { useExploreSearchStore } from "@/stores/search-store";
-import {getBrowserLocation} from "@/lib/map/get-initial-location";
+import { getBrowserLocation } from "@/lib/map/get-initial-location";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
@@ -14,6 +14,8 @@ import {
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
 import MobileDrawer2 from "./mobile-drawer2";
+import { IoLocate } from "react-icons/io5";
+import { DEFAULT_ZOOM } from "@/lib/constants";
 
 export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
@@ -81,20 +83,17 @@ export default function ExplorePage() {
   }, [isModalOpen, clearSelectedEvents]);
 
   const handleLocate = async () => {
+    log("coords hey");
     try {
       const coords = await getBrowserLocation(); // triggers permission
       if (!coords) return;
-  
-      const {
-        flyTo,
-        setUserLocation
-      } = useMapStore.getState();
-  
+
+      const { flyTo, setUserLocation } = useMapStore.getState();
+
       setUserLocation(coords);
-  
-      // Fly to user's location with closer zoom. 13 seemed the best? could change later
-      flyTo?.(coords, 13);
-  
+      log("coords", coords);
+
+      flyTo?.(coords, DEFAULT_ZOOM);
     } catch (err) {
       console.error("Location access denied or failed", err);
     }
@@ -135,13 +134,14 @@ export default function ExplorePage() {
           <MobileDrawer2 />
         </div>
       )}
-      <div className="absolute bottom-4 right-4 z-50">
+      <div className="absolute bottom-10 right-8 z-50">
         <button
           onClick={handleLocate}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition"
+          className="bg-white text-primary-text p-2 rounded-lg shadow-lg hover:bg-primary-light transition-colors cursor-pointer"
         >
-          Locate Me
+          <IoLocate />
         </button>
+        <SidebarBackground />
       </div>
     </div>
   );

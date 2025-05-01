@@ -75,7 +75,7 @@ export default function ArtistAlleyStatusSection({
               href={normalizeWebsiteLink(website)}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline cursor-pointer text-primary-text hover:text-primary-muted"
+              className="hover:underline cursor-pointer text-primary-text hover:text-primary-muted line-clamp-2"
             >
               {website}
             </a>
