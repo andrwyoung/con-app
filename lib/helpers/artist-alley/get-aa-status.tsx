@@ -11,7 +11,7 @@ export function getAAStatus(
   event_status?: string | null
 ): ArtistAlleyStatus {
   const now = new Date();
-  const open = aa_open_date ? parseISO(aa_open_date) : null;
+  const open = aa_open_date ? new Date(aa_open_date + "T00:00:00") : null;
   const deadline = aa_deadline ? parseISO(aa_deadline) : null;
   const start = start_date ? parseISO(start_date) : null;
 

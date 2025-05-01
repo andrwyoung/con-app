@@ -331,8 +331,9 @@ export default function UpdateAAPage({
             </span>
           )}
           {profile?.role === "ADMIN" && (
-            <Button
-              variant="outline"
+            <button
+              type="submit"
+              className="text-primary-text transition-all bg-rose-300 px-4 py-2 rounded-lg cursor-pointer text-xs hover:bg-rose-100 mt-2"
               onClick={async () => {
                 const confirmed = confirm(
                   `Are you sure you want to wipe all Artist Alley info for ${year}?`
@@ -344,8 +345,8 @@ export default function UpdateAAPage({
                 }
               }}
             >
-              Admin: Clear {year} AA Data
-            </Button>
+              Admin Action: Clear {year} AA Data
+            </button>
           )}
         </div>
       </DialogFooter>
