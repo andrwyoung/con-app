@@ -3,6 +3,7 @@ export type ArtistAlleyStatus =
   | "closed"
   | "passed"
   | "no_aa"
+  | "invite_only"
   | "soon"
   | "open"
   | "expected"
@@ -14,6 +15,7 @@ export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> = {
   passed: "Passed",
   soon: "Look Out",
   no_aa: "No Artist Alley",
+  invite_only: "Invite Only",
   open: "Open!",
   expected: "Expected",
   announced: "Announced",
@@ -32,6 +34,7 @@ export const getAAStatusColor = (status: ArtistAlleyStatus) => {
     case "closed":
     case "passed":
     case "no_aa":
+    case "invite_only":
     case "unknown":
     default:
       return "bg-stone-200/50 text-stone-600 border-stone-300/50";

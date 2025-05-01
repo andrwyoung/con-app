@@ -59,6 +59,7 @@ export type Database = {
           aa_real_release: boolean | null
           aa_status_override: string | null
           aa_table_price: number | null
+          aa_watch_link: boolean
           attendance_exact: number | null
           attendance_size: string | null
           convention_id: number
@@ -67,8 +68,10 @@ export type Database = {
           event_status: string
           id: string
           length_days: number | null
+          location: string | null
           start_date: string
           updated_at: string | null
+          venue: string | null
           year: number
         }
         Insert: {
@@ -78,6 +81,7 @@ export type Database = {
           aa_real_release?: boolean | null
           aa_status_override?: string | null
           aa_table_price?: number | null
+          aa_watch_link?: boolean
           attendance_exact?: number | null
           attendance_size?: string | null
           convention_id: number
@@ -86,8 +90,10 @@ export type Database = {
           event_status?: string
           id?: string
           length_days?: number | null
+          location?: string | null
           start_date: string
           updated_at?: string | null
+          venue?: string | null
           year: number
         }
         Update: {
@@ -97,6 +103,7 @@ export type Database = {
           aa_real_release?: boolean | null
           aa_status_override?: string | null
           aa_table_price?: number | null
+          aa_watch_link?: boolean
           attendance_exact?: number | null
           attendance_size?: string | null
           convention_id?: number
@@ -105,8 +112,10 @@ export type Database = {
           event_status?: string
           id?: string
           length_days?: number | null
+          location?: string | null
           start_date?: string
           updated_at?: string | null
+          venue?: string | null
           year?: number
         }
         Relationships: [
@@ -367,6 +376,8 @@ export type Database = {
           aa_open_date: string | null
           aa_real_release: boolean
           aa_status: string | null
+          aa_status_override: string | null
+          aa_watch_link: boolean | null
           approval_status: string
           approved_by: string | null
           convention_year_id: string
@@ -381,6 +392,8 @@ export type Database = {
           aa_open_date?: string | null
           aa_real_release?: boolean
           aa_status?: string | null
+          aa_status_override?: string | null
+          aa_watch_link?: boolean | null
           approval_status: string
           approved_by?: string | null
           convention_year_id: string
@@ -395,6 +408,8 @@ export type Database = {
           aa_open_date?: string | null
           aa_real_release?: boolean
           aa_status?: string | null
+          aa_status_override?: string | null
+          aa_watch_link?: boolean | null
           approval_status?: string
           approved_by?: string | null
           convention_year_id?: string
@@ -647,6 +662,12 @@ export type Database = {
     Views: {
       latest_convention_years: {
         Row: {
+          aa_deadline: string | null
+          aa_link: string | null
+          aa_open_date: string | null
+          aa_real_release: boolean | null
+          aa_status_override: string | null
+          aa_watch_link: boolean | null
           convention_year_id: string | null
           event_status: string | null
           id: number | null

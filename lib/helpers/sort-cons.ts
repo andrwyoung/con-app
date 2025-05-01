@@ -30,8 +30,21 @@ export function groupByStatus(
   Object.entries(grouped).forEach(([key, group]) => {
     const reverseSort = key === "historical" || key === "past" || key === "discontinued";
   
+    // then sort them by their time recency
     group.sort((a, b) => {
       const diff = getStartDate(a).getTime() - getStartDate(b).getTime();
+    
+      if (key === "upcoming") {
+        const aStatus = a.aaStatus;
+        const bStatus = b.aaStatus;
+    
+        const aPriority = aStatus === "open" || aStatus === "expected" || aStatus === "soon";
+        const bPriority = bStatus === "open" || bStatus === "expected" || bStatus === "soon";
+    
+        if (aPriority && !bPriority) return -1;
+        if (!aPriority && bPriority) return 1;
+      }
+
       return reverseSort ? -diff : diff;
     });
   });

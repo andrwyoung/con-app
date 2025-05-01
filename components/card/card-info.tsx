@@ -91,7 +91,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
           </p>
           <div
             title="Future Prediction"
-            className="shrink-0 px-2 bg-primary rounded-lg text-primary-text whitespace-nowrap"
+            className="shrink-0 px-2 bg-white rounded-lg text-primary-text whitespace-nowrap"
           >
             Fut.
           </div>

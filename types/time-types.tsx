@@ -1,8 +1,8 @@
 export const timeCategories = [
   "here",
+  "upcoming",
   "postponed",
   "soon",
-  "upcoming",
   "recent",
   "past",
   "discontinued",
@@ -13,10 +13,10 @@ export const timeCategories = [
 export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
   here: "Now",
   postponed: "Postponed",
-  soon: "Soon",
+  soon: "Starting Soon",
   upcoming: "Upcoming",
   recent: "Just Ended",
-  past: "Earlier",
+  past: "Happened Earlier",
   discontinued: "Discontinued",
   cancelled: "Cancelled",
   unknown: "Unknown",

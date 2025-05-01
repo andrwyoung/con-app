@@ -7,6 +7,7 @@ export function getAAStatus(
   aa_deadline?: string | null,
   aa_real_release?: boolean | null,
   aa_status_override?: string | null,
+  aa_watch_link?: boolean | null,
   event_status?: string | null
 ): ArtistAlleyStatus {
   const now = new Date();
@@ -19,6 +20,8 @@ export function getAAStatus(
 
   // if it is marked as no_aa then yea. there's no aa
   if (aa_status_override === "no_aa") return "no_aa";
+  // same with invite_only
+  if (aa_status_override === "invite_only") return "invite_only";
   // if it's manually marked as closed, then yea, it's closed
   if (aa_status_override === "closed") return "closed";
 
@@ -44,6 +47,9 @@ export function getAAStatus(
   // if the deadline has passed then it is closed
   if (deadline && now > deadline) return "closed";
 
+  // else there might be a link you can watch;
+  if (aa_watch_link) return "soon";
+
   // "EXPECTED" LOGIC
   //
 
@@ -64,8 +70,8 @@ export function getAAStatus(
     !open &&
     !aa_real_release &&
     start &&
-    isAfter(start, addMonths(now, 2)) &&
-    isBefore(start, addMonths(now, 4))
+    isAfter(start, addMonths(now, 3)) &&
+    isBefore(start, addMonths(now, 5))
   ) {
     return "expected";
   }

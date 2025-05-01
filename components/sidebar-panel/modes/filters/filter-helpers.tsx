@@ -89,15 +89,19 @@ export function CheckField({
   isChecked,
   onChange,
   isMuted = false,
+  isDisabled = false,
 }: {
   text: string;
   isChecked: boolean;
   onChange: () => void;
   isMuted?: boolean;
+  isDisabled?: boolean;
 }) {
   return (
     <label
-      className={`flex items-center gap-2 cursor-pointer select-none p-1 group`}
+      className={`flex items-center gap-2 select-none p-1 group ${
+        isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
     >
       <input
         type="checkbox"
@@ -105,6 +109,7 @@ export function CheckField({
         checked={isChecked}
         onChange={onChange}
         className="hidden"
+        disabled={isDisabled}
       />
       <CheckboxPrimitive.Root
         data-slot="checkbox"
@@ -121,6 +126,7 @@ export function CheckField({
         `}
         checked={isChecked}
         onCheckedChange={onChange}
+        disabled={isDisabled}
       >
         <CheckboxPrimitive.Indicator
           data-slot="checkbox-indicator"
@@ -130,7 +136,13 @@ export function CheckField({
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
 
-      <span className="text-sm font-medium text-primary-text group-hover:text-primary-muted leading-tight">
+      <span
+        className={`text-sm font-medium leading-tight ${
+          isDisabled
+            ? "text-primary-muted/60"
+            : "text-primary-text group-hover:text-primary-muted"
+        }`}
+      >
         {text}
       </span>
     </label>

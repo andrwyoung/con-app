@@ -43,7 +43,7 @@ export default async function getAllEvents(): Promise<ConventionInfo[]> {
           const bucket = findWeekendBucket(event.latest_start_date, event.latest_end_date);
           return bucket ? { year: bucket.year, weekend: bucket.weekend } as Weekend: null;
         })(),
-        aaStatus: getAAStatus(event.latest_start_date, event.aa_open_date, event.aa_deadline, event.aa_real_release, event.aa_status_override, event.event_status),
+        aaStatus: getAAStatus(event.latest_start_date, event.aa_open_date, event.aa_deadline, event.aa_real_release, event.aa_status_override, event.aa_watch_link, event.event_status),
       };
     });
 

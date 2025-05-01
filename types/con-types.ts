@@ -14,6 +14,15 @@ export type Weekend = {
   weekend: number,
 }
 
+export type ArtistAlleyInfoFields = {
+  aa_open_date?: string;
+  aa_deadline?: string;
+  aa_real_release?: boolean;
+  aa_link?: string;
+  aa_watch_link: boolean;
+  aa_status_override: ArtistAlleyStatus,
+};
+
 export type ConventionInfo = {
   // from conventions
   id: number;
@@ -37,6 +46,7 @@ export type ConventionInfo = {
   aa_real_release?: boolean;
   aa_link?: string;
   aa_status_override?: string;
+  aa_watch_link?: boolean;
 
   // my generated info
   timeCategory?: TimeCategory;
