@@ -1,4 +1,4 @@
-import getInitialLocation from "@/lib/map/get-initial-location";
+import {getInitialLocation} from "@/lib/map/get-initial-location";
 import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useMapStore } from "@/stores/map-store";

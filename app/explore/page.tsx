@@ -6,6 +6,7 @@ import { useModalUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
 import { useSearchParams } from "next/navigation";
 import { useExploreSearchStore } from "@/stores/search-store";
+import {getBrowserLocation} from "@/lib/map/get-initial-location";
 import {
   useExploreSelectedCardsStore,
   useExploreSidebarStore,
@@ -79,6 +80,26 @@ export default function ExplorePage() {
     return () => window.removeEventListener("keydown", handleShortcuts);
   }, [isModalOpen, clearSelectedEvents]);
 
+  const handleLocate = async () => {
+    try {
+      const coords = await getBrowserLocation(); // triggers permission
+      if (!coords) return;
+  
+      const {
+        flyTo,
+        setUserLocation
+      } = useMapStore.getState();
+  
+      setUserLocation(coords);
+  
+      // Fly to user's location with closer zoom. 13 seemed the best? could change later
+      flyTo?.(coords, 13);
+  
+    } catch (err) {
+      console.error("Location access denied or failed", err);
+    }
+  };
+
   return (
     <div className="w-screen h-screen-dvh font-extrabold relative">
       <div className="absolute z-8 top-0 left-0 md:top-[13%] md:left-[2%]">
@@ -114,6 +135,14 @@ export default function ExplorePage() {
           <MobileDrawer2 />
         </div>
       )}
+      <div className="absolute bottom-4 right-4 z-50">
+        <button
+          onClick={handleLocate}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition"
+        >
+          Locate Me
+        </button>
+      </div>
     </div>
   );
 }
