@@ -240,13 +240,13 @@ export default function ReviewModal({
           </div>
         </div>
         <DialogFooter>
-          <div className="flex flex-row gap-8 items-center mt-2">
+          <div className="flex flex-row gap-4 justify-center sm:gap-8 items-center mt-2">
             {isEditing && (
               <div
                 className="flex flex-row gap-1 items-center text-rose-400 cursor-pointer"
                 onClick={handleDelete}
               >
-                <FiTrash2 className="transform-y-[1px]" />
+                <FiTrash2 className="hidden sm:block transform-y-[1px]" />
                 <p>Delete Note</p>
               </div>
             )}

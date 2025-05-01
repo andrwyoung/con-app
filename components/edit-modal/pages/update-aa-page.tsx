@@ -260,7 +260,7 @@ export default function UpdateAAPage({
                 className="overflow-hidden"
               >
                 <div className="flex flex-col gap-6 pb-10">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
                     <div className="flex flex-col">
                       <SingleDateInput
                         label="Release Date:"

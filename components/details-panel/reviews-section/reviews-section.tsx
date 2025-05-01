@@ -5,6 +5,7 @@ import ReviewCard from "./review-card";
 import ReviewModal from "./review-modal";
 import { Review } from "@/types/review-types";
 import { log } from "@/lib/utils";
+import { useModalUIStore } from "@/stores/ui-store";
 
 export default function ReviewsSection({ id }: { id: number }) {
   const profile = useUserStore((s) => s.profile);
@@ -12,6 +13,8 @@ export default function ReviewsSection({ id }: { id: number }) {
 
   const [editReview, setEditReview] = useState<Review | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  const setLoginModalStep = useModalUIStore((s) => s.setLoginModalStep);
 
   const handleEdit = (review: Review) => {
     setEditReview(review);
@@ -64,7 +67,13 @@ export default function ReviewsSection({ id }: { id: number }) {
             </button>
           </>
         ) : (
-          <p className="text-xs text-primary-muted ">Sign in to leave a note</p>
+          <button
+            type="button"
+            className="text-xs text-secondary-darker hover:underline cursor-pointer"
+            onClick={() => setLoginModalStep("email")}
+          >
+            Sign in to leave a note
+          </button>
         )}
       </div>
 

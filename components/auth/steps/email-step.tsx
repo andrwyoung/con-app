@@ -56,7 +56,7 @@ export default function EmailStep({
           )}
         </div>
 
-        <div className="flex items-baseline gap-4">
+        <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-1 sm:gap-4 mt-6 sm:mt-0">
           <Button type="submit" className="font-semibold font-sans-header">
             Continue to Login
           </Button>

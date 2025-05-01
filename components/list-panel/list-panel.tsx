@@ -26,11 +26,11 @@ import {
 import { isSpecialListKey } from "@/lib/lists/special-list";
 import { toast } from "sonner";
 import { generateNewListNames } from "@/lib/lists/create-new-list-names";
-import { useScopedUIStore } from "@/stores/ui-store";
+import { useModalUIStore, useScopedUIStore } from "@/stores/ui-store";
 import { getSortLabel, SortType } from "@/types/sort-types";
 
 const NEW_ITEM_KEY = "__new__";
-const NO_ACTION = "__dud__";
+const LOGIN_KEY = "__login__";
 
 export default function ListPanel({ scope }: { scope: Scope }) {
   const profile = useUserStore((s) => s.profile);
@@ -41,6 +41,8 @@ export default function ListPanel({ scope }: { scope: Scope }) {
   const createList = useListStore((s) => s.createList);
   const renameList = useListStore((s) => s.renameList);
   const deleteList = useListStore((s) => s.deleteList);
+
+  const setLoginModalStep = useModalUIStore((s) => s.setLoginModalStep);
 
   const [isSyncing, setIsSyncing] = useState(false);
   const { listSortType: sortMode, setListSortType: setSortMode } =
@@ -94,8 +96,8 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                 // NEW_ITEM_KEY will never conflict with value because value is
                 // always "${username}-list-5" or "planning" or "interested"
                 handleNewList();
-              } else if (value === NO_ACTION) {
-                // this is only here because <Select> always returns something on change
+              } else if (value === LOGIN_KEY) {
+                setLoginModalStep("email");
                 return;
               } else {
                 setShowingNow(value);
@@ -143,7 +145,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                   </>
                 ) : (
                   // might remove this. kind of redundant, but it's like a CTA
-                  <SelectItem value={NO_ACTION} className="text-primary-muted">
+                  <SelectItem value={LOGIN_KEY} className="text-primary-muted">
                     Sign in to make <br />
                     custom lists
                   </SelectItem>
