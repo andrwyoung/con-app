@@ -21,9 +21,23 @@ export type ArtistAlleyInfoFields = {
   aa_status_override: ArtistAlleyStatus | null | undefined;
 };
 
+export type ConDetailsFields = {
+  new_start_date: string | null | undefined;
+  new_end_date: string | null | undefined;
+  new_g_link: string | null | undefined;
+  new_status: string | null | undefined;
+  new_description: string | null | undefined;
+  new_tags: string | null | undefined;
+  new_website: string | null | undefined;
+  new_social_links: string | null | undefined;
+  notes: string | null | undefined;
+  con_size: string | null | undefined;
+  organizer: string | null | undefined;
+};
+
 export type NewYearInfoFields = {
   // technically a mandatory field, but we keep it loose here for admin
-  start_date: string | null | undefined;
+  start_date: string | undefined;
   end_date: string | null | undefined;
   g_link: string | null | undefined;
 };

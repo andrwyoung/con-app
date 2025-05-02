@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import { FullConventionDetails } from "@/types/con-types";
+import { ConventionYear, FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { DateRangeInput } from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 import useShakeError from "@/hooks/use-shake-error";
@@ -111,7 +111,7 @@ export default function SubmitNewYearPage({
           };
 
           // resue the payload from above. redefined for clarity
-          const newYearFields: NewYearInfoFields = payload;
+          const newYearFields: Partial<ConventionYear> = payload;
 
           // grab last year's application start and end dates (keep em around)
           // set real release false
@@ -120,12 +120,11 @@ export default function SubmitNewYearPage({
             aa_deadline: latestYear().aa_deadline,
             aa_real_release: false,
             aa_link: undefined,
-            aa_watch_link: undefined,
             aa_status_override: undefined,
           };
 
           const confirmed = confirm(
-            `Admin: you're adding a new year for ${conventionYearsPayload.year}. Are you sure?`
+            `Admin: Suggestion Submitted. Now do you actually want to add a new year for ${conventionYearsPayload.year}?`
           );
           if (!confirmed) return;
 

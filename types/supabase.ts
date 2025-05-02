@@ -132,6 +132,7 @@ export type Database = {
       conventions: {
         Row: {
           address: string | null
+          con_size: string | null
           created_at: string
           cs_description: string | null
           facebook_url: string | null
@@ -155,6 +156,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          con_size?: string | null
           created_at?: string
           cs_description?: string | null
           facebook_url?: string | null
@@ -178,6 +180,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          con_size?: string | null
           created_at?: string
           cs_description?: string | null
           facebook_url?: string | null
@@ -198,96 +201,6 @@ export type Database = {
           venue?: string | null
           website?: string | null
           x_url?: string | null
-        }
-        Relationships: []
-      }
-      conventions_v1: {
-        Row: {
-          created_at: string
-          date: string | null
-          days_length: number | null
-          end_date: string | null
-          id: number
-          location: string | null
-          name: string | null
-          start_date: string | null
-          url: string | null
-          venue: string | null
-          year: number | null
-        }
-        Insert: {
-          created_at?: string
-          date?: string | null
-          days_length?: number | null
-          end_date?: string | null
-          id?: number
-          location?: string | null
-          name?: string | null
-          start_date?: string | null
-          url?: string | null
-          venue?: string | null
-          year?: number | null
-        }
-        Update: {
-          created_at?: string
-          date?: string | null
-          days_length?: number | null
-          end_date?: string | null
-          id?: number
-          location?: string | null
-          name?: string | null
-          start_date?: string | null
-          url?: string | null
-          venue?: string | null
-          year?: number | null
-        }
-        Relationships: []
-      }
-      full_convention_table: {
-        Row: {
-          created_at: string
-          date: string | null
-          days_length: number | null
-          end_date: string | null
-          id: number
-          latitude: number | null
-          location: string | null
-          longitude: number | null
-          name: string | null
-          start_date: string | null
-          url: string | null
-          venue: string | null
-          year: number | null
-        }
-        Insert: {
-          created_at?: string
-          date?: string | null
-          days_length?: number | null
-          end_date?: string | null
-          id?: number
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          name?: string | null
-          start_date?: string | null
-          url?: string | null
-          venue?: string | null
-          year?: number | null
-        }
-        Update: {
-          created_at?: string
-          date?: string | null
-          days_length?: number | null
-          end_date?: string | null
-          id?: number
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          name?: string | null
-          start_date?: string | null
-          url?: string | null
-          venue?: string | null
-          year?: number | null
         }
         Relationships: []
       }
@@ -426,6 +339,84 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "latest_convention_years"
             referencedColumns: ["convention_year_id"]
+          },
+        ]
+      }
+      suggestions_con_details: {
+        Row: {
+          approval_status: string
+          approved_by: string | null
+          con_size: string | null
+          convention_id: number
+          created_at: string
+          id: string
+          merged_at: string | null
+          new_description: string | null
+          new_end_date: string | null
+          new_g_link: string | null
+          new_social_links: string | null
+          new_start_date: string | null
+          new_status: string | null
+          new_tags: string | null
+          new_website: string | null
+          notes: string | null
+          organizer: string | null
+          submitted_by: string | null
+        }
+        Insert: {
+          approval_status: string
+          approved_by?: string | null
+          con_size?: string | null
+          convention_id: number
+          created_at?: string
+          id?: string
+          merged_at?: string | null
+          new_description?: string | null
+          new_end_date?: string | null
+          new_g_link?: string | null
+          new_social_links?: string | null
+          new_start_date?: string | null
+          new_status?: string | null
+          new_tags?: string | null
+          new_website?: string | null
+          notes?: string | null
+          organizer?: string | null
+          submitted_by?: string | null
+        }
+        Update: {
+          approval_status?: string
+          approved_by?: string | null
+          con_size?: string | null
+          convention_id?: number
+          created_at?: string
+          id?: string
+          merged_at?: string | null
+          new_description?: string | null
+          new_end_date?: string | null
+          new_g_link?: string | null
+          new_social_links?: string | null
+          new_start_date?: string | null
+          new_status?: string | null
+          new_tags?: string | null
+          new_website?: string | null
+          notes?: string | null
+          organizer?: string | null
+          submitted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_con_details_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "conventions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_con_details_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["id"]
           },
         ]
       }

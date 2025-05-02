@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { FullConventionDetails } from "@/types/con-types";
+import { ConventionYear, FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { SingleDateInput } from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 import { AAWebsiteInput } from "./aa-helpers/aa-website-input";
@@ -197,16 +197,12 @@ export default function UpdateAAPage({
         log("isAdmin?:", isAdmin);
         if (user && isAdmin) {
           // Update real convention_years table
-          const updates: ArtistAlleyInfoFields = {
-            aa_open_date: deriveStartDate(),
-            aa_deadline: deriveEndDate(),
-            aa_real_release: deriveIsRealRelease(),
-            aa_link: cleanedWebsite,
-            aa_status_override: deriveOverRideStatus() as ArtistAlleyStatus,
-          };
+
+          // cast to check for types
+          const updates: Partial<ConventionYear> = aaInfo;
 
           const confirmed = confirm(
-            `Admin: You're changing public Artist Alley info. Are you sure?`
+            `Admin: Suggestion Submitted. Do you also want to update/overwrite the actual info?`
           );
           if (!confirmed) return;
 

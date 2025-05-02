@@ -15,7 +15,6 @@ export async function NukeAAInfo(yearId: string, submittedBy: string) {
     aa_deadline: null,
     aa_real_release: null,
     aa_link: null,
-    aa_watch_link: null,
     aa_status_override: null,
   };
 
