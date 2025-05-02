@@ -18,7 +18,9 @@ export default function UpdateConDetailsPage({
   const [submitting, setSubmitting] = useState(false);
   const { error, shake, triggerError } = useShakeError();
 
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(
+    conDetails.cs_description ?? ""
+  );
 
   const handleSubmit = async () => {
     await handleSubmitWrapper({
@@ -36,14 +38,30 @@ export default function UpdateConDetailsPage({
 
   return (
     <HeadersHelper
-      title={`Add Convention Info`}
+      title={`Edit Details for ${conDetails.name}`}
       website={conDetails.website ?? undefined}
     >
-      <WikipediaTextarea
-        queryTitle={conDetails.name}
-        initialValue={description}
-        onChange={setDescription}
-      />
+      <div className="flex flex-col pt-4 pb-8 gap-6">
+        <WikipediaTextarea
+          queryTitle={conDetails.name}
+          initialValue={description}
+          onChange={setDescription}
+        />
+        {/* 
+        <div>
+          <Label className="text-sm font-medium text-primary-text">Tags:</Label>
+          <div className="flex flex-wrap items-center justify-center gap-y-1 gap-x-2">
+            {allTags.map((tag, index) => (
+              <div
+                key={index}
+                className="px-2 py-0.5 rounded-full bg-primary-lightest text-sm text-primary-muted"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </div> */}
+      </div>
 
       <DialogFooter>
         <div className="flex flex-col gap-2 items-center">

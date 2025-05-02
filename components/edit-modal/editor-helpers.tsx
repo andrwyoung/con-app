@@ -19,7 +19,7 @@ export default function HeadersHelper({
   description,
 }: {
   children: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   website?: string;
   description?: string;
 }) {
@@ -83,7 +83,10 @@ export function DateRangeInput({
       <Popover open={open} onOpenChange={setOpen}>
         <div className="flex flex-col gap-1">
           <div className="flex flex-row justify-between">
-            <Label className="text-primary-text">{label}</Label>
+            <Label className="text-primary-text">
+              <span className="text-red-500">*</span>
+              {label}
+            </Label>
             {value && (
               <span className="text-green-600 text-xs ml-1">
                 ✓ {encouragement}

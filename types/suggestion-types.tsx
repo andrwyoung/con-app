@@ -18,7 +18,6 @@ export type ArtistAlleyInfoFields = {
   aa_deadline: string | null | undefined;
   aa_real_release: boolean | null | undefined;
   aa_link: string | null | undefined;
-  aa_watch_link: boolean | null | undefined;
   aa_status_override: ArtistAlleyStatus | null | undefined;
 };
 

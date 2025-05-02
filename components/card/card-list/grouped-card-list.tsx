@@ -3,7 +3,7 @@ import Card, { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";
 import { FlatItem } from "@/hooks/use-sorted-cards";
 import { getConventionYearId } from "@/lib/lists/helper-functions";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function FlatCardList({
   items,
@@ -20,6 +20,7 @@ export function FlatCardList({
   cardRefs: React.RefObject<HTMLDivElement>[];
   type: CardVariant;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   // for scrolling cards into view when selected
   useEffect(() => {
     if (selectedCon) {
@@ -41,7 +42,7 @@ export function FlatCardList({
   }, [selectedCon, items, cardRefs]);
 
   return (
-    <div className="flex flex-col gap-3 pr-1 m-1">
+    <div ref={containerRef} className="flex flex-col gap-3 pr-1 m-1">
       {items.slice(0, MAX_CARDS).map((item: FlatItem, i: number) =>
         item.type === "label" ? (
           <h3

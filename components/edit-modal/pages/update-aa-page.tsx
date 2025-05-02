@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
-import { isFuture } from "date-fns";
+import { parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { SingleDateInput } from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
-import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AAWebsiteInput } from "./aa-helpers/aa-website-input";
 import {
   Select,
@@ -42,46 +41,118 @@ export default function UpdateAAPage({
   setPage: (p: EditorSteps) => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
+  const [isQuickOpen, setIsQuickOpen] = useState(true);
 
+  const { user, profile } = useUserStore();
   const { error, shake, triggerError } = useShakeError();
   const [year, setYear] = useState(() => {
     const years = conDetails.convention_years.map((y) => y.year);
     return Math.max(...years);
   });
 
+  // the 5 important fields
   const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
   const [deadline, setDeadline] = React.useState<Date | undefined>(undefined);
-  const [isRealRelease, setIsRealRelease] = useState(false);
   const [website, setWebsite] = useState<string | null>(null);
-  const [appsOpen, setAppsOpen] = useState(false);
-  const [isWatched, setIsWatched] = useState(false);
-  const [aaStatusType, setAAStatusType] = useState<ArtistAlleyStatus>("open");
+  const [aaExistence, setAAExistence] = useState<Extract<
+    ArtistAlleyStatus,
+    "unknown" | "invite_only" | "no_aa"
+  > | null>("unknown");
+  const [aaStatus, setAAStatus] =
+    useState<
+      Extract<
+        ArtistAlleyStatus,
+        "unknown" | "open" | "watch_link" | "closed" | "waitlist"
+      >
+    >("unknown");
 
-  const [isQuickOpen, setIsQuickOpen] = useState(true);
-
-  const { user, profile } = useUserStore();
   const isAdmin = profile?.role === "ADMIN";
-  const yearId = conDetails.convention_years.find((y) => y.year === year)?.id;
+  const relevantYearObject = conDetails.convention_years.find(
+    (y) => y.year === year
+  );
+  const aaExists = aaExistence === "unknown";
+
+  const deriveIsRealRelease = (): boolean => {
+    if (aaStatus === "open" || aaStatus === "closed" || aaStatus === "waitlist")
+      return true;
+    if (startDate || deadline) return true;
+
+    return false;
+  };
+
+  const deriveOverRideStatus = (): ArtistAlleyStatus | null => {
+    // existence statuses get first priority
+    if (aaExistence !== "unknown") return aaExistence;
+    if (aaStatus != "unknown") return aaStatus;
+
+    return null;
+  };
+
+  const deriveStartDate = (): string | undefined => {
+    const now = new Date();
+
+    // 1: If status is "open"
+    if (aaStatus === "open") {
+      if (!startDate) {
+        // 1a: No start date provided just mark it as now
+        return now.toISOString();
+      }
+      // 1b: else use the earlier of provided startDate and now
+      return startDate < now ? startDate.toISOString() : now.toISOString();
+    }
+
+    // 2: If startDate exists (but not "open"), return it
+    if (startDate) return startDate.toISOString();
+
+    // 3: else we don't care
+    return undefined;
+  };
+
+  const deriveEndDate = (): string | undefined => {
+    const now = new Date();
+    const existingDeadline = relevantYearObject?.aa_deadline;
+
+    // 1: manually marked as closed:
+    if (aaStatus === "closed") {
+      // if there is already a close date in the system
+      // that is EARLIER than today, leave it alone
+      if (existingDeadline && parseISO(existingDeadline) < now) {
+        return undefined;
+      }
+      // else put today as close date
+      return now.toISOString();
+    }
+
+    // 2: someone says it's waitlist
+    if (aaStatus === "waitlist") {
+      // TODO: if there is already a date in the system, leave it alone
+      if (existingDeadline) return undefined;
+      // but if they also put a deadline in there, use that
+      // else then we close it now
+      return deadline ? deadline.toISOString() : now.toISOString();
+    }
+
+    // 3: someone gave a deadline
+    if (deadline) {
+      return deadline.toISOString();
+    }
+
+    // 4: else nothing happened
+    return undefined;
+  };
 
   const handleSubmit = async () => {
     await handleSubmitWrapper({
       setSubmitting,
       setPage,
       tryBlock: async () => {
-        if (
-          !startDate &&
-          !deadline &&
-          !appsOpen &&
-          !isWatched &&
-          (!website || website.trim() === "") &&
-          aaStatusType === "open"
-        ) {
-          triggerError("Please fill in at least one field.");
+        if (!website || (website.trim() === "" && aaExists)) {
+          triggerError("Please at least add a link");
           setSubmitting(false);
           throw new Error("Validation failed");
         }
 
-        const cleanedWebsite = website?.trim();
+        const cleanedWebsite = website ? website?.trim() : null;
 
         // clean the website link a lil
         if (cleanedWebsite && cleanedWebsite !== "") {
@@ -98,17 +169,11 @@ export default function UpdateAAPage({
         }
 
         const aaInfo: ArtistAlleyInfoFields = {
-          aa_watch_link: isWatched,
-          aa_status_override: aaStatusType,
-          aa_open_date: appsOpen
-            ? (startDate && startDate < new Date()
-                ? startDate
-                : new Date()
-              ).toISOString()
-            : startDate?.toISOString() ?? undefined,
-          aa_deadline: deadline?.toISOString() ?? undefined,
-          aa_real_release: appsOpen ? true : isRealRelease,
-          aa_link: cleanedWebsite ?? undefined,
+          aa_open_date: deriveStartDate(),
+          aa_deadline: deriveEndDate(),
+          aa_real_release: deriveIsRealRelease(),
+          aa_link: cleanedWebsite,
+          aa_status_override: deriveOverRideStatus() as ArtistAlleyStatus,
         };
 
         const initMetadata: SuggestionsMetadataFields = buildInitialMetadata(
@@ -120,7 +185,7 @@ export default function UpdateAAPage({
           await supabaseAnon
             .from("suggestions_artist_alley")
             .insert({
-              convention_year_id: yearId,
+              convention_year_id: relevantYearObject?.id,
               ...initMetadata,
               ...aaInfo,
             })
@@ -133,27 +198,12 @@ export default function UpdateAAPage({
         if (user && isAdmin) {
           // Update real convention_years table
           const updates: ArtistAlleyInfoFields = {
-            aa_open_date: undefined,
-            aa_deadline: undefined,
-            aa_real_release: undefined,
-            aa_link: undefined,
-            aa_watch_link: isWatched,
-            aa_status_override: aaStatusType,
+            aa_open_date: deriveStartDate(),
+            aa_deadline: deriveEndDate(),
+            aa_real_release: deriveIsRealRelease(),
+            aa_link: cleanedWebsite,
+            aa_status_override: deriveOverRideStatus() as ArtistAlleyStatus,
           };
-          if (startDate) {
-            updates.aa_open_date = startDate.toISOString();
-            updates.aa_real_release = isRealRelease;
-          }
-          if (deadline) updates.aa_deadline = deadline.toISOString();
-          if (website !== null && website.trim() !== "") {
-            updates.aa_link = cleanedWebsite;
-          }
-          if (appsOpen) {
-            const openDate =
-              startDate && startDate < new Date() ? startDate : new Date();
-            updates.aa_open_date = openDate.toISOString();
-            updates.aa_real_release = true;
-          }
 
           const confirmed = confirm(
             `Admin: You're changing public Artist Alley info. Are you sure?`
@@ -163,7 +213,7 @@ export default function UpdateAAPage({
           await supabaseAnon
             .from("convention_years")
             .update(updates)
-            .eq("id", yearId);
+            .eq("id", relevantYearObject?.id);
 
           // Also mark the suggestion as approved
           const updatesMetadata: SuggestionsMetadataFields =
@@ -181,10 +231,8 @@ export default function UpdateAAPage({
         setStartDate(undefined);
         setDeadline(undefined);
         setWebsite("");
-        setIsRealRelease(false);
-        setAppsOpen(false);
-        setIsWatched(false);
-        setAAStatusType("open");
+        setAAExistence("unknown");
+        setAAStatus("unknown");
       },
     });
   };
@@ -194,37 +242,48 @@ export default function UpdateAAPage({
       title={`Add Artist Alley Info`}
       website={conDetails.website ?? undefined}
     >
-      <div className="flex gap-2 items-baseline py-4">
-        <Label className="text-sm font-medium text-primary-text mb-1">
-          Artist Alley?
-        </Label>
-        <Select
-          value={aaStatusType}
-          onValueChange={(val) =>
-            setAAStatusType(val as "open" | "no_aa" | "invite_only")
-          }
-        >
-          <SelectTrigger className="text-primary-text border rounded-lg px-2 py-2 shadow-xs">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="open">Artist Alley Exists</SelectItem>
-            <SelectItem value="invite_only">Invite Only</SelectItem>
-            <SelectItem value="no_aa">No Artist Alley</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      {aaStatusType === "open" && (
-        <>
-          <div className="flex flex-col gap-1 pb-4">
-            <AAWebsiteInput
-              label="Application Link (or where it'll appear)"
-              website={website}
-              onChange={setWebsite}
-              placeholder="Link"
-            />
-            <div className="flex flex-col ">
-              <CheckField
+      <>
+        {aaExists && (
+          <>
+            <div className="flex flex-col gap-4 py-8">
+              <AAWebsiteInput
+                label="Application Link (or where it'll appear)"
+                website={website}
+                onChange={setWebsite}
+                placeholder="Link"
+              />
+              <div className="flex flex-row gap-2">
+                <Label className="text-sm font-medium text-primary-text">
+                  Link Status:
+                </Label>
+                <Select
+                  value={aaStatus as string}
+                  onValueChange={(val) =>
+                    setAAStatus(
+                      val as
+                        | "unknown"
+                        | "open"
+                        | "watch_link"
+                        | "closed"
+                        | "waitlist"
+                    )
+                  }
+                >
+                  <SelectTrigger className="text-primary-text border rounded-lg px-2 py-2 shadow-xs w-fit">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">No Update</SelectItem>
+                    <SelectItem value="open">Application Open</SelectItem>
+
+                    <SelectItem value="closed">Application Closed</SelectItem>
+                    <SelectItem value="waitlist">Waitlist</SelectItem>
+                    <SelectItem value="watch_link">
+                      Announcement Coming
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {/* <CheckField
                 text="Application is open!"
                 isChecked={appsOpen}
                 onChange={() => setAppsOpen(!appsOpen)}
@@ -235,95 +294,121 @@ export default function UpdateAAPage({
                 isChecked={isWatched}
                 onChange={() => setIsWatched(!isWatched)}
                 isDisabled={appsOpen}
-              />
-              {/* <CheckField
+              /> */}
+                {/* <CheckField
             text="Invite Only"
             isChecked={isInviteOnly}
             onChange={() => setIsInviteOnly(!isInviteOnly)}
             isDisabled={appsOpen || isWatched}
           /> */}
+              </div>
             </div>
-          </div>
-          <button
-            onClick={() => setIsQuickOpen((prev) => !prev)}
-            className="text-sm text-primary-text cursor-pointer 
-        hover:text-primary-muted transition flex items-center gap-1 mb-4 "
-          >
-            Edit Additional Info:
-            <FaCaretDown
-              className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${
-                !isQuickOpen ? "rotate-180" : "rotate-0"
-              }`}
-            />
-          </button>
-          <AnimatePresence initial={false}>
-            {!isQuickOpen && (
-              <motion.div
-                key="details"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="overflow-hidden"
-              >
-                <div className="flex flex-col gap-6 pb-10">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
-                    <div className="flex flex-col">
-                      <SingleDateInput
-                        label="Release Date:"
-                        subheader={`Or ETA when it usually opens`}
-                        value={startDate}
-                        onChange={setStartDate}
-                        placeholder="Add open date"
-                      />
-                      {startDate && isFuture(startDate) && (
-                        <CheckField
-                          text={"Official release date"}
-                          isChecked={isRealRelease}
-                          onChange={() => setIsRealRelease(!isRealRelease)}
-                        />
-                      )}
-                    </div>
-                    <SingleDateInput
-                      label="Deadline / Close Date:"
-                      subheader={`Put the date you saw it close`}
-                      value={deadline}
-                      onChange={setDeadline}
-                      placeholder="Add deadline"
-                    />
-                  </div>
-                </div>
 
-                <div className="flex flex-col gap-1 mb-2">
-                  <Label className="text-primary-text font-medium text-sm">
-                    Select a Convention Year
-                  </Label>
-                  <span className="text-xs text-primary-muted">
-                    You’re adding info for a specific year of this con.
-                  </span>
-                  <div className="pt-1">
-                    <Select
-                      value={String(year)}
-                      onValueChange={(val) => setYear(Number(val))}
-                    >
-                      <SelectTrigger className="border text-primary-text px-3 py-2 rounded-lg text-sm">
-                        <SelectValue placeholder="Pick a year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {conDetails.convention_years.map((y) => (
-                          <SelectItem key={y.year} value={String(y.year)}>
-                            {y.year}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            <button
+              onClick={() => setIsQuickOpen((prev) => !prev)}
+              className="text-sm text-primary-text cursor-pointer 
+        hover:text-primary-muted transition flex items-center gap-1 mb-4 "
+            >
+              Edit Additional Info:
+              <FaCaretDown
+                className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${
+                  !isQuickOpen ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
+          </>
+        )}
+        <AnimatePresence initial={false}>
+          {!isQuickOpen && (
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              {aaExists && (
+                <>
+                  <div className="flex flex-col gap-1 mb-2">
+                    <Label className="text-primary-text font-medium text-sm">
+                      Select a Convention Year
+                    </Label>
+                    <span className="text-xs text-primary-muted">
+                      You’re adding info for a specific year of this con.
+                    </span>
+                    <div className="pt-1">
+                      <Select
+                        value={String(year)}
+                        onValueChange={(val) => setYear(Number(val))}
+                      >
+                        <SelectTrigger className="border text-primary-text px-3 py-2 rounded-lg text-sm">
+                          <SelectValue placeholder="Pick a year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {conDetails.convention_years.map((y) => (
+                            <SelectItem key={y.year} value={String(y.year)}>
+                              {y.year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </>
-      )}
+
+                  <div className="flex flex-col gap-6 pb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
+                      <div className="flex flex-col">
+                        <SingleDateInput
+                          label="Release Date:"
+                          // subheader={`Or ETA when it usually opens`}
+                          value={startDate}
+                          onChange={setStartDate}
+                          placeholder="Add open date"
+                        />
+                        {/* {startDate && isFuture(startDate) && (
+                          <CheckField
+                            text={"Official release date"}
+                            isChecked={isRealRelease}
+                            onChange={() => setIsRealRelease(!isRealRelease)}
+                          />
+                        )} */}
+                      </div>
+                      <SingleDateInput
+                        label="Deadline:"
+                        // subheader={`Put the date you saw it close`}
+                        value={deadline}
+                        onChange={setDeadline}
+                        placeholder="Add deadline"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              <div className="flex gap-2 items-baseline pt-4 pb-8">
+                <Label className="text-sm font-medium text-primary-text mb-1">
+                  Artist Alley Existence:
+                </Label>
+                <Select
+                  value={aaExistence as string}
+                  onValueChange={(val) =>
+                    setAAExistence(val as "unknown" | "no_aa" | "invite_only")
+                  }
+                >
+                  <SelectTrigger className="text-primary-text border rounded-lg px-2 py-2 shadow-xs">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">Artist Alley Exists</SelectItem>
+                    <SelectItem value="invite_only">Invite Only</SelectItem>
+                    <SelectItem value="no_aa">No Artist Alley</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
       <DialogFooter>
         <div className="flex flex-col gap-2 items-center">
           <Button onClick={handleSubmit} disabled={submitting}>
@@ -348,8 +433,8 @@ export default function UpdateAAPage({
                 );
                 if (!confirmed) return;
 
-                if (yearId && user?.id) {
-                  await NukeAAInfo(yearId, user.id);
+                if (relevantYearObject && user?.id) {
+                  await NukeAAInfo(relevantYearObject.id, user.id);
                 }
               }}
             >

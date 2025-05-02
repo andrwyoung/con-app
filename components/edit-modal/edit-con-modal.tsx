@@ -11,6 +11,7 @@ import UpdateConDetailsPage from "./pages/update-con-details-page";
 import ConfirmationPage from "./pages/confirmation-page";
 import UpdateAAPage from "./pages/update-aa-page";
 import { useUserStore } from "@/stores/user-store";
+import { useEffect } from "react";
 
 export type EditorSteps =
   | "dates"
@@ -21,8 +22,10 @@ export type EditorSteps =
 
 export default function EditConventionModal({
   conDetails,
+  onSubmitSuccess,
 }: {
   conDetails: FullConventionDetails;
+  onSubmitSuccess: () => void;
 }) {
   const page = useModalUIStore((s) => s.editingModalPage);
   const setPage = useModalUIStore((s) => s.setEditingModalPage);
@@ -30,6 +33,13 @@ export default function EditConventionModal({
   const isAdmin = profile?.role == "ADMIN" || profile?.role == "SUDO";
 
   const isOpen = page !== "closed";
+
+  // reload everytime we swap
+  useEffect(() => {
+    if (page === "editor" || page === "confirmation") {
+      onSubmitSuccess();
+    }
+  }, [page, onSubmitSuccess]);
 
   return (
     <Dialog
@@ -40,9 +50,9 @@ export default function EditConventionModal({
     >
       <DialogContent className="sm:max-w-[480px]">
         {page != "confirmation" && (
-          <div className="absolute top-10 right-6 text-xs text-primary-muted flex flex-col text-right">
+          <div className="absolute bottom-4 right-4 text-xs text-primary-muted/50 flex flex-col text-right">
             {isAdmin && <span className="uppercase">Admin</span>}
-            Editing as:{" "}
+            <span>Editing as: </span>
             {profile ? <span>{profile.username}</span> : "Anonymous"}
           </div>
         )}

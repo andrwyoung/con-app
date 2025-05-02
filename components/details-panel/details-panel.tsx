@@ -4,11 +4,10 @@ import {
   FullConventionDetails,
   Scope,
 } from "@/types/con-types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import DetailsSection from "./upper-details-section/details-section";
 import ReviewsSection from "./reviews-section/reviews-section";
-import { log } from "@/lib/utils";
 import { TbFocus } from "react-icons/tb";
 import {
   useExploreSidebarStore,
@@ -19,6 +18,7 @@ import { useMapStore } from "@/stores/map-store";
 import { DEFAULT_ZOOM } from "@/lib/constants";
 import { getRealDates, getRealYear } from "@/lib/calendar/grab-real-dates";
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
+import EditConventionModal from "../edit-modal/edit-con-modal";
 
 export default function DetailsPanel({
   scope,
@@ -37,17 +37,15 @@ export default function DetailsPanel({
   const sidebarMode = useExploreSidebarStore((s) => s.sidebarMode);
   const flyTo = useMapStore((s) => s.flyTo);
 
-  // grab con data from database
-  useEffect(() => {
-    const init = async () => {
-      const conDetails = await grabAllDetails(con.id);
-      log("details panel full con data:", conDetails);
-
-      setDetails(conDetails);
-    };
-
-    init();
+  const handleRefetch = useCallback(async () => {
+    const conDetails = await grabAllDetails(con.id);
+    setDetails(conDetails);
   }, [con.id]);
+
+  // grabbing convention details
+  useEffect(() => {
+    handleRefetch();
+  }, [con.id, handleRefetch]);
 
   function handleRefocus() {
     if (!selectedCon) return; // should never happen lol, but turning off TS errors
@@ -85,6 +83,12 @@ export default function DetailsPanel({
 
   return (
     <>
+      {details && (
+        <EditConventionModal
+          conDetails={details}
+          onSubmitSuccess={handleRefetch}
+        />
+      )}
       <div className="hidden md:flex flex-row items-center justify-between gap-2 z-10 p-4 pb-2 ">
         <button
           type="button"
@@ -119,7 +123,7 @@ export default function DetailsPanel({
           {details ? (
             <DetailsSection details={details} scope={scope} />
           ) : (
-            <p className="text-sm italic text-primary-muted">
+            <p className="text-sm italic text-primary-muted px-6 py-4">
               Loading details…
             </p>
           )}

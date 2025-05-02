@@ -18,12 +18,12 @@ export function getAAStatus(
   // OVERRIDES
   //
 
-  // if it is marked as no_aa then yea. there's no aa
+  // trust the override first
+  // NOTE: we ignore "open" and "closed" because they should be derived states
+  // NOTE: "watch_link" is not on here. we deal with that later
   if (aa_status_override === "no_aa") return "no_aa";
-  // same with invite_only
   if (aa_status_override === "invite_only") return "invite_only";
-  // if it's manually marked as closed, then yea, it's closed
-  if (aa_status_override === "closed") return "closed";
+  if (aa_status_override === "waitlist") return "waitlist";
 
   // EASY LOGIC
   //
@@ -37,7 +37,7 @@ export function getAAStatus(
   // if deadline is here, it is for sure open
   if (deadline && now <= deadline) return "open";
 
-  // if a real release date is here it must be announced
+  // if a real release date exists but it's not yet here it must be announced
   if (open && now < open && aa_real_release) return "announced";
 
   // if a real release and it passed that date, then then it is
@@ -48,7 +48,7 @@ export function getAAStatus(
   if (deadline && now > deadline) return "closed";
 
   // else there might be a link you can watch;
-  if (aa_watch_link) return "watch_link";
+  if (aa_status_override === "watch_link") return "watch_link";
 
   // "EXPECTED" LOGIC
   //

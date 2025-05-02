@@ -30,6 +30,7 @@ export function AAWebsiteInput({
     <div className="flex flex-col gap-1 w-full">
       <div className="flex flex-row justify-between">
         <Label htmlFor={id} className="text-primary-text text-sm font-medium">
+          <span className="text-red-500">*</span>
           {label}:
         </Label>
         {website && (

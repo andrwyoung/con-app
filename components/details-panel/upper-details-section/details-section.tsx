@@ -5,7 +5,6 @@ import { parseISO } from "date-fns";
 import MoreDetailsSection from "./more-details-section";
 import { MdEdit } from "react-icons/md";
 import { useModalUIStore } from "@/stores/ui-store";
-import EditConventionModal from "@/components/edit-modal/edit-con-modal";
 import { FaLink } from "react-icons/fa6";
 
 function shouldShowMissingCard(endDate: string | undefined): boolean {
@@ -36,19 +35,29 @@ export default function DetailsSection({
 
   return (
     <>
-      {details.website && (
-        <a
-          href={details.website}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={`${details.name} website`}
-          className="flex flex-row gap-1 items-center text-primary-text mb-6 mx-6 
+      <div className="flex flex-row justify-between mb-6 mx-6">
+        {details.website && (
+          <a
+            href={details.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`${details.name} website`}
+            className="flex flex-row gap-1 items-center text-primary-text  
           text-sm font-semibold hover:text-primary-darker transition-colors"
+          >
+            <FaLink className="-rotate-5 h-4 w-4" />
+            Website
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={() => setEditingModalPage("editor")}
+          className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
         >
-          <FaLink className="-rotate-5 h-4 w-4" />
-          Website
-        </a>
-      )}
+          <MdEdit className="translate-y-[1px]" />
+          Edit Con Info
+        </button>
+      </div>
       <div className="mb-6">
         {details.convention_years.length > 0 &&
           details.venue &&
@@ -69,16 +78,7 @@ export default function DetailsSection({
           <h3 className="text-primary-muted font-semibold uppercase">
             Convention Info
           </h3>
-          <button
-            type="button"
-            onClick={() => setEditingModalPage("editor")}
-            className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
-          >
-            <MdEdit className="translate-y-[1px]" />
-            Edit Con Info
-          </button>
         </div>
-        <EditConventionModal conDetails={details} />
 
         {details.cs_description ? (
           <p className="leading-6 max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
