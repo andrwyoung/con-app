@@ -39,30 +39,41 @@ export default function NavBar() {
   const profile = useUserStore((s) => s.profile);
 
   const resetLists = useListStore((s) => s.resetLists);
+  const showNav = !pathname.startsWith("/about");
 
   return (
     <>
       <div
-        className={`hidden md:block absolute left-0 top-0 w-screen bg-gradient-to-b from-gray-600 to-transparent pt-4 pb-6 px-8 z-10 ${
-          pathname?.startsWith("/about") ? "hidden" : "block"
-        }`}
+        className={`hidden md:block absolute left-0 top-0 w-screen pt-4 pb-6 px-8 z-10
+            ${
+              showNav
+                ? "bg-gradient-to-b from-gray-600 to-transparent "
+                : "bg-transparent"
+            }
+        `}
       >
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row items-center gap-6">
             <Toggler />
-            <Link
-              href="/about"
-              className="text-md hidden md:block text-white font-bold transition-all hover:text-primary hover:scale-105"
+            {showNav && (
+              <Link
+                href="/about"
+                className="text-md hidden md:block text-white font-bold transition-all hover:text-primary hover:scale-105"
+              >
+                About
+              </Link>
+            )}
+          </div>
+
+          {showNav && (
+            <div
+              className={`hidden select-none lg:block transform  translate-y-[8%] text-[40px] 
+             hover:scale-105 transition-all cursor-pointer font-sans-logo hover:text-primary text-white -translate-x-[100%]`}
+              onClick={fireConfetti}
             >
-              About
-            </Link>
-          </div>
-          <div
-            className="hidden select-none lg:block transform -translate-x-[100%] translate-y-[8%] text-white text-[40px] hover:text-primary hover:scale-105 transition-all cursor-pointer font-sans-logo"
-            onClick={fireConfetti}
-          >
-            ConCaly
-          </div>
+              ConCaly
+            </div>
+          )}
 
           {user ? (
             <Popover>
@@ -70,7 +81,12 @@ export default function NavBar() {
                 <div className="flex cursor-pointer flex-row gap-2 items-center group transition-all duration-200 hover:scale-105">
                   <button
                     type="button"
-                    className="text-white font-bold cursor-pointer text-lg group-hover:text-primary"
+                    className={`font-bold cursor-pointer text-lg 
+                      ${
+                        showNav
+                          ? "text-white group-hover:text-primary"
+                          : "text-primary-text group-hover:text-secondary-darker"
+                      }`}
                   >
                     {profile?.username}
                   </button>

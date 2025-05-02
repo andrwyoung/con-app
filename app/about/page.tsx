@@ -1,128 +1,131 @@
-// import React from "react";
+"use client";
+import { fireConfetti } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { ReactNode, useState } from "react";
+import { FaCalendarCheck, FaGithub, FaScroll } from "react-icons/fa6";
+import { IoLogoFigma } from "react-icons/io5";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
-// const WIKI_API_BASE = "https://api.wikimedia.org/feed/v1/wikipedia";
-// const LANGUAGE = "en";
+const iconInteract =
+  "cursor-pointer hover:text-secondary hover:scale-115 hover:rotate-5 transition-all";
 
-// export async function fetchFeaturedArticle() {
-//   const today = new Date();
-//   const date = today.toISOString().split("T")[0].replace(/-/g, "/"); // "YYYY/MM/DD"
+function BioDropdown({
+  name,
+  icon,
+  children,
+}: {
+  name: string;
+  icon?: ReactNode;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
 
-//   const url = `${WIKI_API_BASE}/${LANGUAGE}/featured/${date}`;
+  return (
+    <>
+      <div
+        onClick={() => setOpen(!open)}
+        className="flex gap-2.5 select-none items-center cursor-pointer transition-all hover:text-secondary-darker hover:scale-105"
+        title="Click to open Bios"
+      >
+        <div className="text-sm text-secondary-darker">{icon}</div>
 
-//   const res = await fetch(url, {
-//     headers: {
-//       // Authorization: `Bearer 4c6330cb46f11631d9d9f416454057c32ee861d2`,
-//       "User-Agent": "con-app (yong.andrew11@gmail.com)",
-//     },
-//     next: { revalidate: 3600 }, // optional: cache for 1 hour (ISR)
-//   });
+        {name}
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="bio"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden text-sm leading-relaxed"
+          >
+            <div className=" mb-4">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
 
-//   if (!res.ok) {
-//     console.warn(`Failed to fetch article: ${res.status} — ${url}`);
-//     return null;
-//   }
+export default function AboutPage() {
+  return (
+    <div className="w-screen h-screen bg-secondary-light flex flex-col items-center justify-center relative overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="flex flex-col items-center gap-8"
+      >
+        <div className="flex flex-col items-center gap-2">
+          <div
+            className={`hidden select-none lg:block transform hover:scale-105 text-6xl
+              transition-all cursor-pointer font-sans-logo hover:text-secondary text-secondary-darker`}
+            onClick={fireConfetti}
+          >
+            ConCaly
+          </div>
+          <div className="text-sm select-none">Ending Credits</div>
+        </div>
 
-//   const data = await res.json();
+        <div className="flex flex-col items-center gap-1 max-w-xs">
+          <BioDropdown name="Andrew Yong" icon={<FaMapMarkerAlt />}>
+            As{" "}
+            <a
+              href="https://andrwyoung.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline cursor-pointer text-secondary-darker hover:text-secondary"
+            >
+              an artist
+            </a>{" "}
+            doing Artist Alleys, I found that it was hard to find and track
+            deadlines, so I made this app.
+          </BioDropdown>
 
-//   return {
-//     title: data?.tfa?.titles?.display,
-//     url: data?.tfa?.content_urls?.desktop?.page,
-//     html: data?.tfa?.extract_html,
-//     image: data?.tfa?.thumbnail?.source,
-//   };
-// }
+          <BioDropdown name="Sanskar Gyawali" icon={<FaCalendarCheck />}>
+            Sanskar helped with grabbing and figuring out the initial data set.
+            Thanks!{" "}
+            <a
+              href="https://github.com/sunscarr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline cursor-pointer text-secondary-darker hover:text-secondary transition-colors"
+            >
+              His Github
+            </a>
+          </BioDropdown>
+        </div>
 
-// export async function searchWikipedia(conName: string) {
-//   const url = `https://en.wikipedia.org/w/rest.php/v1/search/title?q=${encodeURIComponent(
-//     conName
-//   )}&limit=1`;
+        <div className="flex flex-row gap-4 items-center text-secondary-darker text-2xl">
+          <a
+            href="https://www.figma.com/design/M9GYa5tcarEDOCRDmONnZz/Convention-Searcher?node-id=0-1&p=f"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Figma Prototype"
+          >
+            <IoLogoFigma className={iconInteract} />
+          </a>
+          <a
+            href="https://github.com/andrwyoung/con-app"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="All the Code"
+          >
+            <FaGithub className={iconInteract} />
+          </a>
 
-//   const res = await fetch(url, {
-//     headers: {
-//       "User-Agent": "con-caly",
-//     },
-//   });
-
-//   if (!res.ok) {
-//     console.warn("Wiki search failed:", res.status);
-//     return null;
-//   }
-
-//   const data = await res.json();
-//   const result = data?.pages?.[0];
-
-//   if (!result) return null;
-
-//   return {
-//     title: result.title, // Used to fetch the summary
-//     key: result.key, // URL-safe page identifier
-//   };
-// }
-
-// export async function fetchWikipediaSummary(title: string) {
-//   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
-//     title
-//   )}`;
-
-//   const res = await fetch(url, {
-//     headers: {
-//       "User-Agent": "con-caly",
-//     },
-//   });
-
-//   if (!res.ok) {
-//     console.warn("Wiki summary fetch failed:", res.status);
-//     return null;
-//   }
-
-//   const data = await res.json();
-
-//   return {
-//     extract: data.extract,
-//     url: data.content_urls?.desktop?.page,
-//     thumbnail: data.thumbnail?.source,
-//   };
-// }
-
-// export default async function PlanPage() {
-//   const conResult = await searchWikipedia("ComicCon");
-//   let summary = null;
-
-//   if (conResult) {
-//     summary = await fetchWikipediaSummary(conResult.title);
-//   }
-
-//   return (
-//     <div className="flex flex-col gap-4 max-w-md mx-auto mt-10">
-//       {summary && conResult ? (
-//         <>
-//           <h2 className="text-xl font-bold">{conResult.title}</h2>
-//           <p className="text-sm text-muted-foreground">{summary.extract}</p>
-//           <a
-//             href={summary.url}
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="text-primary underline"
-//           >
-//             View on Wikipedia
-//           </a>
-//           {summary.thumbnail && (
-//             <img
-//               src={summary.thumbnail}
-//               alt={conResult.title}
-//               className="rounded border max-w-sm"
-//             />
-//           )}
-//         </>
-//       ) : (
-//         <p>No summary available for this con.</p>
-//       )}
-//     </div>
-//   );
-// }
-
-import React from "react";
-
-export default function page() {
-  return <div>page</div>;
+          <a
+            href="https://www.notion.so/jondrew/ConCaly-Writeup-1e72e809fa4e80f7b714c8f6cf848809"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Writeup + Devlog"
+          >
+            <FaScroll className={`ml-1 ${iconInteract}`} />
+          </a>
+        </div>
+      </motion.div>
+    </div>
+  );
 }

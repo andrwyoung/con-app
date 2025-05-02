@@ -59,7 +59,7 @@ export default function WelcomeModal() {
           </DialogHeader>
           <div className="flex flex-col items-center text-center gap-6">
             <h1 className="text-3xl font-semibold">Welcome to ConCaly!</h1>
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
@@ -72,12 +72,14 @@ export default function WelcomeModal() {
                 playsInline
                 className="w-full max-w-md rounded-xl shadow-md"
               />
-            </motion.div>
+            </motion.div> */}
 
             <p className="leading-loose">
-              Start building your plan on the Explore page! <br />
-              Drag and drop cons you&apos;re interested in to build your
-              schedule.
+              So good to have you! Star cons to save them to your lists <br />
+              <span className="text-xs text-primary-text">
+                FWIW you also have more suggestion privileges now (as a first
+                adopter)
+              </span>
             </p>
 
             <Button className="" onClick={() => setOnboardingOpen(false)}>

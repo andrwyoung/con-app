@@ -12,8 +12,7 @@ export default function Toggler() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const activeTab =
-    tabs.find((tab) => pathname.startsWith(tab.link))?.label || "Explore";
+  const activeTab = tabs.find((tab) => pathname.startsWith(tab.link))?.label;
 
   return (
     <div className="relative flex items-center bg-primary md:bg-white rounded-t-sm md:rounded-lg px-3 py-2 md:py-1.5 gap-6 md:gap-4 shadow-md justify-center">
