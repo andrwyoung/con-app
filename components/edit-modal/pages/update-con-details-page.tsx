@@ -91,34 +91,33 @@ export default function UpdateConDetailsPage({
         log("isAdmin?:", isAdmin, suggestionInsert);
         if (user && isAdmin) {
           const confirmed = confirm(
-            `Admin: Suggestion submitted. Do you also want to overwrite new info for ${conDetails.name}?`
+            `Admin: Suggestion submitted. Do you also want to write new info for ${conDetails.name}?`
           );
           if (!confirmed) return;
 
           const conTablePayload: Partial<Convention> = {
-            cs_description: "yes",
-            organizer_url: "google.com",
+            cs_description: description,
           };
 
           const conYearTablePayload: Partial<ConventionYear> = {};
 
           // KEY SECTION: here we actually change the data in the database
           await supabaseAnon
+            .from("conventions")
+            .update(conTablePayload)
+            .eq("id", conDetails.id);
+
+          await supabaseAnon
             .from("convention_years")
             .update(conYearTablePayload)
             .eq("id", latestYear?.id);
-
-          await supabaseAnon
-            .from("convention")
-            .update(conTablePayload)
-            .eq("id", conDetails.id);
 
           // Also mark the suggestion as approved
           const updatesMetadata: SuggestionsMetadataFields =
             buildApprovalMetadata(user.id);
 
           await supabaseAnon
-            .from("suggestions_artist_alley")
+            .from("suggestions_con_details")
             .update(updatesMetadata)
             .eq("id", suggestionInsert.id);
 
