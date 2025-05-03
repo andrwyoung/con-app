@@ -3,8 +3,10 @@
 // or supabase types, it should be seperate
 
 import { ArtistAlleyStatus } from "./artist-alley-types";
+import { Tables } from "./supabase";
 
-export type ApprovalStatus = "approved" | "pending" | "rejected";
+export type ApprovalStatus = "approved" | "pending" | "rejected" | "merged";
+export type ArtistAlleySuggestion = Tables<"aa_admin_items">;
 
 export type SuggestionsMetadataFields = {
   submitted_by: string | null | undefined;

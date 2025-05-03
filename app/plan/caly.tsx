@@ -61,6 +61,7 @@ export default function Caly({
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
 
   const lists = useListStore((s) => s.lists);
+  const allEvents = useEventStore((s) => s.allEvents);
   const showingNow = useListStore((s) => s.showingNow);
   const eventsInitailized = useEventStore((s) => s.initialized);
   const selectedCon = usePlanSelectedCardsStore((s) => s.selectedCon);
@@ -74,6 +75,9 @@ export default function Caly({
   const thisWeekend = allWeekends.find((w) => w.weekendEnd >= today);
 
   const [weekendConMap, setWeekendConMap] = useState<
+    Map<string, ConventionInfo[]>
+  >(new Map());
+  const [weekendEventMap, setWeekendEventMap] = useState<
     Map<string, ConventionInfo[]>
   >(new Map());
 
@@ -95,7 +99,7 @@ export default function Caly({
   //   setScrolledToToday,
   // ]);
 
-  // mapping all conventions to their weekend
+  // mapping all conventions in lists to their weekend
   useEffect(() => {
     const map = new Map<string, ConventionInfo[]>();
     const consArray = lists[showingNow].items;
@@ -114,6 +118,33 @@ export default function Caly({
 
     setWeekendConMap(map);
   }, [lists, showingNow]);
+
+  // mapping all conventions with relevant aa statuses to their weekend
+  useEffect(() => {
+    const map = new Map<string, ConventionInfo[]>();
+
+    for (const con of Object.values(allEvents)) {
+      if (
+        !["watch_link", "waitlist", "open", "expected"].includes(
+          con.aaStatus ?? ""
+        )
+      ) {
+        continue;
+      }
+
+      const { start_date, end_date } = getRealDates(con);
+      const bucket = findWeekendBucket(start_date, end_date);
+      const key = bucket ? `${bucket.year}-${bucket.weekend}` : null;
+      if (!key) continue;
+
+      if (!map.has(key)) {
+        map.set(key, []);
+      }
+      map.get(key)!.push(con);
+    }
+
+    setWeekendEventMap(map);
+  }, [allEvents]);
 
   // KEY SECTION: if selectedWeekend or selectedMonth change, then populate the sidebar
   useEffect(() => {
@@ -286,7 +317,11 @@ export default function Caly({
                 monthRefs.current[`${month.year}-${month.month}`] = el;
               }}
             >
-              <CalendarMonthRow monthData={month} conMap={weekendConMap} />
+              <CalendarMonthRow
+                monthData={month}
+                conMapLists={weekendConMap}
+                conMapAA={weekendEventMap}
+              />
             </div>
           ))}
           <div className="h-40 shrink-0" />

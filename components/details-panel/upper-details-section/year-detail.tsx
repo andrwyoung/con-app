@@ -220,7 +220,14 @@ export default function YearGallery({
 
   // scroll to correct year when selectedCon is chosen
   useEffect(() => {
-    if (!selectedCon) return;
+    if (!selectedCon) {
+      if (allYears.length > 0) {
+        const fallbackYear = allYears[allYears.length - 1].year; // or [0] for earliest
+        scrollToYear(fallbackYear, false);
+        setActiveYear(fallbackYear);
+      }
+      return;
+    }
 
     if (!selectedCon.convention_year_id) {
       scrollToYear(SPECIAL_CON_ID.FUTURE_CON);

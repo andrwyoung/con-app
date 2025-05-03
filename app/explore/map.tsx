@@ -13,6 +13,7 @@ import { useEventStore } from "@/stores/all-events-store";
 import {
   DEFAULT_ZOOM,
   DEFAULT_ZOOM_FAR,
+  DEFAULT_ZOOM_SUPER_FAR,
   ZOOM_USE_DEFAULT,
 } from "@/lib/constants";
 import { getDistance, log } from "@/lib/utils";
@@ -53,7 +54,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       container: "map",
       style: "mapbox://styles/andrwyoung/cm9gka3jp00ep01rcg0k1dy0a",
       center: [initLocation.longitude, initLocation.latitude],
-      zoom: DEFAULT_ZOOM_FAR,
+      zoom: DEFAULT_ZOOM_SUPER_FAR,
     });
     mapRef.current.getCanvas().style.cursor = "default";
 

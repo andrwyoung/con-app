@@ -60,6 +60,7 @@ export default function AboutPage() {
       >
         <div className="flex flex-col items-center gap-2">
           <div
+            title="Surprise?"
             className={`hidden select-none lg:block transform hover:scale-105 text-6xl
               transition-all cursor-pointer font-sans-logo hover:text-secondary text-secondary-darker`}
             onClick={fireConfetti}

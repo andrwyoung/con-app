@@ -1,85 +1,34 @@
 import { grabAllDetails } from "@/lib/details/grab-all-details";
-import {
-  ConventionInfo,
-  FullConventionDetails,
-  Scope,
-} from "@/types/con-types";
+import { FullConventionDetails, Scope } from "@/types/con-types";
 import { useCallback, useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 import DetailsSection from "./upper-details-section/details-section";
 import ReviewsSection from "./reviews-section/reviews-section";
-import { TbFocus } from "react-icons/tb";
-import {
-  useExploreSidebarStore,
-  usePlanSidebarStore,
-  useScopedSelectedCardsStore,
-} from "@/stores/page-store";
-import { useMapStore } from "@/stores/map-store";
-import { DEFAULT_ZOOM } from "@/lib/constants";
-import { getRealDates, getRealYear } from "@/lib/calendar/grab-real-dates";
-import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 import EditConventionModal from "../edit-modal/edit-con-modal";
+import FocusDot from "./focus-dot";
 
 export default function DetailsPanel({
   scope,
-  con,
+  conId,
+  conName,
   onClose,
 }: {
   scope: Scope;
-  con: ConventionInfo;
-  onClose: () => void;
+  conId: number;
+  conName: string;
+  onClose?: () => void;
 }) {
   const [details, setDetails] = useState<FullConventionDetails | null>(null);
-  const { selectedCon, setSelectedCon, setFocusedEvents, focusedEvents } =
-    useScopedSelectedCardsStore(scope);
-  const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
-  const setSidebarMode = usePlanSidebarStore((s) => s.setSidebarMode);
-  const sidebarMode = useExploreSidebarStore((s) => s.sidebarMode);
-  const flyTo = useMapStore((s) => s.flyTo);
 
   const handleRefetch = useCallback(async () => {
-    const conDetails = await grabAllDetails(con.id);
+    const conDetails = await grabAllDetails(conId);
     setDetails(conDetails);
-  }, [con.id]);
+  }, [conId]);
 
   // grabbing convention details
   useEffect(() => {
     handleRefetch();
-  }, [con.id, handleRefetch]);
-
-  function handleRefocus() {
-    if (!selectedCon) return; // should never happen lol, but turning off TS errors
-
-    // scroll into view if open in any panel
-    // note: this is a very jank solution. trying to retrigger useEffects
-    setSelectedCon({ ...(selectedCon as ConventionInfo) });
-
-    // explore
-    // 1: fly into view
-    // 2: if it's not showing on a list, then select it
-    const long = selectedCon?.location_long;
-    const lat = selectedCon?.location_lat;
-    if (scope === "explore" && long && lat) {
-      flyTo?.({ latitude: lat, longitude: long }, DEFAULT_ZOOM);
-
-      const alreadyFocused = focusedEvents.some(
-        (event) => event.id === selectedCon.id
-      );
-
-      if (sidebarMode === "filter" && !alreadyFocused) {
-        setFocusedEvents([selectedCon]);
-      }
-      // plan logic
-      // 1: select that weekend
-      // 2: if in search mode and it's not in there, then leave? idk
-    } else if (scope === "plan") {
-      setSidebarMode("calendar");
-
-      const { start_date, end_date } = getRealDates(selectedCon);
-      const bucket = findWeekendBucket(start_date, end_date);
-      setSelectedWeekend(bucket);
-    }
-  }
+  }, [conId, handleRefetch]);
 
   return (
     <>
@@ -89,35 +38,23 @@ export default function DetailsPanel({
           onSubmitSuccess={handleRefetch}
         />
       )}
-      <div className="hidden md:flex flex-row items-center justify-between gap-2 z-10 p-4 pb-2 ">
-        <button
-          type="button"
-          title="Focus on Convention"
-          onClick={handleRefocus}
-          className="flex gap-1 items-center text-primary-text rounded-full hover:scale-105 cursor-pointer hover:bg-primary-light px-1.5 py-0.5 transition-all"
-        >
-          <TbFocus className="w-3 h-3" />
-          <p className="text-xs">
-            Focus{" "}
-            {scope === "plan" && selectedCon
-              ? `(${getRealYear(selectedCon)})`
-              : ""}
-          </p>
-        </button>
-
-        <button
-          type="button"
-          className="text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105 rounded-full hover:bg-primary-light p-1 transition-all"
-          onClick={onClose}
-          aria-label="close details panel"
-        >
-          <FiX className="h-4 w-4" />
-        </button>
+      <div className="hidden md:flex flex-row-reverse items-center justify-between gap-2 z-10 p-4 pb-2 ">
+        {onClose && (
+          <button
+            type="button"
+            className="text-gray-400 cursor-pointer hover:text-gray-600 hover:scale-105 rounded-full hover:bg-primary-light p-1 transition-all"
+            onClick={onClose}
+            aria-label="close details panel"
+          >
+            <FiX className="h-4 w-4" />
+          </button>
+        )}
+        {scope !== "unknown" && <FocusDot scope={scope} />}
       </div>
 
       <div className="h-full flex relative flex-col min-h-0  gap-2">
         <h2 className="flex-none text-2xl px-6  text-primary-text font-semibold">
-          {con.name}
+          {conName}
         </h2>
         <div className="flex-1 overflow-y-auto scrollbar-none scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">
           {details ? (
@@ -128,7 +65,7 @@ export default function DetailsPanel({
             </p>
           )}
           <div className="flex flex-col bg-primary-lightest/50 mt-4 pt-6 pb-6 rounded-lg">
-            <ReviewsSection id={con.id} />
+            <ReviewsSection id={conId} />
           </div>
         </div>
       </div>

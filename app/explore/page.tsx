@@ -112,7 +112,8 @@ export default function ExplorePage() {
               <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
                 <DetailsPanel
                   scope="explore"
-                  con={selectedCon}
+                  conId={selectedCon.id}
+                  conName={selectedCon.name}
                   onClose={() => setSelectedCon(null)}
                 />
               </div>

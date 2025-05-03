@@ -212,7 +212,8 @@ export default function PlanPage() {
                 >
                   <DetailsPanel
                     scope="plan"
-                    con={selectedCon}
+                    conId={selectedCon.id}
+                    conName={selectedCon.name}
                     onClose={() => setSelectedCon(null)}
                   />
                 </div>

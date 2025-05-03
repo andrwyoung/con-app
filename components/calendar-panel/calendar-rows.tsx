@@ -7,15 +7,21 @@ import {
   WeekendBucket,
 } from "@/lib/calendar/generate-weekends";
 import { usePlanSidebarStore } from "@/stores/page-store";
+import {
+  ArtistAlleyStatus,
+  getAAStatusDarkColor,
+} from "@/types/artist-alley-types";
 import { ConventionInfo } from "@/types/con-types";
 import { FaRegCalendar } from "react-icons/fa6";
 
 export function CalendarMonthRow({
   monthData,
-  conMap,
+  conMapLists,
+  conMapAA,
 }: {
   monthData: MonthWithWeekends;
-  conMap: Map<string, ConventionInfo[]>;
+  conMapLists: Map<string, ConventionInfo[]>;
+  conMapAA: Map<string, ConventionInfo[]>;
 }) {
   const selectedMonth = usePlanSidebarStore((s) => s.selectedMonth);
   const setSelectedMonth = usePlanSidebarStore((s) => s.setSelectedMonth);
@@ -66,13 +72,20 @@ export function CalendarMonthRow({
       <div className="flex gap-4 col-start-3">
         {monthData.weekends.map((weekend, i) => {
           const key = `${weekend.year}-${weekend.weekend}`;
-          const cons = conMap.get(key) ?? [];
-          const conCount = cons.length;
+          const listCons = conMapLists.get(key) ?? [];
+
+          const aaCons = conMapAA.get(key) ?? [];
+          const aaStatusCounts = aaCons.reduce((acc, con) => {
+            const status = con.aaStatus ?? "unknown";
+            acc[status] = (acc[status] ?? 0) + 1;
+            return acc;
+          }, {} as Record<ArtistAlleyStatus, number>);
           return (
             <CalendarWeekendDot
               key={i}
-              count={conCount}
+              count={listCons.length}
               weekendData={weekend}
+              aaStatusCounts={aaStatusCounts}
               isSelectedMonth={isSelectedMonth}
             />
           );
@@ -86,10 +99,12 @@ export function CalendarWeekendDot({
   weekendData,
   isSelectedMonth,
   count,
+  aaStatusCounts,
 }: {
   weekendData: WeekendBucket;
   isSelectedMonth: boolean;
   count: number;
+  aaStatusCounts: Record<ArtistAlleyStatus, number>;
 }) {
   const selectedWeekend = usePlanSidebarStore((s) => s.selectedWeekend);
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
@@ -145,16 +160,35 @@ export function CalendarWeekendDot({
         <FaRegCalendar className="hidden md:block text-primary-text/50 w-3 h-3" />
         <p className="hidden md:block">{weekendData.weekendDay.getDate()}</p>
       </div>
-      <h1
-        title="Number of Cons"
-        className="select-none text-sm text-primary-muted"
-      >
-        {count != 0 ? (
-          <div className="w-2 h-2 bg-secondary rounded-full" />
-        ) : (
-          ""
+
+      <div className="flex flex-col  justify-center">
+        {Object.entries(aaStatusCounts).map(([status, count]) =>
+          count > 0 ? (
+            <div key={status} className="flex flex-row gap-1 items-center ">
+              <div
+                title={`${count} ${status}`}
+                className={`w-2 h-2 rounded-full ${getAAStatusDarkColor(
+                  status as ArtistAlleyStatus
+                )}`}
+              />
+              <p className="text-xs text-primary-text">{count}</p>
+            </div>
+          ) : null
         )}
-      </h1>
+        <h1
+          title="Number of Cons"
+          className="select-none text-sm text-primary-muted"
+        >
+          {count != 0 ? (
+            <div className="flex flex-row gap-1 items-center ">
+              <div className="w-2 h-2 bg-secondary rounded-full" />
+              <p className="text-xs text-primary-text">{count}</p>
+            </div>
+          ) : (
+            ""
+          )}
+        </h1>
+      </div>
     </div>
   );
 }

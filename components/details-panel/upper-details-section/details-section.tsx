@@ -35,7 +35,16 @@ export default function DetailsSection({
 
   return (
     <>
-      <div className="flex flex-row justify-between mb-6 mx-6">
+      <div className="flex flex-row-reverse justify-between mb-6 mx-6">
+        <button
+          type="button"
+          onClick={() => setEditingModalPage("editor")}
+          className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
+        >
+          <MdEdit className="translate-y-[1px]" />
+          Edit Con Info
+        </button>
+
         {details.website && (
           <a
             href={details.website}
@@ -49,14 +58,6 @@ export default function DetailsSection({
             Website
           </a>
         )}
-        <button
-          type="button"
-          onClick={() => setEditingModalPage("editor")}
-          className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
-        >
-          <MdEdit className="translate-y-[1px]" />
-          Edit Con Info
-        </button>
       </div>
       <div className="mb-6">
         {details.convention_years.length > 0 &&

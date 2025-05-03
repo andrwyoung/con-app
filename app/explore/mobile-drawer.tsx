@@ -114,7 +114,8 @@ export default function MobileDrawer() {
           {mode == "details" && selectedCon && (
             <DetailsPanel
               scope="explore"
-              con={selectedCon}
+              conId={selectedCon.id}
+              conName={selectedCon.name}
               onClose={function (): void {
                 throw new Error("Function not implemented.");
               }}

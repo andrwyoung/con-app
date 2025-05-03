@@ -42,7 +42,8 @@ export default function MobileDrawer2() {
         {selectedCon && (
           <DetailsPanel
             scope="explore"
-            con={selectedCon}
+            conId={selectedCon.id}
+            conName={selectedCon.name}
             onClose={() => setShowMobileDrawer(false)}
           />
         )}

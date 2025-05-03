@@ -39,6 +39,13 @@ export type Database = {
             foreignKeyName: "convention_history_convention_id_fkey"
             columns: ["convention_id"]
             isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
+          {
+            foreignKeyName: "convention_history_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
             referencedRelation: "conventions"
             referencedColumns: ["id"]
           },
@@ -113,6 +120,13 @@ export type Database = {
           year?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "convention_years_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
           {
             foreignKeyName: "convention_years_convention_id_fkey"
             columns: ["convention_id"]
@@ -239,6 +253,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reviews_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
           {
             foreignKeyName: "reviews_convention_id_fkey"
             columns: ["convention_id"]
@@ -408,6 +429,13 @@ export type Database = {
             foreignKeyName: "suggestions_con_details_convention_id_fkey"
             columns: ["convention_id"]
             isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
+          {
+            foreignKeyName: "suggestions_con_details_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
             referencedRelation: "conventions"
             referencedColumns: ["id"]
           },
@@ -462,6 +490,13 @@ export type Database = {
             foreignKeyName: "suggestions_new_year_convention_id_fkey"
             columns: ["convention_id"]
             isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
+          {
+            foreignKeyName: "suggestions_new_year_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
             referencedRelation: "conventions"
             referencedColumns: ["id"]
           },
@@ -512,6 +547,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_convention_list_item_convention_id_fkey"
+            columns: ["convention_id"]
+            isOneToOne: false
+            referencedRelation: "aa_admin_items"
+            referencedColumns: ["convention_id"]
+          },
           {
             foreignKeyName: "user_convention_list_item_convention_id_fkey"
             columns: ["convention_id"]
@@ -699,6 +741,48 @@ export type Database = {
       }
     }
     Views: {
+      aa_admin_items: {
+        Row: {
+          aa_deadline: string | null
+          aa_link: string | null
+          aa_open_date: string | null
+          aa_real_release: boolean | null
+          aa_status: string | null
+          aa_status_override: string | null
+          aa_watch_link: boolean | null
+          approval_status: string | null
+          approved_by: string | null
+          approved_username: string | null
+          convention_id: number | null
+          convention_name: string | null
+          convention_year:
+            | Database["public"]["Tables"]["convention_years"]["Row"]
+            | null
+          convention_year_id: string | null
+          created_at: string | null
+          id: string | null
+          is_latest_year: boolean | null
+          merged_at: string | null
+          submitted_by: string | null
+          submitted_username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestions_artist_alley_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "convention_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_artist_alley_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["convention_year_id"]
+          },
+        ]
+      }
       latest_convention_years: {
         Row: {
           aa_deadline: string | null
