@@ -8,6 +8,20 @@ export function formatFullSingleDate(day: string): string {
   return format(parseISO(day), "MMMM d, yyyy");
 }
 
+export function formatSubmittedAt(timestamp: string | null) {
+  if (!timestamp) return "Unknown time";
+
+  const date = new Date(timestamp);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 // Apr, 25
 // for plan mode when you click on a month
 export function formatMonthYear(monthData: MonthWithWeekends): string {

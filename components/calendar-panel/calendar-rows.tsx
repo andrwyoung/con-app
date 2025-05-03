@@ -157,7 +157,7 @@ export function CalendarWeekendDot({
             : "bg-primary hover:bg-primary-darker/80"
         }`}
       >
-        <FaRegCalendar className="hidden md:block text-primary-text/50 w-3 h-3" />
+        <FaRegCalendar className="hidden md:block text-primary-text/70 w-3 h-3" />
         <p className="hidden md:block">{weekendData.weekendDay.getDate()}</p>
       </div>
 

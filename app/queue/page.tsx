@@ -37,8 +37,8 @@ export default function AdminPage() {
           <div className="relative text-sm text-primary-text flex h-full w-full items-center justify-center ">
             <div className="flex flex-col absolute bottom-0 gap-6">
               <div className="px-4 py-2 bg-primary-light w-fit rounded-lg relative">
-                <h1> hi. select a con! </h1>
-                <div className="absolute right-4 -bottom-2 w-0 h-0 border-t-[10px] border-t-primary-light border-x-[10px] border-x-transparent" />
+                <h1> hi. select somethin to review! </h1>
+                <div className="absolute right-16 -bottom-2 w-0 h-0 border-t-[10px] border-t-primary-light border-x-[10px] border-x-transparent" />
               </div>
               <Image
                 src={"/cat.png"}

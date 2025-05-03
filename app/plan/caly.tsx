@@ -14,6 +14,7 @@ import {
   usePlanSidebarStore,
 } from "@/stores/page-store";
 import { ConventionInfo } from "@/types/con-types";
+import { AAStatusDots } from "@/utils/testers/dot-testers";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const yearStyling =
@@ -285,48 +286,51 @@ export default function Caly({
   };
 
   return (
-    <div className="border-b rounded-lg">
-      <div
-        className="sticky top-0 z-10 px-4 py-2 font-bold bg-gradient-to-b from-white to-transparent
-     flex flex-row justify-between items-center gap-4 border select-none rounded-t"
-      >
-        <div className="flex items-center min-w-[4rem]">
-          <h1 className={`${yearStyling}`}>{visibleYear}</h1>
-        </div>
-        <button
-          type="button"
-          onClick={handleScrollToToday}
-          className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 border-2 border-primary rounded-full hover:bg-primary-light focus:outline-none"
-        >
-          Today
-        </button>
-      </div>
-      <div className="relative">
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5 rounded-lg" />
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-5 rounded-lg" />
-
+    <>
+      <div className="border-b rounded-lg">
         <div
-          ref={scrollContainerRef}
-          className="flex flex-col gap-8 h-full max-h-[calc(100dvh-12rem)] md:max-h-[calc(100dvh-20rem)] overflow-y-auto scrollbar-none p-4 "
+          className="sticky top-0 z-10 px-4 py-2 font-bold bg-gradient-to-b from-white to-transparent
+     flex flex-row justify-between items-center gap-4 border select-none rounded-t"
         >
-          {months.map((month) => (
-            <div
-              key={`${month.year}-${month.month}`}
-              ref={(el) => {
-                if (month.month === 1) janRefs.current[month.year] = el;
-                monthRefs.current[`${month.year}-${month.month}`] = el;
-              }}
-            >
-              <CalendarMonthRow
-                monthData={month}
-                conMapLists={weekendConMap}
-                conMapAA={weekendEventMap}
-              />
-            </div>
-          ))}
-          <div className="h-40 shrink-0" />
+          <div className="flex items-center min-w-[4rem]">
+            <h1 className={`${yearStyling}`}>{visibleYear}</h1>
+          </div>
+          <button
+            type="button"
+            onClick={handleScrollToToday}
+            className="bg-primary-lightest cursor-pointer text-primary-muted uppercase text-xs px-4 py-0.5 border-2 border-primary rounded-full hover:bg-primary-light focus:outline-none"
+          >
+            Today
+          </button>
+        </div>
+        <div className="relative">
+          <div className="pointer-events-none absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-5 rounded-lg" />
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white z-5 rounded-lg" />
+
+          <div
+            ref={scrollContainerRef}
+            className="flex flex-col gap-8 h-full max-h-[calc(100dvh-12rem)] md:max-h-[calc(100dvh-20rem)] overflow-y-auto scrollbar-none p-4 "
+          >
+            {months.map((month) => (
+              <div
+                key={`${month.year}-${month.month}`}
+                ref={(el) => {
+                  if (month.month === 1) janRefs.current[month.year] = el;
+                  monthRefs.current[`${month.year}-${month.month}`] = el;
+                }}
+              >
+                <CalendarMonthRow
+                  monthData={month}
+                  conMapLists={weekendConMap}
+                  conMapAA={weekendEventMap}
+                />
+              </div>
+            ))}
+            <div className="h-40 shrink-0" />
+          </div>
         </div>
       </div>
-    </div>
+      <AAStatusDots />
+    </>
   );
 }

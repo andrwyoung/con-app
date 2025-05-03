@@ -2,7 +2,10 @@ import { supabaseAnon } from "@/lib/supabase/client";
 import { ArtistAlleySuggestion } from "@/types/suggestion-types";
 import React, { useEffect, useState } from "react";
 import { lightweightConInfo } from "./page";
-import { formatFullSingleDate } from "@/lib/helpers/time/date-formatters";
+import {
+  formatFullSingleDate,
+  formatSubmittedAt,
+} from "@/lib/helpers/time/date-formatters";
 
 function GridWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -196,7 +199,8 @@ export default function SuggestionPanel({
                 )}
               </div>
               <div className="text-xs px-2">
-                Submitted by: {sugg.submitted_username || "Anonymous"}
+                Submitted by: {sugg.submitted_username || "Anonymous"} at{" "}
+                {formatSubmittedAt(sugg.created_at)}
               </div>
             </div>
           ))}
