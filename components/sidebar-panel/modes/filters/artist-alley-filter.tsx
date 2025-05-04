@@ -44,14 +44,14 @@ export default function ArtistAlleyFilter() {
 
   return (
     <FilterSection
-      title="Status"
+      title="Application Status"
       selectAll={selectAllAAStatuses}
       deselectAll={clearAAStatusFilter}
       filterIsActive={aaStatusFilterIsActive()}
     >
       <div className="space-y-2">
         <div>
-          <p className="text-xs text-primary-muted mb-1">Current & Upcoming</p>
+          <p className="text-xs text-primary-muted mb-1">Open and Expected</p>
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
             {sectionOne.map((tag) => (
               <CheckField
@@ -66,7 +66,7 @@ export default function ArtistAlleyFilter() {
         </div>
 
         <div>
-          <p className="text-xs text-primary-muted mb-1">Past & Inactive</p>
+          <p className="text-xs text-primary-muted mb-1">Everything Else</p>
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
             {sectionTwo.map((tag) => (
               <CheckField
