@@ -9,6 +9,7 @@ export type SortType =
   | "status"
   | "distance"
   | "distance-me"
+  | "aa-type"
   | "raw";
 
 

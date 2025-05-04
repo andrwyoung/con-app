@@ -34,9 +34,14 @@ export default function FilterSection({ scope }: { scope: Scope }) {
   const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive());
   const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive());
-  const activeCount = [tagFilterIsActive, statusFilterIsActive].filter(
-    Boolean
-  ).length;
+  const aaStatusFilterIsActive = useFilterStore((s) =>
+    s.aaStatusFilterIsActive()
+  );
+  const activeCount = [
+    tagFilterIsActive,
+    statusFilterIsActive,
+    aaStatusFilterIsActive,
+  ].filter(Boolean).length;
 
   return (
     <>

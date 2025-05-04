@@ -4,6 +4,10 @@
 import { timeCategories } from "@/types/time-types";
 import { ConventionInfo } from "@/types/con-types";
 import { create } from "zustand";
+import {
+  ArtistAlleyStatus,
+  artistAlleyStatusList,
+} from "@/types/artist-alley-types";
 
 export const topTags = ["comic", "anime", "cosplay", "gaming", "art", "manga"];
 export const extraTags = [
@@ -52,6 +56,13 @@ type FilterStore = {
   clearStatusFilter: () => void;
   statusFilterIsActive: () => boolean;
 
+  // aa filter
+  selectedAAStatuses: ArtistAlleyStatus[];
+  setSelectedAAStatuses: (tags: ArtistAlleyStatus[]) => void;
+  selectAllAAStatuses: () => void;
+  clearAAStatusFilter: () => void;
+  aaStatusFilterIsActive: () => boolean;
+
   // reseting all filters
   resetAllFilters: () => void;
 };
@@ -97,10 +108,20 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     return get().selectedStatuses.length !== timeCategories.length;
   },
 
+  selectedAAStatuses: [...artistAlleyStatusList],
+  setSelectedAAStatuses: (tags) => set({ selectedAAStatuses: tags }),
+  selectAllAAStatuses: () =>
+    set({ selectedAAStatuses: [...artistAlleyStatusList] }),
+  clearAAStatusFilter: () => set({ selectedAAStatuses: [] }),
+  aaStatusFilterIsActive: () => {
+    return get().selectedAAStatuses.length != artistAlleyStatusList.length;
+  },
+
   // reseting all filters
   resetAllFilters: () => {
     const s = get();
     s.selectAllTags();
     s.selectAllStatuses();
+    s.selectAllAAStatuses();
   },
 }));

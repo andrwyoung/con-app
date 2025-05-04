@@ -87,15 +87,7 @@ export default function AboutPage() {
 
           <BioDropdown name="Sanskar Gyawali" icon={<FaCalendarCheck />}>
             Sanskar helped with grabbing and figuring out the initial data set.
-            Thanks!{" "}
-            <a
-              href="https://github.com/sunscarr/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline cursor-pointer text-secondary-darker hover:text-secondary transition-colors"
-            >
-              His Github
-            </a>
+            Thanks!
           </BioDropdown>
         </div>
 

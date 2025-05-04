@@ -115,7 +115,7 @@ export default function CalendarMode() {
             <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2">
               In Current List ({inListCons.length})
             </h1>
-            <CardList items={inListCons} scope={"plan"} />
+            <CardList items={inListCons} scope={"plan"} sortOption="aa-type" />
 
             <h1 className="text-xs font-semibold uppercase tracking-wide text-primary-muted px-2 mt-1">
               Scheduled Cons ({notInListCons.length})
@@ -128,7 +128,7 @@ export default function CalendarMode() {
         ) : null}
 
         {selectedCons.length > 0 ? (
-          <CardList items={notInListCons} scope={"plan"} />
+          <CardList items={notInListCons} scope={"plan"} sortOption="aa-type" />
         ) : somethingSelected ? (
           <div className="text-sm text-center text-primary-muted px-2 my-2">
             No Cons Scheduled.
@@ -152,6 +152,7 @@ export default function CalendarMode() {
               items={notInListPredictions}
               type="prediction"
               scope={"plan"}
+              sortOption="aa-type"
             />
           </>
         )}

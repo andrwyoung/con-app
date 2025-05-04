@@ -35,8 +35,11 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
   const setFilteredItems = useFilterStore((s) => s.setFilteredItems);
   const tagFilter = useFilterStore((s) => s.tagFilter);
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
+  const selectedAAStatuses = useFilterStore((s) => s.selectedAAStatuses);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive)();
-  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive)();
+  const statusFilterIsActive = useFilterStore(
+    (s) => s.aaStatusFilterIsActive
+  )();
 
   const tempPinCons = useMapPinsStore((s) => s.tempPins);
 
@@ -83,6 +86,12 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
           event.timeCategory ?? "unknown"
         );
 
+        // aa status filter
+        const aaStatusMatch = selectedAAStatuses.includes(
+          event.aaStatus ?? "unknown"
+        );
+
+        if (!aaStatusMatch) return false;
         if (!statusMatch) return false;
         if (isUntagged) return tagFilter.includeUntagged;
         return tagMatch;
@@ -90,7 +99,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
     );
 
     return result;
-  }, [eventDict, tagFilter, selectedStatuses]);
+  }, [eventDict, tagFilter, selectedStatuses, selectedAAStatuses]);
 
   // update the store with the filtered items
   useEffect(() => {

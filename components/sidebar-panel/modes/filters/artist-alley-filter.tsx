@@ -1,46 +1,53 @@
 import { useFilterStore } from "@/stores/filter-store";
 import { CheckField, FilterSection } from "./filter-helpers";
-import { TIME_CATEGORY_LABELS, TimeCategory } from "@/types/time-types";
+import {
+  ArtistAlleyStatus,
+  artistAlleyStatusLabels,
+} from "@/types/artist-alley-types";
 
 export default function ArtistAlleyFilter() {
-  const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
-  const setSelectedStatuses = useFilterStore((s) => s.setSelectedStatuses);
+  const selectedAAStatuses = useFilterStore((s) => s.selectedAAStatuses);
+  const setSelectedAAStatuses = useFilterStore((s) => s.setSelectedAAStatuses);
 
-  const selectAllStatuses = useFilterStore((s) => s.selectAllStatuses);
-  const clearStatusFilter = useFilterStore((s) => s.clearStatusFilter);
-  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive);
+  const selectAllAAStatuses = useFilterStore((s) => s.selectAllAAStatuses);
+  const clearAAStatusFilter = useFilterStore((s) => s.clearAAStatusFilter);
+  const aaStatusFilterIsActive = useFilterStore(
+    (s) => s.aaStatusFilterIsActive
+  );
 
-  const toggleStatus = (tag: string) => {
+  const toggleStatus = (tag: ArtistAlleyStatus) => {
     // if all are selected and one is selected. ONLY select that one
-    const isDefault = !statusFilterIsActive();
+    const isDefault = !aaStatusFilterIsActive();
     if (isDefault) {
-      setSelectedStatuses([tag]);
+      setSelectedAAStatuses([tag]);
       return;
     }
 
-    if (selectedStatuses.includes(tag)) {
-      setSelectedStatuses(selectedStatuses.filter((t) => t !== tag));
+    if (selectedAAStatuses.includes(tag)) {
+      setSelectedAAStatuses(selectedAAStatuses.filter((t) => t !== tag));
     } else {
-      setSelectedStatuses([...selectedStatuses, tag]);
+      setSelectedAAStatuses([...selectedAAStatuses, tag]);
     }
   };
 
-  const sectionOne: TimeCategory[] = ["here", "soon", "upcoming"];
-  const sectionTwo: TimeCategory[] = [
-    "recent",
-    "past",
-    "postponed",
-    "cancelled",
-    "discontinued",
+  const sectionOne: ArtistAlleyStatus[] = ["open", "expected"];
+  const sectionTwo: ArtistAlleyStatus[] = [
+    "watch_link",
+    "waitlist",
+    "announced",
     "unknown",
+    "closed",
+    "passed",
+    "invite_only",
+    "no_aa",
   ];
 
   return (
     <FilterSection
       title="Status"
-      selectAll={selectAllStatuses}
-      deselectAll={clearStatusFilter}
-      filterIsActive={statusFilterIsActive()}
+      selectAll={selectAllAAStatuses}
+      deselectAll={clearAAStatusFilter}
+      filterIsActive={aaStatusFilterIsActive()}
     >
       <div className="space-y-2">
         <div>
@@ -49,10 +56,10 @@ export default function ArtistAlleyFilter() {
             {sectionOne.map((tag) => (
               <CheckField
                 key={tag}
-                text={TIME_CATEGORY_LABELS[tag]}
-                isChecked={selectedStatuses.includes(tag)}
+                text={artistAlleyStatusLabels[tag]}
+                isChecked={selectedAAStatuses.includes(tag)}
                 onChange={() => toggleStatus(tag)}
-                isMuted={statusFilterIsActive()}
+                isMuted={aaStatusFilterIsActive()}
               />
             ))}
           </div>
@@ -64,10 +71,10 @@ export default function ArtistAlleyFilter() {
             {sectionTwo.map((tag) => (
               <CheckField
                 key={tag}
-                text={TIME_CATEGORY_LABELS[tag]}
-                isChecked={selectedStatuses.includes(tag)}
+                text={artistAlleyStatusLabels[tag]}
+                isChecked={selectedAAStatuses.includes(tag)}
                 onChange={() => toggleStatus(tag)}
-                isMuted={statusFilterIsActive()}
+                isMuted={aaStatusFilterIsActive()}
               />
             ))}
           </div>

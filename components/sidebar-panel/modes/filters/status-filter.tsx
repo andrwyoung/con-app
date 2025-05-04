@@ -8,7 +8,7 @@ export default function StatusFilter() {
 
   const selectAllStatuses = useFilterStore((s) => s.selectAllStatuses);
   const clearStatusFilter = useFilterStore((s) => s.clearStatusFilter);
-  const statusFilterIsActive = useFilterStore((s) => s.statusFilterIsActive);
+  const statusFilterIsActive = useFilterStore((s) => s.aaStatusFilterIsActive);
 
   const toggleStatus = (tag: string) => {
     // if all are selected and one is selected. ONLY select that one

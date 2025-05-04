@@ -2,6 +2,7 @@ import { ConventionInfo } from "@/types/con-types";
 import { getDistance } from "../utils";
 import { ExtendedTimeCategories } from "@/types/time-types";
 import { SortType } from "@/types/sort-types";
+import { artistAlleyStatusList } from "@/types/artist-alley-types";
 
 export function getStartDate(event: ConventionInfo): Date {
   return event.latest_start_date
@@ -15,11 +16,11 @@ export function groupByStatus(
 ): Record<string, ConventionInfo[]> {
   const grouped = items.reduce((acc, item) => {
     const status: ExtendedTimeCategories =
-    item.specificYear?.year && item.specificYear.year !== item.latest_year
-      ? "historical"
-      : !item.convention_year_id
-      ? "prediction"
-      : item.timeCategory ?? "unknown";
+      item.specificYear?.year && item.specificYear.year !== item.latest_year
+        ? "historical"
+        : !item.convention_year_id
+        ? "prediction"
+        : item.timeCategory ?? "unknown";
 
     if (!acc[status]) acc[status] = [];
     acc[status].push(item);
@@ -28,19 +29,26 @@ export function groupByStatus(
 
   // sort each group by date
   Object.entries(grouped).forEach(([key, group]) => {
-    const reverseSort = key === "historical" || key === "past" || key === "discontinued";
-  
+    const reverseSort =
+      key === "historical" || key === "past" || key === "discontinued";
+
     // then sort them by their time recency
     group.sort((a, b) => {
       const diff = getStartDate(a).getTime() - getStartDate(b).getTime();
-    
+
       if (key === "upcoming") {
         const aStatus = a.aaStatus;
         const bStatus = b.aaStatus;
-    
-        const aPriority = aStatus === "open" || aStatus === "expected" || aStatus === "watch_link";
-        const bPriority = bStatus === "open" || bStatus === "expected" || bStatus === "watch_link";
-    
+
+        const aPriority =
+          aStatus === "open" ||
+          aStatus === "expected" ||
+          aStatus === "watch_link";
+        const bPriority =
+          bStatus === "open" ||
+          bStatus === "expected" ||
+          bStatus === "watch_link";
+
         if (aPriority && !bPriority) return -1;
         if (!aPriority && bPriority) return 1;
       }
@@ -99,6 +107,13 @@ export function sortEvents(
           );
         sorted.sort((a, b) => dist(a) - dist(b));
       }
+      break;
+    case "aa-type":
+      sorted.sort((a, b) => {
+        const aIndex = artistAlleyStatusList.indexOf(a.aaStatus || "unknown");
+        const bIndex = artistAlleyStatusList.indexOf(b.aaStatus || "unknown");
+        return aIndex - bIndex;
+      });
       break;
     default:
       break;

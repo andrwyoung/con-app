@@ -1,14 +1,17 @@
-export type ArtistAlleyStatus =
-  | "open"
-  | "expected"
-  | "unknown"
-  | "closed"
-  | "passed"
-  | "no_aa"
-  | "invite_only"
-  | "watch_link"
-  | "waitlist"
-  | "announced";
+export const artistAlleyStatusList = [
+  "open",
+  "watch_link",
+  "waitlist",
+  "announced",
+  "expected",
+  "unknown",
+  "closed",
+  "passed",
+  "invite_only",
+  "no_aa",
+] as const;
+
+export type ArtistAlleyStatus = (typeof artistAlleyStatusList)[number];
 
 export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> = {
   open: "Open!",
