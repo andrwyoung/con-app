@@ -79,6 +79,7 @@ export default function DetailsSection({
           <h3 className="text-primary-muted font-semibold uppercase">
             Convention Info
           </h3>
+          <p className="text-xs text-primary-muted">Con Code: {details.id}</p>
         </div>
 
         {details.cs_description ? (

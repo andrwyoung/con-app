@@ -152,14 +152,13 @@ export type Database = {
           facebook_url: string | null
           fancons_link: string | null
           id: number
-          image_url: string | null
           instagram_url: string | null
           location: string | null
           location_lat: number | null
           location_long: number | null
           name: string
           organizer: string | null
-          organizer_url: string | null
+          organizer_id: string | null
           slug: string | null
           social_links: string | null
           tags: string[] | null
@@ -176,14 +175,13 @@ export type Database = {
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
-          image_url?: string | null
           instagram_url?: string | null
           location?: string | null
           location_lat?: number | null
           location_long?: number | null
           name: string
           organizer?: string | null
-          organizer_url?: string | null
+          organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
           tags?: string[] | null
@@ -200,14 +198,13 @@ export type Database = {
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
-          image_url?: string | null
           instagram_url?: string | null
           location?: string | null
           location_lat?: number | null
           location_long?: number | null
           name?: string
           organizer?: string | null
-          organizer_url?: string | null
+          organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
           tags?: string[] | null
@@ -215,6 +212,38 @@ export type Database = {
           venue?: string | null
           website?: string | null
           x_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conventions_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizers"
+            referencedColumns: ["organizer_id"]
+          },
+        ]
+      }
+      organizers: {
+        Row: {
+          created_at: string
+          organizer_description: string | null
+          organizer_id: string
+          organizer_name: string
+          organizer_website: string | null
+        }
+        Insert: {
+          created_at?: string
+          organizer_description?: string | null
+          organizer_id?: string
+          organizer_name: string
+          organizer_website?: string | null
+        }
+        Update: {
+          created_at?: string
+          organizer_description?: string | null
+          organizer_id?: string
+          organizer_name?: string
+          organizer_website?: string | null
         }
         Relationships: []
       }

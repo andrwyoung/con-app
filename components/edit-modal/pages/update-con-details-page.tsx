@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import HeadersHelper from "../editor-helpers";
 import {
+  ConSize,
   Convention,
   ConventionYear,
   FullConventionDetails,
@@ -10,7 +11,6 @@ import { DialogFooter } from "@/components/ui/dialog";
 import useShakeError from "@/hooks/use-shake-error";
 import { Button } from "@/components/ui/button";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
-import WikipediaTextarea from "./con-details-helpers/wikipedia-textarea";
 import {
   ConDetailsFields,
   SuggestionsMetadataFields,
@@ -23,6 +23,9 @@ import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { log } from "@/lib/utils";
 import { toast } from "sonner";
+import GeneralEditPage from "./con-details-pages/general-page";
+
+export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 
 export default function UpdateConDetailsPage({
   conDetails,
@@ -39,6 +42,14 @@ export default function UpdateConDetailsPage({
   const [description, setDescription] = useState(
     conDetails.cs_description ?? ""
   );
+  const [conSize, setConSize] = useState<ConSize | undefined>(
+    (conDetails.con_size as ConSize) ?? undefined
+  );
+
+  // moving between pages
+  const [editPagePage, setEditPagePage] =
+    useState<updateDetailsPageMode>("general");
+  console.log(setEditPagePage);
 
   const isAdmin = profile?.role === "ADMIN";
   const latestYear = conDetails.convention_years.reduce((latest, current) => {
@@ -132,27 +143,15 @@ export default function UpdateConDetailsPage({
       title={`Edit Details for ${conDetails.name}`}
       website={conDetails.website ?? undefined}
     >
-      <div className="flex flex-col pt-4 pb-8 gap-6">
-        <WikipediaTextarea
+      {editPagePage === "general" && (
+        <GeneralEditPage
           queryTitle={conDetails.name}
-          initialValue={description}
-          onChange={setDescription}
+          description={description}
+          setDescription={setDescription}
+          conSize={conSize}
+          setConSize={setConSize}
         />
-        {/* 
-        <div>
-          <Label className="text-sm font-medium text-primary-text">Tags:</Label>
-          <div className="flex flex-wrap items-center justify-center gap-y-1 gap-x-2">
-            {allTags.map((tag, index) => (
-              <div
-                key={index}
-                className="px-2 py-0.5 rounded-full bg-primary-lightest text-sm text-primary-muted"
-              >
-                {tag}
-              </div>
-            ))}
-          </div>
-        </div> */}
-      </div>
+      )}
 
       <DialogFooter>
         <div className="flex flex-col gap-2 items-center">

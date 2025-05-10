@@ -111,14 +111,14 @@ export default function FilterMode({ scope }: { scope: Scope }) {
           )}
         </>
       ) : (
-        <div className="hidden md:flex flex-col min-h-0 w-full py-2">
+        <div className="hidden md:flex flex-col min-h-0 w-full py-2 gap-2">
           <button
             type="button"
             className="flex flex-row items-center gap-1 cursor-pointer"
             onClick={() => setShowRecomended(!showRecomended)}
           >
             <h1 className="font-semibold uppercase text-primary-muted text-sm tracking-wide">
-              Recomended
+              Open applications
             </h1>
             <FaCaretDown
               className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${

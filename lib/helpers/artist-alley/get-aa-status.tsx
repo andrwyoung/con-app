@@ -36,15 +36,15 @@ export function getAAStatus(
   // if deadline is here, it is for sure open
   if (deadline && now <= deadline) return "open";
 
+  // if the deadline has passed then it is closed
+  if (deadline && now > deadline) return "closed";
+
   // if a real release date exists but it's not yet here it must be announced
   if (open && now < open && aa_real_release) return "announced";
 
   // if a real release and it passed that date, then then it is
   // for sure open (even without an end date)
   if (open && now >= open && aa_real_release) return "open";
-
-  // if the deadline has passed then it is closed
-  if (deadline && now > deadline) return "closed";
 
   // else there might be a link you can watch;
   if (aa_status_override === "watch_link") return "watch_link";

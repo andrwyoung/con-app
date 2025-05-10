@@ -56,3 +56,15 @@ export type FullConventionDetails = Convention & {
 
 export type UserListItem = Tables<"user_convention_list_items">;
 export type UserList = Tables<"user_convention_lists">;
+
+
+// for editing con details
+export type ConSize = "seed" | "small" | "medium" | "large" | "huge";
+
+export const CON_SIZE_LABELS: Record<ConSize, string> = {
+  seed: "Micro Con (under 1k)",
+  small: "Small Con (1k - 10k)",
+  medium: "Medium Con (10k - 25k)",
+  large: "Large Con (25k - 100k)",
+  huge: "Mega Con (100k +)",
+};
