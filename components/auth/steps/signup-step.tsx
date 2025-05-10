@@ -29,6 +29,9 @@ const reservedUsernames = [
   "convention",
   "explore",
   "planner",
+  "anonymous",
+  "anon",
+  "anony",
 ];
 
 export default function SignupStep({

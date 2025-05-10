@@ -22,6 +22,7 @@ export type Review = {
   stars: number;
 
   tags: string[];
+  anonymous: boolean;
 
   // grabbing username too
   user_profiles?: {

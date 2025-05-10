@@ -220,6 +220,7 @@ export type Database = {
       }
       reviews: {
         Row: {
+          anonymous: boolean
           convention_id: number
           convention_years_id: string | null
           created_at: string
@@ -231,6 +232,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          anonymous?: boolean
           convention_id: number
           convention_years_id?: string | null
           created_at?: string
@@ -242,6 +244,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          anonymous?: boolean
           convention_id?: number
           convention_years_id?: string | null
           created_at?: string

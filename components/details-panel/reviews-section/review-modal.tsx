@@ -19,6 +19,7 @@ import { Star } from "lucide-react"; // or use Heroicons/Radix/etc.
 import { supabaseAnon } from "@/lib/supabase/client";
 import { Review, ReviewTag, TAG_OPTIONS } from "../../../types/review-types";
 import { FiTrash2 } from "react-icons/fi";
+import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 
 type Props = {
   value: number;
@@ -79,10 +80,13 @@ export default function ReviewModal({
 }) {
   const isEditing = initialReview !== null;
 
+  // the 4 fields we submit
   const [stars, setStars] = useState(0);
   const [reviewText, setReviewText] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [selectedTags, setSelectedTags] = useState<ReviewTag[]>([]);
+  const [isAnon, setIsAnon] = useState(false);
+
+  const [submitting, setSubmitting] = useState(false);
 
   const handleDelete = async () => {
     if (!initialReview) return;
@@ -120,6 +124,7 @@ export default function ReviewModal({
       review_text: reviewText,
       convention_id: conId,
       tags: selectedTags,
+      anonymous: isAnon,
     };
 
     let error;
@@ -148,6 +153,7 @@ export default function ReviewModal({
     setStars(0);
     setReviewText("");
     setSelectedTags([]);
+    setIsAnon(false);
 
     setIsOpen(false);
     onSubmitted(); // should refresh reviews
@@ -158,10 +164,12 @@ export default function ReviewModal({
       setStars(initialReview.stars);
       setReviewText(initialReview.review_text);
       setSelectedTags((initialReview.tags as ReviewTag[]) ?? []);
+      setIsAnon(initialReview.anonymous);
     } else {
       setStars(0);
       setReviewText("");
       setSelectedTags([]);
+      setIsAnon(false);
     }
   }, [initialReview]);
 
@@ -240,30 +248,38 @@ export default function ReviewModal({
           </div>
         </div>
         <DialogFooter>
-          <div className="flex flex-row gap-4 justify-center sm:gap-8 items-center mt-2">
-            {isEditing && (
-              <div
-                className="flex flex-row gap-1 items-center text-rose-400 cursor-pointer"
-                onClick={handleDelete}
+          <div className="flex flex-col items-center gap-1">
+            <CheckField
+              text="Post Anonymously"
+              isChecked={isAnon}
+              onChange={() => setIsAnon(!isAnon)}
+            />
+            <div className="flex flex-row gap-4 justify-center sm:gap-8 items-center mt-2">
+              {isEditing && (
+                <div
+                  className="flex flex-row gap-1 items-center text-rose-400 cursor-pointer"
+                  onClick={handleDelete}
+                >
+                  <FiTrash2 className="hidden sm:block transform-y-[1px]" />
+                  <p>Delete Note</p>
+                </div>
+              )}
+              <Button
+                onClick={handleSubmit}
+                disabled={
+                  submitting ||
+                  (!reviewText.trim() && selectedTags.length === 0)
+                }
               >
-                <FiTrash2 className="hidden sm:block transform-y-[1px]" />
-                <p>Delete Note</p>
-              </div>
-            )}
-            <Button
-              onClick={handleSubmit}
-              disabled={
-                submitting || (!reviewText.trim() && selectedTags.length === 0)
-              }
-            >
-              {isEditing
-                ? submitting
-                  ? "Saving..."
-                  : "Save Edits"
-                : submitting
-                ? "Submitting..."
-                : "Submit Review"}
-            </Button>
+                {isEditing
+                  ? submitting
+                    ? "Saving..."
+                    : "Save Edits"
+                  : submitting
+                  ? "Submitting..."
+                  : "Submit Review"}
+              </Button>
+            </div>
           </div>
         </DialogFooter>
       </DialogContent>

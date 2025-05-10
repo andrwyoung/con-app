@@ -21,7 +21,9 @@ export default function ReviewCard({
       <div className="flex flex-row justify-between items-center pr-2">
         <div className="flex flex-row items-center">
           <h3 className="text-sm font-semibold text-primary-text px-2">
-            {review.user_profiles?.username ?? "unknown user"}
+            {review.anonymous
+              ? "anonymous"
+              : review.user_profiles?.username ?? "unknown user"}
           </h3>
           {profile && profile.user_id === review.user_id && (
             <FiEdit3
