@@ -1,7 +1,7 @@
 import { FullConventionDetails, Scope } from "@/types/con-types";
 import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
-import { useFilterStore } from "@/stores/filter-store";
+import { allTags, useFilterStore } from "@/stores/filter-store";
 import { useExploreGeneralUIStore } from "@/stores/ui-store";
 
 export default function MoreDetailsSection({
@@ -45,42 +45,44 @@ export default function MoreDetailsSection({
           <div className="flex flex-row items-center gap-2">
             <p className="text-xs text-primary-muted">Tags:</p>
             <div className="flex flex-wrap gap-1 text-xs">
-              {details.tags?.map((tagRaw) => {
-                const tag = tagRaw.trim();
-                if (scope === "explore") {
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => {
-                        if (
-                          tagFilter.selected.length === 1 &&
-                          tagFilter.selected[0] === tag &&
-                          tagFilter.includeUntagged === false
-                        ) {
-                          resetAllFilters();
-                          setShownFilters([]);
-                        } else {
-                          setTagFilter([tag], false);
-                          setShownFilters(["tags"]);
-                        }
-                      }}
-                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
-                    >
-                      #{tag}
-                    </button>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={tag}
-                      className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted"
-                    >
-                      #{tag}
-                    </div>
-                  );
-                }
-              })}
+              {details.tags
+                ?.filter((tag) => allTags.includes(tag))
+                .map((tagRaw) => {
+                  const tag = tagRaw.trim();
+                  if (scope === "explore") {
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          if (
+                            tagFilter.selected.length === 1 &&
+                            tagFilter.selected[0] === tag &&
+                            tagFilter.includeUntagged === false
+                          ) {
+                            resetAllFilters();
+                            setShownFilters([]);
+                          } else {
+                            setTagFilter([tag], false);
+                            setShownFilters(["tags"]);
+                          }
+                        }}
+                        className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted hover:underline cursor-pointer"
+                      >
+                        #{tag}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={tag}
+                        className="px-2 py-0.5 rounded-full bg-primary-lightest text-primary-muted"
+                      >
+                        #{tag}
+                      </div>
+                    );
+                  }
+                })}
             </div>
           </div>
         )}

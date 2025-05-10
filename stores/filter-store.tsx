@@ -12,7 +12,6 @@ import {
 export const topTags = ["comic", "anime", "cosplay", "gaming", "art", "manga"];
 export const extraTags = [
   "show",
-  "panels",
   "fandom",
   "toy",
   "books",
@@ -26,8 +25,8 @@ export const extraTags = [
   "lego",
   "furry",
   "horror",
-  "camp",
   "kpop",
+  "scifi",
   "lgbt",
   "disney",
 ];
