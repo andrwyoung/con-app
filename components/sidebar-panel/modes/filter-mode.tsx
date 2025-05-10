@@ -44,7 +44,7 @@ export default function FilterMode({ scope }: { scope: Scope }) {
           filteredFocusedEvents.length > 0 ? "hidden md:block" : "block"
         }
       >
-        <FilterSection scope={scope} />
+        <FilterSection scope={scope} setShowRecomended={setShowRecomended} />
       </div>
 
       <hr className="hidden md:block border-t border-primary-muted w-full mt-2 mb-2" />

@@ -136,7 +136,7 @@ export default function Recommendations({ scope }: { scope: Scope }) {
       className="overflow-y-scroll scrollbar-none flex flex-col gap-2 w-full"
     >
       <p className="text-xs text-primary-muted italic">
-        All open applications + some randomized Expected cons
+        All open applications + some Expected cons
       </p>
       <CardList items={recommendedV2} type="recommendation" scope={scope} />
     </motion.div>

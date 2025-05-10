@@ -1,6 +1,6 @@
 import { useFilterStore } from "@/stores/filter-store";
 import { useScopedUIStore } from "@/stores/ui-store";
-import React from "react";
+import React, { useEffect } from "react";
 import FilterToggleButton from "./filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import TagsFilter from "./filters/tag-filter";
@@ -23,7 +23,13 @@ function FilterPanel({ type }: { type: FilterKey }) {
   }
 }
 
-export default function FilterSection({ scope }: { scope: Scope }) {
+export default function FilterSection({
+  scope,
+  setShowRecomended,
+}: {
+  scope: Scope;
+  setShowRecomended: (b: boolean) => void;
+}) {
   const { shownFilters, setShownFilters } = useScopedUIStore(scope);
 
   const filterBar: FilterKey[] = ["tags", "status", "apps"];
@@ -42,6 +48,12 @@ export default function FilterSection({ scope }: { scope: Scope }) {
     statusFilterIsActive,
     aaStatusFilterIsActive,
   ].filter(Boolean).length;
+
+  useEffect(() => {
+    if (shownFilters.length > 0) {
+      setShowRecomended(false);
+    }
+  }, [shownFilters]);
 
   return (
     <>
