@@ -10,11 +10,12 @@ import {
   useScopedSelectedCardsStore,
 } from "@/stores/page-store";
 import { Scope } from "@/types/con-types";
-import { useExploreUIStore } from "@/stores/ui-store";
+import { useExploreUIStore, useScopedUIStore } from "@/stores/ui-store";
 import FilterSection from "./filter-section";
 
 export default function FilterMode({ scope }: { scope: Scope }) {
   const { showRecomended, setShowRecomended } = useExploreUIStore();
+  const { setShownFilters } = useScopedUIStore(scope);
 
   const filteredItems = useFilterStore((s) => s.filteredItems);
   const setSelectedCon = useExploreSelectedCardsStore((s) => s.setSelectedCon);
@@ -36,6 +37,13 @@ export default function FilterMode({ scope }: { scope: Scope }) {
     );
     setFilteredFocusedEvents(updatedFilteredEvents);
   }, [filteredItems, focusedEvents, setFilteredFocusedEvents]);
+
+  // close filter panel whenever something new is selected on the map
+  useEffect(() => {
+    if (focusedEvents.length > 0) {
+      setShownFilters([]);
+    }
+  }, [focusedEvents, setShownFilters]);
 
   return (
     <div className="flex flex-col min-h-0 max-h-[calc(100dvh-18rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent">

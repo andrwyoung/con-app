@@ -53,7 +53,7 @@ export default function FilterSection({
     if (shownFilters.length > 0) {
       setShowRecomended(false);
     }
-  }, [shownFilters]);
+  }, [shownFilters, setShowRecomended]);
 
   return (
     <>
