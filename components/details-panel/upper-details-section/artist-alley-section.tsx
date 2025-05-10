@@ -18,7 +18,6 @@ export default function ArtistAlleyStatusSection({
     conYear.aa_deadline,
     conYear.aa_real_release,
     conYear.aa_status_override,
-    conYear.aa_watch_link,
     conYear.event_status
   );
 

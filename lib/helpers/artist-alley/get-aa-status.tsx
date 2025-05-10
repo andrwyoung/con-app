@@ -7,11 +7,10 @@ export function getAAStatus(
   aa_deadline?: string | null,
   aa_real_release?: boolean | null,
   aa_status_override?: string | null,
-  aa_watch_link?: boolean | null,
   event_status?: string | null
 ): ArtistAlleyStatus {
   const now = new Date();
-  const open = aa_open_date ? new Date(aa_open_date + "T00:00:00") : null;
+  const open = aa_open_date ? parseISO(aa_open_date) : null;
   const deadline = aa_deadline ? parseISO(aa_deadline) : null;
   const start = start_date ? parseISO(start_date) : null;
 
