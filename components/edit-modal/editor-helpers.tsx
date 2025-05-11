@@ -28,6 +28,9 @@ export default function HeadersHelper({
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
+          {description && (
+            <span className="text-primary-muted">{description}</span>
+          )}
           {website && (
             <>
               <span className="flex flex-row items-center gap-1 mb-0.5 text-primary-text hover:text-primary-darker">
@@ -42,9 +45,6 @@ export default function HeadersHelper({
                 </a>
               </span>
             </>
-          )}
-          {description && (
-            <span className="text-muted-foreground">{description}</span>
           )}
         </DialogDescription>
       </DialogHeader>

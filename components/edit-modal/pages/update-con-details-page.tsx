@@ -26,6 +26,35 @@ import { toast } from "sonner";
 import GeneralEditPage from "./con-details-pages/general-page";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
+export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
+  general: "General Info",
+  tags_sites: "Tags/Socials",
+  dates_loc: "Dates/Location",
+};
+
+function EditStepButton({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={`rounded-lg border-2 flex items-center justify-center px-2 py-1 text-xs
+        transition-all duration-200 text-primary-text ${
+          selected
+            ? "bg-primary border-secondary cursor-default"
+            : "bg-primary-light border-transparent hover:bg-primary cursor-pointer "
+        }`}
+      onClick={onClick}
+    >
+      {label}
+    </div>
+  );
+}
 
 export default function UpdateConDetailsPage({
   conDetails,
@@ -58,7 +87,6 @@ export default function UpdateConDetailsPage({
   // moving between pages
   const [editPagePage, setEditPagePage] =
     useState<updateDetailsPageMode>("general");
-  console.log(setEditPagePage);
 
   const isAdmin = profile?.role === "ADMIN";
   const latestYear = conDetails.convention_years.reduce((latest, current) => {
@@ -159,27 +187,52 @@ export default function UpdateConDetailsPage({
 
   return (
     <HeadersHelper
-      title={`Edit Details for ${conDetails.name}`}
+      title={`Edit Con Details`}
       website={conDetails.website ?? undefined}
+      description={`Convention: ${conDetails.name}`}
     >
-      {editPagePage === "general" && (
-        <GeneralEditPage
-          queryTitle={conDetails.name}
-          description={description}
-          setDescription={setDescription}
-          conSize={conSize}
-          setConSize={setConSize}
-          selectedOrganizer={selectedOrganizer}
-          setSelectedOrganizer={setSelectedOrganizer}
-        />
-      )}
+      <div className="flex flex-col gap-2 items-center">
+        <p className="text-xs text-primary-text">
+          Select a Page to Edit (everything is optional):
+        </p>
+        <div className="flex flex-row gap-2 items-center">
+          {(
+            Object.entries(EDIT_PAGE_TITLES) as [
+              updateDetailsPageMode,
+              string
+            ][]
+          ).map(([mode, label]) => (
+            <EditStepButton
+              key={mode}
+              label={label}
+              selected={editPagePage === mode}
+              onClick={() => setEditPagePage(mode)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-stone-100 px-4 py-2 rounded-lg">
+        {editPagePage === "general" && (
+          <GeneralEditPage
+            queryTitle={conDetails.name}
+            description={description}
+            setDescription={setDescription}
+            conSize={conSize}
+            setConSize={setConSize}
+            selectedOrganizer={selectedOrganizer}
+            setSelectedOrganizer={setSelectedOrganizer}
+          />
+        )}
+      </div>
 
       <DialogFooter>
-        <div className="flex flex-col gap-2 items-center">
-          <Button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Submitting..." : "Submit Update"}
-          </Button>
-          {/* {error && (
+        <div className="flex flex-col gap-8 mt-4">
+          <div className="flex flex-col gap-2 items-center">
+            <Button onClick={handleSubmit} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit Update"}
+            </Button>
+            {/* {error && (
             <span
               id="aa-update-error"
               className={`text-sm ${shake && "animate-shake"} text-red-500`}
@@ -187,6 +240,7 @@ export default function UpdateConDetailsPage({
               {error}
             </span>
           )} */}
+          </div>
         </div>
       </DialogFooter>
     </HeadersHelper>

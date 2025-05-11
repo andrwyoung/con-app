@@ -57,8 +57,8 @@ export default function WikipediaTextarea({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row justify-between">
+    <div className="flex flex-col">
+      <div className="flex flex-row justify-between mb-2">
         <Label
           htmlFor="description"
           className="text-sm font-medium text-primary-text"
@@ -73,14 +73,14 @@ export default function WikipediaTextarea({
         onChange={handleChange}
         rows={4}
         autoFocus
-        className="border rounded-lg px-3 py-2 text-sm text-primary-text"
+        className="border rounded-t-lg px-3 py-2 z-6 text-sm text-primary-text bg-white"
         placeholder={placeholder}
         ref={inputRef}
       />
 
       <div
         className="flex flex-col gap-1 text-sm text-muted-foreground px-4 
-      bg-primary-lightest rounded-lg py-2"
+      rounded-b-lg py-2 bg-stone-200/80 z-5"
       >
         <label
           htmlFor="wiki-search"
@@ -116,7 +116,7 @@ export default function WikipediaTextarea({
            text-sm rounded-lg flex flex-row gap-1 items-center ${
              submitting
                ? "bg-secondary-light text-primary-muted"
-               : "cursor-pointer hover:bg-secondary-light bg-primary-lightest text-primary-text"
+               : "cursor-pointer hover:bg-secondary-light bg-secondary-lightest text-primary-text"
            }`}
             disabled={submitting}
           >

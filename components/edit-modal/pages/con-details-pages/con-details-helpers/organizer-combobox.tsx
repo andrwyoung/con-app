@@ -114,7 +114,7 @@ export default function OrganizerCombobox({
           }
         }}
         placeholder="Search or add organizer..."
-        className="w-full px-3 py-2 border rounded-md text-sm pr-6
+        className="w-full px-3 py-2 border rounded-md text-sm pr-6 bg-white
         transition-all focus:outline-none focus:ring-3 focus:ring-ring/50"
       />
 
