@@ -29,7 +29,7 @@ export default function HeadersHelper({
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
           {description && (
-            <span className="text-primary-muted">{description}</span>
+            <span className="text-primary-muted/80">{description}</span>
           )}
           {website && (
             <>

@@ -24,6 +24,8 @@ import { supabaseAnon } from "@/lib/supabase/client";
 import { log } from "@/lib/utils";
 import { toast } from "sonner";
 import GeneralEditPage from "./con-details-pages/general-page";
+import DatesLocationPage from "./con-details-pages/date-loc-page";
+import TagsWebsitePage from "./con-details-pages/tags-website";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
@@ -189,11 +191,11 @@ export default function UpdateConDetailsPage({
     <HeadersHelper
       title={`Edit Con Details`}
       website={conDetails.website ?? undefined}
-      description={`Convention: ${conDetails.name}`}
+      description={`${conDetails.name}`}
     >
       <div className="flex flex-col gap-2 items-center">
         <p className="text-xs text-primary-text">
-          Select a Page to Edit (everything is optional):
+          Select Page (everything is optional):
         </p>
         <div className="flex flex-row gap-2 items-center">
           {(
@@ -224,6 +226,8 @@ export default function UpdateConDetailsPage({
             setSelectedOrganizer={setSelectedOrganizer}
           />
         )}
+        {editPagePage === "tags_sites" && <TagsWebsitePage />}
+        {editPagePage === "dates_loc" && <DatesLocationPage />}
       </div>
 
       <DialogFooter>
