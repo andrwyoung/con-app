@@ -24,6 +24,8 @@ export type ConventionInfo = {
   location_lat: number;
   location_long: number;
   tags: string[];
+  
+  con_size: string;
 
   // from convention_years
   convention_year_id?: string;
@@ -49,9 +51,11 @@ export type ConventionInfo = {
 // when grabbing details panel
 export type Convention = Tables<"conventions">;
 export type ConventionYear = Tables<"convention_years">;
+export type Organizer = Tables<"organizers">;
 
 export type FullConventionDetails = Convention & {
   convention_years: ConventionYear[];
+  organizer: Organizer;
 };
 
 export type UserListItem = Tables<"user_convention_list_items">;
@@ -67,4 +71,17 @@ export const CON_SIZE_LABELS: Record<ConSize, string> = {
   medium: "Medium Con (10k - 25k)",
   large: "Large Con (25k - 100k)",
   huge: "Mega Con (100k +)",
+};
+
+export const CON_SIZE_LABELS_SHORT: Record<ConSize, string> = {
+  seed: "Micro",
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
+  huge: "Mega",
+};
+
+export type OrganizerType = {
+  id: string | null;
+  name: string;
 };

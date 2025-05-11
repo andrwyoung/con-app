@@ -5,10 +5,10 @@ import {
   Convention,
   ConventionYear,
   FullConventionDetails,
+  OrganizerType,
 } from "@/types/con-types";
 import { EditorSteps } from "../edit-con-modal";
 import { DialogFooter } from "@/components/ui/dialog";
-import useShakeError from "@/hooks/use-shake-error";
 import { Button } from "@/components/ui/button";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
 import {
@@ -35,7 +35,7 @@ export default function UpdateConDetailsPage({
   setPage: (p: EditorSteps) => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
-  const { error, shake, triggerError } = useShakeError();
+  // const { error, shake, triggerError } = useShakeError();
   const { user, profile } = useUserStore();
 
   // fields that matter
@@ -45,6 +45,15 @@ export default function UpdateConDetailsPage({
   const [conSize, setConSize] = useState<ConSize | undefined>(
     (conDetails.con_size as ConSize) ?? undefined
   );
+  const [selectedOrganizer, setSelectedOrganizer] =
+    useState<OrganizerType | null>(
+      conDetails.organizer
+        ? {
+            id: conDetails.organizer.organizer_id,
+            name: conDetails.organizer.organizer_name,
+          }
+        : null
+    );
 
   // moving between pages
   const [editPagePage, setEditPagePage] =
@@ -61,24 +70,32 @@ export default function UpdateConDetailsPage({
       setSubmitting,
       setPage,
       tryBlock: async () => {
-        if (description === "") {
-          triggerError("Please fill in at least one field.");
-          setSubmitting(false);
-          throw new Error("Validation failed");
-        }
+        // if (description === "") {
+        //   triggerError("Please fill in at least one field.");
+        //   setSubmitting(false);
+        //   throw new Error("Validation failed");
+        // }
 
         const newInfo: ConDetailsFields = {
           new_start_date: undefined,
           new_end_date: undefined,
           new_g_link: undefined,
           new_status: undefined,
-          new_description: description,
+
+          new_description:
+            description !== conDetails.cs_description ? description : undefined,
+
           new_tags: undefined,
           new_website: undefined,
           new_social_links: undefined,
           notes: undefined,
-          con_size: undefined,
-          organizer: undefined,
+
+          con_size: conSize !== conDetails.con_size ? conSize : undefined,
+          organizer_id:
+            (selectedOrganizer?.id ?? null) !==
+            conDetails.organizer?.organizer_id
+              ? selectedOrganizer?.id ?? null
+              : undefined,
         };
 
         const initMetadata: SuggestionsMetadataFields = buildInitialMetadata(
@@ -107,7 +124,9 @@ export default function UpdateConDetailsPage({
           if (!confirmed) return;
 
           const conTablePayload: Partial<Convention> = {
-            cs_description: description,
+            cs_description: newInfo.new_description,
+            con_size: newInfo.con_size,
+            organizer_id: newInfo.organizer_id,
           };
 
           const conYearTablePayload: Partial<ConventionYear> = {};
@@ -150,6 +169,8 @@ export default function UpdateConDetailsPage({
           setDescription={setDescription}
           conSize={conSize}
           setConSize={setConSize}
+          selectedOrganizer={selectedOrganizer}
+          setSelectedOrganizer={setSelectedOrganizer}
         />
       )}
 
@@ -158,14 +179,14 @@ export default function UpdateConDetailsPage({
           <Button onClick={handleSubmit} disabled={submitting}>
             {submitting ? "Submitting..." : "Submit Update"}
           </Button>
-          {error && (
+          {/* {error && (
             <span
               id="aa-update-error"
               className={`text-sm ${shake && "animate-shake"} text-red-500`}
             >
               {error}
             </span>
-          )}
+          )} */}
         </div>
       </DialogFooter>
     </HeadersHelper>

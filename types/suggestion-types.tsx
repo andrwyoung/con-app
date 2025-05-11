@@ -34,7 +34,7 @@ export type ConDetailsFields = {
   new_social_links: string | null | undefined;
   notes: string | null | undefined;
   con_size: string | null | undefined;
-  organizer: string | null | undefined;
+  organizer_id: string | null | undefined;
 };
 
 export type NewYearInfoFields = {

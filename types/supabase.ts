@@ -157,7 +157,6 @@ export type Database = {
           location_lat: number | null
           location_long: number | null
           name: string
-          organizer: string | null
           organizer_id: string | null
           slug: string | null
           social_links: string | null
@@ -180,7 +179,6 @@ export type Database = {
           location_lat?: number | null
           location_long?: number | null
           name: string
-          organizer?: string | null
           organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
@@ -203,7 +201,6 @@ export type Database = {
           location_lat?: number | null
           location_long?: number | null
           name?: string
-          organizer?: string | null
           organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
@@ -413,7 +410,7 @@ export type Database = {
           new_tags: string | null
           new_website: string | null
           notes: string | null
-          organizer: string | null
+          organizer_id: string | null
           submitted_by: string | null
         }
         Insert: {
@@ -433,7 +430,7 @@ export type Database = {
           new_tags?: string | null
           new_website?: string | null
           notes?: string | null
-          organizer?: string | null
+          organizer_id?: string | null
           submitted_by?: string | null
         }
         Update: {
@@ -453,7 +450,7 @@ export type Database = {
           new_tags?: string | null
           new_website?: string | null
           notes?: string | null
-          organizer?: string | null
+          organizer_id?: string | null
           submitted_by?: string | null
         }
         Relationships: [

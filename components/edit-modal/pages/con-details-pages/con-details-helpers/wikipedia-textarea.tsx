@@ -6,17 +6,19 @@ import { FaLink, FaWikipediaW } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 
 export default function WikipediaTextarea({
-  label = "Description",
-  placeholder = "Add a short summary or background...",
+  label = "Description:",
+  placeholder = "Who is this con for. How long has it been running? etc...",
   initialValue = "",
   onChange,
   queryTitle,
+  inputRef,
 }: {
   label?: string;
   placeholder?: string;
   initialValue?: string;
   onChange: (val: string) => void;
   queryTitle: string;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }) {
   const [value, setValue] = useState(initialValue);
   const [searchTerm, setSearchTerm] = useState(queryTitle);
@@ -73,6 +75,7 @@ export default function WikipediaTextarea({
         autoFocus
         className="border rounded-lg px-3 py-2 text-sm text-primary-text"
         placeholder={placeholder}
+        ref={inputRef}
       />
 
       <div

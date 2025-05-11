@@ -1,4 +1,10 @@
-import { FullConventionDetails, Scope } from "@/types/con-types";
+import {
+  CON_SIZE_LABELS,
+  CON_SIZE_LABELS_SHORT,
+  ConSize,
+  FullConventionDetails,
+  Scope,
+} from "@/types/con-types";
 import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { allTags, useFilterStore } from "@/stores/filter-store";
@@ -86,6 +92,21 @@ export default function MoreDetailsSection({
             </div>
           </div>
         )}
+
+        <div className="flex flex-col py-1 text-xs text-primary-muted cursor-default">
+          {details.con_size && (
+            <div
+              className=""
+              title={CON_SIZE_LABELS[details.con_size as ConSize]}
+            >
+              Size: {CON_SIZE_LABELS_SHORT[details.con_size as ConSize]}
+            </div>
+          )}
+
+          {details.organizer?.organizer_name && (
+            <div>Organizer: {details.organizer.organizer_name}</div>
+          )}
+        </div>
       </div>
     </>
   );

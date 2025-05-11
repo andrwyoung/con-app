@@ -9,7 +9,7 @@ export async function grabAllDetails(
 ): Promise<FullConventionDetails | null> {
   const { data, error } = await supabaseAnon
     .from("conventions")
-    .select("*, convention_years(*)")
+    .select("*, organizer:organizer_id(*), convention_years(*)")
     .eq("id", id)
     .single();
 

@@ -6,6 +6,7 @@ import DetailsSection from "./upper-details-section/details-section";
 import ReviewsSection from "./reviews-section/reviews-section";
 import EditConventionModal from "../edit-modal/edit-con-modal";
 import FocusDot from "./focus-dot";
+import { log } from "@/lib/utils";
 
 export default function DetailsPanel({
   scope,
@@ -22,6 +23,7 @@ export default function DetailsPanel({
 
   const handleRefetch = useCallback(async () => {
     const conDetails = await grabAllDetails(conId);
+    log("Full Convention Details: ", conDetails);
     setDetails(conDetails);
   }, [conId]);
 
