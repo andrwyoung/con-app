@@ -25,7 +25,7 @@ export type ConventionInfo = {
   location_long: number;
   tags: string[];
   
-  con_size: string;
+  con_size?: string;
 
   // from convention_years
   convention_year_id?: string;
