@@ -26,6 +26,8 @@ import { toast } from "sonner";
 import GeneralEditPage from "./con-details-pages/general-page";
 import DatesLocationPage from "./con-details-pages/date-loc-page";
 import TagsWebsitePage from "./con-details-pages/tags-website";
+import { allTags } from "@/stores/filter-store";
+import { arrayChanged } from "@/utils/array-utils";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
@@ -69,13 +71,24 @@ export default function UpdateConDetailsPage({
   // const { error, shake, triggerError } = useShakeError();
   const { user, profile } = useUserStore();
 
+  // SECTION: fields that matter
+  //
   // fields that matter
+
+  //
+  // 1: description
   const [description, setDescription] = useState(
     conDetails.cs_description ?? ""
   );
+  const descriptionHasChanged = description !== conDetails.cs_description;
+  //
+  // 2: convention size
   const [conSize, setConSize] = useState<ConSize | undefined>(
     (conDetails.con_size as ConSize) ?? undefined
   );
+  //
+  // 3: organizer
+  const originalOrganizerName = conDetails.organizer?.organizer_name ?? "";
   const [selectedOrganizer, setSelectedOrganizer] =
     useState<OrganizerType | null>(
       conDetails.organizer
@@ -85,7 +98,36 @@ export default function UpdateConDetailsPage({
           }
         : null
     );
+  const organizerHasChanged =
+    (selectedOrganizer?.name.trim() ?? "") !== originalOrganizerName.trim();
+  //
+  // 4: social links
+  const originalSocialLinks: string[] =
+    typeof conDetails.social_links === "string"
+      ? conDetails.social_links
+          .split(",")
+          .map((link) => link.trim())
+          .filter((link) => link.length > 0)
+      : [];
+  const [socialLinks, setSocialLinks] = useState<string[]>(originalSocialLinks);
+  const cleanSocialLinks = socialLinks.map((l) => l.trim()).filter(Boolean);
+  const socialLinksHaveChanged = arrayChanged(
+    cleanSocialLinks,
+    originalSocialLinks
+  );
+  //
+  // 5: tags
+  const originalTags: string[] = Array.isArray(conDetails.tags)
+    ? conDetails.tags
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0 && allTags.includes(tag))
+    : [];
+  const [tags, setTags] = useState<string[]>(originalTags);
+  const tagsHaveChanged = arrayChanged(tags, originalTags);
 
+  //
+  // SECTION
+  //
   // moving between pages
   const [editPagePage, setEditPagePage] =
     useState<updateDetailsPageMode>("general");
@@ -107,25 +149,29 @@ export default function UpdateConDetailsPage({
         // }
 
         const newInfo: ConDetailsFields = {
+          // section 1
+          con_size: conSize !== conDetails.con_size ? conSize : undefined,
+          organizer_id: organizerHasChanged
+            ? selectedOrganizer?.id ?? null
+            : undefined,
+          organizer_name: organizerHasChanged
+            ? selectedOrganizer?.name ?? null
+            : undefined,
+          new_description: descriptionHasChanged ? description : undefined,
+
+          // section 2
+          new_tags: tagsHaveChanged ? tags : undefined,
+          new_social_links: socialLinksHaveChanged
+            ? cleanSocialLinks.join(",")
+            : undefined,
+
+          // section 3
           new_start_date: undefined,
           new_end_date: undefined,
+          new_website: undefined,
           new_g_link: undefined,
           new_status: undefined,
-
-          new_description:
-            description !== conDetails.cs_description ? description : undefined,
-
-          new_tags: undefined,
-          new_website: undefined,
-          new_social_links: undefined,
           notes: undefined,
-
-          con_size: conSize !== conDetails.con_size ? conSize : undefined,
-          organizer_id:
-            (selectedOrganizer?.id ?? null) !==
-            conDetails.organizer?.organizer_id
-              ? selectedOrganizer?.id ?? null
-              : undefined,
         };
 
         const initMetadata: SuggestionsMetadataFields = buildInitialMetadata(
@@ -153,10 +199,15 @@ export default function UpdateConDetailsPage({
           );
           if (!confirmed) return;
 
+          // TODO: make new organizer
+
           const conTablePayload: Partial<Convention> = {
             cs_description: newInfo.new_description,
             con_size: newInfo.con_size,
             organizer_id: newInfo.organizer_id,
+
+            tags: newInfo.new_tags,
+            social_links: newInfo.new_social_links,
           };
 
           const conYearTablePayload: Partial<ConventionYear> = {};
@@ -226,7 +277,14 @@ export default function UpdateConDetailsPage({
             setSelectedOrganizer={setSelectedOrganizer}
           />
         )}
-        {editPagePage === "tags_sites" && <TagsWebsitePage />}
+        {editPagePage === "tags_sites" && (
+          <TagsWebsitePage
+            socialLinks={socialLinks}
+            setSocialLinks={setSocialLinks}
+            tags={tags}
+            setTags={setTags}
+          />
+        )}
         {editPagePage === "dates_loc" && <DatesLocationPage />}
       </div>
 

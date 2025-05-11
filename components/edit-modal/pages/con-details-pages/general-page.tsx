@@ -37,9 +37,7 @@ export default function GeneralEditPage({
       </h1> */}
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <Label className="text-sm font-medium text-primary-text">
-            Convention Size (Estimate):
-          </Label>
+          <Label>Convention Size (Estimate):</Label>
           <Select
             value={conSize ?? "__none__"}
             onValueChange={(val) => {
@@ -62,9 +60,7 @@ export default function GeneralEditPage({
 
         <div className="flex flex-col gap-2 max-w-64">
           <div className="flex flex-row gap-4 justify-between items-center">
-            <Label className="text-sm font-medium text-primary-text">
-              Organizer:
-            </Label>
+            <Label>Organizer:</Label>
             {selectedOrganizer ? (
               <span className="text-green-600 text-xs ml-1 text-right">
                 ✓ {selectedOrganizer.name}

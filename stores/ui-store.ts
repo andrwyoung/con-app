@@ -35,7 +35,8 @@ export const useModalUIStore = create<ModalUIStore>((set, get) => ({
 
   anyModalOpen: () => {
     const s = get();
-    return s.loginModalStep !== "closed"  || s.onboardingOpen || s.profileOpen;
+    return s.loginModalStep !== "closed"  || s.onboardingOpen || 
+    s.profileOpen || s.editingModalPage !== "closed";
   },
 }));
 

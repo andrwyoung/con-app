@@ -29,12 +29,13 @@ export type ConDetailsFields = {
   new_g_link: string | null | undefined;
   new_status: string | null | undefined;
   new_description: string | null | undefined;
-  new_tags: string | null | undefined;
+  new_tags: string[] | null | undefined;
   new_website: string | null | undefined;
   new_social_links: string | null | undefined;
   notes: string | null | undefined;
   con_size: string | null | undefined;
   organizer_id: string | null | undefined;
+  organizer_name: string | null | undefined;
 };
 
 export type NewYearInfoFields = {

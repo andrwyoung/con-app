@@ -5,7 +5,7 @@ export const MAX_SEARCH_BATCH_SIZE = 500;
 
 
 // tag and website limits
-export const MAX_TAGS = 5;
+export const MAX_TAGS = 4;
 export const MAX_WEBSITES = 3;
 
 // how we keep track of TimeCategory

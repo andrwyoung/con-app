@@ -51,7 +51,7 @@ export default function MoreDetailsSection({
           <div className="flex flex-row items-center gap-2">
             <p className="text-xs text-primary-muted">Tags:</p>
             <div className="flex flex-wrap gap-1 text-xs">
-              {details.tags
+              {cleanedTags
                 ?.filter((tag) => allTags.includes(tag))
                 .map((tagRaw) => {
                   const tag = tagRaw.trim();

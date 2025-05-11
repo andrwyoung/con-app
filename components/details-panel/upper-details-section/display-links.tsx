@@ -32,17 +32,17 @@ export function parseSocialLinks(
   raw
     .split(",")
     .map((link) => link.trim())
-    .filter((link) => {
-      const lower = link.toLowerCase();
-      return (
-        Boolean(link) &&
-        !lower.includes("login") &&
-        !lower.includes("facebook.com/events") &&
-        !lower.includes("facebook.com/sharer.php") &&
-        !lower.includes("facebook.com/profile.php") &&
-        !lower.includes("www.instagram.com/p/")
-      );
-    })
+    // .filter((link) => {
+    //   const lower = link.toLowerCase();
+    //   return (
+    //     Boolean(link) &&
+    //     !lower.includes("login") &&
+    //     !lower.includes("facebook.com/events") &&
+    //     !lower.includes("facebook.com/sharer.php") &&
+    //     !lower.includes("facebook.com/profile.php") &&
+    //     !lower.includes("www.instagram.com/p/")
+    //   );
+    // })
     .forEach((href) => {
       const hostname = new URL(href).hostname.toLowerCase();
       const platform =
@@ -85,7 +85,7 @@ export default function SocialLinks({ links }: { links: string }) {
             );
           })}
         </div>
-      )}{" "}
+      )}
     </>
   );
 }

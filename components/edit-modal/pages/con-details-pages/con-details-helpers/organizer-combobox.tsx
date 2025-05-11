@@ -18,6 +18,7 @@ export default function OrganizerCombobox({
   wikiRef: React.RefObject<HTMLTextAreaElement | null>;
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState(selectedOrganizer?.name || "");
   const [allOrganizers, setAllOrganizers] = useState<OrganizerType[]>([]);
@@ -71,6 +72,7 @@ export default function OrganizerCombobox({
       <input
         type="text"
         value={query}
+        ref={inputRef}
         onChange={(e) => {
           setQuery(e.target.value);
           setDropdownOpen(true);
@@ -110,6 +112,10 @@ export default function OrganizerCombobox({
             if (wikiRef?.current) {
               wikiRef.current.focus();
             }
+            setDropdownOpen(false);
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            inputRef.current?.blur();
             setDropdownOpen(false);
           }
         }}

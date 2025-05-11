@@ -411,6 +411,7 @@ export type Database = {
           new_website: string | null
           notes: string | null
           organizer_id: string | null
+          organizer_name: string | null
           submitted_by: string | null
         }
         Insert: {
@@ -431,6 +432,7 @@ export type Database = {
           new_website?: string | null
           notes?: string | null
           organizer_id?: string | null
+          organizer_name?: string | null
           submitted_by?: string | null
         }
         Update: {
@@ -451,6 +453,7 @@ export type Database = {
           new_website?: string | null
           notes?: string | null
           organizer_id?: string | null
+          organizer_name?: string | null
           submitted_by?: string | null
         }
         Relationships: [

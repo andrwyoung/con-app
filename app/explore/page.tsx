@@ -5,12 +5,8 @@ import { useMapStore } from "@/stores/map-store";
 import { useModalUIStore } from "@/stores/ui-store";
 import DetailsPanel from "@/components/details-panel/details-panel";
 import { useSearchParams } from "next/navigation";
-import { useExploreSearchStore } from "@/stores/search-store";
 import { getBrowserLocation } from "@/lib/map/get-initial-location";
-import {
-  useExploreSelectedCardsStore,
-  useExploreSidebarStore,
-} from "@/stores/page-store";
+import { useExploreSelectedCardsStore } from "@/stores/page-store";
 import { log } from "@/lib/utils";
 import SidebarBackground from "@/components/sidebar-background";
 import MobileDrawer2 from "./mobile-drawer2";
@@ -21,7 +17,7 @@ export default function ExplorePage() {
   const { selectedCon, setSelectedCon, clearSelectedEvents } =
     useExploreSelectedCardsStore.getState();
 
-  const isModalOpen = useModalUIStore.getState().anyModalOpen();
+  const isModalOpen = useModalUIStore((state) => state.anyModalOpen());
   const searchParams = useSearchParams();
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -41,32 +37,33 @@ export default function ExplorePage() {
   useEffect(() => {
     const handleShortcuts = (e: KeyboardEvent) => {
       if (isModalOpen) return; // important to check if modal is open
-      if (e.key === "Escape") {
-        const active = document.activeElement;
-        const isInputFocused =
-          active &&
-          (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
 
-        if (isInputFocused) return;
+      // const active = document.activeElement;
+      // const isInputFocused =
+      //   active instanceof HTMLElement &&
+      //   active.matches("input, textarea, [contenteditable='true']");
 
-        const { selectedCon, setSelectedCon } =
-          useExploreSelectedCardsStore.getState();
-        const { sidebarMode } = useExploreSidebarStore.getState();
+      // if (e.key === "Escape") {
+      //   if (isInputFocused) return;
 
-        log("escape pressed! selected con:", selectedCon);
+      //   const { selectedCon, setSelectedCon } =
+      //     useExploreSelectedCardsStore.getState();
+      //   const { sidebarMode } = useExploreSidebarStore.getState();
 
-        // 1st escape deselects con
-        // 2nd escape changes mode back to filter
-        if (selectedCon) {
-          setSelectedCon(null);
-          useMapStore.getState().clearSelectedPointHighlight?.();
-        } else if (sidebarMode === "filter") {
-          clearSelectedEvents();
-          useMapStore.getState().clearClickedClusterHighlight?.();
-        } else {
-          useExploreSearchStore.getState().setSearchState(null);
-        }
-      }
+      //   log("escape pressed! selected con:", selectedCon);
+
+      //   // 1st escape deselects con
+      //   // 2nd escape changes mode back to filter
+      //   if (selectedCon) {
+      //     setSelectedCon(null);
+      //     useMapStore.getState().clearSelectedPointHighlight?.();
+      //   } else if (sidebarMode === "filter") {
+      //     clearSelectedEvents();
+      //     useMapStore.getState().clearClickedClusterHighlight?.();
+      //   } else {
+      //     useExploreSearchStore.getState().setSearchState(null);
+      //   }
+      // }
 
       // Cmd + L to focus the search bar
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "l") {
