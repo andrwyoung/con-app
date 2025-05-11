@@ -145,7 +145,10 @@ export default function TagsWebsitePage({
             )}
 
             {dropdownOpen && (
-              <div className="absolute z-10 mt-1 w-full bg-white border rounded-md shadow max-h-36 overflow-auto">
+              <div
+                className="absolute z-10 mt-1 w-full bg-white border rounded-md shadow max-h-48 overflow-auto
+              scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-light scrollbar-track-transparent"
+              >
                 {filtered.length > 0 ? (
                   filtered.map((tag, index) => (
                     <div

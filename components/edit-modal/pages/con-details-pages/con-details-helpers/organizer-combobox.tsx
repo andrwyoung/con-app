@@ -141,7 +141,8 @@ export default function OrganizerCombobox({
       {dropdownOpen && (
         <div
           className="absolute z-10 mt-1 w-full bg-white border border-muted 
-        rounded-md shadow-md max-h-64 overflow-auto"
+        rounded-md shadow-md max-h-64 overflow-auto
+        scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-light scrollbar-track-transparent"
         >
           {filtered.length > 0 ? (
             filtered.map((org, index) => (

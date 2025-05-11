@@ -8,7 +8,12 @@ import {
   FaFacebookSquare,
   FaTumblrSquare,
 } from "react-icons/fa";
-import { FaSquareThreads, FaXTwitter, FaYoutube } from "react-icons/fa6";
+import {
+  FaLink,
+  FaSquareThreads,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
 
 export const socialIconMap: Record<string, JSX.Element> = {
   "facebook.com": <FaFacebookSquare />,
@@ -47,14 +52,11 @@ export function parseSocialLinks(
       const hostname = new URL(href).hostname.toLowerCase();
       const platform =
         Object.keys(socialIconMap).find((key) => hostname.includes(key)) ??
-        "other";
+        "Random Link";
 
       platformCounts[platform] = platformCounts[platform] || 0;
 
-      if (platformCounts[platform] < 2) {
-        results.push({ href, platform });
-        platformCounts[platform]++;
-      }
+      results.push({ href, platform });
     });
 
   return results;
@@ -68,8 +70,7 @@ export default function SocialLinks({ links }: { links: string }) {
       {socials.length > 0 && (
         <div className="flex gap-3 items-center text-xl text-primary-muted">
           {socials.map(({ href, platform }, idx) => {
-            const icon = socialIconMap[platform];
-            if (!icon) return null;
+            const icon = socialIconMap[platform] ?? <FaLink />;
 
             return (
               <a
