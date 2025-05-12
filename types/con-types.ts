@@ -86,6 +86,14 @@ export const CON_SIZE_LABELS_SHORT: Record<ConSize, string> = {
   huge: "Mega",
 };
 
+export const CON_STATUS_LABELS: Record<ConStatus, string> = {
+  EventScheduled: "Normal",
+  EventPostponed: "Postponed",
+  EventMovedOnline: "Online",
+  EventCancelled: "Cancelled",
+  EventDiscontinued: "Discontinued"
+}
+
 export type OrganizerType = {
   id: string | null;
   name: string;

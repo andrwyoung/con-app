@@ -16,14 +16,19 @@ export function FormField({
   label,
   children,
   className = "",
+  mandatory = false,
 }: {
   label: string;
   children: React.ReactNode;
   className?: string;
+  mandatory?: boolean;
 }) {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <Label className="text-sm font-medium text-primary-text">{label}</Label>
+      <Label className="text-sm font-medium text-primary-text">
+        {mandatory && <span className="text-red-500">*</span>}
+        {label}
+      </Label>
       {children}
     </div>
   );

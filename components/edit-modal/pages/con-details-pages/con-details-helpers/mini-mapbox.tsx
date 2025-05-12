@@ -66,7 +66,7 @@ export default function MapboxMiniMap({
           className="text-sm text-primary-text cursor-pointer hover:underline transition"
           onClick={() => {
             if (mapRef.current) {
-              mapRef.current.flyTo({ center: [long, lat], zoom: MINIMAP_ZOOM });
+              mapRef.current.easeTo({ center: [long, lat] });
             }
           }}
           title="Click to re-center map"

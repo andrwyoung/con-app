@@ -38,6 +38,8 @@ export type ConDetailsFields = {
 
   // section 3
   year_changes: NewYearInfoFields[] | undefined;
+  new_lat: number | undefined;
+  new_long: number | undefined;
 
   notes: string | null | undefined;
 };

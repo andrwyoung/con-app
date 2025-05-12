@@ -23,10 +23,10 @@ export default function DatesLocationPage({
 }: {
   years: NewYearInfoFields[];
   setYears: (y: NewYearInfoFields[]) => void;
-  long: number | null;
-  setLong: (e: number | null) => void;
-  lat: number | null;
-  setLat: (e: number | null) => void;
+  long: number | undefined;
+  setLong: (e: number | undefined) => void;
+  lat: number | undefined;
+  setLat: (e: number | undefined) => void;
 }) {
   const [activeYear, setActiveYear] = useState<NewYearInfoFields | null>(null);
 
@@ -131,7 +131,7 @@ export default function DatesLocationPage({
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              {lat !== null && long !== null && (
+              {lat && long && (
                 <div className="flex flex-col gap-2">
                   <MapboxMiniMap
                     lat={lat}

@@ -156,8 +156,12 @@ export default function UpdateConDetailsPage({
       is_new_year: false, // not new because it already exists
     }))
   );
-  const [long, setLong] = useState(conDetails.location_long ?? null);
-  const [lat, setLat] = useState(conDetails.location_lat ?? null);
+  //
+  // 8: long / lat
+  const [long, setLong] = useState(conDetails.location_long ?? undefined);
+  const [lat, setLat] = useState(conDetails.location_lat ?? undefined);
+  const latLongHasChanged =
+    lat !== conDetails.location_lat || long !== conDetails.location_long;
 
   //
   // SECTION
@@ -204,6 +208,8 @@ export default function UpdateConDetailsPage({
 
           // section 3
           year_changes: undefined,
+          new_lat: latLongHasChanged ? lat : undefined,
+          new_long: latLongHasChanged ? long : undefined,
 
           notes: undefined,
         };
@@ -243,6 +249,9 @@ export default function UpdateConDetailsPage({
             tags: newInfo.new_tags,
             social_links: newInfo.new_social_links,
             website: newInfo.new_website,
+
+            location_lat: newInfo.new_lat,
+            location_long: newInfo.new_long,
           };
 
           const conYearTablePayload: Partial<ConventionYear> = {};
