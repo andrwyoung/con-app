@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HeadersHelper from "../editor-helpers";
 import {
   ConSize,
+  ConStatus,
   Convention,
   ConventionYear,
   FullConventionDetails,
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
 import {
   ConDetailsFields,
+  NewYearInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
 import {
@@ -28,11 +30,13 @@ import DatesLocationPage from "./con-details-pages/date-loc-page";
 import TagsWebsitePage from "./con-details-pages/tags-website";
 import { allTags } from "@/stores/filter-store";
 import { arrayChanged } from "@/utils/array-utils";
+import useShakeError from "@/hooks/use-shake-error";
+import { isValidUrl } from "@/utils/url";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
   general: "General Info",
-  tags_sites: "Tags/Socials",
+  tags_sites: "Tags/Links",
   dates_loc: "Dates/Location",
 };
 
@@ -68,13 +72,12 @@ export default function UpdateConDetailsPage({
   setPage: (p: EditorSteps) => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
-  // const { error, shake, triggerError } = useShakeError();
+  const { error, shake, triggerError } = useShakeError();
   const { user, profile } = useUserStore();
 
   // SECTION: fields that matter
   //
-  // fields that matter
-
+  // Page 1
   //
   // 1: description
   const [description, setDescription] = useState(
@@ -86,6 +89,7 @@ export default function UpdateConDetailsPage({
   const [conSize, setConSize] = useState<ConSize | undefined>(
     (conDetails.con_size as ConSize) ?? undefined
   );
+  const conSizeHasChanged = conSize !== conDetails.con_size;
   //
   // 3: organizer
   const originalOrganizerName = conDetails.organizer?.organizer_name ?? "";
@@ -100,6 +104,9 @@ export default function UpdateConDetailsPage({
     );
   const organizerHasChanged =
     (selectedOrganizer?.name.trim() ?? "") !== originalOrganizerName.trim();
+  //
+  //
+  // Page 2
   //
   // 4: social links
   const originalSocialLinks: string[] =
@@ -124,6 +131,30 @@ export default function UpdateConDetailsPage({
     : [];
   const [tags, setTags] = useState<string[]>(originalTags);
   const tagsHaveChanged = arrayChanged(tags, originalTags);
+  //
+  // 6: real website
+  const [website, setWebsite] = useState(conDetails.website ?? "");
+  const websiteHasChanged = website !== conDetails.website;
+
+  //
+  // Page 3
+  //
+  // 7: dates
+  const [years, setYears] = useState<NewYearInfoFields[]>(
+    conDetails.convention_years.map((year) => ({
+      event_status: year.event_status as ConStatus,
+
+      year: year.year,
+      start_date: year.start_date,
+      end_date: year.end_date,
+
+      g_link: year.g_link,
+      venue: year.venue,
+      location: year.location,
+
+      is_new_year: false, // not new because it already exists
+    }))
+  );
 
   //
   // SECTION
@@ -142,15 +173,17 @@ export default function UpdateConDetailsPage({
       setSubmitting,
       setPage,
       tryBlock: async () => {
-        // if (description === "") {
-        //   triggerError("Please fill in at least one field.");
-        //   setSubmitting(false);
-        //   throw new Error("Validation failed");
-        // }
+        if (website !== "" && !isValidUrl(website)) {
+          triggerError(
+            "Please enter a valid website (must start with https://) or leave website blank"
+          );
+          setSubmitting(false);
+          throw new Error("Validation failed");
+        }
 
         const newInfo: ConDetailsFields = {
           // section 1
-          con_size: conSize !== conDetails.con_size ? conSize : undefined,
+          con_size: conSizeHasChanged ? conSize : undefined,
           organizer_id: organizerHasChanged
             ? selectedOrganizer?.id ?? null
             : undefined,
@@ -164,13 +197,11 @@ export default function UpdateConDetailsPage({
           new_social_links: socialLinksHaveChanged
             ? cleanSocialLinks.join(",")
             : undefined,
+          new_website: websiteHasChanged ? website : undefined,
 
           // section 3
-          new_start_date: undefined,
-          new_end_date: undefined,
-          new_website: undefined,
-          new_g_link: undefined,
-          new_status: undefined,
+          year_changes: undefined,
+
           notes: undefined,
         };
 
@@ -208,6 +239,7 @@ export default function UpdateConDetailsPage({
 
             tags: newInfo.new_tags,
             social_links: newInfo.new_social_links,
+            website: newInfo.new_website,
           };
 
           const conYearTablePayload: Partial<ConventionYear> = {};
@@ -283,9 +315,13 @@ export default function UpdateConDetailsPage({
             setSocialLinks={setSocialLinks}
             tags={tags}
             setTags={setTags}
+            website={website}
+            setWebsite={setWebsite}
           />
         )}
-        {editPagePage === "dates_loc" && <DatesLocationPage />}
+        {editPagePage === "dates_loc" && (
+          <DatesLocationPage years={years} setYears={setYears} />
+        )}
       </div>
 
       <DialogFooter>
@@ -294,14 +330,16 @@ export default function UpdateConDetailsPage({
             <Button onClick={handleSubmit} disabled={submitting}>
               {submitting ? "Submitting..." : "Submit Update"}
             </Button>
-            {/* {error && (
-            <span
-              id="aa-update-error"
-              className={`text-sm ${shake && "animate-shake"} text-red-500`}
-            >
-              {error}
-            </span>
-          )} */}
+            {error && (
+              <span
+                id="aa-update-error"
+                className={`text-sm ${
+                  shake && "animate-shake"
+                } text-red-500 max-w-72 text-center`}
+              >
+                {error}
+              </span>
+            )}
           </div>
         </div>
       </DialogFooter>

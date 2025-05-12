@@ -3,6 +3,12 @@ import { TimeCategory } from "./time-types";
 import { ArtistAlleyStatus } from "./artist-alley-types";
 
 export type Scope = "explore" | "plan" | "share" | "unknown";
+export type ConStatus =
+  | "EventCancelled"
+  | "EventScheduled"
+  | "EventMovedOnline"
+  | "EventPostponed"
+  | "EventDiscontinued";
 
 export type ConLocation = {
   latitude: number;
@@ -10,9 +16,9 @@ export type ConLocation = {
 };
 
 export type Weekend = {
-  year: number,
-  weekend: number,
-}
+  year: number;
+  weekend: number;
+};
 
 export type ConventionInfo = {
   // from conventions
@@ -24,7 +30,7 @@ export type ConventionInfo = {
   location_lat: number;
   location_long: number;
   tags: string[];
-  
+
   con_size?: string;
 
   // from convention_years
@@ -46,7 +52,7 @@ export type ConventionInfo = {
   weekend?: Weekend | null;
   specificYear?: ConventionYear | null;
   aaStatus?: ArtistAlleyStatus;
-}
+};
 
 // when grabbing details panel
 export type Convention = Tables<"conventions">;
@@ -60,7 +66,6 @@ export type FullConventionDetails = Convention & {
 
 export type UserListItem = Tables<"user_convention_list_items">;
 export type UserList = Tables<"user_convention_lists">;
-
 
 // for editing con details
 export type ConSize = "seed" | "small" | "medium" | "large" | "huge";

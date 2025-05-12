@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import { ConventionYear, FullConventionDetails } from "@/types/con-types";
+import { FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { DateRangeInput } from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 import useShakeError from "@/hooks/use-shake-error";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
 import {
-  ArtistAlleyInfoFields,
   NewYearInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
@@ -24,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
+import { TablesInsert } from "@/types/supabase";
 
 function isValidGMapLink(link: string): boolean {
   const trimmed = link.trim();
@@ -75,9 +75,18 @@ export default function SubmitNewYearPage({
         }
 
         const payload: NewYearInfoFields = {
+          event_status: "EventScheduled",
+
+          year: latestYear().year + 1,
           start_date: date.from.toISOString().split("T")[0],
           end_date: date?.to?.toISOString().split("T")[0] ?? undefined,
+
           g_link: gLink.trim() !== "" ? gLink.trim() : undefined,
+          venue: latestYear().venue,
+          location: latestYear().location,
+
+          // suggestion table specific
+          is_new_year: true,
         };
 
         const initMetadata: SuggestionsMetadataFields = buildInitialMetadata(
@@ -99,28 +108,21 @@ export default function SubmitNewYearPage({
         if (user && isAdmin) {
           // create a new convention_year
 
-          // important section. this is the user's data
-          const conventionYearsPayload = {
-            convention_id: conDetails.id,
-            year: latestYear().year + 1, // IMPORTANT
-            start_date: date.from.toISOString().split("T")[0],
-            end_date: date?.to?.toISOString().split("T")[0] ?? undefined,
-            event_status: "EventScheduled",
-            venue: latestYear().venue,
-            location: latestYear().location,
-          };
-
-          // resue the payload from above. redefined for clarity
-          const newYearFields: Partial<ConventionYear> = payload;
-
+          // FOR LATER:
           // grab last year's application start and end dates (keep em around)
-          // set real release false
-          const aaFields: ArtistAlleyInfoFields = {
-            aa_open_date: latestYear().aa_open_date,
-            aa_deadline: latestYear().aa_deadline,
-            aa_real_release: false,
-            aa_link: undefined,
-            aa_status_override: undefined,
+          //
+          // const aaFields: ArtistAlleyInfoFields = {
+          //   aa_open_date: latestYear().aa_open_date,
+          //   aa_deadline: latestYear().aa_deadline,
+          //   aa_real_release: false,
+          //   aa_link: undefined,
+          //   aa_status_override: undefined,
+          // };
+
+          // KEY SECTION: putting together the insertion
+          const conventionYearsPayload: TablesInsert<"convention_years"> = {
+            convention_id: conDetails.id,
+            ...payload,
           };
 
           const confirmed = confirm(
@@ -132,8 +134,6 @@ export default function SubmitNewYearPage({
           try {
             await supabaseAnon.from("convention_years").insert({
               ...conventionYearsPayload,
-              ...newYearFields,
-              ...aaFields,
             });
           } catch (err) {
             const typedError = err as PostgrestError;

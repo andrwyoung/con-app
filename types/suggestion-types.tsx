@@ -3,6 +3,7 @@
 // or supabase types, it should be seperate
 
 import { ArtistAlleyStatus } from "./artist-alley-types";
+import { ConStatus } from "./con-types";
 import { Tables } from "./supabase";
 
 export type ApprovalStatus = "approved" | "pending" | "rejected" | "merged";
@@ -24,23 +25,33 @@ export type ArtistAlleyInfoFields = {
 };
 
 export type ConDetailsFields = {
-  new_start_date: string | null | undefined;
-  new_end_date: string | null | undefined;
-  new_g_link: string | null | undefined;
-  new_status: string | null | undefined;
-  new_description: string | null | undefined;
-  new_tags: string[] | null | undefined;
-  new_website: string | null | undefined;
-  new_social_links: string | null | undefined;
-  notes: string | null | undefined;
+  // section 1
   con_size: string | null | undefined;
   organizer_id: string | null | undefined;
   organizer_name: string | null | undefined;
+  new_description: string | null | undefined;
+
+  // section 2
+  new_tags: string[] | null | undefined;
+  new_social_links: string | null | undefined;
+  new_website: string | null | undefined;
+
+  // section 3
+  year_changes: NewYearInfoFields[] | undefined;
+
+  notes: string | null | undefined;
 };
 
 export type NewYearInfoFields = {
-  // technically a mandatory field, but we keep it loose here for admin
-  start_date: string | undefined;
+  event_status: ConStatus;
+
+  year: number;
+  start_date: string;
   end_date: string | null | undefined;
+
   g_link: string | null | undefined;
+  venue: string | null | undefined;
+  location: string | null | undefined;
+
+  is_new_year: boolean | null | undefined;
 };

@@ -11,11 +11,15 @@ export default function TagsWebsitePage({
   setSocialLinks,
   tags,
   setTags,
+  website,
+  setWebsite,
 }: {
   socialLinks: string[];
   setSocialLinks: (links: string[]) => void;
   tags: string[];
   setTags: (tags: string[]) => void;
+  website: string;
+  setWebsite: (e: string) => void;
 }) {
   const [tagsQuery, setTagsQuery] = useState("");
   const [linksQuery, setLinksQuery] = useState("");
@@ -23,6 +27,7 @@ export default function TagsWebsitePage({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const tagsInputRef = React.useRef<HTMLInputElement>(null);
   const linksInputRef = React.useRef<HTMLInputElement>(null);
+  const websiteInputRef = React.useRef<HTMLInputElement>(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const filtered = allTags
@@ -64,9 +69,9 @@ export default function TagsWebsitePage({
       <div className="flex flex-col gap-3">
         <div className="flex flex-col ">
           <Label>{`Tags (Max ${MAX_TAGS}):`}</Label>
-          <p className="text-xs text-primary-muted">
+          {/* <p className="text-xs text-primary-muted">
             Request new tags in the Notes section
-          </p>
+          </p> */}
         </div>
         <div className="max-w-36">
           <div className="relative w-full text-primary-text" ref={containerRef}>
@@ -201,6 +206,39 @@ export default function TagsWebsitePage({
             </span>
           ))}
         </div>
+      </div>
+
+      {/* SECTION: Website */}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row justify-between">
+          <Label>{`Website:`}</Label>
+          {website &&
+            (isValidUrl(website) ? (
+              <span className="text-green-600 text-xs ml-1 text-right">
+                ✓ Nice!
+              </span>
+            ) : (
+              <span className="text-red-500  text-xs ml-1">
+                ✗ Please enter a valid URL (starts with https://)
+              </span>
+            ))}
+        </div>
+        <Input
+          value={website}
+          ref={websiteInputRef}
+          onChange={(e) => setWebsite(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              linksInputRef.current?.focus();
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              websiteInputRef.current?.blur();
+              setDropdownOpen(false);
+            }
+          }}
+          className="bg-white"
+        />
       </div>
 
       <div className="flex flex-col gap-3">

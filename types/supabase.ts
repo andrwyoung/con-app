@@ -402,12 +402,8 @@ export type Database = {
           id: string
           merged_at: string | null
           new_description: string | null
-          new_end_date: string | null
-          new_g_link: string | null
           new_social_links: string | null
-          new_start_date: string | null
-          new_status: string | null
-          new_tags: string | null
+          new_tags: string[] | null
           new_website: string | null
           notes: string | null
           organizer_id: string | null
@@ -423,12 +419,8 @@ export type Database = {
           id?: string
           merged_at?: string | null
           new_description?: string | null
-          new_end_date?: string | null
-          new_g_link?: string | null
           new_social_links?: string | null
-          new_start_date?: string | null
-          new_status?: string | null
-          new_tags?: string | null
+          new_tags?: string[] | null
           new_website?: string | null
           notes?: string | null
           organizer_id?: string | null
@@ -444,12 +436,8 @@ export type Database = {
           id?: string
           merged_at?: string | null
           new_description?: string | null
-          new_end_date?: string | null
-          new_g_link?: string | null
           new_social_links?: string | null
-          new_start_date?: string | null
-          new_status?: string | null
-          new_tags?: string | null
+          new_tags?: string[] | null
           new_website?: string | null
           notes?: string | null
           organizer_id?: string | null
@@ -487,11 +475,16 @@ export type Database = {
           convention_id: number
           created_at: string
           end_date: string | null
+          event_status: string | null
           g_link: string | null
           id: string
+          is_new_year: boolean
+          location: string | null
           merged_at: string | null
-          start_date: string
+          start_date: string | null
           submitted_by: string | null
+          venue: string | null
+          year: number | null
         }
         Insert: {
           approval_status: string
@@ -499,11 +492,16 @@ export type Database = {
           convention_id: number
           created_at?: string
           end_date?: string | null
+          event_status?: string | null
           g_link?: string | null
           id?: string
+          is_new_year: boolean
+          location?: string | null
           merged_at?: string | null
-          start_date: string
+          start_date?: string | null
           submitted_by?: string | null
+          venue?: string | null
+          year?: number | null
         }
         Update: {
           approval_status?: string
@@ -511,11 +509,16 @@ export type Database = {
           convention_id?: number
           created_at?: string
           end_date?: string | null
+          event_status?: string | null
           g_link?: string | null
           id?: string
+          is_new_year?: boolean
+          location?: string | null
           merged_at?: string | null
-          start_date?: string
+          start_date?: string | null
           submitted_by?: string | null
+          venue?: string | null
+          year?: number | null
         }
         Relationships: [
           {

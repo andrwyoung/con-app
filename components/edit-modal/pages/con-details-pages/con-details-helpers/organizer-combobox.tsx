@@ -54,7 +54,7 @@ export default function OrganizerCombobox({
 
     const fuse = new Fuse(allOrganizers, {
       keys: ["name"],
-      threshold: 0.3,
+      threshold: 0.2,
     });
 
     const results = fuse.search(query);
