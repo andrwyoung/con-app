@@ -58,6 +58,7 @@ export default function Map({ initLocation }: { initLocation: ConLocation }) {
       style: "mapbox://styles/andrwyoung/cm9gka3jp00ep01rcg0k1dy0a",
       center: [initLocation.longitude, initLocation.latitude],
       zoom: DEFAULT_ZOOM_SUPER_FAR,
+      attributionControl: false,
     });
     mapRef.current.getCanvas().style.cursor = "default";
 

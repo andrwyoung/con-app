@@ -12,16 +12,35 @@ import { DateRange } from "react-day-picker";
 import { Label } from "../ui/label";
 import { FaLink } from "react-icons/fa6";
 
+export function FormField({
+  label,
+  children,
+  className = "",
+}: {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`flex flex-col gap-2 ${className}`}>
+      <Label className="text-sm font-medium text-primary-text">{label}</Label>
+      {children}
+    </div>
+  );
+}
+
 export default function HeadersHelper({
   children,
   title,
   website,
   description,
+  name,
 }: {
   children: React.ReactNode;
   title: React.ReactNode;
   website?: string;
   description?: string;
+  name?: string;
 }) {
   return (
     <>
@@ -41,7 +60,7 @@ export default function HeadersHelper({
                   rel="noopener noreferrer"
                   className=""
                 >
-                  Website
+                  {name ? name : "Website"}
                 </a>
               </span>
             </>
@@ -72,10 +91,15 @@ export function DateRangeInput({
 
   const formatRangeLabel = () => {
     if (!value?.from) return placeholder;
+
     if (value.from && value.to) {
-      return `${format(value.from, "MMM d")} – ${format(value.to, "MMM d")}`;
+      return `${format(value.from, "MMM d")} – ${format(
+        value.to,
+        "MMM d, yyyy"
+      )}`;
     }
-    return format(value.from, "MMM d");
+
+    return format(value.from, "MMM d, yyyy");
   };
 
   return (
@@ -97,7 +121,7 @@ export function DateRangeInput({
         </div>
         <PopoverTrigger
           className={`flex flex-row justify-between items-center text-left font-normal 
-            cursor-pointer border-1 rounded-lg px-4 py-2 gap-4 text-sm ${
+            cursor-pointer border-1 rounded-lg px-4 py-2 gap-4 text-sm bg-white ${
               !value ? "text-primary-muted" : ""
             }`}
         >

@@ -32,6 +32,7 @@ import { allTags } from "@/stores/filter-store";
 import { arrayChanged } from "@/utils/array-utils";
 import useShakeError from "@/hooks/use-shake-error";
 import { isValidUrl } from "@/utils/url";
+import { AnimatePresence, motion } from "framer-motion";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
@@ -155,6 +156,8 @@ export default function UpdateConDetailsPage({
       is_new_year: false, // not new because it already exists
     }))
   );
+  const [long, setLong] = useState(conDetails.location_long ?? null);
+  const [lat, setLat] = useState(conDetails.location_lat ?? null);
 
   //
   // SECTION
@@ -274,12 +277,11 @@ export default function UpdateConDetailsPage({
     <HeadersHelper
       title={`Edit Con Details`}
       website={conDetails.website ?? undefined}
-      description={`${conDetails.name}`}
+      name={conDetails.name}
+      // description={`${conDetails.name}`}
     >
       <div className="flex flex-col gap-2 items-center">
-        <p className="text-xs text-primary-text">
-          Select Page (everything is optional):
-        </p>
+        <p className="text-xs text-primary-text">Select Page (optional):</p>
         <div className="flex flex-row gap-2 items-center">
           {(
             Object.entries(EDIT_PAGE_TITLES) as [
@@ -297,31 +299,48 @@ export default function UpdateConDetailsPage({
         </div>
       </div>
 
-      <div className="bg-stone-100 px-4 py-2 rounded-lg">
-        {editPagePage === "general" && (
-          <GeneralEditPage
-            queryTitle={conDetails.name}
-            description={description}
-            setDescription={setDescription}
-            conSize={conSize}
-            setConSize={setConSize}
-            selectedOrganizer={selectedOrganizer}
-            setSelectedOrganizer={setSelectedOrganizer}
-          />
-        )}
-        {editPagePage === "tags_sites" && (
-          <TagsWebsitePage
-            socialLinks={socialLinks}
-            setSocialLinks={setSocialLinks}
-            tags={tags}
-            setTags={setTags}
-            website={website}
-            setWebsite={setWebsite}
-          />
-        )}
-        {editPagePage === "dates_loc" && (
-          <DatesLocationPage years={years} setYears={setYears} />
-        )}
+      <div className="bg-stone-100 px-4 py-2 rounded-lg overflow-x-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={editPagePage}
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -50, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            {editPagePage === "general" && (
+              <GeneralEditPage
+                queryTitle={conDetails.name}
+                description={description}
+                setDescription={setDescription}
+                conSize={conSize}
+                setConSize={setConSize}
+                selectedOrganizer={selectedOrganizer}
+                setSelectedOrganizer={setSelectedOrganizer}
+              />
+            )}
+            {editPagePage === "tags_sites" && (
+              <TagsWebsitePage
+                socialLinks={socialLinks}
+                setSocialLinks={setSocialLinks}
+                tags={tags}
+                setTags={setTags}
+                website={website}
+                setWebsite={setWebsite}
+              />
+            )}
+            {editPagePage === "dates_loc" && (
+              <DatesLocationPage
+                years={years}
+                setYears={setYears}
+                long={long}
+                setLong={setLong}
+                lat={lat}
+                setLat={setLat}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <DialogFooter>

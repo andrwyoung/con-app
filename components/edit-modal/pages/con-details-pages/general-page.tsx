@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import OrganizerCombobox from "./con-details-helpers/organizer-combobox";
+import { FormField } from "../../editor-helpers";
 
 export default function GeneralEditPage({
   queryTitle,
@@ -36,8 +37,7 @@ export default function GeneralEditPage({
         Section 1: General Info
       </h1> */}
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <Label>Convention Size (Estimate):</Label>
+        <FormField label="Convention Size (Estimate):">
           <Select
             value={conSize ?? "__none__"}
             onValueChange={(val) => {
@@ -56,7 +56,7 @@ export default function GeneralEditPage({
               ))}
             </SelectContent>
           </Select>
-        </div>
+        </FormField>
 
         <div className="flex flex-col gap-2 max-w-64">
           <div className="flex flex-row gap-4 justify-between items-center">
