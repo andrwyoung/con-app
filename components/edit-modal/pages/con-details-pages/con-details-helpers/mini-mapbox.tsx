@@ -56,6 +56,7 @@ export default function MapboxMiniMap({
               alt="Map marker"
               width={24}
               height={24}
+              unoptimized
             />
           </div>
         </div>
