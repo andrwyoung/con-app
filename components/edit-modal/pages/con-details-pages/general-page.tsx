@@ -11,6 +11,7 @@ import {
 import { Label } from "@/components/ui/label";
 import OrganizerCombobox from "./con-details-helpers/organizer-combobox";
 import { FormField } from "../../editor-helpers";
+import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 
 export default function GeneralEditPage({
   queryTitle,
@@ -20,6 +21,8 @@ export default function GeneralEditPage({
   setConSize,
   selectedOrganizer,
   setSelectedOrganizer,
+  discontinued,
+  setDiscontinued,
 }: {
   queryTitle: string;
   description: string;
@@ -28,6 +31,8 @@ export default function GeneralEditPage({
   setConSize: (c: ConSize | undefined) => void;
   selectedOrganizer: OrganizerType | null;
   setSelectedOrganizer: (c: OrganizerType | null) => void;
+  discontinued: boolean;
+  setDiscontinued: (d: boolean) => void;
 }) {
   const wikiRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -83,6 +88,12 @@ export default function GeneralEditPage({
           initialValue={description}
           onChange={setDescription}
           inputRef={wikiRef}
+        />
+
+        <CheckField
+          text="Con is Discontinued"
+          isChecked={discontinued}
+          onChange={() => setDiscontinued(!discontinued)}
         />
 
         {/* 

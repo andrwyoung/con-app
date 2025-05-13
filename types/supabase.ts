@@ -149,6 +149,7 @@ export type Database = {
           con_size: string | null
           created_at: string
           cs_description: string | null
+          discontinued: boolean | null
           facebook_url: string | null
           fancons_link: string | null
           id: number
@@ -171,6 +172,7 @@ export type Database = {
           con_size?: string | null
           created_at?: string
           cs_description?: string | null
+          discontinued?: boolean | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -193,6 +195,7 @@ export type Database = {
           con_size?: string | null
           created_at?: string
           cs_description?: string | null
+          discontinued?: boolean | null
           facebook_url?: string | null
           fancons_link?: string | null
           id?: number
@@ -402,6 +405,8 @@ export type Database = {
           id: string
           merged_at: string | null
           new_description: string | null
+          new_lat: number | null
+          new_long: number | null
           new_social_links: string | null
           new_tags: string[] | null
           new_website: string | null
@@ -419,6 +424,8 @@ export type Database = {
           id?: string
           merged_at?: string | null
           new_description?: string | null
+          new_lat?: number | null
+          new_long?: number | null
           new_social_links?: string | null
           new_tags?: string[] | null
           new_website?: string | null
@@ -436,6 +443,8 @@ export type Database = {
           id?: string
           merged_at?: string | null
           new_description?: string | null
+          new_lat?: number | null
+          new_long?: number | null
           new_social_links?: string | null
           new_tags?: string[] | null
           new_website?: string | null
@@ -473,6 +482,7 @@ export type Database = {
           approval_status: string
           approved_by: string | null
           convention_id: number
+          convention_year_id: string | null
           created_at: string
           end_date: string | null
           event_status: string | null
@@ -480,7 +490,10 @@ export type Database = {
           id: string
           is_new_year: boolean
           location: string | null
+          location_lat: number | null
+          location_long: number | null
           merged_at: string | null
+          notes: string | null
           start_date: string | null
           submitted_by: string | null
           venue: string | null
@@ -490,6 +503,7 @@ export type Database = {
           approval_status: string
           approved_by?: string | null
           convention_id: number
+          convention_year_id?: string | null
           created_at?: string
           end_date?: string | null
           event_status?: string | null
@@ -497,7 +511,10 @@ export type Database = {
           id?: string
           is_new_year: boolean
           location?: string | null
+          location_lat?: number | null
+          location_long?: number | null
           merged_at?: string | null
+          notes?: string | null
           start_date?: string | null
           submitted_by?: string | null
           venue?: string | null
@@ -507,6 +524,7 @@ export type Database = {
           approval_status?: string
           approved_by?: string | null
           convention_id?: number
+          convention_year_id?: string | null
           created_at?: string
           end_date?: string | null
           event_status?: string | null
@@ -514,7 +532,10 @@ export type Database = {
           id?: string
           is_new_year?: boolean
           location?: string | null
+          location_lat?: number | null
+          location_long?: number | null
           merged_at?: string | null
+          notes?: string | null
           start_date?: string | null
           submitted_by?: string | null
           venue?: string | null
@@ -541,6 +562,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "latest_convention_years"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_new_year_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "convention_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "suggestions_new_year_convention_year_id_fkey"
+            columns: ["convention_year_id"]
+            isOneToOne: false
+            referencedRelation: "latest_convention_years"
+            referencedColumns: ["convention_year_id"]
           },
         ]
       }

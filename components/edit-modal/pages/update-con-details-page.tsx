@@ -114,10 +114,17 @@ export default function UpdateConDetailsPage({
   const organizerHasChanged =
     (selectedOrganizer?.name.trim() ?? "") !== originalOrganizerName.trim();
   //
+  // 4: discontinued
+  const [discontinued, setDiscontinued] = useState(
+    conDetails.discontinued ?? false
+  );
+  const discontinuedChanged =
+    discontinued !== (conDetails.discontinued ?? false);
+  //
   //
   // Page 2
   //
-  // 4: social links
+  // 5: social links
   const originalSocialLinks: string[] =
     typeof conDetails.social_links === "string"
       ? conDetails.social_links
@@ -132,7 +139,7 @@ export default function UpdateConDetailsPage({
     originalSocialLinks
   );
   //
-  // 5: tags
+  // 6: tags
   const originalTags: string[] = Array.isArray(conDetails.tags)
     ? conDetails.tags
         .map((tag) => tag.trim())
@@ -141,14 +148,14 @@ export default function UpdateConDetailsPage({
   const [tags, setTags] = useState<string[]>(originalTags);
   const tagsHaveChanged = arrayChanged(tags, originalTags);
   //
-  // 6: real website
+  // 7: real website
   const [website, setWebsite] = useState(conDetails.website ?? "");
   const websiteHasChanged = website !== conDetails.website;
 
   //
   // Page 3
   //
-  // 7: dates
+  // 8: dates
   const [years, setYears] = useState<NewYearInfoFields[]>(
     conDetails.convention_years.map((year) => ({
       event_status: year.event_status as ConStatus,
@@ -166,7 +173,7 @@ export default function UpdateConDetailsPage({
     }))
   );
   //
-  // 8: long / lat
+  // 9: long / lat
   const [long, setLong] = useState(conDetails.location_long ?? undefined);
   const [lat, setLat] = useState(conDetails.location_lat ?? undefined);
   const latLongHasChanged =
@@ -207,6 +214,7 @@ export default function UpdateConDetailsPage({
             ? selectedOrganizer?.name ?? null
             : undefined,
           new_description: descriptionHasChanged ? description : undefined,
+          discontinued: discontinuedChanged ? discontinued : undefined,
 
           // section 2
           new_tags: tagsHaveChanged ? tags : undefined,
@@ -299,6 +307,7 @@ export default function UpdateConDetailsPage({
             cs_description: newInfo.new_description,
             con_size: newInfo.con_size,
             organizer_id: newInfo.organizer_id,
+            discontinued: newInfo.discontinued,
 
             tags: newInfo.new_tags,
             social_links: newInfo.new_social_links,
@@ -391,6 +400,8 @@ export default function UpdateConDetailsPage({
                 setConSize={setConSize}
                 selectedOrganizer={selectedOrganizer}
                 setSelectedOrganizer={setSelectedOrganizer}
+                discontinued={discontinued}
+                setDiscontinued={setDiscontinued}
               />
             )}
             {editPagePage === "tags_sites" && (

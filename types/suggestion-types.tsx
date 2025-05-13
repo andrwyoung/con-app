@@ -30,6 +30,7 @@ export type ConDetailsFields = {
   organizer_id: string | null | undefined;
   organizer_name: string | null | undefined;
   new_description: string | null | undefined;
+  discontinued: boolean | undefined;
 
   // section 2
   new_tags: string[] | null | undefined;
