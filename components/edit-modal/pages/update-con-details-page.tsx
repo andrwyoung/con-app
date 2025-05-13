@@ -38,6 +38,7 @@ import {
   pushApprovedNewYear,
   pushApprovedUpdatedYear,
 } from "@/lib/editing/push-years";
+import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
@@ -292,7 +293,6 @@ export default function UpdateConDetailsPage({
           );
           if (!confirmed) return;
 
-          // TODO: make new organizer
           // PART 2a: push new convention info up
 
           const conTablePayload: Partial<Convention> = {
@@ -307,6 +307,13 @@ export default function UpdateConDetailsPage({
             location_lat: newInfo.new_lat,
             location_long: newInfo.new_long,
           };
+
+          // make a new organizer if it doesn't already exist and slap it in there
+          conTablePayload.organizer_id = await getOrCreateOrganizerId({
+            organizerName: newInfo.organizer_name,
+            organizerId: selectedOrganizer?.id ?? null,
+            organizerHasChanged,
+          });
 
           // KEY SECTION: here we actually change the data in the database
           await supabaseAnon
