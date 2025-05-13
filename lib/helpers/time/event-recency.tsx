@@ -22,7 +22,7 @@ export function getEventTimeCategory(
   endDate?: string | null
 ): TimeCategory {
   // NOTE: supabase requires both event_status and year to not be null....but still checking lol
-  if (!eventStatus || !year) return "cancelled";
+  if (!eventStatus || !year) return "unknown";
 
   if (eventStatus === "EventCancelled") return "cancelled";
 
@@ -40,7 +40,7 @@ export function getEventTimeCategory(
     ? startOfDay(new Date(year, 0, 1)) // jan 1
     : null;
 
-  if (!start || !end) return "cancelled";
+  if (!start || !end) return "unknown";
 
   // 1. check if it's happening now
   const daysTill = daysUntil(start);

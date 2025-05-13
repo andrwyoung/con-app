@@ -4,6 +4,9 @@ import {
   ArtistAlleyStatus,
   artistAlleyStatusLabels,
 } from "@/types/artist-alley-types";
+import { useState } from "react";
+import { FaCaretDown } from "react-icons/fa6";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ArtistAlleyFilter() {
   const selectedAAStatuses = useFilterStore((s) => s.selectedAAStatuses);
@@ -14,6 +17,8 @@ export default function ArtistAlleyFilter() {
   const aaStatusFilterIsActive = useFilterStore(
     (s) => s.aaStatusFilterIsActive
   );
+
+  const [showExtraStatuses, setShowExtraStatuses] = useState(false);
 
   const toggleStatus = (tag: ArtistAlleyStatus) => {
     // if all are selected and one is selected. ONLY select that one
@@ -30,11 +35,13 @@ export default function ArtistAlleyFilter() {
     }
   };
 
-  const sectionOne: ArtistAlleyStatus[] = ["open", "expected"];
+  const sectionOne: ArtistAlleyStatus[] = ["open", "waitlist"];
   const sectionTwo: ArtistAlleyStatus[] = [
     "watch_link",
-    "waitlist",
     "announced",
+    "expected",
+  ];
+  const sectionThree: ArtistAlleyStatus[] = [
     "unknown",
     "closed",
     "passed",
@@ -51,7 +58,7 @@ export default function ArtistAlleyFilter() {
     >
       <div className="space-y-2">
         <div>
-          <p className="text-xs text-primary-muted mb-1">Open and Expected</p>
+          <p className="text-xs text-primary-muted mb-1">Open and Waitlist</p>
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
             {sectionOne.map((tag) => (
               <CheckField
@@ -66,7 +73,7 @@ export default function ArtistAlleyFilter() {
         </div>
 
         <div>
-          <p className="text-xs text-primary-muted mb-1">Everything Else</p>
+          <p className="text-xs text-primary-muted mb-1">Upcoming</p>
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
             {sectionTwo.map((tag) => (
               <CheckField
@@ -78,6 +85,46 @@ export default function ArtistAlleyFilter() {
               />
             ))}
           </div>
+        </div>
+
+        <div>
+          <button
+            className="flex flex-row items-center gap-0.5 px-2 text-xs text-primary-text hover:underline hover:text-primary-muted my-2 cursor-pointer"
+            onClick={() => setShowExtraStatuses(!showExtraStatuses)}
+          >
+            <FaCaretDown
+              className={`transform translate-y-[1px] transition-transform duration-200 ${
+                showExtraStatuses ? "rotate-180" : "rotate-0"
+              }`}
+            />
+            Closed and Extras
+          </button>
+          <AnimatePresence initial={false}>
+            {showExtraStatuses && (
+              <motion.div
+                key="extraStatuses"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div>
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-0">
+                    {sectionThree.map((tag) => (
+                      <CheckField
+                        key={tag}
+                        text={artistAlleyStatusLabels[tag]}
+                        isChecked={selectedAAStatuses.includes(tag)}
+                        onChange={() => toggleStatus(tag)}
+                        isMuted={aaStatusFilterIsActive()}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </FilterSection>

@@ -1,6 +1,6 @@
 import { useFilterStore } from "@/stores/filter-store";
 import { CheckField, FilterSection } from "./filter-helpers";
-import { TIME_CATEGORY_LABELS, timeCategories } from "@/types/time-types";
+import { tagsFilterCategories, TIME_CATEGORY_LABELS } from "@/types/time-types";
 
 export default function StatusFilter() {
   const selectedStatuses = useFilterStore((s) => s.selectedStatuses);
@@ -36,7 +36,7 @@ export default function StatusFilter() {
         <div>
           {/* <p className="text-xs text-primary-muted mb-1">Current & Upcoming</p> */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
-            {timeCategories.map((tag) => (
+            {tagsFilterCategories.map((tag) => (
               <CheckField
                 key={tag}
                 text={TIME_CATEGORY_LABELS[tag]}

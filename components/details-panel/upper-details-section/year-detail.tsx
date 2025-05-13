@@ -23,6 +23,7 @@ const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
   upcoming: { bg: "bg-primary-light text-primary-text", label: "Coming Soon" },
   past: { bg: "bg-stone-100", label: "Event Passed" },
   cancelled: { bg: "bg-rose-200", label: "Event Cancelled" },
+  unknown: { bg: "bg-white", label: "Error (please reach out)" },
 };
 
 function YearDetail({

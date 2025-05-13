@@ -1,78 +1,77 @@
-export const artistAlleyStatusList = [
-  "open",
-  "watch_link",
-  "waitlist",
-  "announced",
-  "expected",
-  "unknown",
-  "closed",
-  "passed",
-  "invite_only",
-  "no_aa",
-] as const;
+export const artistAlleyStatusConfig = {
+  open: {
+    label: "Open!",
+    color: "bg-green-100 text-green-800 border-green-400",
+    dark: "bg-emerald-300 text-green-800 border-green-400",
+  },
+  expected: {
+    label: "Expected",
+    color: "bg-orange-200 text-yellow-800 border-orange-300",
+    dark: "bg-orange-300 text-yellow-800 border-orange-300",
+  },
+  watch_link: {
+    label: "Look Out",
+    color: "bg-yellow-200 text-yellow-800 border-yellow-300",
+    dark: "bg-blue-300 text-green-800 border-blue-400",
+  },
+  waitlist: {
+    label: "Waitlist",
+    color: "bg-yellow-200 text-yellow-800 border-yellow-300",
+    dark: "bg-yellow-300 text-yellow-800 border-yellow-300",
+  },
+  announced: {
+    label: "Announced",
+    color: "bg-blue-100 text-green-800 border-blue-400",
+    dark: "bg-blue-100 text-green-800 border-blue-400",
+  },
+  closed: {
+    label: "Closed",
+    color: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+    dark: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+  },
+  passed: {
+    label: "Passed",
+    color: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+    dark: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+  },
+  no_aa: {
+    label: "No Artist Alley",
+    color: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+    dark: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+  },
+  invite_only: {
+    label: "Invite Only",
+    color: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+    dark: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+  },
+  unknown: {
+    label: "No Info Yet",
+    color: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+    dark: "bg-stone-200/50 text-stone-600 border-stone-300/50",
+  },
+} as const;
 
-export type ArtistAlleyStatus = (typeof artistAlleyStatusList)[number];
+export type ArtistAlleyStatus = keyof typeof artistAlleyStatusConfig;
+export const artistAlleyStatusList = Object.keys(
+  artistAlleyStatusConfig
+) as ArtistAlleyStatus[];
 
-export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> = {
-  open: "Open!",
-  expected: "Expected",
-  unknown: "No Info Yet",
-  closed: "Closed",
-  passed: "Passed",
-  watch_link: "Look Out",
-  waitlist: "Waitlist",
-  no_aa: "No Artist Alley",
-  invite_only: "Invite Only",
-  announced: "Announced",
-};
+export const getAAStatusColor = (status: ArtistAlleyStatus) =>
+  artistAlleyStatusConfig[status]?.color;
 
-export const getAAStatusColor = (status: ArtistAlleyStatus) => {
-  switch (status) {
-    case "open":
-      return "bg-green-100 text-green-800 border-green-400";
-    case "expected":
-      return "bg-orange-200 text-yellow-800 border-orange-300";
-    case "watch_link":
-    case "waitlist":
-      return "bg-yellow-200 text-yellow-800 border-yellow-300";
-    case "announced":
-      return "bg-blue-100 text-green-800 border-blue-400";
-    case "closed":
-    case "passed":
-    case "no_aa":
-    case "invite_only":
-    case "unknown":
-    default:
-      return "bg-stone-200/50 text-stone-600 border-stone-300/50";
-  }
-};
+export const getAAStatusDarkColor = (status: ArtistAlleyStatus) =>
+  artistAlleyStatusConfig[status]?.dark;
 
-export const getAAStatusDarkColor = (status: ArtistAlleyStatus) => {
-  switch (status) {
-    case "open":
-      return "bg-emerald-300 text-green-800 border-green-400";
-    case "expected":
-      return "bg-orange-300 text-yellow-800 border-orange-300";
-    case "watch_link":
-      return "bg-blue-300 text-green-800 border-blue-400";
-    case "waitlist":
-      return "bg-yellow-300 text-yellow-800 border-yellow-300";
-    case "announced":
-      return "bg-blue-100 text-green-800 border-blue-400";
-    case "closed":
-    case "passed":
-    case "no_aa":
-    case "invite_only":
-    case "unknown":
-    default:
-      return "bg-stone-200/50 text-stone-600 border-stone-300/50";
-  }
-};
+export const artistAlleyStatusLabels: Record<ArtistAlleyStatus, string> =
+  Object.fromEntries(
+    Object.entries(artistAlleyStatusConfig).map(([key, val]) => [
+      key,
+      val.label,
+    ])
+  ) as Record<ArtistAlleyStatus, string>;
 
 export const isValidArtistAlleyStatus = (
   status: string | null
 ): status is ArtistAlleyStatus => {
-  return ["open", "closed", "no_aa", "expected", "unknown"].includes(
-    status ?? "unknown"
-  );
+  return status != null && status in artistAlleyStatusConfig;
 };

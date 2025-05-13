@@ -90,7 +90,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
         </div>
       ) : (
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
-          <StatusDot status={info.timeCategory ?? "cancelled"} />
+          <StatusDot status={info.timeCategory ?? "unknown"} />
           {formatEventDates(
             info.latest_year,
             info.latest_start_date,

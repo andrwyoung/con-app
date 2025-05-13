@@ -1,7 +1,7 @@
 // used for only map mode (currently). keeps track of which filters are active as well as
 // all the filtered items themselves
 
-import { timeCategories } from "@/types/time-types";
+import { tagsFilterCategories } from "@/types/time-types";
 import { ConventionInfo } from "@/types/con-types";
 import { create } from "zustand";
 import {
@@ -99,12 +99,12 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   },
 
   // status filter
-  selectedStatuses: [...timeCategories],
+  selectedStatuses: [...tagsFilterCategories],
   setSelectedStatuses: (tags) => set({ selectedStatuses: tags }),
-  selectAllStatuses: () => set({ selectedStatuses: [...timeCategories] }),
+  selectAllStatuses: () => set({ selectedStatuses: [...tagsFilterCategories] }),
   clearStatusFilter: () => set({ selectedStatuses: [] }),
   statusFilterIsActive: () => {
-    return get().selectedStatuses.length !== timeCategories.length;
+    return get().selectedStatuses.length !== tagsFilterCategories.length;
   },
 
   selectedAAStatuses: [...artistAlleyStatusList],
