@@ -20,14 +20,9 @@ import ArtistAlleyStatusSection from "./artist-alley-section";
 // style if depending on what type it is
 const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
   here: { bg: "bg-emerald-200", label: "Happening This Weekend!" },
-  postponed: { bg: "bg-secondary/40", label: "Event Postponed" },
-  soon: { bg: "bg-primary-light text-primary-text", label: "Coming Soon" },
   upcoming: { bg: "bg-primary-light text-primary-text", label: "Coming Soon" },
-  recent: { bg: "bg-stone-100", label: "Event Passed" },
   past: { bg: "bg-stone-100", label: "Event Passed" },
-  discontinued: { bg: "bg-stone-100", label: "Event Passed" },
   cancelled: { bg: "bg-rose-200", label: "Event Cancelled" },
-  unknown: { bg: "bg-white border-dashed border-2", label: "" },
 };
 
 function YearDetail({
@@ -279,7 +274,7 @@ export default function YearGallery({
             ref={(el) => {
               yearRefs.current[SPECIAL_CON_ID.FUTURE_CON] = el;
             }}
-            className={`snap-center ${YEAR_STYLES["unknown"].bg} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
+            className={`snap-center ${YEAR_STYLES["cancelled"].bg} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
           >
             <div className="text-sm text-primary-text flex flex-col gap-4">
               <div className="flex justify-between items-start">

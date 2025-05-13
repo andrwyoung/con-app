@@ -1,25 +1,15 @@
 export const timeCategories = [
   "here",
   "upcoming",
-  "postponed",
-  "soon",
-  "recent",
   "past",
-  "discontinued",
   "cancelled",
-  "unknown",
 ] as const;
 
 export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
-  here: "Now",
-  postponed: "Postponed",
-  soon: "Starting Soon",
+  here: "This Week",
   upcoming: "Upcoming",
-  recent: "Just Ended",
   past: "Happened Earlier",
-  discontinued: "Discontinued",
   cancelled: "Cancelled",
-  unknown: "Unknown",
 };
 
 export type TimeCategory = (typeof timeCategories)[number];

@@ -7,8 +7,7 @@ export type ConStatus =
   | "EventCancelled"
   | "EventScheduled"
   | "EventMovedOnline"
-  | "EventPostponed"
-  | "EventDiscontinued";
+  | "EventPostponed";
 
 export type ConLocation = {
   latitude: number;
@@ -91,7 +90,6 @@ export const CON_STATUS_LABELS: Record<ConStatus, string> = {
   EventPostponed: "Postponed",
   EventMovedOnline: "Online",
   EventCancelled: "Cancelled",
-  EventDiscontinued: "Discontinued"
 }
 
 export type OrganizerType = {

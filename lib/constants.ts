@@ -11,7 +11,7 @@ export const MAX_WEBSITES = 3;
 // how we keep track of TimeCategory
 export const DAYS_UNTIL_DISCONTINUED = 550;
 export const DAYS_SINCE_RECENT = 7;
-export const DAYS_UNTIL_SOON = 5;
+export const DAYS_UNTIL_SOON = 7;
 export const DAYS_UNTIL_UPCOMING = 30;
 export const DAYS_UNTIL_PREDICTIONS = 60;
 
@@ -88,7 +88,7 @@ export const UNKNOWN_CONVENTION: ConventionInfo = {
   
     latest_year: 1999,
   
-    timeCategory: "unknown",
+    timeCategory: "cancelled",
   };
 
 
