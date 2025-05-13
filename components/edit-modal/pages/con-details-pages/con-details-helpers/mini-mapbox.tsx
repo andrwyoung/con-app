@@ -71,7 +71,7 @@ export default function MapboxMiniMap({
           }}
           title="Click to re-center map"
         >
-          <span className="font-bold">Current: </span>
+          <span className="font-bold">Recenter: </span>
           {lat.toFixed(4)}, {long.toFixed(4)}
         </p>
         <button

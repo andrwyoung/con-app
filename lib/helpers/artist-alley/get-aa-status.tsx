@@ -5,7 +5,6 @@ export function getAAStatus(
   start_date?: string | null,
   aa_open_date?: string | null,
   aa_deadline?: string | null,
-  aa_real_release?: boolean | null,
   aa_status_override?: string | null,
   event_status?: string | null
 ): ArtistAlleyStatus {
@@ -40,11 +39,11 @@ export function getAAStatus(
   if (deadline && now > deadline) return "closed";
 
   // if a real release date exists but it's not yet here it must be announced
-  if (open && now < open && aa_real_release) return "announced";
+  if (open && now < open) return "announced";
 
   // if a real release and it passed that date, then then it is
   // for sure open (even without an end date)
-  if (open && now >= open && aa_real_release) return "open";
+  if (open && now >= open) return "open";
 
   // else there might be a link you can watch;
   if (aa_status_override === "watch_link") return "watch_link";
@@ -52,22 +51,9 @@ export function getAAStatus(
   // "EXPECTED" LOGIC
   //
 
-  // if the release date is not an official one, and
-  // it's like kind of around that date, then it's expected
-  const twoWeeksFromNow = addMonths(now, 0.5); // ~2 weeks
-  if (
-    open &&
-    !aa_real_release &&
-    (isAfter(now, open) || isBefore(open, twoWeeksFromNow)) &&
-    (!start || isAfter(start, addMonths(now, 1)))
-  ) {
-    return "expected";
-  }
-
   // if it's a set amount of time away: like 3 months. mark as expected
   if (
     !open &&
-    !aa_real_release &&
     start &&
     isAfter(start, addMonths(now, 3)) &&
     isBefore(start, addMonths(now, 5))

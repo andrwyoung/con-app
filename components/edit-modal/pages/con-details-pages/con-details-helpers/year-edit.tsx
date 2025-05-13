@@ -113,7 +113,7 @@ export default function YearEdit({
           label="Event Dates:"
           value={dateRange}
           onChange={setDateRange}
-          placeholder="Select the date range for this year's event"
+          placeholder="Select the dates"
           encouragement="Looks good!"
         />
       </div>

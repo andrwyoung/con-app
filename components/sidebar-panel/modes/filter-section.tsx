@@ -92,8 +92,8 @@ export default function FilterSection({
               switch (filter) {
                 case "tags":
                   return tagFilterIsActive;
-                // case "distance":
-                //   return statusFilterIsActive;
+                case "apps":
+                  return aaStatusFilterIsActive;
                 case "status":
                   return statusFilterIsActive;
                 default:
