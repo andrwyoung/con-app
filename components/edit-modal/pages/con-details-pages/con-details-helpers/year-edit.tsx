@@ -1,6 +1,7 @@
 import {
   DateRangeInput,
   FormField,
+  VenueLocationFields,
 } from "@/components/edit-modal/editor-helpers";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -118,34 +119,12 @@ export default function YearEdit({
         />
       </div>
 
-      <div className="grid grid-cols-[72px_1fr] items-center gap-x-4 gap-y-2">
-        <Label>
-          <span className="text-red-500">*</span>Venue:
-        </Label>
-        <Input
-          placeholder="e.g. Seattle Convention Center"
-          value={venue}
-          onChange={(e) => setVenue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              e.currentTarget.blur();
-            }
-          }}
-        />
-        <Label>
-          <span className="text-red-500">*</span>Location:
-        </Label>
-        <Input
-          placeholder="e.g. Seattle, WA, USA"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              e.currentTarget.blur();
-            }
-          }}
-        />
-      </div>
+      <VenueLocationFields
+        venue={venue}
+        location={location}
+        onVenueChange={setVenue}
+        onLocationChange={setLocation}
+      />
 
       <div className="flex flex-row justify-between">
         <FormField label="Convention Status:">

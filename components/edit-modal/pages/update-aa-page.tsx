@@ -36,9 +36,11 @@ import {
 export default function UpdateAAPage({
   conDetails,
   setPage,
+  setRefreshKey,
 }: {
   conDetails: FullConventionDetails;
   setPage: (p: EditorSteps) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [isQuickOpen, setIsQuickOpen] = useState(true);
@@ -224,11 +226,7 @@ export default function UpdateAAPage({
         }
 
         // reset states
-        setStartDate(undefined);
-        setDeadline(undefined);
-        setWebsite("");
-        setAAExistence("unknown");
-        setAAStatus("unknown");
+        setRefreshKey((prev) => prev + 1);
       },
     });
   };

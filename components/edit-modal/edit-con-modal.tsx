@@ -11,7 +11,7 @@ import UpdateConDetailsPage from "./pages/update-con-details-page";
 import ConfirmationPage from "./pages/confirmation-page";
 import UpdateAAPage from "./pages/update-aa-page";
 import { useUserStore } from "@/stores/user-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export type EditorSteps =
   | "dates"
@@ -33,6 +33,8 @@ export default function EditConventionModal({
   const isAdmin = profile?.role == "ADMIN" || profile?.role == "SUDO";
 
   const isOpen = page !== "closed";
+
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // reload everytime we swap
   useEffect(() => {
@@ -65,13 +67,28 @@ export default function EditConventionModal({
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
             {page === "dates" && (
-              <SubmitNewYearPage conDetails={conDetails} setPage={setPage} />
+              <SubmitNewYearPage
+                conDetails={conDetails}
+                setPage={setPage}
+                key={`newyear-${refreshKey}`} // refreshing state on new submit
+                setRefreshKey={setRefreshKey}
+              />
             )}
             {page === "editor" && (
-              <UpdateConDetailsPage conDetails={conDetails} setPage={setPage} />
+              <UpdateConDetailsPage
+                conDetails={conDetails}
+                setPage={setPage}
+                key={`editor-${refreshKey}`} // refreshing state on new submit
+                setRefreshKey={setRefreshKey}
+              />
             )}
             {page === "year" && (
-              <UpdateAAPage conDetails={conDetails} setPage={setPage} />
+              <UpdateAAPage
+                conDetails={conDetails}
+                setPage={setPage}
+                key={`aa-${refreshKey}`} // refreshing state on new submit
+                setRefreshKey={setRefreshKey}
+              />
             )}
             {page === "confirmation" && (
               <ConfirmationPage conDetails={conDetails} />

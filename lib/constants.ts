@@ -90,3 +90,6 @@ export const UNKNOWN_CONVENTION: ConventionInfo = {
   
     timeCategory: "unknown",
   };
+
+
+  export const VALIDATION_ERROR = "Validation failed"

@@ -3,7 +3,10 @@ import { DialogFooter } from "../../ui/dialog";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { FullConventionDetails } from "@/types/con-types";
-import HeadersHelper, { DateRangeInput } from "../editor-helpers";
+import HeadersHelper, {
+  DateRangeInput,
+  VenueLocationFields,
+} from "../editor-helpers";
 import { EditorSteps } from "../edit-con-modal";
 import useShakeError from "@/hooks/use-shake-error";
 import { useUserStore } from "@/stores/user-store";
@@ -20,27 +23,22 @@ import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-help
 import { AnimatePresence, motion } from "framer-motion";
 import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
 import { pushApprovedNewYear } from "@/lib/editing/push-years";
-
-function isValidGMapLink(link: string): boolean {
-  const trimmed = link.trim();
-  return (
-    trimmed.startsWith("https://www.google.com/maps") ||
-    trimmed.startsWith("https://maps.app.goo.gl") ||
-    trimmed.startsWith("https://goo.gl/maps")
-  );
-}
+import { VALIDATION_ERROR } from "@/lib/constants";
 
 export default function SubmitNewYearPage({
   conDetails,
   setPage,
+  setRefreshKey,
 }: {
   conDetails: FullConventionDetails;
   setPage: (p: EditorSteps) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [date, setDate] = useState<DateRange | undefined>(undefined);
-  const [gLink, setGLink] = useState("");
+  const [venue, setVenue] = useState(conDetails.venue ?? "");
+  const [location, setLocation] = useState(conDetails.location ?? "");
 
-  const [showGLink, setShowGLink] = useState(false);
+  const [showLocChange, setShowLocChange] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { error, shake, triggerError } = useShakeError();
 
@@ -51,7 +49,6 @@ export default function SubmitNewYearPage({
       current.year > latest.year ? current : latest
     );
   };
-  const validGMapLink = isValidGMapLink(gLink);
 
   const handleSubmit = async () => {
     await handleSubmitWrapper({
@@ -61,13 +58,13 @@ export default function SubmitNewYearPage({
         if (!date?.from) {
           triggerError("Please at least put a start date");
           setSubmitting(false);
-          throw new Error("Validation failed");
+          throw new Error(VALIDATION_ERROR);
         }
 
-        if (gLink.trim() !== "" && !validGMapLink) {
-          triggerError("Please enter a valid Google Map Link");
+        if (venue.trim() === "" || location.trim() === "") {
+          triggerError("Please put a venue and location");
           setSubmitting(false);
-          throw new Error("Validation failed");
+          throw new Error(VALIDATION_ERROR);
         }
 
         const payload: NewYearInfoFields = {
@@ -127,8 +124,7 @@ export default function SubmitNewYearPage({
         }
 
         // reset states
-        setDate(undefined);
-        setGLink("");
+        setRefreshKey((prev) => prev + 1);
       },
     });
   };
@@ -148,11 +144,11 @@ export default function SubmitNewYearPage({
           />
           <CheckField
             text="At a new location?"
-            isChecked={showGLink}
-            onChange={() => setShowGLink(!showGLink)}
+            isChecked={showLocChange}
+            onChange={() => setShowLocChange(!showLocChange)}
           />
           <AnimatePresence initial={false}>
-            {showGLink && (
+            {showLocChange && (
               <motion.div
                 key="details"
                 initial={{ opacity: 0, height: 0 }}
@@ -160,34 +156,12 @@ export default function SubmitNewYearPage({
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <div className="flex flex-col gap-1 w-full">
-                  <div className="flex flex-row justify-between">
-                    <Label
-                      htmlFor="glink"
-                      className="text-primary-text text-sm font-medium"
-                    >
-                      Google Maps Link:
-                    </Label>
-                    {gLink.trim() != "" &&
-                      (validGMapLink ? (
-                        <span className="text-green-600 text-xs ml-1">
-                          ✓ Nice Google Maps Link!
-                        </span>
-                      ) : (
-                        <span className="text-rose-600 text-xs ml-1">
-                          ✗ Uh oh. Is this a Google Map link?
-                        </span>
-                      ))}
-                  </div>
-                  <Input
-                    id="glink"
-                    type="text"
-                    value={gLink}
-                    onChange={(e) => setGLink(e.target.value)}
-                    placeholder="Enter Google Maps Link"
-                    className="text-sm"
-                  />
-                </div>
+                <VenueLocationFields
+                  venue={venue}
+                  location={location}
+                  onVenueChange={setVenue}
+                  onLocationChange={setLocation}
+                />
               </motion.div>
             )}
           </AnimatePresence>

@@ -73,9 +73,11 @@ function EditStepButton({
 export default function UpdateConDetailsPage({
   conDetails,
   setPage,
+  setRefreshKey,
 }: {
   conDetails: FullConventionDetails;
   setPage: (p: EditorSteps) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const { error, shake, triggerError } = useShakeError();
@@ -332,6 +334,8 @@ export default function UpdateConDetailsPage({
 
           toast.success("Admin: change pushed through!");
         }
+
+        setRefreshKey((prev) => prev + 1);
       },
     });
   };

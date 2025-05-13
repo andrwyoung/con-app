@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { Label } from "../ui/label";
 import { FaLink } from "react-icons/fa6";
+import { Input } from "../ui/input";
 
 export function FormField({
   label,
@@ -202,6 +203,45 @@ export function SingleDateInput({
           />
         </PopoverContent>
       </Popover>
+    </div>
+  );
+}
+
+export function VenueLocationFields({
+  venue,
+  location,
+  onVenueChange,
+  onLocationChange,
+}: {
+  venue: string;
+  location: string;
+  onVenueChange: (val: string) => void;
+  onLocationChange: (val: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-[72px_1fr] items-center gap-x-4 gap-y-2">
+      <Label>
+        <span className="text-red-500">*</span>Venue:
+      </Label>
+      <Input
+        placeholder="e.g. Seattle Convention Center"
+        value={venue}
+        onChange={(e) => onVenueChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") e.currentTarget.blur();
+        }}
+      />
+      <Label>
+        <span className="text-red-500">*</span>Location:
+      </Label>
+      <Input
+        placeholder="e.g. Seattle, WA, USA"
+        value={location}
+        onChange={(e) => onLocationChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") e.currentTarget.blur();
+        }}
+      />
     </div>
   );
 }
