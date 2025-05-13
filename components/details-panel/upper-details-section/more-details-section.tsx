@@ -9,6 +9,8 @@ import { FaLink } from "react-icons/fa6";
 import SocialLinks from "./display-links";
 import { allTags, useFilterStore } from "@/stores/filter-store";
 import { useExploreGeneralUIStore } from "@/stores/ui-store";
+import { useScopedSelectedCardsStore } from "@/stores/page-store";
+import { grabAllOrganizerCons } from "@/lib/details/grab-all-org-cons";
 
 export default function MoreDetailsSection({
   scope,
@@ -21,6 +23,8 @@ export default function MoreDetailsSection({
   const tagFilter = useFilterStore((s) => s.tagFilter);
   const setShownFilters = useExploreGeneralUIStore((s) => s.setShownFilters);
   const resetAllFilters = useFilterStore((s) => s.resetAllFilters);
+
+  const { setFocusedEvents } = useScopedSelectedCardsStore(scope);
 
   const cleanedTags = details.tags
     ?.map((tag) => tag.trim())
@@ -104,7 +108,22 @@ export default function MoreDetailsSection({
           )}
 
           {details.organizer?.organizer_name && (
-            <div>Organizer: {details.organizer.organizer_name}</div>
+            <div className="text-primary-muted text-xs">
+              Organizer:{" "}
+              <button
+                onClick={async () => {
+                  const orgCons = await grabAllOrganizerCons(
+                    details.organizer.organizer_id
+                  );
+                  setFocusedEvents(orgCons);
+                  resetAllFilters();
+                  setShownFilters([]);
+                }}
+                className="text-primary-muted transition-colors underline hover:text-primary-darker cursor-pointer"
+              >
+                {details.organizer.organizer_name}
+              </button>
+            </div>
           )}
         </div>
       </div>
