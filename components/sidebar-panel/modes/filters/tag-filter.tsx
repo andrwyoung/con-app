@@ -4,6 +4,19 @@ import { extraTags, topTags, useFilterStore } from "@/stores/filter-store";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
 
+// for alphabetizing nicely
+function chunkIntoColumns(data: string[], columnCount: number): string[][] {
+  const chunkSize = Math.ceil(data.length / columnCount);
+  const columns: string[][] = Array.from({ length: columnCount }, () => []);
+
+  data.forEach((item, index) => {
+    const colIndex = Math.floor(index / chunkSize);
+    columns[colIndex].push(item);
+  });
+
+  return columns;
+}
+
 export default function TagsFilter() {
   const [showExtra, setShowExtra] = useState(false);
   const tagFilter = useFilterStore((s) => s.tagFilter);
@@ -12,6 +25,12 @@ export default function TagsFilter() {
   const selectAllTags = useFilterStore((s) => s.selectAllTags);
   const clearTagFilter = useFilterStore((s) => s.clearTagFilter);
   const tagFilterIsActive = useFilterStore((s) => s.tagFilterIsActive);
+
+  // for sorting into alphabetical columns
+  const sorted = [...extraTags].sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: "base" })
+  );
+  const grid = chunkIntoColumns(sorted, 3);
 
   const toggleTag = (tag: string) => {
     const isDefault = !tagFilterIsActive();
@@ -72,15 +91,19 @@ export default function TagsFilter() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-y-scroll scrollbar-none"
           >
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0">
-              {extraTags.map((tag) => (
-                <CheckField
-                  key={tag}
-                  text={tag}
-                  isChecked={tagFilter.selected.includes(tag)}
-                  onChange={() => toggleTag(tag)}
-                  isMuted={tagFilterIsActive()}
-                />
+            <div className="flex flex-row gap-x-4 w-full mb-2">
+              {grid.map((column, i) => (
+                <div key={i} className="flex flex-col gap-y-0.5">
+                  {column.map((tag) => (
+                    <CheckField
+                      key={tag}
+                      text={tag}
+                      isChecked={tagFilter.selected.includes(tag)}
+                      onChange={() => toggleTag(tag)}
+                      isMuted={tagFilterIsActive()}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           </motion.div>

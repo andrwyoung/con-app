@@ -1,6 +1,5 @@
 import { FullConventionDetails, Scope } from "@/types/con-types";
 import YearGallery from "./year-detail";
-import { DAYS_UNTIL_UPCOMING } from "@/lib/constants";
 import { parseISO } from "date-fns";
 import MoreDetailsSection from "./more-details-section";
 import { MdEdit } from "react-icons/md";
@@ -12,10 +11,8 @@ function shouldShowMissingCard(endDate: string | undefined): boolean {
 
   const now = new Date();
   const lastEnd = parseISO(endDate);
-  const daysSinceEnd =
-    (now.getTime() - lastEnd.getTime()) / (1000 * 60 * 60 * 24);
 
-  return daysSinceEnd > DAYS_UNTIL_UPCOMING && daysSinceEnd < 365;
+  return lastEnd < now;
 }
 
 export default function DetailsSection({

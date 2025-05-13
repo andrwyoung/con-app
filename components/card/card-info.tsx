@@ -19,18 +19,10 @@ export function StatusDot({ status }: { status: TimeCategory }) {
   const color =
     status === "past"
       ? "bg-violet-400"
-      : status === "recent"
-      ? "bg-blue-300"
       : status === "here"
       ? "bg-emerald-500"
-      : status === "soon"
-      ? "bg-green-400"
       : status === "upcoming"
       ? "bg-lime-400"
-      : status === "postponed"
-      ? "bg-orange-300"
-      : status === "discontinued"
-      ? "bg-slate-300"
       : status === "cancelled"
       ? "bg-red-400"
       : "bg-white border shadow-sm";
@@ -98,7 +90,7 @@ export default function CardInfo({ info }: { info: ConventionInfo }) {
         </div>
       ) : (
         <div className="flex flex-row items-center gap-2 text-xs text-primary-muted font-regular line-clamp-1 mr-8">
-          <StatusDot status={info.timeCategory ?? "unknown"} />
+          <StatusDot status={info.timeCategory ?? "cancelled"} />
           {formatEventDates(
             info.latest_year,
             info.latest_start_date,

@@ -8,7 +8,7 @@ export const timeCategories = [
 export const TIME_CATEGORY_LABELS: Record<TimeCategory, string> = {
   here: "This Week",
   upcoming: "Upcoming",
-  past: "Happened Earlier",
+  past: "Passed",
   cancelled: "Cancelled",
 };
 

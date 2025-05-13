@@ -274,7 +274,7 @@ export default function YearGallery({
             ref={(el) => {
               yearRefs.current[SPECIAL_CON_ID.FUTURE_CON] = el;
             }}
-            className={`snap-center ${YEAR_STYLES["cancelled"].bg} border border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
+            className={`snap-center bg-white border-dashed border-2 border-primary-darker/40 rounded-lg shrink-0 w-76 p-4`}
           >
             <div className="text-sm text-primary-text flex flex-col gap-4">
               <div className="flex justify-between items-start">
