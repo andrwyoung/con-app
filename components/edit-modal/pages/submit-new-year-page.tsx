@@ -7,7 +7,7 @@ import HeadersHelper, {
   DateRangeInput,
   VenueLocationFields,
 } from "../editor-helpers";
-import { EditorSteps } from "../edit-con-modal";
+import { EditModalState } from "../edit-con-modal";
 import useShakeError from "@/hooks/use-shake-error";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
@@ -32,7 +32,7 @@ export default function SubmitNewYearPage({
   setRefreshKey,
 }: {
   conDetails: FullConventionDetails;
-  setPage: (p: EditorSteps) => void;
+  setPage: (p: EditModalState) => void;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
   // 1: date

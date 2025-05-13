@@ -13,12 +13,12 @@ import UpdateAAPage from "./pages/update-aa-page";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
 
-export type EditorSteps =
-  | "dates"
-  | "confirmation"
-  | "editor"
-  | "closed"
-  | "year";
+export type EditModalState =
+  | { type: "closed" }
+  | { type: "editor" }
+  | { type: "dates" }
+  | { type: "confirmation" }
+  | { type: "year"; year: number };
 
 export default function EditConventionModal({
   conDetails,
@@ -27,18 +27,18 @@ export default function EditConventionModal({
   conDetails: FullConventionDetails;
   onSubmitSuccess: () => void;
 }) {
-  const page = useModalUIStore((s) => s.editingModalPage);
-  const setPage = useModalUIStore((s) => s.setEditingModalPage);
+  const page = useModalUIStore((s) => s.editModalState);
+  const setPage = useModalUIStore((s) => s.setEditModalState);
   const profile = useUserStore((s) => s.profile);
   const isAdmin = profile?.role == "ADMIN" || profile?.role == "SUDO";
 
-  const isOpen = page !== "closed";
+  const isOpen = page.type !== "closed";
 
   const [refreshKey, setRefreshKey] = useState(0);
 
   // reload everytime we swap
   useEffect(() => {
-    if (page === "editor" || page === "confirmation") {
+    if (page.type === "editor" || page.type === "confirmation") {
       onSubmitSuccess();
     }
   }, [page, onSubmitSuccess]);
@@ -47,11 +47,11 @@ export default function EditConventionModal({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) setPage("closed");
+        if (!open) setPage({ type: "closed" });
       }}
     >
       <DialogContent className="sm:max-w-[480px]">
-        {page != "confirmation" && (
+        {page.type != "confirmation" && (
           <div className="absolute bottom-4 right-4 text-xs text-primary-muted/50 flex flex-col text-right">
             {isAdmin && <span className="uppercase">Admin</span>}
             <span>Editing as: </span>
@@ -60,13 +60,13 @@ export default function EditConventionModal({
         )}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={page}
+            key={page.type}
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -50, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            {page === "dates" && (
+            {page.type === "dates" && (
               <SubmitNewYearPage
                 conDetails={conDetails}
                 setPage={setPage}
@@ -74,7 +74,7 @@ export default function EditConventionModal({
                 setRefreshKey={setRefreshKey}
               />
             )}
-            {page === "editor" && (
+            {page.type === "editor" && (
               <UpdateConDetailsPage
                 conDetails={conDetails}
                 setPage={setPage}
@@ -82,15 +82,16 @@ export default function EditConventionModal({
                 setRefreshKey={setRefreshKey}
               />
             )}
-            {page === "year" && (
+            {page.type === "year" && (
               <UpdateAAPage
                 conDetails={conDetails}
                 setPage={setPage}
                 key={`aa-${refreshKey}`} // refreshing state on new submit
                 setRefreshKey={setRefreshKey}
+                year={page.year}
               />
             )}
-            {page === "confirmation" && (
+            {page.type === "confirmation" && (
               <ConfirmationPage conDetails={conDetails} />
             )}
           </motion.div>

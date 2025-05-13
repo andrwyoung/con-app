@@ -7,36 +7,41 @@ import { log } from "@/lib/utils";
 import { SortType } from "@/types/sort-types";
 import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
-import { EditorSteps } from "@/components/edit-modal/edit-con-modal";
+import { EditModalState } from "@/components/edit-modal/edit-con-modal";
 
 type ModalUIStore = {
   loginModalStep: authStep;
-  editingModalPage: EditorSteps;
-  onboardingOpen: boolean;
-  profileOpen: boolean;
-
   setLoginModalStep: (step: authStep) => void;
-  setEditingModalPage: (step: EditorSteps) => void;
+
+  editModalState: EditModalState;
+  setEditModalState: (s: EditModalState) => void;
+
+  onboardingOpen: boolean;
   setOnboardingOpen: (open: boolean) => void;
+
+  profileOpen: boolean;
   setProfileOpen: (open: boolean) => void;
+
   anyModalOpen: () => boolean;
 };
   
 export const useModalUIStore = create<ModalUIStore>((set, get) => ({
   loginModalStep: "closed",
-  editingModalPage: "closed",
-  onboardingOpen: false,
-  profileOpen: false,
-
   setLoginModalStep: (step) => set({ loginModalStep: step }),
-  setEditingModalPage: (step) => set({ editingModalPage: step }),
+
+  editModalState: {type: "closed"},
+  setEditModalState: (step) => set({ editModalState: step }),
+
   setOnboardingOpen: (open) => set({ onboardingOpen: open }),
+  onboardingOpen: false,
+  
+  profileOpen: false,
   setProfileOpen: (open) => set({ profileOpen: open }),
 
   anyModalOpen: () => {
     const s = get();
     return s.loginModalStep !== "closed"  || s.onboardingOpen || 
-    s.profileOpen || s.editingModalPage !== "closed";
+    s.profileOpen || s.editModalState.type !== "closed";
   },
 }));
 

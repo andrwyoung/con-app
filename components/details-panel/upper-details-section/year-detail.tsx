@@ -40,7 +40,7 @@ function YearDetail({
   innerRef?: (el: HTMLDivElement | null) => void;
 }) {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
-  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
+  const setEditModalState = useModalUIStore((s) => s.setEditModalState);
 
   const category = getEventTimeCategory(
     conYear.event_status,
@@ -116,7 +116,9 @@ function YearDetail({
         <MdEdit className=" h-3 w-3" />
         <button
           type="button"
-          onClick={() => setEditingModalPage("year")}
+          onClick={() => {
+            setEditModalState({ type: "year", year: conYear.year });
+          }}
           className="text-xs cursor-pointer hover:underline"
         >
           Edit AA
@@ -139,7 +141,7 @@ export default function YearGallery({
   latestLocation: string;
   showMissing: boolean;
 }) {
-  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
+  const setEditModalState = useModalUIStore((s) => s.setEditModalState);
   const { selectedCon } = useScopedSelectedCardsStore(scope);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -288,7 +290,7 @@ export default function YearGallery({
                     <MdEdit className="translate-y-[1px]" />
                     <button
                       type="button"
-                      onClick={() => setEditingModalPage("dates")}
+                      onClick={() => setEditModalState({ type: "dates" })}
                       className="text-xs cursor-pointer hover:underline"
                     >
                       Submit an update

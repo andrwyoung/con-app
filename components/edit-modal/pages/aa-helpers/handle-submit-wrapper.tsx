@@ -1,9 +1,9 @@
 import { toast } from "sonner";
-import { EditorSteps } from "../../edit-con-modal";
+import { EditModalState } from "../../edit-con-modal";
 
 type SubmitWrapperProps = {
   setSubmitting: (val: boolean) => void;
-  setPage: (page: EditorSteps) => void;
+  setPage: (page: EditModalState) => void;
   tryBlock: () => Promise<void>;
   successMessage?: string;
   errorMessage?: string;
@@ -20,7 +20,7 @@ export async function handleSubmitWrapper({
   try {
     await tryBlock();
     toast.success(successMessage);
-    setPage("confirmation");
+    setPage({ type: "confirmation" });
   } catch (error) {
     if (error instanceof Error && error.message === "Validation failed") {
       return;

@@ -7,7 +7,7 @@ import {
   FullConventionDetails,
   OrganizerType,
 } from "@/types/con-types";
-import { EditorSteps } from "../edit-con-modal";
+import { EditModalState } from "../edit-con-modal";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
@@ -76,7 +76,7 @@ export default function UpdateConDetailsPage({
   setRefreshKey,
 }: {
   conDetails: FullConventionDetails;
-  setPage: (p: EditorSteps) => void;
+  setPage: (p: EditModalState) => void;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [submitting, setSubmitting] = useState(false);

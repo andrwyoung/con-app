@@ -25,7 +25,7 @@ export default function DetailsSection({
   scope: Scope;
   details: FullConventionDetails;
 }) {
-  const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
+  const setEditModalState = useModalUIStore((s) => s.setEditModalState);
   const latestYear = [...details.convention_years].sort(
     (a, b) => b.year - a.year
   )[0];
@@ -38,7 +38,7 @@ export default function DetailsSection({
       <div className="flex flex-row-reverse justify-between mb-6 mx-6">
         <button
           type="button"
-          onClick={() => setEditingModalPage("editor")}
+          onClick={() => setEditModalState({ type: "editor" })}
           className="text-xs cursor-pointer hover:underline flex flex-row gap-0.5 text-secondary-darker "
         >
           <MdEdit className="translate-y-[1px]" />

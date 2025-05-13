@@ -4,7 +4,6 @@ import { parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ConventionYear, FullConventionDetails } from "@/types/con-types";
 import HeadersHelper, { SingleDateInput } from "../editor-helpers";
-import { EditorSteps } from "../edit-con-modal";
 import { AAWebsiteInput } from "./aa-helpers/aa-website-input";
 import {
   Select,
@@ -32,34 +31,52 @@ import {
   buildApprovalMetadata,
   buildInitialMetadata,
 } from "@/lib/editing/approval-metadata";
+import { EditModalState } from "../edit-con-modal";
 
 export default function UpdateAAPage({
   conDetails,
   setPage,
   setRefreshKey,
+  year,
 }: {
   conDetails: FullConventionDetails;
-  setPage: (p: EditorSteps) => void;
+  setPage: (p: EditModalState) => void;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
+  year: number;
 }) {
-  const [submitting, setSubmitting] = useState(false);
-  const [isQuickOpen, setIsQuickOpen] = useState(true);
-
   const { user, profile } = useUserStore();
   const { error, shake, triggerError } = useShakeError();
-  const [year, setYear] = useState(() => {
-    const years = conDetails.convention_years.map((y) => y.year);
-    return Math.max(...years);
-  });
+
+  const relevantYearObject = conDetails.convention_years.find(
+    (y) => y.year === year
+  );
 
   // the 5 important fields
-  const [startDate, setStartDate] = React.useState<Date | undefined>(undefined);
-  const [deadline, setDeadline] = React.useState<Date | undefined>(undefined);
-  const [website, setWebsite] = useState<string | null>(null);
-  const [aaExistence, setAAExistence] = useState<Extract<
-    ArtistAlleyStatus,
-    "unknown" | "invite_only" | "no_aa"
-  > | null>("unknown");
+  //
+  // 1: start date
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    relevantYearObject?.aa_open_date
+      ? new Date(relevantYearObject.aa_open_date)
+      : undefined
+  );
+  // 2: end date
+  const [deadline, setDeadline] = useState<Date | undefined>(
+    relevantYearObject?.aa_deadline
+      ? new Date(relevantYearObject.aa_deadline)
+      : undefined
+  );
+  // 3: website
+  const [website, setWebsite] = useState<string | null>(
+    relevantYearObject?.aa_link ?? null
+  );
+  // 4: aaExistence
+  const prevAAOverride = relevantYearObject?.aa_status_override;
+  const prevOverRideTrue =
+    prevAAOverride === "invite_only" || prevAAOverride === "no_aa";
+  const [aaExistence, setAAExistence] = useState<
+    Extract<ArtistAlleyStatus, "unknown" | "invite_only" | "no_aa">
+  >(prevOverRideTrue ? prevAAOverride : "unknown");
+  // 5: aaStatus
   const [aaStatus, setAAStatus] =
     useState<
       Extract<
@@ -68,10 +85,12 @@ export default function UpdateAAPage({
       >
     >("unknown");
 
+  // helpers
+
+  const [submitting, setSubmitting] = useState(false);
+  const [isQuickOpen, setIsQuickOpen] = useState(!prevOverRideTrue); // hacky
+
   const isAdmin = profile?.role === "ADMIN";
-  const relevantYearObject = conDetails.convention_years.find(
-    (y) => y.year === year
-  );
   const aaExists = aaExistence === "unknown";
 
   const deriveIsRealRelease = (): boolean => {
@@ -233,7 +252,7 @@ export default function UpdateAAPage({
 
   return (
     <HeadersHelper
-      title={`Add Artist Alley Info`}
+      title={`Add ${year} Artist Alley Info`}
       website={conDetails.website ?? undefined}
     >
       <>
@@ -324,7 +343,7 @@ export default function UpdateAAPage({
             >
               {aaExists && (
                 <>
-                  <div className="flex flex-col gap-1 mb-2">
+                  {/* <div className="flex flex-col gap-1 mb-2">
                     <Label className="text-primary-text font-medium text-sm">
                       Select a Convention Year
                     </Label>
@@ -348,9 +367,9 @@ export default function UpdateAAPage({
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="flex flex-col gap-6 pb-6">
+                  <div className="flex flex-col gap-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-4">
                       <div className="flex flex-col">
                         <SingleDateInput
