@@ -90,12 +90,14 @@ export function CheckField({
   onChange,
   isMuted = false,
   isDisabled = false,
+  isDiff = false,
 }: {
   text: string;
   isChecked: boolean;
   onChange: () => void;
   isMuted?: boolean;
   isDisabled?: boolean;
+  isDiff?: boolean;
 }) {
   return (
     <label
@@ -139,11 +141,13 @@ export function CheckField({
       </CheckboxPrimitive.Root>
 
       <span
-        className={`text-sm font-medium leading-tight ${
-          isDisabled
-            ? "text-primary-muted/60"
-            : "text-primary-text group-hover:text-primary-muted"
-        }`}
+        className={`text-sm font-medium leading-tight
+          ${isDiff ? "text-secondary-darker" : ""}
+          ${
+            isDisabled
+              ? "text-primary-muted/60"
+              : "text-primary-text group-hover:text-primary-muted"
+          }`}
       >
         {text}
       </span>

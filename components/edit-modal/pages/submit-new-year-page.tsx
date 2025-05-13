@@ -62,6 +62,18 @@ export default function SubmitNewYearPage({
     );
   };
 
+  const handleGeocode = async () => {
+    const result = await fetchLatLong(`${venue}, ${location}`);
+    if (result) {
+      setLat(result.lat);
+      setLong(result.lng);
+      setFormattedAddress(result.formatted_address);
+      toast.success("Found a location!");
+    } else {
+      toast.error("Couldn't find location via Google Maps.");
+    }
+  };
+
   const handleSubmit = async () => {
     await handleSubmitWrapper({
       setSubmitting,
@@ -192,31 +204,29 @@ export default function SubmitNewYearPage({
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="flex flex-col gap-2 overflow-hidden"
               >
-                <VenueLocationFields
-                  venue={venue}
-                  location={location}
-                  onVenueChange={setVenue}
-                  onLocationChange={setLocation}
-                />
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const result = await fetchLatLong(`${venue}, ${location}`);
-                    if (result) {
-                      setLat(result.lat);
-                      setLong(result.lng);
-                      setFormattedAddress(result.formatted_address);
-                      toast.success("Found a location!");
-                    } else {
-                      toast.error("Couldn't find location via Google Maps.");
-                    }
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleGeocode();
                   }}
-                  className="text-sm text-secondary-darker hover:underline cursor-pointer transition-all hover:text-secondary"
+                  className="flex flex-col"
                 >
-                  {formattedAddress.trim() === ""
-                    ? "Search location with Google Maps"
-                    : formattedAddress}
-                </button>
+                  <VenueLocationFields
+                    venue={venue}
+                    location={location}
+                    onVenueChange={setVenue}
+                    onLocationChange={setLocation}
+                  />
+                  <button
+                    type="submit"
+                    onClick={handleGeocode}
+                    className="text-sm text-secondary-darker hover:underline cursor-pointer transition-all hover:text-secondary"
+                  >
+                    {formattedAddress.trim() === ""
+                      ? "Try Locating with Google Maps"
+                      : formattedAddress}
+                  </button>
+                </form>
                 <div className="flex flex-col gap-2">
                   {lat && long && (
                     <MapboxMiniMap

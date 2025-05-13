@@ -28,6 +28,10 @@ export default function OrganizerCombobox({
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
   useEffect(() => {
+    setQuery(selectedOrganizer?.name || "");
+  }, [selectedOrganizer]);
+
+  useEffect(() => {
     const fetchOrganizers = async () => {
       const { data } = await supabaseAnon
         .from("organizers")

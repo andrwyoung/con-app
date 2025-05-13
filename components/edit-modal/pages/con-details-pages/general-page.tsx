@@ -1,6 +1,6 @@
 import React from "react";
 import WikipediaTextarea from "./con-details-helpers/wikipedia-textarea";
-import { CON_SIZE_LABELS, ConSize, OrganizerType } from "@/types/con-types";
+import { CON_SIZE_LABELS, ConSize } from "@/types/con-types";
 import {
   Select,
   SelectContent,
@@ -8,31 +8,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import OrganizerCombobox from "./con-details-helpers/organizer-combobox";
-import { FormField } from "../../editor-helpers";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
+import { FormState } from "@/lib/editing/reducer-helper";
+import { PageOneFormCurrent } from "@/types/editor-types";
+import ResettableFieldWrapper from "./con-details-helpers/reset-buttons";
 
 export default function GeneralEditPage({
   queryTitle,
-  description,
-  setDescription,
-  conSize,
-  setConSize,
-  selectedOrganizer,
-  setSelectedOrganizer,
-  discontinued,
-  setDiscontinued,
+  state,
+  setField,
+  resetField,
+  hasChanged,
 }: {
   queryTitle: string;
-  description: string;
-  setDescription: (d: string) => void;
-  conSize: ConSize | undefined;
-  setConSize: (c: ConSize | undefined) => void;
-  selectedOrganizer: OrganizerType | null;
-  setSelectedOrganizer: (c: OrganizerType | null) => void;
-  discontinued: boolean;
-  setDiscontinued: (d: boolean) => void;
+  state: FormState<PageOneFormCurrent>;
+  setField: <K extends keyof PageOneFormCurrent>(
+    field: K
+  ) => (value: PageOneFormCurrent[K]) => void;
+  resetAll: () => void;
+  resetField: (field: keyof PageOneFormCurrent) => void;
+  hasChanged: (field: keyof PageOneFormCurrent) => boolean;
 }) {
   const wikiRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -42,11 +38,19 @@ export default function GeneralEditPage({
         Section 1: General Info
       </h1> */}
       <div className="flex flex-col gap-8">
-        <FormField label="Convention Size (Estimate):">
+        <ResettableFieldWrapper
+          label="Convention Size (Estimate):"
+          hasChanged={hasChanged("conSize")}
+          onReset={() => resetField("conSize")}
+        >
           <Select
-            value={conSize ?? "__none__"}
+            value={
+              state.current.conSize === null
+                ? "__none__"
+                : state.current.conSize
+            }
             onValueChange={(val) => {
-              setConSize(val === "__none__" ? undefined : (val as ConSize));
+              setField("conSize")(val === "__none__" ? null : (val as ConSize));
             }}
           >
             <SelectTrigger className="text-primary-text bg-white border rounded-lg px-2 py-2 shadow-xs w-fit">
@@ -61,39 +65,51 @@ export default function GeneralEditPage({
               ))}
             </SelectContent>
           </Select>
-        </FormField>
+        </ResettableFieldWrapper>
 
         <div className="flex flex-col gap-2 max-w-64">
-          <div className="flex flex-row gap-4 justify-between items-center">
-            <Label>Organizer:</Label>
-            {selectedOrganizer ? (
-              <span className="text-green-600 text-xs ml-1 text-right">
-                ✓ {selectedOrganizer.name}
-              </span>
-            ) : (
-              <span className="text-primary-muted text-xs ml-1 text-right">
-                None Selected
-              </span>
-            )}
-          </div>
-          <OrganizerCombobox
-            selectedOrganizer={selectedOrganizer}
-            setSelectedOrganizer={setSelectedOrganizer}
-            wikiRef={wikiRef}
-          />
+          <ResettableFieldWrapper
+            label="Organizer:"
+            hasChanged={hasChanged("selectedOrganizer")}
+            onReset={() => resetField("selectedOrganizer")}
+            rightElement={
+              state.current.selectedOrganizer?.name ? (
+                <span className="text-green-600 text-xs text-right">
+                  ✓ {state.current.selectedOrganizer.name}
+                </span>
+              ) : (
+                <span className="text-primary-muted text-xs">
+                  None Selected
+                </span>
+              )
+            }
+          >
+            <OrganizerCombobox
+              selectedOrganizer={state.current.selectedOrganizer}
+              setSelectedOrganizer={setField("selectedOrganizer")}
+              wikiRef={wikiRef}
+            />
+          </ResettableFieldWrapper>
         </div>
 
-        <WikipediaTextarea
-          queryTitle={queryTitle}
-          initialValue={description}
-          onChange={setDescription}
-          inputRef={wikiRef}
-        />
+        <ResettableFieldWrapper
+          label="Description:"
+          hasChanged={hasChanged("description")}
+          onReset={() => resetField("description")}
+        >
+          <WikipediaTextarea
+            queryTitle={queryTitle}
+            value={state.current.description}
+            onChange={setField("description")}
+            inputRef={wikiRef}
+          />
+        </ResettableFieldWrapper>
 
         <CheckField
           text="Con is Discontinued"
-          isChecked={discontinued}
-          onChange={() => setDiscontinued(!discontinued)}
+          isChecked={state.current.discontinued}
+          onChange={() => setField("discontinued")(!state.current.discontinued)}
+          isDiff={hasChanged("discontinued")}
         />
 
         {/* 

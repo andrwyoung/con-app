@@ -1,26 +1,22 @@
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { FaLink, FaWikipediaW } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 
 export default function WikipediaTextarea({
-  label = "Description:",
   placeholder = "Who is this con for. How long has it been running? etc...",
-  initialValue = "",
+  value,
   onChange,
   queryTitle,
   inputRef,
 }: {
-  label?: string;
   placeholder?: string;
-  initialValue?: string;
+  value?: string;
   onChange: (val: string) => void;
   queryTitle: string;
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }) {
-  const [value, setValue] = useState(initialValue);
   const [searchTerm, setSearchTerm] = useState(queryTitle);
 
   const [wikiLink, setWikiLink] = useState("");
@@ -36,7 +32,6 @@ export default function WikipediaTextarea({
       const data = await res.json();
 
       if (data) {
-        setValue(data.extract);
         onChange(data.extract);
         setWikiLink(data.url);
         toast.success("Filled from Wikipedia!");
@@ -52,16 +47,11 @@ export default function WikipediaTextarea({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
     onChange(e.target.value);
   };
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row justify-between mb-2">
-        <Label htmlFor="description">{label}</Label>
-      </div>
-
       <Textarea
         id="description"
         value={value}

@@ -5,7 +5,6 @@ import {
   ConStatus,
   Convention,
   FullConventionDetails,
-  OrganizerType,
 } from "@/types/con-types";
 import { EditModalState } from "../edit-con-modal";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -39,34 +38,42 @@ import {
   pushApprovedUpdatedYear,
 } from "@/lib/editing/push-years";
 import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
+import { PageOneFormCurrent } from "@/types/editor-types";
+import { useFormReducer } from "@/lib/editing/reducer-helper";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
-export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
-  general: "General Info",
-  tags_sites: "Tags/Links",
-  dates_loc: "Dates/Location",
-};
 
 function EditStepButton({
   label,
   selected,
   onClick,
+  changedDots,
 }: {
   label: string;
   selected: boolean;
   onClick: () => void;
+  changedDots?: number;
 }) {
   return (
-    <div
-      className={`rounded-lg border-2 flex items-center justify-center px-2 py-1 text-xs
+    <div className="flex flex-col gap-2">
+      <div
+        className={`rounded-lg border-2 flex items-center justify-center px-2 py-1 text-xs
         transition-all duration-200 text-primary-text ${
           selected
             ? "bg-primary border-secondary cursor-default"
             : "bg-primary-light border-transparent hover:bg-primary cursor-pointer "
         }`}
-      onClick={onClick}
-    >
-      {label}
+        onClick={onClick}
+      >
+        {label}
+      </div>
+      {changedDots && changedDots > 0 ? (
+        <div className="flex flex-row gap-1 justify-center">
+          {Array.from({ length: changedDots }).map((_, i) => (
+            <div key={i} className="w-2 h-2 rounded-full bg-secondary" />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -86,40 +93,31 @@ export default function UpdateConDetailsPage({
 
   // SECTION: fields that matter
   //
-  // Page 1
+  // Page 1 reducer
   //
-  // 1: description
-  const [description, setDescription] = useState(
-    conDetails.cs_description ?? ""
-  );
-  const descriptionHasChanged = description !== conDetails.cs_description;
-  //
-  // 2: convention size
-  const [conSize, setConSize] = useState<ConSize | undefined>(
-    (conDetails.con_size as ConSize) ?? undefined
-  );
-  const conSizeHasChanged = conSize !== conDetails.con_size;
-  //
-  // 3: organizer
-  const originalOrganizerName = conDetails.organizer?.organizer_name ?? "";
-  const [selectedOrganizer, setSelectedOrganizer] =
-    useState<OrganizerType | null>(
-      conDetails.organizer
-        ? {
-            id: conDetails.organizer.organizer_id,
-            name: conDetails.organizer.organizer_name,
-          }
-        : null
-    );
-  const organizerHasChanged =
-    (selectedOrganizer?.name.trim() ?? "") !== originalOrganizerName.trim();
-  //
-  // 4: discontinued
-  const [discontinued, setDiscontinued] = useState(
-    conDetails.discontinued ?? false
-  );
-  const discontinuedChanged =
-    discontinued !== (conDetails.discontinued ?? false);
+  const initialPageOneFields: PageOneFormCurrent = {
+    description: conDetails.cs_description ?? "",
+    conSize: (conDetails.con_size as ConSize) ?? null,
+    selectedOrganizer: conDetails.organizer
+      ? {
+          id: conDetails.organizer.organizer_id,
+          name: conDetails.organizer.organizer_name,
+        }
+      : null,
+    discontinued: conDetails.discontinued ?? false,
+  };
+
+  const {
+    state: pageOneState,
+    setField: setPgOneField,
+    resetField: resetSinglePgOneField,
+    reset: resetPgOne,
+    hasChanged: hasPgOneFieldChanged,
+    getChangedValues: pgOneChangedValues,
+  } = useFormReducer<PageOneFormCurrent>(initialPageOneFields, {
+    selectedOrganizer: (a, b) => a?.id === b?.id && a?.name === b?.name,
+  });
+
   //
   //
   // Page 2
@@ -179,6 +177,13 @@ export default function UpdateConDetailsPage({
   const latLongHasChanged =
     lat !== conDetails.location_lat || long !== conDetails.location_long;
 
+  // helpers
+  const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
+    general: "General Info",
+    tags_sites: "Tags/Links",
+    dates_loc: "Dates/Location",
+  };
+
   //
   // SECTION
   //
@@ -206,15 +211,21 @@ export default function UpdateConDetailsPage({
         //
         const newInfo: ConDetailsFields = {
           // section 1
-          con_size: conSizeHasChanged ? conSize : undefined,
-          organizer_id: organizerHasChanged
-            ? selectedOrganizer?.id ?? null
+          con_size: hasPgOneFieldChanged("conSize")
+            ? pageOneState.current.conSize
             : undefined,
-          organizer_name: organizerHasChanged
-            ? selectedOrganizer?.name ?? null
+          organizer_id: hasPgOneFieldChanged("selectedOrganizer")
+            ? pageOneState.current.selectedOrganizer?.id ?? null
             : undefined,
-          new_description: descriptionHasChanged ? description : undefined,
-          discontinued: discontinuedChanged ? discontinued : undefined,
+          organizer_name: hasPgOneFieldChanged("selectedOrganizer")
+            ? pageOneState.current.selectedOrganizer?.name ?? null
+            : undefined,
+          new_description: hasPgOneFieldChanged("description")
+            ? pageOneState.current.description
+            : undefined,
+          discontinued: hasPgOneFieldChanged("discontinued")
+            ? pageOneState.current.discontinued
+            : undefined,
 
           // section 2
           new_tags: tagsHaveChanged ? tags : undefined,
@@ -242,6 +253,7 @@ export default function UpdateConDetailsPage({
               convention_id: conDetails?.id,
               ...initMetadata,
               ...newInfo,
+              changed_fields: Object.keys(pgOneChangedValues()),
             })
             .select()
             .single();
@@ -320,8 +332,8 @@ export default function UpdateConDetailsPage({
           // make a new organizer if it doesn't already exist and slap it in there
           conTablePayload.organizer_id = await getOrCreateOrganizerId({
             organizerName: newInfo.organizer_name,
-            organizerId: selectedOrganizer?.id ?? null,
-            organizerHasChanged,
+            organizerId: newInfo.organizer_id ?? null,
+            organizerHasChanged: hasPgOneFieldChanged("selectedOrganizer"),
           });
 
           // KEY SECTION: here we actually change the data in the database
@@ -373,10 +385,11 @@ export default function UpdateConDetailsPage({
             ][]
           ).map(([mode, label]) => (
             <EditStepButton
-              key={mode}
+              key={`${mode}`}
               label={label}
               selected={editPagePage === mode}
               onClick={() => setEditPagePage(mode)}
+              changedDots={Object.keys(pgOneChangedValues()).length}
             />
           ))}
         </div>
@@ -394,14 +407,11 @@ export default function UpdateConDetailsPage({
             {editPagePage === "general" && (
               <GeneralEditPage
                 queryTitle={conDetails.name}
-                description={description}
-                setDescription={setDescription}
-                conSize={conSize}
-                setConSize={setConSize}
-                selectedOrganizer={selectedOrganizer}
-                setSelectedOrganizer={setSelectedOrganizer}
-                discontinued={discontinued}
-                setDiscontinued={setDiscontinued}
+                state={pageOneState}
+                setField={setPgOneField}
+                resetAll={resetPgOne}
+                resetField={resetSinglePgOneField}
+                hasChanged={hasPgOneFieldChanged}
               />
             )}
             {editPagePage === "tags_sites" && (
