@@ -2,6 +2,8 @@
 
 Browse and discover upcoming conventions near you. Made with artists and frequent con-attendees in mind.
 
+![Demo Photo](./public/og-image.png)
+
 ## Stack
 
 - **Frontend**: React + TypeScript
