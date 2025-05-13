@@ -219,7 +219,7 @@ export function VenueLocationFields({
   onLocationChange: (val: string) => void;
 }) {
   return (
-    <div className="grid grid-cols-[72px_1fr] items-center gap-x-4 gap-y-2">
+    <div className="grid grid-cols-[72px_1fr] items-center gap-x-4 gap-y-2 p-1">
       <Label>
         <span className="text-red-500">*</span>Venue:
       </Label>

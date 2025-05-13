@@ -19,6 +19,12 @@ export default function MapboxMiniMap({
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.easeTo({ center: [long, lat] });
+    }
+  }, [lat, long]);
+
+  useEffect(() => {
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY;
 
     mapRef.current = new mapboxgl.Map({
@@ -63,7 +69,8 @@ export default function MapboxMiniMap({
       </div>
       <div className="flex flex-row justify-between items-center px-2">
         <p
-          className="text-sm text-primary-text cursor-pointer hover:underline transition"
+          className="text-xs text-primary-text border-2 border-primary px-3 py-1 rounded-lg
+          cursor-pointer transition-all hover:bg-primary-lightest"
           onClick={() => {
             if (mapRef.current) {
               mapRef.current.easeTo({ center: [long, lat] });

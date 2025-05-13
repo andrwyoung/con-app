@@ -18,9 +18,13 @@ export default function ReviewCard({
     <div
       className={`flex flex-col w-full px-6 py-4 rounded-lg ${backgroundStyle}`}
     >
-      <div className="flex flex-row justify-between items-center pr-2">
+      <div className="flex flex-row justify-between items-center pr-2 mb-0.5">
         <div className="flex flex-row items-center">
-          <h3 className="text-sm font-semibold text-primary-text px-2">
+          <h3
+            className={`text-sm text-primary-text ${
+              review.anonymous ? "font-medium italic" : "font-semibold"
+            }`}
+          >
             {review.anonymous
               ? "anonymous"
               : review.user_profiles?.username ?? "unknown user"}

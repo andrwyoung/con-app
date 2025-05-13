@@ -107,7 +107,7 @@ export default function WikipediaTextarea({
               placeholder="Search Wikipedia..."
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8 pr-3 bg-white py-1 border ring-ring text-sm text-primary-text rounded-lg w-full
-                focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary"
             />
           </div>
           <button
@@ -121,7 +121,7 @@ export default function WikipediaTextarea({
             disabled={submitting}
           >
             <FaWikipediaW className="h-4 w-4 translate-y-[1px]" />
-            Auto-Fill
+            Autofill
           </button>
           {wikiLink && wikiLink.trim() != "" && (
             <a

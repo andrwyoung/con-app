@@ -25,6 +25,8 @@ import { pushApprovedNewYear } from "@/lib/editing/push-years";
 import { VALIDATION_ERROR } from "@/lib/constants";
 import MapboxMiniMap from "./con-details-pages/con-details-helpers/mini-mapbox";
 import { ArtistAlleyStatus } from "@/types/artist-alley-types";
+import { fetchLatLong } from "@/lib/editing/fetch-lat-long";
+import { toast } from "sonner";
 
 export default function SubmitNewYearPage({
   conDetails,
@@ -48,6 +50,7 @@ export default function SubmitNewYearPage({
     lat !== conDetails.location_lat || long !== conDetails.location_long;
 
   const [showLocChange, setShowLocChange] = useState(false);
+  const [formattedAddress, setFormattedAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { error, shake, triggerError } = useShakeError();
 
@@ -187,7 +190,7 @@ export default function SubmitNewYearPage({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="flex flex-col gap-4 overflow-hidden"
+                className="flex flex-col gap-2 overflow-hidden"
               >
                 <VenueLocationFields
                   venue={venue}
@@ -195,6 +198,25 @@ export default function SubmitNewYearPage({
                   onVenueChange={setVenue}
                   onLocationChange={setLocation}
                 />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const result = await fetchLatLong(`${venue}, ${location}`);
+                    if (result) {
+                      setLat(result.lat);
+                      setLong(result.lng);
+                      setFormattedAddress(result.formatted_address);
+                      toast.success("Found a location!");
+                    } else {
+                      toast.error("Couldn't find location via Google Maps.");
+                    }
+                  }}
+                  className="text-sm text-secondary-darker hover:underline cursor-pointer transition-all hover:text-secondary"
+                >
+                  {formattedAddress.trim() === ""
+                    ? "Search location with Google Maps"
+                    : formattedAddress}
+                </button>
                 <div className="flex flex-col gap-2">
                   {lat && long && (
                     <MapboxMiniMap
