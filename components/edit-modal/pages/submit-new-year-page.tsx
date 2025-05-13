@@ -12,18 +12,19 @@ import useShakeError from "@/hooks/use-shake-error";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
 import {
+  ArtistAlleyInfoFields,
   NewYearInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
 import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
 import { pushApprovedNewYear } from "@/lib/editing/push-years";
 import { VALIDATION_ERROR } from "@/lib/constants";
+import MapboxMiniMap from "./con-details-pages/con-details-helpers/mini-mapbox";
+import { ArtistAlleyStatus } from "@/types/artist-alley-types";
 
 export default function SubmitNewYearPage({
   conDetails,
@@ -34,9 +35,17 @@ export default function SubmitNewYearPage({
   setPage: (p: EditorSteps) => void;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  // 1: date
   const [date, setDate] = useState<DateRange | undefined>(undefined);
+  // 2: venue
   const [venue, setVenue] = useState(conDetails.venue ?? "");
+  // 3: location
   const [location, setLocation] = useState(conDetails.location ?? "");
+  // 4: long/lat
+  const [long, setLong] = useState(conDetails.location_long ?? undefined);
+  const [lat, setLat] = useState(conDetails.location_lat ?? undefined);
+  const latLongHasChanged =
+    lat !== conDetails.location_lat || long !== conDetails.location_long;
 
   const [showLocChange, setShowLocChange] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -61,6 +70,14 @@ export default function SubmitNewYearPage({
           throw new Error(VALIDATION_ERROR);
         }
 
+        const now = new Date();
+        const fromDate = date.from;
+        if (fromDate < new Date(now.toDateString())) {
+          triggerError("Start date must be today or in the future");
+          setSubmitting(false);
+          throw new Error(VALIDATION_ERROR);
+        }
+
         if (venue.trim() === "" || location.trim() === "") {
           triggerError("Please put a venue and location");
           setSubmitting(false);
@@ -74,8 +91,8 @@ export default function SubmitNewYearPage({
           start_date: date.from.toISOString().split("T")[0] ?? "",
           end_date: date?.to?.toISOString().split("T")[0] ?? undefined,
 
-          venue: latestYear().venue,
-          location: latestYear().location,
+          venue: venue.trim(),
+          location: location.trim(),
 
           // suggestion table specific
           is_new_year: true,
@@ -90,6 +107,9 @@ export default function SubmitNewYearPage({
             .from("suggestions_new_year")
             .insert({
               convention_id: conDetails.id,
+              location_lat: lat,
+              location_long: long,
+
               ...payload,
               ...initMetadata,
             })
@@ -100,26 +120,38 @@ export default function SubmitNewYearPage({
         if (user && isAdmin) {
           // create a new convention_year
 
-          // FOR LATER:
           // grab last year's application start and end dates (keep em around)
-          //
-          // const aaFields: ArtistAlleyInfoFields = {
-          //   aa_open_date: latestYear().aa_open_date,
-          //   aa_deadline: latestYear().aa_deadline,
-          //   aa_real_release: false,
-          //   aa_link: undefined,
-          //   aa_status_override: undefined,
-          // };
+          const latestOveride = latestYear()
+            .aa_status_override as ArtistAlleyStatus;
+          const aaFields: ArtistAlleyInfoFields = {
+            aa_open_date: undefined,
+            aa_deadline: undefined,
+            aa_real_release: undefined,
+            aa_link: undefined,
+            aa_status_override:
+              latestOveride === "invite_only" || latestOveride === "no_aa"
+                ? latestOveride
+                : undefined,
+          };
 
           const newYearPacket = {
             yearInfo: buildCompleteYearPayload(payload, conDetails.id),
             suggestionId: suggestionInsert.id,
+            aaInfo: aaFields,
           };
 
           const confirmed = confirm(`Admin: Push real changes too?`);
           if (!confirmed) return;
 
-          // KEY SECTION: add the new year
+          // PART 1: if long/lat is different, push that first
+          if (latLongHasChanged) {
+            await supabaseAnon
+              .from("conventions")
+              .update({ location_lat: lat, location_long: long })
+              .eq("id", conDetails.id);
+          }
+
+          // PART 2: add the new year + approve it
           await pushApprovedNewYear(newYearPacket, user.id);
         }
 
@@ -150,11 +182,12 @@ export default function SubmitNewYearPage({
           <AnimatePresence initial={false}>
             {showLocChange && (
               <motion.div
-                key="details"
+                key="yearmap"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex flex-col gap-4 overflow-hidden"
               >
                 <VenueLocationFields
                   venue={venue}
@@ -162,6 +195,18 @@ export default function SubmitNewYearPage({
                   onVenueChange={setVenue}
                   onLocationChange={setLocation}
                 />
+                <div className="flex flex-col gap-2">
+                  {lat && long && (
+                    <MapboxMiniMap
+                      lat={lat}
+                      long={long}
+                      onUpdate={({ lat, long }) => {
+                        setLat(lat);
+                        setLong(long);
+                      }}
+                    />
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -169,7 +214,15 @@ export default function SubmitNewYearPage({
       </div>
       <DialogFooter>
         <div className="flex flex-col gap-2 items-center">
-          <Button onClick={handleSubmit} disabled={submitting || !date}>
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              submitting ||
+              !date ||
+              venue.trim() === "" ||
+              location.trim() === ""
+            }
+          >
             {submitting ? "Submitting..." : "Submit Update"}
           </Button>
           {error && (

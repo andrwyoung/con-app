@@ -1,6 +1,7 @@
 // lib/editing/push-approved-year.ts
 import { supabaseAnon } from "@/lib/supabase/client";
 import {
+  ArtistAlleyInfoFields,
   CompleteYearInfo,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
@@ -12,11 +13,15 @@ export async function pushApprovedNewYear(
   packet: {
     yearInfo: CompleteYearInfo;
     suggestionId: string;
+    aaInfo?: ArtistAlleyInfoFields;
   },
   userId: string
 ) {
   try {
-    await supabaseAnon.from("convention_years").insert(packet.yearInfo);
+    await supabaseAnon.from("convention_years").insert({
+      ...packet.yearInfo,
+      ...(packet.aaInfo ?? {}),
+    });
   } catch (err) {
     const typedError = err as PostgrestError;
 
