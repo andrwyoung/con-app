@@ -155,17 +155,19 @@ export default function TagsWebsitePage({
               scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-light scrollbar-track-transparent"
               >
                 {filtered.length > 0 ? (
-                  filtered.map((tag, index) => (
-                    <div
-                      key={tag}
-                      onClick={() => {
-                        if (tags.length < MAX_TAGS) {
-                          setTags([...tags, tag]);
-                          setTagsQuery("");
-                          setDropdownOpen(true); // stays open for more adds
-                        }
-                      }}
-                      className={`
+                  filtered
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((tag, index) => (
+                      <div
+                        key={tag}
+                        onClick={() => {
+                          if (tags.length < MAX_TAGS) {
+                            setTags([...tags, tag]);
+                            setTagsQuery("");
+                            setDropdownOpen(true); // stays open for more adds
+                          }
+                        }}
+                        className={`
                             px-3 py-2 text-sm cursor-pointer transition-all duration-75
                             ${
                               index === highlightedIndex
@@ -173,10 +175,10 @@ export default function TagsWebsitePage({
                                 : "hover:bg-primary-lightest"
                             }
                         `}
-                    >
-                      {tag}
-                    </div>
-                  ))
+                      >
+                        {tag}
+                      </div>
+                    ))
                 ) : (
                   <div className="px-3 py-2 text-sm text-muted-foreground">
                     No tags found.
