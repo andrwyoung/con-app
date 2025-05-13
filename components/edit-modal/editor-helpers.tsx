@@ -55,7 +55,7 @@ export default function HeadersHelper({
           {description && (
             <span className="text-primary-muted/80">{description}</span>
           )}
-          {website && (
+          {website ? (
             <>
               <span className="flex flex-row items-center gap-1 mb-0.5 text-primary-text hover:text-primary-darker">
                 <FaLink className="h-4 w-4" />
@@ -69,6 +69,8 @@ export default function HeadersHelper({
                 </a>
               </span>
             </>
+          ) : (
+            <span className="text-primary-text">{name}</span>
           )}
         </DialogDescription>
       </DialogHeader>

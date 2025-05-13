@@ -4,7 +4,6 @@ import {
   ConSize,
   ConStatus,
   Convention,
-  ConventionYear,
   FullConventionDetails,
   OrganizerType,
 } from "@/types/con-types";
@@ -13,6 +12,7 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
 import {
+  CompleteYearInfo,
   ConDetailsFields,
   NewYearInfoFields,
   SuggestionsMetadataFields,
@@ -33,6 +33,11 @@ import { arrayChanged } from "@/utils/array-utils";
 import useShakeError from "@/hooks/use-shake-error";
 import { isValidUrl } from "@/utils/url";
 import { AnimatePresence, motion } from "framer-motion";
+import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
+import {
+  pushApprovedNewYear,
+  pushApprovedUpdatedYear,
+} from "@/lib/editing/push-years";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 export const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
@@ -154,6 +159,7 @@ export default function UpdateConDetailsPage({
       location: year.location,
 
       is_new_year: false, // not new because it already exists
+      convention_year_id: year.id,
     }))
   );
   //
@@ -171,10 +177,6 @@ export default function UpdateConDetailsPage({
     useState<updateDetailsPageMode>("general");
 
   const isAdmin = profile?.role === "ADMIN";
-  const latestYear = conDetails.convention_years.reduce((latest, current) => {
-    return current.year > latest.year ? current : latest;
-  });
-
   const handleSubmit = async () => {
     await handleSubmitWrapper({
       setSubmitting,
@@ -188,6 +190,10 @@ export default function UpdateConDetailsPage({
           throw new Error("Validation failed");
         }
 
+        //
+        // PART 1A: figure out normal convention info
+        //
+        //
         const newInfo: ConDetailsFields = {
           // section 1
           con_size: conSizeHasChanged ? conSize : undefined,
@@ -207,7 +213,6 @@ export default function UpdateConDetailsPage({
           new_website: websiteHasChanged ? website : undefined,
 
           // section 3
-          year_changes: undefined,
           new_lat: latLongHasChanged ? lat : undefined,
           new_long: latLongHasChanged ? long : undefined,
 
@@ -232,6 +237,52 @@ export default function UpdateConDetailsPage({
 
         if (insertError) throw insertError;
 
+        // PART 1B: figure out years
+        //
+        //
+        const editedYears = years.filter((y) => {
+          if (!y.start_date) return false; // don't even consider invalid ones
+
+          const original = conDetails.convention_years.find(
+            (oy) => oy.year === y.year
+          );
+          if (!original) return true; // definitely new
+
+          return (
+            y.event_status !== original.event_status ||
+            y.start_date !== original.start_date ||
+            y.end_date !== original.end_date ||
+            y.venue !== original.venue ||
+            y.location !== original.location
+          );
+        });
+
+        const yearSubmissionPackets: {
+          yearInfo: CompleteYearInfo;
+          suggestionId: string;
+          isNewYear: boolean;
+        }[] = [];
+        for (const year of editedYears) {
+          // actually inserting now
+          const { data: yearSuggestionInsert, error: yearInsertError } =
+            await supabaseAnon
+              .from("suggestions_new_year")
+              .insert({
+                convention_id: conDetails.id,
+                ...year,
+                ...initMetadata,
+              })
+              .select()
+              .single();
+          if (yearInsertError) throw yearInsertError;
+
+          yearSubmissionPackets.push({
+            yearInfo: buildCompleteYearPayload(year, conDetails.id),
+            suggestionId: yearSuggestionInsert.id,
+            isNewYear: year.is_new_year,
+          });
+        }
+
         log("isAdmin?:", isAdmin, suggestionInsert);
         if (user && isAdmin) {
           const confirmed = confirm(
@@ -240,6 +291,7 @@ export default function UpdateConDetailsPage({
           if (!confirmed) return;
 
           // TODO: make new organizer
+          // PART 2a: push new convention info up
 
           const conTablePayload: Partial<Convention> = {
             cs_description: newInfo.new_description,
@@ -254,18 +306,11 @@ export default function UpdateConDetailsPage({
             location_long: newInfo.new_long,
           };
 
-          const conYearTablePayload: Partial<ConventionYear> = {};
-
           // KEY SECTION: here we actually change the data in the database
           await supabaseAnon
             .from("conventions")
             .update(conTablePayload)
             .eq("id", conDetails.id);
-
-          await supabaseAnon
-            .from("convention_years")
-            .update(conYearTablePayload)
-            .eq("id", latestYear?.id);
 
           // Also mark the suggestion as approved
           const updatesMetadata: SuggestionsMetadataFields =
@@ -275,6 +320,15 @@ export default function UpdateConDetailsPage({
             .from("suggestions_con_details")
             .update(updatesMetadata)
             .eq("id", suggestionInsert.id);
+
+          // PART 2b: push individual years up now
+          for (const packet of yearSubmissionPackets) {
+            if (packet.isNewYear) {
+              await pushApprovedNewYear(packet, user.id);
+            } else {
+              await pushApprovedUpdatedYear(packet, user.id);
+            }
+          }
 
           toast.success("Admin: change pushed through!");
         }
@@ -340,6 +394,7 @@ export default function UpdateConDetailsPage({
             )}
             {editPagePage === "dates_loc" && (
               <DatesLocationPage
+                conId={conDetails.id}
                 years={years}
                 setYears={setYears}
                 long={long}

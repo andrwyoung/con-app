@@ -67,9 +67,8 @@ export default function DetailsSection({
               scope={scope}
               currentYear={latestYear.year as number}
               allYears={details.convention_years}
-              venue={details.venue}
-              location={details.location}
               showMissing={showMissingCard}
+              latestLocation={details.location}
             />
           )}
       </div>

@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import MapboxMiniMap from "./con-details-helpers/mini-mapbox";
 
 export default function DatesLocationPage({
+  conId,
   years,
   setYears,
   long,
@@ -21,6 +22,7 @@ export default function DatesLocationPage({
   lat,
   setLat,
 }: {
+  conId: number;
   years: NewYearInfoFields[];
   setYears: (y: NewYearInfoFields[]) => void;
   long: number | undefined;
@@ -31,14 +33,14 @@ export default function DatesLocationPage({
   const [activeYear, setActiveYear] = useState<NewYearInfoFields | null>(null);
 
   // adding new year helpers
-  // const [isAddingYear, setIsAddingYear] = useState(false);
-  // const [newYearDraft, setNewYearDraft] = useState<NewYearInfoFields | null>(
-  //   null
-  // );
+  const [newYearDraft, setNewYearDraft] = useState<string | undefined>(
+    undefined
+  );
   const [showLongLat, setShowLongLat] = useState(false);
 
   // helpers
-  // const nextYear = Math.max(...years.map((y) => y.year)) + 1;
+  const sorted = [...years].sort((a, b) => b.year - a.year);
+  const latestYear = sorted[0];
 
   return (
     <div className="flex flex-col gap-4 py-4">
@@ -55,6 +57,8 @@ export default function DatesLocationPage({
                   years.find((y) => y.year.toString() === val) ?? null
                 );
               }
+
+              setNewYearDraft(undefined);
             }}
           >
             <SelectTrigger
@@ -65,6 +69,13 @@ export default function DatesLocationPage({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__none__">None</SelectItem>
+
+              {activeYear && newYearDraft && (
+                <SelectItem value={activeYear.year.toString()}>
+                  New ({newYearDraft})
+                </SelectItem>
+              )}
+
               {years.map((y) => (
                 <SelectItem key={y.year} value={y.year.toString()}>
                   {y.year}
@@ -74,13 +85,69 @@ export default function DatesLocationPage({
           </Select>
         </div>
 
-        <button
-          // onClick={() => setIsAddingYear(true)}
-          className="text-sm px-2 py-1 bg-primary hover:bg-primary-light border-2 border-primary 
-          cursor-pointer transition-all rounded-lg text-primary-text"
-        >
-          + Add Year
-        </button>
+        {!newYearDraft && (
+          <Select
+            key={newYearDraft ?? "blank"}
+            value={newYearDraft}
+            onValueChange={(val) => {
+              const newYear = parseInt(val, 10);
+              const blankYear: NewYearInfoFields = {
+                year: newYear,
+                is_new_year: true,
+                event_status: "EventScheduled",
+
+                // pre-fill venue/location from most recent year if available
+                venue: latestYear?.venue ?? undefined,
+                location: latestYear?.location ?? undefined,
+                start_date: undefined,
+                end_date: undefined,
+              };
+              setActiveYear(blankYear);
+
+              setNewYearDraft(val);
+            }}
+          >
+            <SelectTrigger
+              className="text-sm px-2 py-1 bg-primary hover:bg-primary-light border-2 border-primary 
+    cursor-pointer transition-all rounded-lg text-primary-text w-fit"
+            >
+              <SelectValue placeholder="+ Add Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {(() => {
+                const sortedYears = years
+                  .map((y) => y.year)
+                  .sort((a, b) => a - b);
+                const options = new Set<number>();
+
+                if (sortedYears.length) {
+                  options.add(sortedYears[0] - 1);
+                  options.add(sortedYears[sortedYears.length - 1] + 1);
+
+                  for (let i = 1; i < sortedYears.length; i++) {
+                    const prev = sortedYears[i - 1];
+                    const curr = sortedYears[i];
+                    if (curr - prev > 1) {
+                      for (let y = prev + 1; y < curr; y++) {
+                        options.add(y);
+                      }
+                    }
+                  }
+                } else {
+                  options.add(new Date().getFullYear());
+                }
+
+                return Array.from(options)
+                  .sort((a, b) => a - b)
+                  .map((y) => (
+                    <SelectItem key={y} value={y.toString()}>
+                      {y}
+                    </SelectItem>
+                  ));
+              })()}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <AnimatePresence initial={false}>
@@ -94,13 +161,26 @@ export default function DatesLocationPage({
             className="overflow-hidden"
           >
             <YearEdit
+              conId={conId}
               yearData={activeYear}
               onChange={(updated) => {
-                const updatedList = years.map((y) =>
-                  y.year === updated.year ? updated : y
-                );
+                // if it already exists, update it. if it doesn't then create one
+                const exists = years.some((y) => y.year === updated.year);
+                const updatedList = exists
+                  ? years.map((y) => (y.year === updated.year ? updated : y))
+                  : [...years, updated];
+
                 setYears(updatedList);
-                setActiveYear(updated);
+                setActiveYear(null);
+                setNewYearDraft(undefined);
+              }}
+              onDelete={() => {
+                if (!activeYear) return;
+
+                const updated = years.filter((y) => y.year !== activeYear.year);
+                setYears(updated);
+                setActiveYear(null);
+                setNewYearDraft(undefined);
               }}
             />
           </motion.div>

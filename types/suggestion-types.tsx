@@ -37,7 +37,6 @@ export type ConDetailsFields = {
   new_website: string | null | undefined;
 
   // section 3
-  year_changes: NewYearInfoFields[] | undefined;
   new_lat: number | undefined;
   new_long: number | undefined;
 
@@ -48,12 +47,17 @@ export type NewYearInfoFields = {
   event_status: ConStatus;
 
   year: number;
-  start_date: string;
+  start_date: string | null | undefined;
   end_date: string | null | undefined;
 
-  g_link: string | null | undefined;
   venue: string | null | undefined;
   location: string | null | undefined;
 
-  is_new_year: boolean | null | undefined;
+  is_new_year: boolean;
+  convention_year_id?: string;
+};
+
+export type CompleteYearInfo = Omit<NewYearInfoFields, "is_new_year"> & {
+  convention_id: number;
+  start_date: string;
 };

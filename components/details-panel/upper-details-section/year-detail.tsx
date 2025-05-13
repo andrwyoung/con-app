@@ -33,14 +33,10 @@ const YEAR_STYLES: Record<TimeCategory, { bg: string; label: string }> = {
 function YearDetail({
   scope,
   conYear,
-  venue,
-  location,
   innerRef,
 }: {
   scope: Scope;
   conYear: ConventionYear;
-  venue: string;
-  location: string;
   innerRef?: (el: HTMLDivElement | null) => void;
 }) {
   const setSelectedWeekend = usePlanSidebarStore((s) => s.setSelectedWeekend);
@@ -58,7 +54,7 @@ function YearDetail({
     conYear.end_date ?? undefined
   );
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    `${venue} ${location}`
+    `${conYear.venue} ${conYear.location}`
   )}`;
 
   return (
@@ -104,9 +100,9 @@ function YearDetail({
               rel="noopener noreferrer"
               className="hover:underline text-primary-muted"
             >
-              {venue}
+              {conYear.venue}
               <br />
-              {location}
+              {conYear.location}
             </a>
           </div>
         </div>
@@ -134,15 +130,13 @@ export default function YearGallery({
   scope,
   currentYear,
   allYears,
-  venue,
-  location,
+  latestLocation,
   showMissing = false,
 }: {
   scope: Scope;
   currentYear: number;
   allYears: ConventionYear[];
-  venue: string;
-  location: string;
+  latestLocation: string;
   showMissing: boolean;
 }) {
   const setEditingModalPage = useModalUIStore((s) => s.setEditingModalPage);
@@ -274,8 +268,6 @@ export default function YearGallery({
               scope={scope}
               key={year.year}
               conYear={year}
-              venue={venue}
-              location={location}
               innerRef={(el) => (yearRefs.current[year.year] = el)}
             />
           ))}
@@ -310,7 +302,7 @@ export default function YearGallery({
                   <div className="text-primary-muted">
                     Unknown
                     <br />
-                    {location}
+                    {latestLocation}
                   </div>
                 </div>
               </div>

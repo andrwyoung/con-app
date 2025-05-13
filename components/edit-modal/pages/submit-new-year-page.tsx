@@ -13,17 +13,13 @@ import {
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
 import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
-import { toast } from "sonner";
-import {
-  buildApprovalMetadata,
-  buildInitialMetadata,
-} from "@/lib/editing/approval-metadata";
-import { PostgrestError } from "@supabase/supabase-js";
+import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
-import { TablesInsert } from "@/types/supabase";
+import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
+import { pushApprovedNewYear } from "@/lib/editing/push-years";
 
 function isValidGMapLink(link: string): boolean {
   const trimmed = link.trim();
@@ -78,10 +74,9 @@ export default function SubmitNewYearPage({
           event_status: "EventScheduled",
 
           year: latestYear().year + 1,
-          start_date: date.from.toISOString().split("T")[0],
+          start_date: date.from.toISOString().split("T")[0] ?? "",
           end_date: date?.to?.toISOString().split("T")[0] ?? undefined,
 
-          g_link: gLink.trim() !== "" ? gLink.trim() : undefined,
           venue: latestYear().venue,
           location: latestYear().location,
 
@@ -119,47 +114,16 @@ export default function SubmitNewYearPage({
           //   aa_status_override: undefined,
           // };
 
-          // KEY SECTION: putting together the insertion
-          const conventionYearsPayload: TablesInsert<"convention_years"> = {
-            convention_id: conDetails.id,
-            ...payload,
+          const newYearPacket = {
+            yearInfo: buildCompleteYearPayload(payload, conDetails.id),
+            suggestionId: suggestionInsert.id,
           };
 
-          const confirmed = confirm(
-            `Admin: Suggestion Submitted. Now do you actually want to add a new year for ${conventionYearsPayload.year}?`
-          );
+          const confirmed = confirm(`Admin: Push real changes too?`);
           if (!confirmed) return;
 
           // KEY SECTION: add the new year
-          try {
-            await supabaseAnon.from("convention_years").insert({
-              ...conventionYearsPayload,
-            });
-          } catch (err) {
-            const typedError = err as PostgrestError;
-
-            if (
-              typedError.code === "23505" || // unique_violation
-              (typedError.message &&
-                typedError.message.includes("unique_con_year"))
-            ) {
-              toast.error("That year already exists.");
-              throw new Error("Existing Year");
-            }
-
-            throw err; // rethrow anything else
-          }
-
-          // log that change into suggestions table
-          const updatesMetadata: SuggestionsMetadataFields =
-            buildApprovalMetadata(user.id);
-
-          await supabaseAnon
-            .from("suggestions_new_year")
-            .update(updatesMetadata)
-            .eq("id", suggestionInsert.id);
-
-          toast.success("Admin: change pushed through!");
+          await pushApprovedNewYear(newYearPacket, user.id);
         }
 
         // reset states
