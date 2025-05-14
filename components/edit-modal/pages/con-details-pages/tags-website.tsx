@@ -58,6 +58,7 @@ export default function TagsWebsitePage({
           value={state.current.website}
           ref={websiteInputRef}
           onChange={(e) => setField("website")(e.target.value)}
+          placeholder="https://example.com"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();

@@ -88,7 +88,7 @@ export default function ReviewsSection({ id }: { id: number }) {
         ) : (
           <p className="text-sm text-primary-muted text-center">
             No notes yet. <br />
-            What&apos;s it like tabling here?
+            What&apos;s it like here?
           </p>
         )}
       </div>
