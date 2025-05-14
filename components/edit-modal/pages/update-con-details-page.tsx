@@ -74,7 +74,7 @@ function EditStepButton({
       {changedDots && changedDots > 0 ? (
         <div className="flex flex-row gap-1 justify-center">
           {Array.from({ length: changedDots }).map((_, i) => (
-            <div key={i} className="w-2 h-2 rounded-full bg-secondary" />
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-secondary" />
           ))}
         </div>
       ) : null}
