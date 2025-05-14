@@ -1,3 +1,5 @@
+// this is that "focus" button on the top left of the details panel
+
 import { findWeekendBucket } from "@/lib/calendar/determine-weekend";
 import { getRealDates, getRealYear } from "@/lib/calendar/grab-real-dates";
 import { DEFAULT_ZOOM } from "@/lib/constants";

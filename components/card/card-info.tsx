@@ -1,4 +1,4 @@
-// all the text on the cards
+// this determines how most the the text and stuff are displayed on the cards
 
 import {
   formatEventDates,

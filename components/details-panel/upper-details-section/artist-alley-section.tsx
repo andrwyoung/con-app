@@ -1,3 +1,5 @@
+// this is the section on the detail panel that shows the artist alley dates and stuff
+
 import { getAAStatus } from "@/lib/helpers/artist-alley/get-aa-status";
 import { formatFullSingleDate } from "@/lib/helpers/time/date-formatters";
 import {

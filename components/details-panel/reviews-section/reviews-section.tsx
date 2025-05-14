@@ -1,3 +1,5 @@
+// this is the section on the details panel that shows all the reviews
+
 import { grabAllReviewsForConvention } from "@/lib/details/grab-all-reviews";
 import { useUserStore } from "@/stores/user-store";
 import React, { useEffect, useState } from "react";

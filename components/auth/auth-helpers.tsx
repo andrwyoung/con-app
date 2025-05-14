@@ -1,3 +1,5 @@
+// helper functions for the login modal. it's mainly the back button
+
 import { FiArrowLeft } from "react-icons/fi";
 import { authStep } from "./login-modal";
 import {

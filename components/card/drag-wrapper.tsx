@@ -1,3 +1,4 @@
+// DEPRECATED: until I reenable drag and drop
 // give the ability for something to be dragged
 
 import React from "react";

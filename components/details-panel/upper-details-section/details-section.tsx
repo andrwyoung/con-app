@@ -1,3 +1,5 @@
+// this is the wrapper that determines where everything goes on the details panel
+
 import { FullConventionDetails, Scope } from "@/types/con-types";
 import YearGallery from "./year-detail";
 import { parseISO } from "date-fns";

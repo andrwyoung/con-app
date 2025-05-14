@@ -1,3 +1,5 @@
+// this is the review itself and how we display it
+
 import { formatReviewDate } from "@/lib/helpers/time/review-time";
 import { useUserStore } from "@/stores/user-store";
 import { Review } from "@/types/review-types";

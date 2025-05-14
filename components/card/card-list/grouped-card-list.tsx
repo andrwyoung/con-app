@@ -1,3 +1,7 @@
+// you know how sometimes the cards are split up into sections when you click on the map?
+// they're split up into "Upcoming" or "Passed"
+// this is the function that builds those sections
+
 import { ConventionInfo } from "@/types/con-types";
 import Card, { CardVariant } from "../card";
 import { MAX_CARDS } from "@/lib/constants";

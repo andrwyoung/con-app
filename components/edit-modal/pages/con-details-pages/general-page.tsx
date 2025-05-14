@@ -15,7 +15,7 @@ import OrganizerCombobox from "./con-details-helpers/page-1/organizer-combobox";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { FormState } from "@/lib/editing/reducer-helper";
 import { PageOneFormState } from "@/types/editor-types";
-import ResettableFieldWrapper from "./con-details-helpers/reset-buttons";
+import ResettableFieldWrapper from "../../reset-buttons";
 
 export default function GeneralEditPage({
   queryTitle,

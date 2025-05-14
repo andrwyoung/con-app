@@ -1,3 +1,6 @@
+// this is how we display the extra links people include
+// like depending on whether it needs a facebook logo or something
+
 import { JSX } from "react";
 import {
   FaTwitter,

@@ -1,4 +1,12 @@
-// login-modal is the modal itself. logic for each step is in ./steps
+// this is the login modal itself. the thing that pops up when you click Login/Signup
+
+// it's split up into 3 main sections with 2 "helper pages"
+// PAGE 1: enter your email <EmailStep /> in email-step.tsx
+// PAGE 2: log in. enter your password <LoginStep /> in login-step.tsx
+// PAGE 3: the signup form in <SignupStep /> in signup-step.tsx
+
+// HELPER PAGE 1: reset passowrd....I don't think this actually works
+// HELPER PAGE 2: check email. this is just a confirmation page
 
 "use client";
 import React, { useEffect, useState } from "react";

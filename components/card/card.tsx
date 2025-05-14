@@ -1,4 +1,4 @@
-// the cards themselves. representing a single convention
+// this is the cards themselves. that rectangle thing
 
 import React, { forwardRef, useState } from "react";
 import { ConventionInfo } from "@/types/con-types";

@@ -34,7 +34,7 @@ import {
 import { EditModalState } from "../edit-con-modal";
 import { AAFormState } from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
-import ResettableFieldWrapper from "./con-details-pages/con-details-helpers/reset-buttons";
+import ResettableFieldWrapper from "../reset-buttons";
 import { Input } from "@/components/ui/input";
 
 export default function UpdateAAPage({

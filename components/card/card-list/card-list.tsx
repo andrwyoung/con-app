@@ -1,5 +1,5 @@
-// the expandable scrollable list that shows cards
-// it got broken up into FlatCardsList to make this file simpler (when keyboard nav was still a thing)
+// this is the thing that builds and shows a list of cards
+// it handles all the sorting too
 
 import { useScopedSelectedCardsStore } from "@/stores/page-store";
 import { ConLocation, ConventionInfo, Scope } from "@/types/con-types";

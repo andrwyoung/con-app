@@ -1,3 +1,7 @@
+// this is that little menu thing when you right click on the card
+// or click on that little hamburger thing on the card.
+// It's the menu thing with the extra options like "copy link" and "add to list"
+
 import { ConventionInfo, Scope } from "@/types/con-types";
 
 import { CardVariant } from "./card";

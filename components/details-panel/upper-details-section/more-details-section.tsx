@@ -1,3 +1,5 @@
+// this is the part of the detail panel between the "convention years" and the "notes" section
+
 import {
   CON_SIZE_LABELS,
   CON_SIZE_LABELS_SHORT,

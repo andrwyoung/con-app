@@ -1,4 +1,4 @@
-// the rotating year gallery in the details panel
+// this is the part of the detail panel that's the scrollable "convention years" gallery thing
 
 import { ConventionYear, Scope } from "@/types/con-types";
 import { useEffect, useRef, useState } from "react";

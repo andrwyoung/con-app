@@ -1,3 +1,6 @@
+// ok. this is the details panel itelf
+// it's the whole panel and what happens when you open it
+
 import { grabAllDetails } from "@/lib/details/grab-all-details";
 import { FullConventionDetails, Scope } from "@/types/con-types";
 import { useCallback, useEffect, useState } from "react";

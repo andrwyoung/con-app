@@ -1,5 +1,5 @@
-// the individual rows and dots of the calendar view
-// in charge of just sending up whenever something gets clicked
+// this file is an individual row on the calendar view
+// like the month + the weekend dots
 
 import { yearStyling } from "@/app/plan/caly";
 import {

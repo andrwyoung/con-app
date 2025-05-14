@@ -9,7 +9,7 @@ import { isValidUrl } from "@/utils/url";
 import React from "react";
 import TagSelector from "./con-details-helpers/page-2/tags-selecter";
 import AddMoreLinks from "./con-details-helpers/page-2/add-more-links";
-import ResettableFieldWrapper from "./con-details-helpers/reset-buttons";
+import ResettableFieldWrapper from "../../reset-buttons";
 
 export default function TagsWebsitePage({
   state,
