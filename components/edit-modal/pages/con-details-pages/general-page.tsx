@@ -11,7 +11,7 @@ import {
 import OrganizerCombobox from "./con-details-helpers/page-1/organizer-combobox";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { FormState } from "@/lib/editing/reducer-helper";
-import { PageOneFormCurrent } from "@/types/editor-types";
+import { PageOneFormState } from "@/types/editor-types";
 import ResettableFieldWrapper from "./con-details-helpers/reset-buttons";
 
 export default function GeneralEditPage({
@@ -22,12 +22,12 @@ export default function GeneralEditPage({
   hasChanged,
 }: {
   queryTitle: string;
-  state: FormState<PageOneFormCurrent>;
-  setField: <K extends keyof PageOneFormCurrent>(
+  state: FormState<PageOneFormState>;
+  setField: <K extends keyof PageOneFormState>(
     field: K
-  ) => (value: PageOneFormCurrent[K]) => void;
-  resetField: (field: keyof PageOneFormCurrent) => void;
-  hasChanged: (field: keyof PageOneFormCurrent) => boolean;
+  ) => (value: PageOneFormState[K]) => void;
+  resetField: (field: keyof PageOneFormState) => void;
+  hasChanged: (field: keyof PageOneFormState) => boolean;
 }) {
   const wikiRef = React.useRef<HTMLTextAreaElement>(null);
 

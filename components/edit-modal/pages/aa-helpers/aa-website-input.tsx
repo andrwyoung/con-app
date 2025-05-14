@@ -1,3 +1,4 @@
+// DEPRECATED. we just do it inline now
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";

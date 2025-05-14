@@ -150,36 +150,19 @@ export function DateRangeInput({
 }
 
 export function SingleDateInput({
-  label,
-  subheader,
   value,
   onChange,
   placeholder = "Select a date",
-  encouragement = "Nice!",
 }: {
-  label: string;
-  subheader?: string;
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
   placeholder?: string;
-  encouragement?: string;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col w-full gap-2 py-2">
+    <div className="flex flex-col w-full gap-2">
       <Popover open={open} onOpenChange={setOpen}>
-        <div className="flex flex-col gap-1">
-          <div className="flex flex-row justify-between">
-            <Label className="text-primary-text">{label}</Label>
-            {value && (
-              <span className="text-green-600 text-xs ml-1">
-                ✓ {encouragement}
-              </span>
-            )}
-          </div>
-          <span className="text-xs text-primary-muted">{subheader}</span>
-        </div>
         <PopoverTrigger
           className={`flex flex-row justify-between items-center text-left font-normal 
             cursor-pointer border-1 rounded-lg px-4 py-2 gap-4 text-sm ${

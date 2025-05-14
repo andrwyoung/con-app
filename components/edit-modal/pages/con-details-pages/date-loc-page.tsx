@@ -11,7 +11,7 @@ import YearEdit from "./con-details-helpers/page-3/year-edit";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
 import MapboxMiniMap from "./con-details-helpers/page-3/mini-mapbox";
-import { PageThreeFormCurrent } from "@/types/editor-types";
+import { PageThreeFormState } from "@/types/editor-types";
 import { FormState } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
 
@@ -23,12 +23,12 @@ export default function DatesLocationPage({
   hasChanged,
 }: {
   conId: number;
-  state: FormState<PageThreeFormCurrent>;
-  setField: <K extends keyof PageThreeFormCurrent>(
+  state: FormState<PageThreeFormState>;
+  setField: <K extends keyof PageThreeFormState>(
     field: K
-  ) => (value: PageThreeFormCurrent[K]) => void;
-  resetField: (field: keyof PageThreeFormCurrent) => void;
-  hasChanged: (field: keyof PageThreeFormCurrent) => boolean;
+  ) => (value: PageThreeFormState[K]) => void;
+  resetField: (field: keyof PageThreeFormState) => void;
+  hasChanged: (field: keyof PageThreeFormState) => boolean;
 }) {
   const [activeYear, setActiveYear] = useState<NewYearInfoFields | null>(null);
 

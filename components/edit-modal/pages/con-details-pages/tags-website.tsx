@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { MAX_TAGS, MAX_WEBSITES } from "@/lib/constants";
 import { FormState } from "@/lib/editing/reducer-helper";
-import { PageTwoFormCurrent } from "@/types/editor-types";
+import { PageTwoFormState } from "@/types/editor-types";
 import { isValidUrl } from "@/utils/url";
 import React from "react";
 import TagSelector from "./page-2/tags-selecter";
@@ -14,12 +14,12 @@ export default function TagsWebsitePage({
   resetField,
   hasChanged,
 }: {
-  state: FormState<PageTwoFormCurrent>;
-  setField: <K extends keyof PageTwoFormCurrent>(
+  state: FormState<PageTwoFormState>;
+  setField: <K extends keyof PageTwoFormState>(
     field: K
-  ) => (value: PageTwoFormCurrent[K]) => void;
-  resetField: (field: keyof PageTwoFormCurrent) => void;
-  hasChanged: (field: keyof PageTwoFormCurrent) => boolean;
+  ) => (value: PageTwoFormState[K]) => void;
+  resetField: (field: keyof PageTwoFormState) => void;
+  hasChanged: (field: keyof PageTwoFormState) => boolean;
 }) {
   const linksInputRef = React.useRef<HTMLInputElement>(null);
   const websiteInputRef = React.useRef<HTMLInputElement>(null);

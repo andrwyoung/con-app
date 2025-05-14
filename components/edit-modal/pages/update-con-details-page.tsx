@@ -38,9 +38,9 @@ import {
 } from "@/lib/editing/push-years";
 import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
 import {
-  PageOneFormCurrent,
-  PageThreeFormCurrent,
-  PageTwoFormCurrent,
+  PageOneFormState,
+  PageThreeFormState,
+  PageTwoFormState,
 } from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
@@ -99,7 +99,7 @@ export default function UpdateConDetailsPage({
   //
   // Page 1 reducer
   //
-  const initialPageOneFields: PageOneFormCurrent = {
+  const initialPageOneFields: PageOneFormState = {
     description: conDetails.cs_description ?? "",
     conSize: (conDetails.con_size as ConSize) ?? null,
     selectedOrganizer: conDetails.organizer
@@ -118,7 +118,7 @@ export default function UpdateConDetailsPage({
     reset: resetPgOne,
     hasChanged: hasPgOneFieldChanged,
     getChangedValues: pgOneChangedValues,
-  } = useFormReducer<PageOneFormCurrent>(initialPageOneFields, {
+  } = useFormReducer<PageOneFormState>(initialPageOneFields, {
     selectedOrganizer: (a, b) => a?.id === b?.id && a?.name === b?.name,
   });
 
@@ -142,7 +142,7 @@ export default function UpdateConDetailsPage({
     : [];
 
   // create the form reducer
-  const initialPageTwoFields: PageTwoFormCurrent = {
+  const initialPageTwoFields: PageTwoFormState = {
     socialLinks: originalSocialLinks,
     tags: originalTags,
     website: conDetails.website ?? "",
@@ -155,7 +155,7 @@ export default function UpdateConDetailsPage({
     reset: resetPgTwo,
     hasChanged: hasPgTwoFieldChanged,
     getChangedValues: pgTwoChangedValues,
-  } = useFormReducer<PageTwoFormCurrent>(initialPageTwoFields, {
+  } = useFormReducer<PageTwoFormState>(initialPageTwoFields, {
     socialLinks: arrayEquals,
     tags: arrayEquals,
   });
@@ -165,7 +165,7 @@ export default function UpdateConDetailsPage({
   //
   //
   // 8: dates
-  const initialPageThreeFields: PageThreeFormCurrent = {
+  const initialPageThreeFields: PageThreeFormState = {
     location: {
       lat: conDetails.location_lat ?? undefined,
       long: conDetails.location_long ?? undefined,
@@ -207,7 +207,7 @@ export default function UpdateConDetailsPage({
     reset: resetPgThree,
     getChangedValues: pgThreeChangedValues,
     hasChanged: hasPgThreeFieldChanged,
-  } = useFormReducer<PageThreeFormCurrent>(initialPageThreeFields, {
+  } = useFormReducer<PageThreeFormState>(initialPageThreeFields, {
     years: yearsDeepEqual,
     location: (a, b) => a.lat === b.lat && a.long === b.long,
   });
@@ -458,6 +458,10 @@ export default function UpdateConDetailsPage({
     },
   };
 
+  const hasAnyChanges = Object.values(EDIT_PAGE_CONFIG).some(
+    (config) => config.changedDots > 0
+  );
+
   return (
     <HeadersHelper
       title={`Edit Con Details`}
@@ -515,7 +519,10 @@ export default function UpdateConDetailsPage({
       <DialogFooter>
         <div className="flex flex-col gap-8 mt-4">
           <div className="flex flex-col gap-2 items-center">
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting || !hasAnyChanges}
+            >
               {submitting ? "Submitting..." : "Submit Update"}
             </Button>
             {error && (
