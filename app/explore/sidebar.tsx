@@ -19,6 +19,7 @@ import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper"
 import SidebarBackground from "@/components/sidebar-background";
 import ListWrapper from "@/components/list-panel/list-wrapper";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
+import { FaPlus } from "react-icons/fa6";
 
 export type sidebarModes = "search" | "filter";
 
@@ -66,7 +67,7 @@ export default function Sidebar() {
       <div className="relative">
         <SidebarBackground />
         <div
-          className={`flex flex-col gap-2 w-screen md:w-86  md:max-h-[calc(100dvh-12rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-4 pt-5 pb-3 md:py-6 
+          className={`flex flex-col gap-2 w-screen md:w-86  md:max-h-[calc(100dvh-13rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-4 pt-5 pb-3 md:py-6 
          ${
            sidebarMode === "search"
              ? "outline-2 outline-primary h-screen-dvh"
@@ -96,6 +97,16 @@ export default function Sidebar() {
               <ListPanel scope="explore" />
             </div>
           </ListWrapper>
+
+          <button
+            className="absolute left-1/2 top-[calc(100%-0.02rem)] translate-x-[-50%] transition-all duration-200 
+            text-secondary-darker border-b-2 border-r-2 border-l-2 border-transparent
+          h-8 rounded-b-lg w-78 shadow-lg text-sm bg-secondary-lightest cursor-pointer 
+          hover:bg-secondary-light hover:border-secondary flex flex-row items-center justify-center gap-1"
+          >
+            <FaPlus className="text-xs" />
+            Add a Convention
+          </button>
 
           {!showListPanel && (
             <SidebarToggleButton

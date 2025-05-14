@@ -119,7 +119,7 @@ export default function MoreDetailsSection({
                   resetAllFilters();
                   setShownFilters([]);
                 }}
-                className="text-primary-muted transition-colors underline hover:text-primary-darker cursor-pointer"
+                className="text-primary-muted transition-all hover:underline hover:text-primary-darker cursor-pointer"
               >
                 {details.organizer.organizer_name}
               </button>

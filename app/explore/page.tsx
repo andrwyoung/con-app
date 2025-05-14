@@ -98,7 +98,7 @@ export default function ExplorePage() {
 
   return (
     <div className="w-screen h-screen-dvh font-extrabold relative">
-      <div className="absolute z-8 top-0 left-0 md:top-[13%] md:left-[2%]">
+      <div className="absolute z-8 top-0 left-0 md:top-[12%] md:left-[2%]">
         <Sidebar />
       </div>
       <div className="hidden md:block">

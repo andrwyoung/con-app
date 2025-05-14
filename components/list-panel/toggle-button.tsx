@@ -30,7 +30,7 @@ export default function SidebarToggleButton({
 
   const baseClasses = `
     absolute top-4 transition-all duration-300 cursor-pointer 
-    border-r border-b rounded-r-lg px-2 py-8 left-[calc(100%-0.05rem)]
+    border-t-2 border-r-2 border-b-2 rounded-r-lg px-2 py-8 left-[calc(100%-0.05rem)]
     ${
       isLeft
         ? "bg-secondary-light border-secondary hover:bg-primary-lightest hover:text-primary-darker hover:border-primary"
