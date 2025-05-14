@@ -1,3 +1,5 @@
+// PAGE 2 of edit-con-modal: lets people edit the artist alley information
+
 import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { parseISO } from "date-fns";
@@ -24,7 +26,7 @@ import {
   ArtistAlleyInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
-import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
+import { handleSubmitWrapper } from "../handle-submit-wrapper";
 import {
   buildApprovalMetadata,
   buildInitialMetadata,

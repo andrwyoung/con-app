@@ -1,3 +1,6 @@
+// I added an admin button that let's admin completly wipe Artist Alley info
+// from a convention. This is the file that does that (and then logs those changes)
+
 import { supabaseAnon } from "../supabase/client";
 import { toast } from "sonner";
 import { checkIsAdmin } from "./authen";

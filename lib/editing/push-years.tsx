@@ -1,4 +1,7 @@
-// lib/editing/push-approved-year.ts
+// there are a few places that lets someone make a new year
+// this is the code that actually makes that new year in the database
+// and then marks it as approved
+
 import { supabaseAnon } from "@/lib/supabase/client";
 import {
   ArtistAlleyInfoFields,

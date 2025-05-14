@@ -1,3 +1,6 @@
+// this file is just a sanity check if we're missing anything before
+// submitting a new edit to the database
+
 import { CompleteYearInfo, NewYearInfoFields } from "@/types/suggestion-types";
 
 export function buildCompleteYearPayload(

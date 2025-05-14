@@ -1,3 +1,11 @@
+// PAGE 3 of edit-con-modal: this is the most complicated page.
+// we can edit ALL the convention info here (except for artist alley info)
+
+// this page itself is split into 3 parts:
+// SUBPAGE 1: description and stuff <GeneralEditPage /> in general-page.tsx
+// SUBPAGE 2: tags and website links <TagsWebsitePage /> in tags-website.tsx
+// SUBPAGE 3: dates and location <DatesLocationPage /> in date-loc-page.tsx
+
 import React, { JSX, useState } from "react";
 import HeadersHelper from "../editor-helpers";
 import {
@@ -9,7 +17,7 @@ import {
 import { EditModalState } from "../edit-con-modal";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
+import { handleSubmitWrapper } from "../handle-submit-wrapper";
 import {
   CompleteYearInfo,
   ConDetailsFields,

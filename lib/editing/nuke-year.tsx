@@ -1,3 +1,6 @@
+// I added an admin button that let's admin completely delete a convention year.
+// So this is the file that does that (and then logs those changes)
+
 import { supabaseAnon } from "../supabase/client";
 import { toast } from "sonner";
 import { checkIsAdmin } from "./authen";

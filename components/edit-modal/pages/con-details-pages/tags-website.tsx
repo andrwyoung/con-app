@@ -1,11 +1,14 @@
+// here we can edit all the tags and add links
+// SUBPAGE 2 of update-con-details-page.tsx
+
 import { Input } from "@/components/ui/input";
 import { MAX_TAGS, MAX_WEBSITES } from "@/lib/constants";
 import { FormState } from "@/lib/editing/reducer-helper";
 import { PageTwoFormState } from "@/types/editor-types";
 import { isValidUrl } from "@/utils/url";
 import React from "react";
-import TagSelector from "./page-2/tags-selecter";
-import AddMoreLinks from "./page-2/add-more-links";
+import TagSelector from "./con-details-helpers/page-2/tags-selecter";
+import AddMoreLinks from "./con-details-helpers/page-2/add-more-links";
 import ResettableFieldWrapper from "./con-details-helpers/reset-buttons";
 
 export default function TagsWebsitePage({

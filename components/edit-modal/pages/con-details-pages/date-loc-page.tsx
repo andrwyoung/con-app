@@ -1,3 +1,8 @@
+// here we can edit all the dates and location of each year in a convention
+// as well as edit the map marker placement
+
+// SUBPAGE 3 of update-con-details-page.tsx
+
 import {
   Select,
   SelectContent,
@@ -194,6 +199,13 @@ export default function DatesLocationPage({
                         options.add(y);
                       }
                     }
+                  }
+
+                  // fill in up to the current year
+                  const currentYear = new Date().getFullYear();
+                  const latestYear = sortedYears[sortedYears.length - 1];
+                  for (let y = latestYear + 1; y <= currentYear + 1; y++) {
+                    options.add(y);
                   }
                 } else {
                   options.add(new Date().getFullYear());

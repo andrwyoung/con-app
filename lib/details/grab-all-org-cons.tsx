@@ -1,3 +1,9 @@
+// I included a feature on the detail panel (right after tags)
+// where you can click on the organizer name and then the all the other
+// cons that have the same organizer
+
+// this is the file that gets all those conventions
+
 import { useEventStore } from "@/stores/all-events-store";
 import { supabaseAnon } from "../supabase/client";
 

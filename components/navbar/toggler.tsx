@@ -1,3 +1,5 @@
+// this is the little "explor, plan, share" pill box on the top
+
 "use client";
 import { FiMapPin, FiCalendar, FiSend } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";

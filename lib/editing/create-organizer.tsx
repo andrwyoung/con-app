@@ -1,3 +1,5 @@
+// sometimes we want to add a new event organizer, so this file helps do that
+
 import { supabaseAnon } from "@/lib/supabase/client";
 
 export async function getOrCreateOrganizerId({

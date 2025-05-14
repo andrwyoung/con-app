@@ -10,7 +10,7 @@ export const artistAlleyStatusConfig = {
     dark: "bg-orange-300 text-yellow-800 border-orange-300",
   },
   watch_link: {
-    label: "Look Out",
+    label: "Coming Soon",
     color: "bg-yellow-200 text-yellow-800 border-yellow-300",
     dark: "bg-blue-300 text-green-800 border-blue-400",
   },

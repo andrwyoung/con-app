@@ -1,3 +1,7 @@
+// a big problem with having so many fields you can edit is that there are just
+// so many things you have to keep track of. so this helper just helps simplify that
+// (even though it looks really complicated)
+
 import { useReducer } from "react";
 
 export type FormState<T> = {

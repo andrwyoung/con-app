@@ -1,3 +1,5 @@
+// this all the code that displays that list panel next to the sidebar
+
 import { useListStore } from "@/stores/list-store";
 import { Scope } from "@/types/con-types";
 import { useEffect, useState } from "react";

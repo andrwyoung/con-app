@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { getBrowserLocation } from "@/lib/map/get-initial-location";
 import { useExploreSelectedCardsStore } from "@/stores/page-store";
 import { log } from "@/lib/utils";
-import SidebarBackground from "@/components/sidebar-background";
+import PanelBackground from "@/components/sidebar-background";
 import MobileDrawer2 from "./mobile-drawer2";
 import { IoLocate } from "react-icons/io5";
 import { DEFAULT_ZOOM } from "@/lib/constants";
@@ -105,7 +105,7 @@ export default function ExplorePage() {
         {hasMounted && selectedCon && (
           <div className="absolute right-[2%] top-[13%] z-5">
             <div className="relative">
-              <SidebarBackground />
+              <PanelBackground />
               <div className="w-96 max-h-[calc(100dvh-10rem)] bg-white rounded-lg shadow-xl border flex flex-col">
                 <DetailsPanel
                   scope="explore"
@@ -121,7 +121,7 @@ export default function ExplorePage() {
 
       <div className="block md:hidden absolute bottom-0 right-0 w-screen z-6">
         {/* <Toggler /> */}
-        <SidebarBackground />
+        <PanelBackground />
         <div className="h-12 w-full flex items-center justify-center bg-white rounded-lg text-xs text-primary-text">
           Mobile Experience is Limited. Try Desktop!
         </div>
@@ -140,7 +140,7 @@ export default function ExplorePage() {
         >
           <IoLocate />
         </button>
-        <SidebarBackground />
+        <PanelBackground />
       </div>
     </div>
   );

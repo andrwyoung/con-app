@@ -1,3 +1,5 @@
+// PAGE 1 of edit-con-modal: this is how people can add a new yaer to a convention
+
 import React, { useState } from "react";
 import { DialogFooter } from "../../ui/dialog";
 import { DateRange } from "react-day-picker";
@@ -16,7 +18,7 @@ import {
   NewYearInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
-import { handleSubmitWrapper } from "./aa-helpers/handle-submit-wrapper";
+import { handleSubmitWrapper } from "../handle-submit-wrapper";
 import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";

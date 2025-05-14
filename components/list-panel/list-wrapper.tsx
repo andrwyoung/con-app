@@ -1,3 +1,5 @@
+// this is the wrapper that helps animate the list panel open and closed
+
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 import SidebarToggleButton from "./toggle-button";

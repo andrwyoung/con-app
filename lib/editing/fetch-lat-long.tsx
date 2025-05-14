@@ -1,3 +1,6 @@
+// I added a cool feature on the minimap to let people search google to get
+// the latitude and longitude for an event. This is the file that actually searches google for it
+
 import axios from "axios";
 import { log } from "../utils";
 

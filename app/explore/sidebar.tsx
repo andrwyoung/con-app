@@ -10,13 +10,13 @@ import {
 import { useRouter } from "next/navigation";
 import FilterMode from "../../components/sidebar-panel/modes/filter-mode";
 import { useEffect } from "react";
-import { useExploreGeneralUIStore } from "@/stores/ui-store";
+import { useExploreGeneralUIStore, useModalUIStore } from "@/stores/ui-store";
 import ListPanel from "@/components/list-panel/list-panel";
 import { useMapPinsStore } from "@/stores/map-store";
 import { useScopedSearchStore } from "@/stores/search-store";
 import { useEventStore } from "@/stores/all-events-store";
 import DragContextWrapper from "@/components/sidebar-panel/drag-context-wrapper";
-import SidebarBackground from "@/components/sidebar-background";
+import PanelBackground from "@/components/sidebar-background";
 import ListWrapper from "@/components/list-panel/list-wrapper";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
 import { FaPlus } from "react-icons/fa6";
@@ -38,6 +38,7 @@ export default function Sidebar() {
   const initialized = useEventStore((s) => s.initialized);
 
   const { showListPanel, setShowListPanel } = useExploreGeneralUIStore();
+  const setEditModalState = useModalUIStore((s) => s.setEditModalState);
 
   const { searchState } = useScopedSearchStore("explore");
 
@@ -65,7 +66,7 @@ export default function Sidebar() {
   return (
     <DragContextWrapper scope={"explore"}>
       <div className="relative">
-        <SidebarBackground />
+        <PanelBackground />
         <div
           className={`flex flex-col gap-2 w-screen md:w-86  md:max-h-[calc(100dvh-13rem)] border-none md:border rounded-b-sm md:rounded-lg shadow-xl bg-white px-4 pt-5 pb-3 md:py-6 
          ${
@@ -93,7 +94,7 @@ export default function Sidebar() {
             showListPanel={showListPanel}
           >
             <div className="relative border rounded-lg shadow-xl  px-5 py-6 w-86 bg-white">
-              <SidebarBackground />
+              <PanelBackground />
               <ListPanel scope="explore" />
             </div>
           </ListWrapper>
@@ -103,6 +104,7 @@ export default function Sidebar() {
             text-secondary-darker border-b-2 border-r-2 border-l-2 border-transparent
           h-8 rounded-b-lg w-78 shadow-lg text-sm bg-secondary-lightest cursor-pointer 
           hover:bg-secondary-light hover:border-secondary flex flex-row items-center justify-center gap-1"
+            onClick={() => setEditModalState({ type: "new_con" })}
           >
             <FaPlus className="text-xs" />
             Add a Convention

@@ -61,7 +61,7 @@ export default function ReviewsSection({ id }: { id: number }) {
               type="button"
               onClick={() => setIsReviewModalOpen(true)}
               className="bg-secondary-lightest cursor-pointer transition-colors text-primary-text border-2 border-secondary
-            uppercase text-xs px-3 py-1 rounded-lg hover:bg-secondary/80 focus:outline-none"
+            text-xs px-3 py-0.5 rounded-lg hover:bg-secondary/80 focus:outline-none"
             >
               Share a Note
             </button>

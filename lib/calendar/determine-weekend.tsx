@@ -1,5 +1,5 @@
 // given a start date and end date, find out which weekend it's associated with
-// most notably used when get-all-events happens (label all events with a weekend)
+// take a look at generate-weekends.tsx because that's where we "define" the weekends
 
 import { parseISO } from "date-fns";
 import { generateWeekendsByMonth, WeekendBucket } from "./generate-weekends";

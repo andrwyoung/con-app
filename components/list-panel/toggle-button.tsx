@@ -1,3 +1,5 @@
+// this is the button you click on to open and close the list panel
+
 import { EventBus } from "@/utils/event-bus";
 import { useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";

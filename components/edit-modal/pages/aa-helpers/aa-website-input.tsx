@@ -1,4 +1,6 @@
-// DEPRECATED. we just do it inline now
+// DEPRECATED. this used to be the input that let's you add the website
+// but we just put it in update-aa-page.tsx itself now
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";

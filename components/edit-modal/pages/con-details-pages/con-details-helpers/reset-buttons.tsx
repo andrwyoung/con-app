@@ -1,3 +1,7 @@
+// when you make a change, you want to see feedback on which fields you changed
+// and also let people revert back to the original. this the helper that let's people do that
+// (basically the revert, or undo button)
+
 import { ReactNode } from "react";
 import { FaUndo } from "react-icons/fa";
 

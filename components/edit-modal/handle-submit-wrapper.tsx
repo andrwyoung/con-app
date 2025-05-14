@@ -1,5 +1,8 @@
+// a lot of my submission forms have the same error and submission behaviors
+// so this wrapper just helps keep it consistent
+
 import { toast } from "sonner";
-import { EditModalState } from "../../edit-con-modal";
+import { EditModalState } from "./edit-con-modal";
 
 type SubmitWrapperProps = {
   setSubmitting: (val: boolean) => void;

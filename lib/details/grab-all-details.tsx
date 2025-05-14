@@ -1,5 +1,6 @@
-// grab all information from supabase for the detail panel
-// this is because we only store basic data on each con and need to fetch the rest
+// when you click on a convention, a detail panel pops on on the right
+// showing all the convention information
+// this is the file that grabs all that data from the database
 
 import type { FullConventionDetails } from "@/types/con-types";
 import { supabaseAnon } from "../supabase/client";

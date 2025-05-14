@@ -1,3 +1,5 @@
+// this is the text area + searchbar that lets people search wikipedia to autofill a con's description
+
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";

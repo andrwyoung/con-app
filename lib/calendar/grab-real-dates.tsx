@@ -1,9 +1,5 @@
-// since we're handling historical and predictive conventions these functions gets the actual dates
-//
-// OVERVIEW:
-// 1. specificYear is always the correct dates. Note: by design it might conflict with latest_start_date etc.
-// 2. if !convention_year_id this is an indication that this is on a wishList
-// 3. if that doesn't exist then we want the latest dates, which is just stored in ConventionInfo
+// a convention can have multiple years
+// so this file contain helps figure out which year we're talking about
 
 import { ConventionInfo } from "@/types/con-types";
 
@@ -11,7 +7,8 @@ export function getRealDates(con: ConventionInfo): {
   start_date: string | null;
   end_date: string | null;
 } {
-  // has specificYear
+  // 1. specificYear is always the correct dates.
+  // Technical note: it might be differetn than latest_start_date. this is by design
   if (con.specificYear) {
     return {
       start_date: con.specificYear.start_date,
@@ -19,7 +16,8 @@ export function getRealDates(con: ConventionInfo): {
     };
   }
 
-  // prediction
+  // 2. if !convention_year_id this means it's not a "real" convention
+  // it means this is a future prediction
   if (!con.convention_year_id && con.latest_start_date && con.latest_end_date) {
     // log("convention has no id. so true dates are a year ahead");
     const start = new Date(con.latest_start_date);
@@ -34,8 +32,7 @@ export function getRealDates(con: ConventionInfo): {
     };
   }
 
-  // if no specicYear
-  // log("con has no specific year and isn't null. returning real dates");
+  // 3. if the previous 2 don't apply, then just take the latest_start_date
   return {
     start_date: con.latest_start_date ?? null,
     end_date: con.latest_end_date ?? null,

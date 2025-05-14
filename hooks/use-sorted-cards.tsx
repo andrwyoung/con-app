@@ -1,4 +1,4 @@
-// hook to abstract out sorting logic from the card list
+// this file is the one that helps sort the card lists
 
 import { useMemo } from "react";
 import { ConventionInfo, ConLocation } from "@/types/con-types";

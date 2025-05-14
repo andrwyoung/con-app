@@ -1,3 +1,5 @@
+// this is the dropdown search selector to let you select tags
+
 import { Input } from "@/components/ui/input";
 import { MAX_TAGS } from "@/lib/constants";
 import { allTags } from "@/stores/filter-store";

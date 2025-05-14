@@ -1,3 +1,6 @@
+// this is the textbox/selector that let's people search for
+// existing organizers and add their own
+
 "use client";
 
 import * as React from "react";

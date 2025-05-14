@@ -1,3 +1,6 @@
+// here we edit the description and general convention info
+// SUBPAGE 1 of update-con-details-page.tsx
+
 import React from "react";
 import WikipediaTextarea from "./con-details-helpers/page-1/wikipedia-textarea";
 import { CON_SIZE_LABELS, ConSize } from "@/types/con-types";

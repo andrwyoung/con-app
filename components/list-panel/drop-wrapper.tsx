@@ -1,3 +1,6 @@
+// DEPRECATED until I turn drag and drop back on
+// let's people drop a convention into the list panel
+
 import { useListStore } from "@/stores/list-store";
 import { useDragStore } from "@/stores/ui-store";
 import { useDroppable } from "@dnd-kit/core";

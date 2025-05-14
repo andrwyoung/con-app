@@ -1,11 +1,11 @@
-import {getInitialLocation} from "@/lib/map/get-initial-location";
+// this file grabs all the data needed to initialize the map
+// which is just (1) the inital location and (2) all the events
+
+import { getInitialLocation } from "@/lib/map/get-initial-location";
 import { log } from "@/lib/utils";
 import { useEventStore } from "@/stores/all-events-store";
 import { useMapStore } from "@/stores/map-store";
-import {
-  useExploreSelectedCardsStore,
-  useExploreSidebarStore,
-} from "@/stores/page-store";
+import { useExploreSelectedCardsStore } from "@/stores/page-store";
 import { ConLocation } from "@/types/con-types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

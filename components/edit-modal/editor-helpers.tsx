@@ -1,3 +1,6 @@
+// the editing panel gets really complicated, so here are just a random collection of
+// helper components that help me out
+
 import {
   DialogDescription,
   DialogHeader,

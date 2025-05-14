@@ -1,3 +1,5 @@
+// this is the input that lets people add additional links (up to 3) to a con
+
 import { Input } from "@/components/ui/input";
 import { MAX_WEBSITES } from "@/lib/constants";
 import { isValidUrl } from "@/utils/url";

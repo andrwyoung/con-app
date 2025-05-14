@@ -1,5 +1,7 @@
-// create user profile for user
-// we need the sudo key because we want to write user profile data without them being logged in
+// this is the file that actually signs the user up on the database
+// it's special because it's the only time in this project we use createClientSudo()
+// which means that it uses the "super key" that gives it complete access to the database
+// so....be careful
 "use server";
 
 import { Persona } from "@/components/auth/steps/signup-step";

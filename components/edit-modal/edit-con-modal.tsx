@@ -1,5 +1,11 @@
-// the all purpose panel to give suggestions for upcoming cons and stuff
-// all logic is the corresponding pages
+// KEY SECTION: this is the editing modal itself. the very thing that pops up
+// when you click "Edit Con Info" or "Edit AA" or "Add a new Year" or "Add a convention"
+
+// we split it into 4 sections:
+// PAGE 1: adding a new year: <SubmitNewYearPage /> in submit-new-year-page.tsx
+// PAGE 2: updating convention details: <UpdateConDetailsPage /> in update-con-details-page.tsx
+// PAGE 3: editing a single year's artist alley info: <UpdateAAPage /> in update-aa-page.tsx
+// PAGE 4: adding a new convention: <SubmitNewConPage /> in submit-new-convention.tsx
 
 import { FullConventionDetails } from "@/types/con-types";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -12,13 +18,15 @@ import ConfirmationPage from "./pages/confirmation-page";
 import UpdateAAPage from "./pages/update-aa-page";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
+import SubmitNewConPage from "./pages/submit-new-con-page";
 
 export type EditModalState =
   | { type: "closed" }
   | { type: "editor" }
   | { type: "dates" }
   | { type: "confirmation" }
-  | { type: "year"; year: number };
+  | { type: "year"; year: number }
+  | { type: "new_con" };
 
 export default function EditConventionModal({
   conDetails,
@@ -91,8 +99,15 @@ export default function EditConventionModal({
                 year={page.year}
               />
             )}
+            {page.type === "new_con" && (
+              <SubmitNewConPage
+                setPage={setPage}
+                key={`new-${refreshKey}`} // refreshing state on new submit
+                setRefreshKey={setRefreshKey}
+              />
+            )}
             {page.type === "confirmation" && (
-              <ConfirmationPage conDetails={conDetails} />
+              <ConfirmationPage name={conDetails.name} />
             )}
           </motion.div>
         </AnimatePresence>

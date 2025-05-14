@@ -1,5 +1,5 @@
-// given a start and end date, set the global store to contain all the conventions scheduled between those dates
-// additionally, grab some predictions (if relevant) to display too
+// when you click on a weekend in the /plan view, you want to see the cons happening that weekend
+// this file helps grab all those conventions, and then puts them into the sidebar
 
 import { ConventionInfo, ConventionYear } from "@/types/con-types";
 import { supabaseAnon } from "../supabase/client";

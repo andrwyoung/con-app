@@ -1,5 +1,5 @@
-// grab all reviews made for a specific convention
-// used for the details panel
+// grab all the reviews (we call them "notes" on the detail panel)
+// from the database
 
 import { Review } from "@/types/review-types";
 import { supabaseAnon } from "../supabase/client";

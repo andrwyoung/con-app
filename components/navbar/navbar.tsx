@@ -1,3 +1,6 @@
+// the navbar! it's everything you see on that gradient on the top
+// it also hosts the pop up thing you use to login and also the welcome pop up thing
+
 "use client";
 import React from "react";
 import Toggler from "./toggler";

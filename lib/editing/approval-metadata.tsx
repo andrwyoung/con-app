@@ -1,3 +1,8 @@
+// when someone submits a suggestion, we want to keep track of
+// who it was submitted by, when it was submitted and all that sort of stuff
+
+// so this file are just helper functions to do that
+
 import { SuggestionsMetadataFields } from "@/types/suggestion-types";
 
 export function buildInitialMetadata(

@@ -1,3 +1,7 @@
+// there are so many possibilities for artist alley applications deadlines/release dates
+// like some cons have deadlines while others don't...some have dedicated relase dates.
+// So all this logic here is to try my best to capture the most edge cases
+
 import { ArtistAlleyStatus } from "@/types/artist-alley-types";
 import { addMonths, isAfter, isBefore, parseISO } from "date-fns";
 

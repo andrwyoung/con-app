@@ -1,4 +1,4 @@
-// generate the scaffolding on which we group and show the weeks inside the calendar view
+// this is where we define what a weekend means in our code
 
 import {
   addYears,

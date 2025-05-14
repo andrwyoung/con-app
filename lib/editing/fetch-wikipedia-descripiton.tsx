@@ -1,3 +1,6 @@
+// I added a cool feature to let people search Wikipedia to fill in convention descripitons
+// this is the file that actually searches wikipedia
+
 export async function searchWikipedia(conName: string) {
   const url = `https://en.wikipedia.org/w/rest.php/v1/search/title?q=${encodeURIComponent(
     conName

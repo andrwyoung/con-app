@@ -1,3 +1,7 @@
+// some component are reused in different files but have different behaviors
+// depending on the page, this function just determines which "scope" or page
+// a component is in
+
 import { Scope } from "@/types/con-types";
 import { usePathname } from "next/navigation";
 

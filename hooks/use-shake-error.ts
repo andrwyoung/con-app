@@ -1,3 +1,5 @@
+// small little helper to let me have a shakeable error message
+
 import { useState } from "react";
 
 export default function useShakeError(initial = "") {
