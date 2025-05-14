@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/select";
 import { NewYearInfoFields } from "@/types/suggestion-types";
 import React, { useState } from "react";
-import YearEdit from "./con-details-helpers/year-edit";
+import YearEdit from "./con-details-helpers/page-3/year-edit";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
-import MapboxMiniMap from "./con-details-helpers/mini-mapbox";
+import MapboxMiniMap from "./con-details-helpers/page-3/mini-mapbox";
 
 export default function DatesLocationPage({
   conId,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import HeadersHelper from "../editor-helpers";
 import {
   ConSize,
@@ -22,13 +22,12 @@ import {
 } from "@/lib/editing/approval-metadata";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
-import { log } from "@/lib/utils";
+import { arrayEquals, log } from "@/lib/utils";
 import { toast } from "sonner";
 import GeneralEditPage from "./con-details-pages/general-page";
 import DatesLocationPage from "./con-details-pages/date-loc-page";
 import TagsWebsitePage from "./con-details-pages/tags-website";
 import { allTags } from "@/stores/filter-store";
-import { arrayChanged } from "@/utils/array-utils";
 import useShakeError from "@/hooks/use-shake-error";
 import { isValidUrl } from "@/utils/url";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,8 +37,9 @@ import {
   pushApprovedUpdatedYear,
 } from "@/lib/editing/push-years";
 import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
-import { PageOneFormCurrent } from "@/types/editor-types";
+import { PageOneFormCurrent, PageTwoFormCurrent } from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
+import { FaUndo } from "react-icons/fa";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 
@@ -122,7 +122,8 @@ export default function UpdateConDetailsPage({
   //
   // Page 2
   //
-  // 5: social links
+
+  // form originals
   const originalSocialLinks: string[] =
     typeof conDetails.social_links === "string"
       ? conDetails.social_links
@@ -130,25 +131,30 @@ export default function UpdateConDetailsPage({
           .map((link) => link.trim())
           .filter((link) => link.length > 0)
       : [];
-  const [socialLinks, setSocialLinks] = useState<string[]>(originalSocialLinks);
-  const cleanSocialLinks = socialLinks.map((l) => l.trim()).filter(Boolean);
-  const socialLinksHaveChanged = arrayChanged(
-    cleanSocialLinks,
-    originalSocialLinks
-  );
-  //
-  // 6: tags
   const originalTags: string[] = Array.isArray(conDetails.tags)
     ? conDetails.tags
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0 && allTags.includes(tag))
     : [];
-  const [tags, setTags] = useState<string[]>(originalTags);
-  const tagsHaveChanged = arrayChanged(tags, originalTags);
-  //
-  // 7: real website
-  const [website, setWebsite] = useState(conDetails.website ?? "");
-  const websiteHasChanged = website !== conDetails.website;
+
+  // create the form reducer
+  const initialPageTwoFields: PageTwoFormCurrent = {
+    socialLinks: originalSocialLinks,
+    tags: originalTags,
+    website: conDetails.website ?? "",
+  };
+
+  const {
+    state: pageTwoState,
+    setField: setPgTwoField,
+    resetField: resetSinglePgTwoField,
+    reset: resetPgTwo,
+    hasChanged: hasPgTwoFieldChanged,
+    getChangedValues: pgTwoChangedValues,
+  } = useFormReducer<PageTwoFormCurrent>(initialPageTwoFields, {
+    socialLinks: arrayEquals,
+    tags: arrayEquals,
+  });
 
   //
   // Page 3
@@ -177,13 +183,6 @@ export default function UpdateConDetailsPage({
   const latLongHasChanged =
     lat !== conDetails.location_lat || long !== conDetails.location_long;
 
-  // helpers
-  const EDIT_PAGE_TITLES: Record<updateDetailsPageMode, string> = {
-    general: "General Info",
-    tags_sites: "Tags/Links",
-    dates_loc: "Dates/Location",
-  };
-
   //
   // SECTION
   //
@@ -197,7 +196,10 @@ export default function UpdateConDetailsPage({
       setSubmitting,
       setPage,
       tryBlock: async () => {
-        if (website !== "" && !isValidUrl(website)) {
+        if (
+          pageTwoState.current.website !== "" &&
+          !isValidUrl(pageTwoState.current.website)
+        ) {
           triggerError(
             "Please enter a valid website (must start with https://) or leave website blank"
           );
@@ -228,11 +230,15 @@ export default function UpdateConDetailsPage({
             : undefined,
 
           // section 2
-          new_tags: tagsHaveChanged ? tags : undefined,
-          new_social_links: socialLinksHaveChanged
-            ? cleanSocialLinks.join(",")
+          new_tags: hasPgTwoFieldChanged("tags")
+            ? pageTwoState.current.tags
             : undefined,
-          new_website: websiteHasChanged ? website : undefined,
+          new_social_links: hasPgTwoFieldChanged("socialLinks")
+            ? pageTwoState.current.socialLinks.join(",")
+            : undefined,
+          new_website: hasPgTwoFieldChanged("website")
+            ? pageTwoState.current.website
+            : undefined,
 
           // section 3
           new_lat: latLongHasChanged ? lat : undefined,
@@ -368,6 +374,61 @@ export default function UpdateConDetailsPage({
     });
   };
 
+  type EditPageConfig = {
+    label: string;
+    changedDots: number;
+    resetAll: () => void;
+    render: () => JSX.Element;
+  };
+
+  const EDIT_PAGE_CONFIG: Record<updateDetailsPageMode, EditPageConfig> = {
+    general: {
+      label: "General Info",
+      changedDots: Object.keys(pgOneChangedValues()).length,
+      resetAll: resetPgOne,
+      render: () => (
+        <GeneralEditPage
+          queryTitle={conDetails.name}
+          state={pageOneState}
+          setField={setPgOneField}
+          resetAll={resetPgOne}
+          resetField={resetSinglePgOneField}
+          hasChanged={hasPgOneFieldChanged}
+        />
+      ),
+    },
+    tags_sites: {
+      label: "Tags/Links",
+      changedDots: Object.keys(pgTwoChangedValues()).length,
+      resetAll: resetPgTwo,
+      render: () => (
+        <TagsWebsitePage
+          state={pageTwoState}
+          setField={setPgTwoField}
+          resetAll={resetPgTwo}
+          resetField={resetSinglePgTwoField}
+          hasChanged={hasPgTwoFieldChanged}
+        />
+      ),
+    },
+    dates_loc: {
+      label: "Dates/Location",
+      changedDots: latLongHasChanged ? 1 : 0, // You can enhance this if you track year diffs later
+      resetAll: resetPgTwo,
+      render: () => (
+        <DatesLocationPage
+          conId={conDetails.id}
+          years={years}
+          setYears={setYears}
+          long={long}
+          setLong={setLong}
+          lat={lat}
+          setLat={setLat}
+        />
+      ),
+    },
+  };
+
   return (
     <HeadersHelper
       title={`Edit Con Details`}
@@ -377,19 +438,19 @@ export default function UpdateConDetailsPage({
     >
       <div className="flex flex-col gap-2 items-center">
         <p className="text-xs text-primary-text">Select Page (optional):</p>
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-2 items-start">
           {(
-            Object.entries(EDIT_PAGE_TITLES) as [
+            Object.entries(EDIT_PAGE_CONFIG) as [
               updateDetailsPageMode,
-              string
+              EditPageConfig
             ][]
-          ).map(([mode, label]) => (
+          ).map(([mode, config]) => (
             <EditStepButton
-              key={`${mode}`}
-              label={label}
+              key={mode}
+              label={config.label}
               selected={editPagePage === mode}
               onClick={() => setEditPagePage(mode)}
-              changedDots={Object.keys(pgOneChangedValues()).length}
+              changedDots={config.changedDots}
             />
           ))}
         </div>
@@ -403,38 +464,21 @@ export default function UpdateConDetailsPage({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -50, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="flex flex-col"
           >
-            {editPagePage === "general" && (
-              <GeneralEditPage
-                queryTitle={conDetails.name}
-                state={pageOneState}
-                setField={setPgOneField}
-                resetAll={resetPgOne}
-                resetField={resetSinglePgOneField}
-                hasChanged={hasPgOneFieldChanged}
-              />
-            )}
-            {editPagePage === "tags_sites" && (
-              <TagsWebsitePage
-                socialLinks={socialLinks}
-                setSocialLinks={setSocialLinks}
-                tags={tags}
-                setTags={setTags}
-                website={website}
-                setWebsite={setWebsite}
-              />
-            )}
-            {editPagePage === "dates_loc" && (
-              <DatesLocationPage
-                conId={conDetails.id}
-                years={years}
-                setYears={setYears}
-                long={long}
-                setLong={setLong}
-                lat={lat}
-                setLat={setLat}
-              />
-            )}
+            {EDIT_PAGE_CONFIG[editPagePage].render()}
+            <button
+              onClick={() => EDIT_PAGE_CONFIG[editPagePage].resetAll()}
+              className={`flex flex-row gap-1 items-center self-end text-rose-400 hover:underline hover:text-rose-300 
+              transition-all cursor-pointer text-xs ${
+                EDIT_PAGE_CONFIG[editPagePage].changedDots > 0
+                  ? "visible "
+                  : "invisible"
+              }`}
+            >
+              <FaUndo className="text-xs" />
+              Reset This Page
+            </button>
           </motion.div>
         </AnimatePresence>
       </div>

@@ -6,3 +6,9 @@ export type PageOneFormCurrent = {
   selectedOrganizer: OrganizerType | null;
   discontinued: boolean;
 };
+
+export type PageTwoFormCurrent = {
+  socialLinks: string[];
+  tags: string[];
+  website: string;
+};

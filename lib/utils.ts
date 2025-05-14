@@ -40,6 +40,9 @@ export const miniConfetti = () => {
   });
 }
 
+export const arrayEquals = (a: string[], b: string[]) =>
+  a.length === b.length && a.every((item, i) => item === b[i]);
+
 
 // UNUSED. TODO
 export function translateAuthError(message: string): string {

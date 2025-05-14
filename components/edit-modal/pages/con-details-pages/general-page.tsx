@@ -1,5 +1,5 @@
 import React from "react";
-import WikipediaTextarea from "./con-details-helpers/wikipedia-textarea";
+import WikipediaTextarea from "./con-details-helpers/page-1/wikipedia-textarea";
 import { CON_SIZE_LABELS, ConSize } from "@/types/con-types";
 import {
   Select,
@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import OrganizerCombobox from "./con-details-helpers/organizer-combobox";
+import OrganizerCombobox from "./con-details-helpers/page-1/organizer-combobox";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { FormState } from "@/lib/editing/reducer-helper";
 import { PageOneFormCurrent } from "@/types/editor-types";

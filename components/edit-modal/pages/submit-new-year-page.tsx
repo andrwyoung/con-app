@@ -23,7 +23,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
 import { pushApprovedNewYear } from "@/lib/editing/push-years";
 import { VALIDATION_ERROR } from "@/lib/constants";
-import MapboxMiniMap from "./con-details-pages/con-details-helpers/mini-mapbox";
+import MapboxMiniMap from "./con-details-pages/con-details-helpers/page-3/mini-mapbox";
 import { ArtistAlleyStatus } from "@/types/artist-alley-types";
 import { fetchLatLong } from "@/lib/editing/fetch-lat-long";
 import { toast } from "sonner";
