@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -12,23 +11,24 @@ import YearEdit from "./con-details-helpers/page-3/year-edit";
 import { FaCaretDown } from "react-icons/fa6";
 import { AnimatePresence, motion } from "framer-motion";
 import MapboxMiniMap from "./con-details-helpers/page-3/mini-mapbox";
+import { PageThreeFormCurrent } from "@/types/editor-types";
+import { FormState } from "@/lib/editing/reducer-helper";
+import { FaUndo } from "react-icons/fa";
 
 export default function DatesLocationPage({
   conId,
-  years,
-  setYears,
-  long,
-  setLong,
-  lat,
-  setLat,
+  state,
+  setField,
+  resetField,
+  hasChanged,
 }: {
   conId: number;
-  years: NewYearInfoFields[];
-  setYears: (y: NewYearInfoFields[]) => void;
-  long: number | undefined;
-  setLong: (e: number | undefined) => void;
-  lat: number | undefined;
-  setLat: (e: number | undefined) => void;
+  state: FormState<PageThreeFormCurrent>;
+  setField: <K extends keyof PageThreeFormCurrent>(
+    field: K
+  ) => (value: PageThreeFormCurrent[K]) => void;
+  resetField: (field: keyof PageThreeFormCurrent) => void;
+  hasChanged: (field: keyof PageThreeFormCurrent) => boolean;
 }) {
   const [activeYear, setActiveYear] = useState<NewYearInfoFields | null>(null);
 
@@ -39,14 +39,38 @@ export default function DatesLocationPage({
   const [showLongLat, setShowLongLat] = useState(false);
 
   // helpers
-  const sorted = [...years].sort((a, b) => b.year - a.year);
+  const sorted = [...state.current.years].sort((a, b) => b.year - a.year);
   const latestYear = sorted[0];
+
+  function hasYearChanged(year: number | undefined): boolean {
+    if (!year) return false;
+
+    const current = state.current.years.find((y) => y.year === year);
+    const original = state.original.years.find((y) => y.year === year);
+    if (!current || !original) return true;
+
+    return (
+      current.start_date !== original.start_date ||
+      current.end_date !== original.end_date ||
+      current.venue !== original.venue ||
+      current.location !== original.location ||
+      current.event_status !== original.event_status
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 py-4">
       <div className="flex items-center justify-between px-2">
-        <div className="flex gap-2">
-          <Label htmlFor="year-select">Select Year:</Label>
+        <div className="flex items-center gap-2">
+          <p
+            className={`text-sm font-semibold ${
+              hasChanged("years")
+                ? "text-secondary-darker"
+                : "text-primary-text"
+            }`}
+          >
+            Select Year:
+          </p>
           <Select
             value={activeYear?.year.toString() ?? "__none__"}
             onValueChange={(val) => {
@@ -54,7 +78,8 @@ export default function DatesLocationPage({
                 setActiveYear(null);
               } else {
                 setActiveYear(
-                  years.find((y) => y.year.toString() === val) ?? null
+                  state.current.years.find((y) => y.year.toString() === val) ??
+                    null
                 );
               }
 
@@ -63,7 +88,12 @@ export default function DatesLocationPage({
           >
             <SelectTrigger
               id="year-select"
-              className="text-primary-text bg-white border rounded-lg px-2 py-2 shadow-xs w-fit"
+              className={`bg-white border rounded-lg px-2 py-2 shadow-xs w-fit
+                ${
+                  hasYearChanged(activeYear?.year)
+                    ? "text-secondary-darker"
+                    : "text-primary-text"
+                }`}
             >
               <SelectValue placeholder="Choose a year" />
             </SelectTrigger>
@@ -71,18 +101,50 @@ export default function DatesLocationPage({
               <SelectItem value="__none__">None</SelectItem>
 
               {activeYear && newYearDraft && (
-                <SelectItem value={activeYear.year.toString()}>
+                <SelectItem
+                  value={activeYear.year.toString()}
+                  className="font-bold text-secondary-darker"
+                >
+                  <div className="w-1.5 h-1.5 bg-secondary rounded-full translate-y-[1px]"></div>
                   New ({newYearDraft})
                 </SelectItem>
               )}
 
-              {years.map((y) => (
-                <SelectItem key={y.year} value={y.year.toString()}>
+              {state.current.years.map((y) => (
+                <SelectItem
+                  key={y.year}
+                  value={y.year.toString()}
+                  className={`flex flex-row items-baseline ${
+                    hasYearChanged(y.year)
+                      ? "font-bold text-secondary-darker hover:text-secondary-darker"
+                      : ""
+                  }
+                  `}
+                >
+                  {hasYearChanged(y.year) && (
+                    <div className="w-1.5 h-1.5 bg-secondary rounded-full translate-y-[1px]"></div>
+                  )}
                   {y.year}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+
+          {hasChanged("years") ? (
+            <div
+              className="flex flex-row gap-1 items-center cursor-pointer transition-all
+            text-sm text-secondary-darker hover:text-secondary"
+              onClick={() => {
+                resetField("years");
+              }}
+            >
+              <FaUndo
+                className="text-xs translate-y-[1px]"
+                title="Revert All Years"
+              />
+              {/* Location */}
+            </div>
+          ) : null}
         </div>
 
         {!newYearDraft && (
@@ -115,7 +177,7 @@ export default function DatesLocationPage({
             </SelectTrigger>
             <SelectContent>
               {(() => {
-                const sortedYears = years
+                const sortedYears = state.current.years
                   .map((y) => y.year)
                   .sort((a, b) => a - b);
                 const options = new Set<number>();
@@ -165,20 +227,26 @@ export default function DatesLocationPage({
               yearData={activeYear}
               onChange={(updated) => {
                 // if it already exists, update it. if it doesn't then create one
-                const exists = years.some((y) => y.year === updated.year);
+                const exists = state.current.years.some(
+                  (y) => y.year === updated.year
+                );
                 const updatedList = exists
-                  ? years.map((y) => (y.year === updated.year ? updated : y))
-                  : [...years, updated];
+                  ? state.current.years.map((y) =>
+                      y.year === updated.year ? updated : y
+                    )
+                  : [...state.current.years, updated];
 
-                setYears(updatedList);
+                setField("years")(updatedList);
                 setActiveYear(null);
                 setNewYearDraft(undefined);
               }}
               onDelete={() => {
                 if (!activeYear) return;
 
-                const updated = years.filter((y) => y.year !== activeYear.year);
-                setYears(updated);
+                const updated = state.current.years.filter(
+                  (y) => y.year !== activeYear.year
+                );
+                setField("years")(updated);
                 setActiveYear(null);
                 setNewYearDraft(undefined);
               }}
@@ -188,19 +256,41 @@ export default function DatesLocationPage({
       </AnimatePresence>
 
       <div>
-        <button
-          onClick={() => setShowLongLat((prev) => !prev)}
-          className="text-sm text-primary-text cursor-pointer 
-        hover:text-primary-muted transition flex items-center gap-1 mb-2 px-2 "
-          type="button"
-        >
-          Edit Map Marker (Lat/Long):
-          <FaCaretDown
-            className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${
-              showLongLat ? "rotate-180" : "rotate-0"
-            }`}
-          />
-        </button>
+        <div className="flex flex-row justify-between items-center mb-2">
+          <button
+            onClick={() => setShowLongLat((prev) => !prev)}
+            className={`text-sm  cursor-pointer font-semibold 
+         transition flex items-center gap-1 px-2 
+        ${
+          hasChanged("location")
+            ? "text-secondary-darker hover:text-secondary"
+            : "text-primary-text hover:text-primary-muted"
+        } `}
+            type="button"
+          >
+            Edit Map Marker (Lat/Long):
+            <FaCaretDown
+              className={`size-[12px] text-primary-muted transform translate-y-[1px] transition-transform duration-200 ${
+                showLongLat ? "rotate-180" : "rotate-0"
+              }`}
+            />
+          </button>
+          {hasChanged("location") ? (
+            <div
+              className="flex flex-row gap-1 items-center cursor-pointer transition-all
+            text-sm text-secondary-darker hover:text-secondary"
+              onClick={() => {
+                resetField("location");
+              }}
+            >
+              <FaUndo
+                className="text-xs translate-y-[1px]"
+                title="Revert Location"
+              />
+              {/* Location */}
+            </div>
+          ) : null}
+        </div>
         <AnimatePresence initial={false}>
           {showLongLat && (
             <motion.div
@@ -211,14 +301,13 @@ export default function DatesLocationPage({
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              {lat && long && (
+              {state.current.location.lat && state.current.location.long && (
                 <div className="flex flex-col gap-2">
                   <MapboxMiniMap
-                    lat={lat}
-                    long={long}
+                    lat={state.current.location.lat}
+                    long={state.current.location.long}
                     onUpdate={({ lat, long }) => {
-                      setLat(lat);
-                      setLong(long);
+                      setField("location")({ lat, long });
                     }}
                   />
                 </div>

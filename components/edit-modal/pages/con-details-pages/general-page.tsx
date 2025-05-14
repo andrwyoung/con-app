@@ -26,7 +26,6 @@ export default function GeneralEditPage({
   setField: <K extends keyof PageOneFormCurrent>(
     field: K
   ) => (value: PageOneFormCurrent[K]) => void;
-  resetAll: () => void;
   resetField: (field: keyof PageOneFormCurrent) => void;
   hasChanged: (field: keyof PageOneFormCurrent) => boolean;
 }) {

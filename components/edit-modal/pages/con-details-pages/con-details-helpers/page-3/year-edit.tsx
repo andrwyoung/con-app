@@ -16,7 +16,7 @@ import { useUserStore } from "@/stores/user-store";
 import { CON_STATUS_LABELS, ConStatus } from "@/types/con-types";
 import { NewYearInfoFields } from "@/types/suggestion-types";
 import { parseISO } from "date-fns";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
 export default function YearEdit({
@@ -31,7 +31,6 @@ export default function YearEdit({
   conId: number;
 }) {
   const { error, shake, setError, triggerError } = useShakeError();
-  const [saved, setSaved] = useState(false);
   const { user, profile } = useUserStore();
 
   //
@@ -74,7 +73,6 @@ export default function YearEdit({
     }
 
     setError("");
-    setSaved(true);
 
     onChange({
       ...yearData,
@@ -85,10 +83,6 @@ export default function YearEdit({
       end_date: dateRange.to?.toISOString() ?? null,
     });
   }
-
-  useEffect(() => {
-    setSaved(false);
-  }, [venue, location, eventStatus, dateRange]);
 
   return (
     <div className="border border-primary rounded-md p-4 bg-primary-lightest flex flex-col gap-6">
@@ -149,7 +143,7 @@ export default function YearEdit({
             className="text-sm border-2 border-primary px-3 py-1 bg-primary text-text-primary rounded-md
           cursor-pointer hover:bg-primary-light w-fit self-end"
           >
-            {saved ? "✓ Draft Ready" : "Save This Year"}
+            {yearData.is_new_year ? "Add New Year" : "Save This Year"}
           </button>
           {error && (
             <span

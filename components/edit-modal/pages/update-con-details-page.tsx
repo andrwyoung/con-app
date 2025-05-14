@@ -37,7 +37,11 @@ import {
   pushApprovedUpdatedYear,
 } from "@/lib/editing/push-years";
 import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
-import { PageOneFormCurrent, PageTwoFormCurrent } from "@/types/editor-types";
+import {
+  PageOneFormCurrent,
+  PageThreeFormCurrent,
+  PageTwoFormCurrent,
+} from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
 
@@ -159,29 +163,54 @@ export default function UpdateConDetailsPage({
   //
   // Page 3
   //
+  //
   // 8: dates
-  const [years, setYears] = useState<NewYearInfoFields[]>(
-    conDetails.convention_years.map((year) => ({
+  const initialPageThreeFields: PageThreeFormCurrent = {
+    location: {
+      lat: conDetails.location_lat ?? undefined,
+      long: conDetails.location_long ?? undefined,
+    },
+    years: conDetails.convention_years.map((year) => ({
       event_status: year.event_status as ConStatus,
 
       year: year.year,
       start_date: year.start_date,
       end_date: year.end_date,
 
-      g_link: year.g_link,
       venue: year.venue,
       location: year.location,
 
-      is_new_year: false, // not new because it already exists
+      is_new_year: false,
       convention_year_id: year.id,
-    }))
-  );
-  //
-  // 9: long / lat
-  const [long, setLong] = useState(conDetails.location_long ?? undefined);
-  const [lat, setLat] = useState(conDetails.location_lat ?? undefined);
-  const latLongHasChanged =
-    lat !== conDetails.location_lat || long !== conDetails.location_long;
+    })),
+  };
+
+  function yearsDeepEqual(a: NewYearInfoFields[], b: NewYearInfoFields[]) {
+    if (a.length !== b.length) return false;
+    return a.every((yearA, i) => {
+      const yearB = b[i];
+      return (
+        yearA.year === yearB.year &&
+        yearA.start_date === yearB.start_date &&
+        yearA.end_date === yearB.end_date &&
+        yearA.venue === yearB.venue &&
+        yearA.location === yearB.location &&
+        yearA.event_status === yearB.event_status
+      );
+    });
+  }
+
+  const {
+    state: pageThreeState,
+    setField: setPgThreeField,
+    resetField: resetSinglePgThreeField,
+    reset: resetPgThree,
+    getChangedValues: pgThreeChangedValues,
+    hasChanged: hasPgThreeFieldChanged,
+  } = useFormReducer<PageThreeFormCurrent>(initialPageThreeFields, {
+    years: yearsDeepEqual,
+    location: (a, b) => a.lat === b.lat && a.long === b.long,
+  });
 
   //
   // SECTION
@@ -241,8 +270,12 @@ export default function UpdateConDetailsPage({
             : undefined,
 
           // section 3
-          new_lat: latLongHasChanged ? lat : undefined,
-          new_long: latLongHasChanged ? long : undefined,
+          new_lat: hasPgThreeFieldChanged("location")
+            ? pageThreeState.current.location.lat
+            : undefined,
+          new_long: hasPgThreeFieldChanged("location")
+            ? pageThreeState.current.location.long
+            : undefined,
 
           notes: undefined,
         };
@@ -269,7 +302,7 @@ export default function UpdateConDetailsPage({
         // PART 1B: figure out years
         //
         //
-        const editedYears = years.filter((y) => {
+        const editedYears = pageThreeState.current.years.filter((y) => {
           if (!y.start_date) return false; // don't even consider invalid ones
 
           const original = conDetails.convention_years.find(
@@ -391,7 +424,6 @@ export default function UpdateConDetailsPage({
           queryTitle={conDetails.name}
           state={pageOneState}
           setField={setPgOneField}
-          resetAll={resetPgOne}
           resetField={resetSinglePgOneField}
           hasChanged={hasPgOneFieldChanged}
         />
@@ -405,7 +437,6 @@ export default function UpdateConDetailsPage({
         <TagsWebsitePage
           state={pageTwoState}
           setField={setPgTwoField}
-          resetAll={resetPgTwo}
           resetField={resetSinglePgTwoField}
           hasChanged={hasPgTwoFieldChanged}
         />
@@ -413,17 +444,15 @@ export default function UpdateConDetailsPage({
     },
     dates_loc: {
       label: "Dates/Location",
-      changedDots: latLongHasChanged ? 1 : 0, // You can enhance this if you track year diffs later
-      resetAll: resetPgTwo,
+      changedDots: Object.keys(pgThreeChangedValues()).length,
+      resetAll: resetPgThree,
       render: () => (
         <DatesLocationPage
           conId={conDetails.id}
-          years={years}
-          setYears={setYears}
-          long={long}
-          setLong={setLong}
-          lat={lat}
-          setLat={setLat}
+          state={pageThreeState}
+          setField={setPgThreeField}
+          resetField={resetSinglePgThreeField}
+          hasChanged={hasPgThreeFieldChanged}
         />
       ),
     },

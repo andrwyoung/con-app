@@ -40,10 +40,10 @@ function SelectTrigger({
         "data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring",
         "focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         "dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-baseline rounded-md bg-transparent",
-        "*:text-sm whitespace-nowrap transition-[color,box-shadow] text-xs gap-1 cursor-pointer outline-none focus-visible:ring-[3px]",
-        "disabled:cursor-not-allowed, hover:text-primary-text font-semibold text-primary-muted",
+        "*:text-sm whitespace-nowrap transition-[color,box-shadow] text-xs gap-1.5 cursor-pointer outline-none focus-visible:ring-[3px]",
+        "disabled:cursor-not-allowed, hover:text-primary-text  text-primary-muted",
         "disabled:opacity-50  *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex",
-        "*:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "*:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "*:[&_svg:not([class*='size-'])]:size-4",
         className
       )}
@@ -104,7 +104,7 @@ function SelectLabel({
     <SelectPrimitive.Label
       data-slot="select-label"
       className={cn(
-        "text-primary-muted px-1 py-1.5 text-xs font-regular tracking-wide font-sans-header",
+        "text-primary-muted px-1 py-1.5 text-xs tracking-wide ",
         className
       )}
       {...props}
@@ -122,8 +122,8 @@ function SelectItem({
       data-slot="select-item"
       className={cn(
         "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-pointer",
-        "items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "items-center gap-1.5 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-1.5",
         "hover:bg-primary-light text-primary-text hover:text-muted-darker",
         className
       )}

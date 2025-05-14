@@ -18,7 +18,6 @@ export default function TagsWebsitePage({
   setField: <K extends keyof PageTwoFormCurrent>(
     field: K
   ) => (value: PageTwoFormCurrent[K]) => void;
-  resetAll: () => void;
   resetField: (field: keyof PageTwoFormCurrent) => void;
   hasChanged: (field: keyof PageTwoFormCurrent) => boolean;
 }) {
