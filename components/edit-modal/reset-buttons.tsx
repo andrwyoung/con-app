@@ -11,6 +11,7 @@ type ResettableFieldWrapperProps = {
   hasChanged?: boolean;
   onReset?: () => void;
   rightElement?: ReactNode;
+  mandatory?: boolean;
 };
 
 export default function ResettableFieldWrapper({
@@ -19,6 +20,7 @@ export default function ResettableFieldWrapper({
   hasChanged,
   onReset,
   rightElement,
+  mandatory = false,
 }: ResettableFieldWrapperProps) {
   const isResettable = hasChanged && onReset;
 
@@ -35,12 +37,13 @@ export default function ResettableFieldWrapper({
             <FaUndo className="text-secondary-darker text-xs group-hover:text-secondary" />
           )}
           <p
-            className={`text-sm font-semibold ${
+            className={`text-sm font-semibold flex gap-2 ${
               hasChanged
                 ? "text-secondary-darker group-hover:text-secondary"
                 : "text-primary-text"
             }`}
           >
+            {mandatory && <span className="text-red-500">*</span>}
             {label}
           </p>
         </div>

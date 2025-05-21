@@ -145,73 +145,64 @@ export type Database = {
       }
       conventions: {
         Row: {
-          address: string | null
           con_size: string | null
           created_at: string
           cs_description: string | null
           discontinued: boolean | null
-          facebook_url: string | null
           fancons_link: string | null
           id: number
-          instagram_url: string | null
-          location: string | null
-          location_lat: number | null
-          location_long: number | null
+          location_lat: number
+          location_long: number
           name: string
+          OLD_address: string | null
+          OLD_location: string | null
+          OLD_venue: string | null
           organizer_id: string | null
           slug: string | null
           social_links: string | null
           tags: string[] | null
           updated_at: string | null
-          venue: string | null
           website: string | null
-          x_url: string | null
         }
         Insert: {
-          address?: string | null
           con_size?: string | null
           created_at?: string
           cs_description?: string | null
           discontinued?: boolean | null
-          facebook_url?: string | null
           fancons_link?: string | null
           id?: number
-          instagram_url?: string | null
-          location?: string | null
-          location_lat?: number | null
-          location_long?: number | null
+          location_lat: number
+          location_long: number
           name: string
+          OLD_address?: string | null
+          OLD_location?: string | null
+          OLD_venue?: string | null
           organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
           tags?: string[] | null
           updated_at?: string | null
-          venue?: string | null
           website?: string | null
-          x_url?: string | null
         }
         Update: {
-          address?: string | null
           con_size?: string | null
           created_at?: string
           cs_description?: string | null
           discontinued?: boolean | null
-          facebook_url?: string | null
           fancons_link?: string | null
           id?: number
-          instagram_url?: string | null
-          location?: string | null
-          location_lat?: number | null
-          location_long?: number | null
+          location_lat?: number
+          location_long?: number
           name?: string
+          OLD_address?: string | null
+          OLD_location?: string | null
+          OLD_venue?: string | null
           organizer_id?: string | null
           slug?: string | null
           social_links?: string | null
           tags?: string[] | null
           updated_at?: string | null
-          venue?: string | null
           website?: string | null
-          x_url?: string | null
         }
         Relationships: [
           {
@@ -329,6 +320,63 @@ export type Database = {
           },
         ]
       }
+      submit_new_con: {
+        Row: {
+          approval_status: string
+          approved_by: string | null
+          convention_name: string
+          created_at: string
+          end_date: string | null
+          id: string
+          location: string
+          location_lat: number
+          location_long: number
+          merged_at: string | null
+          notes: string | null
+          start_date: string
+          submitted_by: string | null
+          venue: string
+          website: string | null
+          year: number
+        }
+        Insert: {
+          approval_status: string
+          approved_by?: string | null
+          convention_name: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          location: string
+          location_lat: number
+          location_long: number
+          merged_at?: string | null
+          notes?: string | null
+          start_date: string
+          submitted_by?: string | null
+          venue: string
+          website?: string | null
+          year: number
+        }
+        Update: {
+          approval_status?: string
+          approved_by?: string | null
+          convention_name?: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          location?: string
+          location_lat?: number
+          location_long?: number
+          merged_at?: string | null
+          notes?: string | null
+          start_date?: string
+          submitted_by?: string | null
+          venue?: string
+          website?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       suggestions_artist_alley: {
         Row: {
           aa_deadline: string | null
@@ -340,6 +388,7 @@ export type Database = {
           aa_watch_link: boolean | null
           approval_status: string
           approved_by: string | null
+          changed_fields: string[] | null
           convention_year_id: string
           created_at: string
           id: string
@@ -356,6 +405,7 @@ export type Database = {
           aa_watch_link?: boolean | null
           approval_status: string
           approved_by?: string | null
+          changed_fields?: string[] | null
           convention_year_id: string
           created_at?: string
           id?: string
@@ -372,6 +422,7 @@ export type Database = {
           aa_watch_link?: boolean | null
           approval_status?: string
           approved_by?: string | null
+          changed_fields?: string[] | null
           convention_year_id?: string
           created_at?: string
           id?: string
@@ -399,9 +450,11 @@ export type Database = {
         Row: {
           approval_status: string
           approved_by: string | null
+          changed_fields: string[] | null
           con_size: string | null
           convention_id: number
           created_at: string
+          discontinued: boolean | null
           id: string
           merged_at: string | null
           new_description: string | null
@@ -418,9 +471,11 @@ export type Database = {
         Insert: {
           approval_status: string
           approved_by?: string | null
+          changed_fields?: string[] | null
           con_size?: string | null
           convention_id: number
           created_at?: string
+          discontinued?: boolean | null
           id?: string
           merged_at?: string | null
           new_description?: string | null
@@ -437,9 +492,11 @@ export type Database = {
         Update: {
           approval_status?: string
           approved_by?: string | null
+          changed_fields?: string[] | null
           con_size?: string | null
           convention_id?: number
           created_at?: string
+          discontinued?: boolean | null
           id?: string
           merged_at?: string | null
           new_description?: string | null

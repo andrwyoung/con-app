@@ -10,23 +10,21 @@
 import { FullConventionDetails } from "@/types/con-types";
 import { Dialog, DialogContent } from "../ui/dialog";
 
-import SubmitNewYearPage from "./pages/submit-new-year-page";
+import SubmitNewYearPage from "./edit-pages/submit-new-year-page";
 import { AnimatePresence, motion } from "framer-motion";
 import { useModalUIStore } from "@/stores/ui-store";
-import UpdateConDetailsPage from "./pages/update-con-details-page";
-import ConfirmationPage from "./pages/confirmation-page";
-import UpdateAAPage from "./pages/update-aa-page";
+import UpdateConDetailsPage from "./edit-pages/update-con-details-page";
+import ConfirmationPage from "./edit-pages/confirmation-page";
+import UpdateAAPage from "./edit-pages/update-aa-page";
 import { useUserStore } from "@/stores/user-store";
 import { useEffect, useState } from "react";
-import SubmitNewConPage from "./pages/submit-new-con-page";
 
 export type EditModalState =
   | { type: "closed" }
   | { type: "editor" }
   | { type: "dates" }
   | { type: "confirmation" }
-  | { type: "year"; year: number }
-  | { type: "new_con" };
+  | { type: "year"; year: number };
 
 export default function EditConventionModal({
   conDetails,
@@ -97,13 +95,6 @@ export default function EditConventionModal({
                 key={`aa-${refreshKey}`} // refreshing state on new submit
                 setRefreshKey={setRefreshKey}
                 year={page.year}
-              />
-            )}
-            {page.type === "new_con" && (
-              <SubmitNewConPage
-                setPage={setPage}
-                key={`new-${refreshKey}`} // refreshing state on new submit
-                setRefreshKey={setRefreshKey}
               />
             )}
             {page.type === "confirmation" && (

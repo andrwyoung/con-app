@@ -35,7 +35,7 @@ export const DEFAULT_ZOOM_FAR = 5;
 export const DEFAULT_ZOOM_SUPER_FAR = 4;
 export const MINIMAP_ZOOM = 13;
 export const DEFAULT_LOCATION: { longitude: number; latitude: number } = {
-    latitude: 37.7749, longitude: -122.4194
+    latitude: 47.6118, longitude: -122.3316
 };
 
 

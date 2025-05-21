@@ -26,3 +26,17 @@ export type AAFormState = {
   aaExistence: "unknown" | "invite_only" | "no_aa";
   aaStatus: "unknown" | "open" | "watch_link" | "closed" | "waitlist";
 };
+
+export type NewConState = {
+  conName: string;
+  website: string;
+  description: string;
+
+  year: number | undefined;
+  start_date: string | null | undefined;
+  end_date: string | null | undefined;
+
+  venue: string;
+  location: string;
+  latLong: { lat?: number; long?: number };
+};

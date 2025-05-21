@@ -221,11 +221,10 @@ export default function SubmitNewYearPage({
                   />
                   <button
                     type="submit"
-                    onClick={handleGeocode}
                     className="text-sm text-secondary-darker hover:underline cursor-pointer transition-all hover:text-secondary"
                   >
                     {formattedAddress.trim() === ""
-                      ? "Try Locating with Google Maps"
+                      ? "Try Locating Pin with Google Maps"
                       : formattedAddress}
                   </button>
                 </form>

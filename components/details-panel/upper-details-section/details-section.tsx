@@ -59,17 +59,15 @@ export default function DetailsSection({
         )}
       </div>
       <div className="mb-6">
-        {details.convention_years.length > 0 &&
-          details.venue &&
-          details.location && (
-            <YearGallery
-              scope={scope}
-              currentYear={latestYear.year as number}
-              allYears={details.convention_years}
-              showMissing={showMissingCard}
-              latestLocation={details.location}
-            />
-          )}
+        {details.convention_years.length > 0 && latestYear.location && (
+          <YearGallery
+            scope={scope}
+            currentYear={latestYear.year as number}
+            allYears={details.convention_years}
+            showMissing={showMissingCard}
+            latestLocation={latestYear.location}
+          />
+        )}
       </div>
 
       <div className="p-4 flex flex-col gap-2 text-sm px-6 rounded-lg">

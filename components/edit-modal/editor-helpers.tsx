@@ -90,6 +90,7 @@ export function DateRangeInput({
   onChange,
   placeholder = "Select a date range",
   encouragement = "Nice!",
+  yearPlaceholder,
 }: {
   label?: string;
   subheader?: string;
@@ -97,6 +98,7 @@ export function DateRangeInput({
   onChange: (range: DateRange | undefined) => void;
   placeholder?: string;
   encouragement?: string;
+  yearPlaceholder?: number;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -143,7 +145,13 @@ export function DateRangeInput({
           <Calendar
             mode="range"
             selected={value}
-            defaultMonth={value?.from ?? new Date()}
+            defaultMonth={
+              value?.from
+                ? value.from
+                : yearPlaceholder
+                ? new Date(yearPlaceholder, 0)
+                : new Date()
+            }
             onSelect={onChange}
           />
         </PopoverContent>
@@ -210,7 +218,7 @@ export function VenueLocationFields({
         <span className="text-red-500">*</span>Venue:
       </Label>
       <Input
-        placeholder="e.g. Seattle Convention Center"
+        placeholder="e.g. Seattle Convention Center Arch"
         value={venue}
         onChange={(e) => onVenueChange(e.target.value)}
         onKeyDown={(e) => {

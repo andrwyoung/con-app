@@ -108,7 +108,7 @@ export default function Recommendations({ scope }: { scope: Scope }) {
           c.status === "announced" ||
           c.status === "watch_link"
       )
-      .sort((a, b) => a.distance - b.distance);
+      .sort(() => Math.random() - 0.5);
 
     // If we have fewer than 25, fill with "expected"
     if (openOrAnnounced.length >= NUM_OF_RECS) {

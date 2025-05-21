@@ -108,6 +108,7 @@ export default function YearEdit({
           onChange={setDateRange}
           placeholder="Select the dates"
           encouragement="Looks good!"
+          yearPlaceholder={yearData.year}
         />
       </div>
 

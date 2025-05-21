@@ -20,6 +20,7 @@ import PanelBackground from "@/components/sidebar-background";
 import ListWrapper from "@/components/list-panel/list-wrapper";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
 import { FaPlus } from "react-icons/fa6";
+import SubmitNewConPage from "@/components/edit-modal/submit-new-con-modal";
 
 export type sidebarModes = "search" | "filter";
 
@@ -38,7 +39,7 @@ export default function Sidebar() {
   const initialized = useEventStore((s) => s.initialized);
 
   const { showListPanel, setShowListPanel } = useExploreGeneralUIStore();
-  const setEditModalState = useModalUIStore((s) => s.setEditModalState);
+  const setNewConOpen = useModalUIStore((s) => s.setNewConOpen);
 
   const { searchState } = useScopedSearchStore("explore");
 
@@ -104,11 +105,12 @@ export default function Sidebar() {
             text-secondary-darker border-b-2 border-r-2 border-l-2 border-transparent
           h-8 rounded-b-lg w-78 shadow-lg text-sm bg-secondary-lightest cursor-pointer 
           hover:bg-secondary-light hover:border-secondary flex flex-row items-center justify-center gap-1"
-            onClick={() => setEditModalState({ type: "new_con" })}
+            onClick={() => setNewConOpen(true)}
           >
             <FaPlus className="text-xs" />
             Add a Convention
           </button>
+          <SubmitNewConPage />
 
           {!showListPanel && (
             <SidebarToggleButton

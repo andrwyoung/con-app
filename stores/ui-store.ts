@@ -16,6 +16,9 @@ type ModalUIStore = {
   editModalState: EditModalState;
   setEditModalState: (s: EditModalState) => void;
 
+  newConOpen: boolean;
+  setNewConOpen: (open: boolean) => void;
+
   onboardingOpen: boolean;
   setOnboardingOpen: (open: boolean) => void;
 
@@ -32,15 +35,18 @@ export const useModalUIStore = create<ModalUIStore>((set, get) => ({
   editModalState: {type: "closed"},
   setEditModalState: (step) => set({ editModalState: step }),
 
-  setOnboardingOpen: (open) => set({ onboardingOpen: open }),
+  newConOpen: false,
+  setNewConOpen: (open: boolean) => set({newConOpen: open}),
+
   onboardingOpen: false,
+  setOnboardingOpen: (open) => set({ onboardingOpen: open }),
   
   profileOpen: false,
   setProfileOpen: (open) => set({ profileOpen: open }),
 
   anyModalOpen: () => {
     const s = get();
-    return s.loginModalStep !== "closed"  || s.onboardingOpen || 
+    return s.loginModalStep !== "closed"  || s.onboardingOpen || s.newConOpen || 
     s.profileOpen || s.editModalState.type !== "closed";
   },
 }));
