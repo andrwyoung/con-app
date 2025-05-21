@@ -39,12 +39,18 @@ export default function SubmitNewYearPage({
   setPage: (p: EditModalState) => void;
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const latestYear = () => {
+    return conDetails.convention_years.reduce((latest, current) =>
+      current.year > latest.year ? current : latest
+    );
+  };
+
   // 1: date
   const [date, setDate] = useState<DateRange | undefined>(undefined);
   // 2: venue
-  const [venue, setVenue] = useState(conDetails.venue ?? "");
+  const [venue, setVenue] = useState(latestYear().venue ?? "");
   // 3: location
-  const [location, setLocation] = useState(conDetails.location ?? "");
+  const [location, setLocation] = useState(latestYear().location ?? "");
   // 4: long/lat
   const [long, setLong] = useState(conDetails.location_long ?? undefined);
   const [lat, setLat] = useState(conDetails.location_lat ?? undefined);
@@ -58,11 +64,6 @@ export default function SubmitNewYearPage({
 
   const { user, profile } = useUserStore();
   const isAdmin = profile?.role === "ADMIN";
-  const latestYear = () => {
-    return conDetails.convention_years.reduce((latest, current) =>
-      current.year > latest.year ? current : latest
-    );
-  };
 
   const handleGeocode = async () => {
     const result = await fetchLatLong(`${venue}, ${location}`);
