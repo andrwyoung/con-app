@@ -12,24 +12,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
-import { SuggestionsMetadataFields } from "@/types/suggestion-types";
 import {
-  buildApprovalMetadata,
-  buildInitialMetadata,
-} from "@/lib/editing/approval-metadata";
-import { TablesInsert } from "@/types/supabase";
+  NewConFields,
+  SuggestionsMetadataFields,
+} from "@/types/suggestion-types";
+import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { NewConState } from "@/types/editor-types";
+import { pushNewConvention } from "@/lib/actions/push-new-con";
 
 export type newConPageMode = "general" | "dates_loc" | "confirmation";
-
-function generateSlug(input: string): string {
-  return input
-    .replace(/&|#\d+;|[^\w\s]/g, " ") // Replace symbols (&, #039;, punctuation) with space
-    .replace(/\s+/g, " ") // Collapse multiple spaces into one
-    .trim() // Remove leading/trailing spaces
-    .toLowerCase() // Lowercase all
-    .replace(/\s/g, "-"); // Replace space with dash
-}
 
 export default function SubmitNewConPage() {
   const isOpen = useModalUIStore((s) => s.newConOpen);
@@ -79,7 +70,7 @@ export default function SubmitNewConPage() {
       )
         throw new Error("Location and Date can't be undefined");
 
-      const payload = {
+      const payload: NewConFields = {
         // conventions
         convention_name: state.current.conName,
         website: state.current.website,
@@ -106,6 +97,7 @@ export default function SubmitNewConPage() {
         .select()
         .single();
       if (insertError) throw insertError;
+      toast.success("Suggestion submitted succussfully!");
 
       // then if admin actually submit the real thing
       if (user && isAdmin) {
@@ -117,71 +109,8 @@ export default function SubmitNewConPage() {
           return;
         }
 
-        const slug = generateSlug(payload.convention_name);
-
-        // First make a new convention
-        const conventionInsert: TablesInsert<"conventions"> = {
-          name: payload.convention_name,
-          location_lat: payload.location_lat,
-          location_long: payload.location_long,
-
-          website: payload.website.trim() === "" ? undefined : payload.website,
-          cs_description:
-            payload.cs_description.trim() === ""
-              ? undefined
-              : payload.cs_description,
-
-          slug,
-        };
-
-        const { data: conData, error: conInsertError } = await supabaseAnon
-          .from("conventions")
-          .insert({
-            ...conventionInsert,
-          })
-          .select()
-          .single();
-
-        if (conInsertError) {
-          throw conInsertError;
-        }
-
-        // Then make a new year associated with that convention
-        const conventionYearInsert: TablesInsert<"convention_years"> = {
-          convention_id: conData.id,
-          start_date: payload.start_date,
-          end_date: payload.end_date,
-          year: payload.year,
-
-          venue: payload.venue,
-          location: payload.location,
-        };
-
-        const { error: conYearInsertError } = await supabaseAnon
-          .from("convention_years")
-          .insert({
-            ...conventionYearInsert,
-          })
-          .select()
-          .single();
-
-        if (conYearInsertError) {
-          throw conYearInsertError;
-        }
-
-        // Mark the suggestion as approved
-        const updatesMetadata: SuggestionsMetadataFields =
-          buildApprovalMetadata(user.id);
-
-        await supabaseAnon
-          .from("submit_new_con")
-          .update(updatesMetadata)
-          .eq("id", suggestionInsert.id);
-
-        toast.success(`Admin: New convention pushed!`);
+        await pushNewConvention(payload, suggestionInsert.id, user.id);
       }
-
-      toast.success("Suggestion submitted succussfully!");
     } catch (error) {
       setSubmitting(false);
       console.error("Failed to submit update:", error);

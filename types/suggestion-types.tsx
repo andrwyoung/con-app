@@ -62,3 +62,16 @@ export type CompleteYearInfo = Omit<NewYearInfoFields, "is_new_year"> & {
   convention_id: number;
   start_date: string;
 };
+
+export type NewConFields = {
+  convention_name: string;
+  website: string;
+  cs_description: string;
+  venue: string;
+  location: string;
+  location_lat: number;
+  location_long: number;
+  year: number;
+  start_date: string;
+  end_date: string | null | undefined;
+};

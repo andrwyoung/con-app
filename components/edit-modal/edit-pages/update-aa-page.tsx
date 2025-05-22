@@ -27,15 +27,13 @@ import {
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
 import { handleSubmitWrapper } from "../handle-submit-wrapper";
-import {
-  buildApprovalMetadata,
-  buildInitialMetadata,
-} from "@/lib/editing/approval-metadata";
+import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { EditModalState } from "../edit-con-modal";
 import { AAFormState } from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
 import ResettableFieldWrapper from "../reset-buttons";
 import { Input } from "@/components/ui/input";
+import { pushArtistAlleyUpdate } from "@/lib/actions/push-aa-info-update";
 
 export default function UpdateAAPage({
   conDetails,
@@ -216,12 +214,15 @@ export default function UpdateAAPage({
           user?.id ?? null
         );
 
+        if (!relevantYearObject) throw new Error("Year doesn't exist");
+        const yearId = relevantYearObject.id;
+
         // Make a new suggestion first
         const { data: suggestionInsert, error: insertError } =
           await supabaseAnon
             .from("suggestions_artist_alley")
             .insert({
-              convention_year_id: relevantYearObject?.id,
+              convention_year_id: yearId,
               changed_fields: Object.keys(getChangedValues()),
               ...initMetadata,
               ...aaInfo,
@@ -230,12 +231,10 @@ export default function UpdateAAPage({
             .single();
 
         if (insertError) throw insertError;
+        toast.success("Suggestion Submitted!");
 
         log("isAdmin?:", isAdmin);
         if (user && isAdmin) {
-          // Update real convention_years table
-
-          // cast to check for types
           const updates: Partial<ConventionYear> = aaInfo;
 
           const confirmed = confirm(
@@ -243,21 +242,12 @@ export default function UpdateAAPage({
           );
           if (!confirmed) return;
 
-          await supabaseAnon
-            .from("convention_years")
-            .update(updates)
-            .eq("id", relevantYearObject?.id);
-
-          // Also mark the suggestion as approved
-          const updatesMetadata: SuggestionsMetadataFields =
-            buildApprovalMetadata(user.id);
-
-          await supabaseAnon
-            .from("suggestions_artist_alley")
-            .update(updatesMetadata)
-            .eq("id", suggestionInsert.id);
-
-          toast.success("Admin: change pushed through!");
+          await pushArtistAlleyUpdate(
+            user.id,
+            suggestionInsert.id,
+            yearId,
+            updates
+          );
         }
 
         // reset states

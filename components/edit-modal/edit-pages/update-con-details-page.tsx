@@ -8,12 +8,7 @@
 
 import React, { JSX, useState } from "react";
 import HeadersHelper from "../editor-helpers";
-import {
-  ConSize,
-  ConStatus,
-  Convention,
-  FullConventionDetails,
-} from "@/types/con-types";
+import { ConSize, ConStatus, FullConventionDetails } from "@/types/con-types";
 import { EditModalState } from "../edit-con-modal";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -24,14 +19,10 @@ import {
   NewYearInfoFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
-import {
-  buildApprovalMetadata,
-  buildInitialMetadata,
-} from "@/lib/editing/approval-metadata";
+import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { useUserStore } from "@/stores/user-store";
 import { supabaseAnon } from "@/lib/supabase/client";
 import { arrayEquals, log } from "@/lib/utils";
-import { toast } from "sonner";
 import GeneralEditPage from "./con-details-pages/general-page";
 import DatesLocationPage from "./con-details-pages/date-loc-page";
 import TagsWebsitePage from "./con-details-pages/tags-website";
@@ -41,17 +32,13 @@ import { isValidUrl } from "@/utils/url";
 import { AnimatePresence, motion } from "framer-motion";
 import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
 import {
-  pushApprovedNewYear,
-  pushApprovedUpdatedYear,
-} from "@/lib/editing/push-years";
-import { getOrCreateOrganizerId } from "@/lib/editing/create-organizer";
-import {
   PageOneFormState,
   PageThreeFormState,
   PageTwoFormState,
 } from "@/types/editor-types";
 import { useFormReducer } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
+import { adminPushConDetailsUpdate } from "@/lib/actions/push-con-details-update";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 
@@ -360,54 +347,14 @@ export default function UpdateConDetailsPage({
           );
           if (!confirmed) return;
 
-          // PART 2a: push new convention info up
-
-          const conTablePayload: Partial<Convention> = {
-            cs_description: newInfo.new_description,
-            con_size: newInfo.con_size,
-            organizer_id: newInfo.organizer_id,
-            discontinued: newInfo.discontinued,
-
-            tags: newInfo.new_tags,
-            social_links: newInfo.new_social_links,
-            website: newInfo.new_website,
-
-            location_lat: newInfo.new_lat,
-            location_long: newInfo.new_long,
-          };
-
-          // make a new organizer if it doesn't already exist and slap it in there
-          conTablePayload.organizer_id = await getOrCreateOrganizerId({
-            organizerName: newInfo.organizer_name,
-            organizerId: newInfo.organizer_id ?? null,
+          await adminPushConDetailsUpdate({
+            userId: user.id,
+            conId: conDetails.id,
+            suggestionId: suggestionInsert.id,
+            newInfo,
+            yearPackets: yearSubmissionPackets,
             organizerHasChanged: hasPgOneFieldChanged("selectedOrganizer"),
           });
-
-          // KEY SECTION: here we actually change the data in the database
-          await supabaseAnon
-            .from("conventions")
-            .update(conTablePayload)
-            .eq("id", conDetails.id);
-
-          // Also mark the suggestion as approved
-          const updatesMetadata: SuggestionsMetadataFields =
-            buildApprovalMetadata(user.id);
-
-          await supabaseAnon
-            .from("suggestions_con_details")
-            .update(updatesMetadata)
-            .eq("id", suggestionInsert.id);
-
-          // PART 2b: push individual years up now
-          for (const packet of yearSubmissionPackets) {
-            if (packet.isNewYear) {
-              await pushApprovedNewYear(packet, user.id);
-            } else {
-              await pushApprovedUpdatedYear(packet, user.id);
-            }
-          }
-
-          toast.success("Admin: change pushed through!");
         }
 
         setRefreshKey((prev) => prev + 1);

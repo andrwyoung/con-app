@@ -23,7 +23,7 @@ import { buildInitialMetadata } from "@/lib/editing/approval-metadata";
 import { CheckField } from "@/components/sidebar-panel/modes/filters/filter-helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import { buildCompleteYearPayload } from "@/lib/editing/build-new-year";
-import { pushApprovedNewYear } from "@/lib/editing/push-years";
+import { pushNewYear } from "@/lib/actions/year-push-helpers";
 import { VALIDATION_ERROR } from "@/lib/constants";
 import MapboxMiniMap from "./con-details-pages/con-details-helpers/page-3/mini-mapbox";
 import { ArtistAlleyStatus } from "@/types/artist-alley-types";
@@ -134,9 +134,11 @@ export default function SubmitNewYearPage({
             .select()
             .single();
         if (insertError) throw insertError;
+        toast.success("New Year Suggestion Submitted!");
 
         if (user && isAdmin) {
-          // create a new convention_year
+          const confirmed = confirm(`Admin: Actually create the new year too?`);
+          if (!confirmed) return;
 
           // grab last year's application start and end dates (keep em around)
           const latestOveride = latestYear()
@@ -158,9 +160,6 @@ export default function SubmitNewYearPage({
             aaInfo: aaFields,
           };
 
-          const confirmed = confirm(`Admin: Push real changes too?`);
-          if (!confirmed) return;
-
           // PART 1: if long/lat is different, push that first
           if (latLongHasChanged) {
             await supabaseAnon
@@ -170,7 +169,7 @@ export default function SubmitNewYearPage({
           }
 
           // PART 2: add the new year + approve it
-          await pushApprovedNewYear(newYearPacket, user.id);
+          await pushNewYear(newYearPacket, user.id);
         }
 
         // reset states

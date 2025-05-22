@@ -10,9 +10,10 @@ import {
 } from "@/types/suggestion-types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "sonner";
-import { buildApprovalMetadata } from "./approval-metadata";
+import { buildApprovalMetadata } from "../editing/approval-metadata";
 
-export async function pushApprovedNewYear(
+// this is the helper that creates a new yaer from info
+export async function pushNewYear(
   packet: {
     yearInfo: CompleteYearInfo;
     suggestionId: string;
@@ -48,10 +49,11 @@ export async function pushApprovedNewYear(
     .update(updatesMetadata)
     .eq("id", packet.suggestionId);
 
-  toast.success(`Admin: Year ${packet.yearInfo.year} pushed through!`);
+  toast.success(`Admin: Created new year ${packet.yearInfo.year}!`);
 }
 
-export async function pushApprovedUpdatedYear(
+// this is the helper that pushes updates the actual year
+export async function pushExistingYearUpdate(
   packet: {
     yearInfo: CompleteYearInfo;
     suggestionId: string;
