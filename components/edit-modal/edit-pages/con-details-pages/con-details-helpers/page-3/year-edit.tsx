@@ -24,11 +24,13 @@ export default function YearEdit({
   onChange,
   onDelete,
   conId,
+  isTheOnlyYear,
 }: {
   yearData: NewYearInfoFields;
   onChange: (updated: NewYearInfoFields) => void;
   onDelete: () => void;
   conId: number;
+  isTheOnlyYear: boolean;
 }) {
   const { error, shake, setError, triggerError } = useShakeError();
   const { user, profile } = useUserStore();
@@ -159,7 +161,7 @@ export default function YearEdit({
         </div>
       </div>
 
-      {profile?.role === "ADMIN" && !yearData.is_new_year && (
+      {profile?.role === "ADMIN" && !yearData.is_new_year && !isTheOnlyYear && (
         <button
           type="submit"
           className="text-rose-500 transition-all outline-2 outline-rose-300 hover:outline-rose-400 hover:bg-rose-200 

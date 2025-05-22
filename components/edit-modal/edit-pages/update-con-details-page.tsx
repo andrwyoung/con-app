@@ -39,6 +39,7 @@ import {
 import { useFormReducer } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
 import { adminPushConDetailsUpdate } from "@/lib/actions/push-con-details-update";
+import { toast } from "sonner";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 
@@ -339,6 +340,7 @@ export default function UpdateConDetailsPage({
             isNewYear: year.is_new_year,
           });
         }
+        toast.success("Submitted Suggestion!");
 
         log("isAdmin?:", isAdmin, suggestionInsert);
         if (user && isAdmin) {

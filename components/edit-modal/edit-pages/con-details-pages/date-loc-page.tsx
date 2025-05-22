@@ -237,6 +237,7 @@ export default function DatesLocationPage({
             <YearEdit
               conId={conId}
               yearData={activeYear}
+              isTheOnlyYear={state.original.years.length === 1}
               onChange={(updated) => {
                 // if it already exists, update it. if it doesn't then create one
                 const exists = state.current.years.some(
