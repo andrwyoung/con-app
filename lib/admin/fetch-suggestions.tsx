@@ -55,7 +55,7 @@ export async function fetchSuggestions(): Promise<UnifiedSuggestion[]> {
       type: "new_year",
       conId: sugg.convention_id,
       conName: sugg.convention_name,
-      year: sugg.current_year_data?.year,
+      year: sugg.year,
       yearId: sugg.convention_year_id,
       submittedBy: sugg.submitted_username,
       approvedBy: sugg.approved_username,
@@ -63,6 +63,8 @@ export async function fetchSuggestions(): Promise<UnifiedSuggestion[]> {
       approvalStatus: sugg.approval_status,
       currentYearData: sugg.current_year_data,
       isCurrentYear: sugg.is_latest_year,
+      changedFields: sugg.changed_fields,
+      isNewYear: sugg.is_new_year,
       raw: sugg as NewYearInfoFields,
     });
   });

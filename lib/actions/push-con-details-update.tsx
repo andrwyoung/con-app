@@ -1,34 +1,24 @@
 import { Convention } from "@/types/con-types";
 import {
-  CompleteYearInfo,
   ConDetailsFields,
   SuggestionsMetadataFields,
 } from "@/types/suggestion-types";
 import { getOrCreateOrganizerId } from "../editing/create-organizer";
 import { supabaseAnon } from "../supabase/client";
 import { buildApprovalMetadata } from "../editing/approval-metadata";
-import { pushExistingYearUpdate, pushNewYear } from "./year-push-helpers";
 import { toast } from "sonner";
-
-type Packet = {
-  yearInfo: CompleteYearInfo;
-  suggestionId: string;
-  isNewYear: boolean;
-};
 
 export async function adminPushConDetailsUpdate({
   userId,
   conId,
   suggestionId,
   newInfo,
-  yearPackets,
   organizerHasChanged,
 }: {
   userId: string;
   conId: number;
   suggestionId: string;
   newInfo: ConDetailsFields;
-  yearPackets: Packet[];
   organizerHasChanged: boolean;
 }) {
   // PART 2a: push new convention info up
@@ -68,15 +58,6 @@ export async function adminPushConDetailsUpdate({
     .from("suggestions_con_details")
     .update(updatesMetadata)
     .eq("id", suggestionId);
-
-  // PART 2b: push individual years up now
-  for (const packet of yearPackets) {
-    if (packet.isNewYear) {
-      await pushNewYear(packet, userId);
-    } else {
-      await pushExistingYearUpdate(packet, userId);
-    }
-  }
 
   toast.success("Admin: change pushed through!");
 }

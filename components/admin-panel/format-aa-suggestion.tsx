@@ -11,10 +11,7 @@ export default function FormatAASuggestion({
   changedFields: string[] | undefined;
 }) {
   return (
-    <div
-      className="flex flex-col gap-2 px-2 py-4
-    bg-secondary-lightest rounded-lg text-sm text-primary-text"
-    >
+    <>
       {(changedFields?.includes("aaStatus") ||
         changedFields?.includes("aaExistence")) && (
         <FieldRow label="Status:">
@@ -54,6 +51,6 @@ export default function FormatAASuggestion({
             : "Date Cleared"}
         </FieldRow>
       )}
-    </div>
+    </>
   );
 }

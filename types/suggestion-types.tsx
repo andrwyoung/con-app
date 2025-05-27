@@ -45,7 +45,7 @@ export type ConDetailsFields = {
 };
 
 export type NewYearInfoFields = {
-  event_status: ConStatus;
+  event_status: ConStatus | undefined;
 
   year: number;
   start_date: string | null | undefined;

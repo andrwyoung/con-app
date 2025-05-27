@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import React, { useRef, useEffect, useState } from "react";
 import { MINIMAP_ZOOM } from "@/lib/constants";
 import Image from "next/image";
+import { useId } from "react";
 
 export default function MapboxMiniMap({
   lat,
@@ -11,10 +12,11 @@ export default function MapboxMiniMap({
 }: {
   lat: number;
   long: number;
-  onUpdate: (coords: { lat: number; long: number }) => void;
+  onUpdate?: (coords: { lat: number; long: number }) => void;
 }) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const uniqueId = useId();
 
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -28,7 +30,7 @@ export default function MapboxMiniMap({
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_KEY;
 
     mapRef.current = new mapboxgl.Map({
-      container: "mini-map",
+      container: uniqueId,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [long, lat],
       zoom: MINIMAP_ZOOM,
@@ -50,10 +52,10 @@ export default function MapboxMiniMap({
           }`}
         >
           <div
-            id="mini-map"
+            id={uniqueId}
             ref={mapContainerRef}
             style={{ height: "100%", opacity: "75%" }}
-          ></div>
+          />
 
           {/* Center marker icon (styled like Mapbox’s default pin) */}
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-full">
@@ -81,19 +83,22 @@ export default function MapboxMiniMap({
           <span className="font-bold">Recenter: </span>
           {lat.toFixed(4)}, {long.toFixed(4)}
         </p>
-        <button
-          type="button"
-          className="text-xs border-2 border-primary px-3 py-1 bg-primary text-text-primary rounded-md
+
+        {onUpdate && (
+          <button
+            type="button"
+            className="text-xs border-2 border-primary px-3 py-1 bg-primary text-text-primary rounded-md
       cursor-pointer hover:bg-primary-light w-fit"
-          onClick={() => {
-            if (mapRef.current) {
-              const center = mapRef.current.getCenter();
-              onUpdate({ lat: center.lat, long: center.lng });
-            }
-          }}
-        >
-          Set New Location
-        </button>
+            onClick={() => {
+              if (mapRef.current) {
+                const center = mapRef.current.getCenter();
+                onUpdate({ lat: center.lat, long: center.lng });
+              }
+            }}
+          >
+            Set New Location
+          </button>
+        )}
       </div>
     </>
   );

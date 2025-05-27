@@ -21,6 +21,10 @@ export async function pushNewYear(
   },
   userId: string
 ) {
+  console.log("🧾 Insert payload:", {
+    ...packet.yearInfo,
+  });
+
   try {
     await supabaseAnon.from("convention_years").insert({
       ...packet.yearInfo,
@@ -37,6 +41,7 @@ export async function pushNewYear(
       throw new Error("Existing Year");
     }
 
+    console.log("Error pushing new year", err);
     throw err;
   }
 
@@ -60,6 +65,10 @@ export async function pushExistingYearUpdate(
   },
   userId: string
 ) {
+  console.log("🧾 Insert payload:", {
+    ...packet.yearInfo,
+  });
+
   try {
     await supabaseAnon
       .from("convention_years")

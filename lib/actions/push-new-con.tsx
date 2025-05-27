@@ -20,7 +20,7 @@ export async function pushNewConvention(
   payload: NewConFields,
   suggestionId: string,
   userId: string
-) {
+): Promise<number> {
   const slug = generateSlug(payload.convention_name);
 
   // First make a new convention
@@ -29,9 +29,11 @@ export async function pushNewConvention(
     location_lat: payload.location_lat,
     location_long: payload.location_long,
 
-    website: payload.website.trim() === "" ? undefined : payload.website,
+    website: payload.website?.trim() === "" ? undefined : payload.website,
     cs_description:
-      payload.cs_description.trim() === "" ? undefined : payload.cs_description,
+      payload.cs_description?.trim() === ""
+        ? undefined
+        : payload.cs_description,
 
     slug,
   };
@@ -83,4 +85,6 @@ export async function pushNewConvention(
   toast.success(
     `Admin: New convention pushed! Refresh page to see the new con`
   );
+
+  return conData.id;
 }

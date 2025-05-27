@@ -40,6 +40,10 @@ import { useFormReducer } from "@/lib/editing/reducer-helper";
 import { FaUndo } from "react-icons/fa";
 import { adminPushConDetailsUpdate } from "@/lib/actions/push-con-details-update";
 import { toast } from "sonner";
+import {
+  pushExistingYearUpdate,
+  pushNewYear,
+} from "@/lib/actions/year-push-helpers";
 
 export type updateDetailsPageMode = "general" | "dates_loc" | "tags_sites";
 
@@ -281,8 +285,13 @@ export default function UpdateConDetailsPage({
         );
 
         // Make a new suggestion first
-        const { data: suggestionInsert, error: insertError } =
-          await supabaseAnon
+        const hasNewInfo = Object.values(newInfo).some(
+          (value) => value !== undefined
+        );
+
+        let suggestionInsert = null;
+        if (hasNewInfo) {
+          const { data, error: insertError } = await supabaseAnon
             .from("suggestions_con_details")
             .insert({
               convention_id: conDetails?.id,
@@ -293,7 +302,9 @@ export default function UpdateConDetailsPage({
             .select()
             .single();
 
-        if (insertError) throw insertError;
+          if (insertError) throw insertError;
+          suggestionInsert = data;
+        }
 
         // PART 1B: figure out years
         //
@@ -322,6 +333,24 @@ export default function UpdateConDetailsPage({
         }[] = [];
         for (const year of editedYears) {
           // actually inserting now
+
+          const original = conDetails.convention_years.find(
+            (oy) => oy.year === year.year
+          );
+          const changedFields: string[] = [];
+          // build out the "changed_fields column"
+          if (!year.is_new_year && original) {
+            if (year.start_date !== original.start_date)
+              changedFields.push("startDate");
+            if (year.end_date !== original.end_date)
+              changedFields.push("endDate");
+            if (year.venue !== original.venue) changedFields.push("venue");
+            if (year.location !== original.location)
+              changedFields.push("location");
+            if (year.event_status !== original.event_status)
+              changedFields.push("eventStatus");
+          }
+
           const { data: yearSuggestionInsert, error: yearInsertError } =
             await supabaseAnon
               .from("suggestions_new_year")
@@ -329,6 +358,7 @@ export default function UpdateConDetailsPage({
                 convention_id: conDetails.id,
                 ...year,
                 ...initMetadata,
+                changed_fields: changedFields,
               })
               .select()
               .single();
@@ -349,14 +379,25 @@ export default function UpdateConDetailsPage({
           );
           if (!confirmed) return;
 
-          await adminPushConDetailsUpdate({
-            userId: user.id,
-            conId: conDetails.id,
-            suggestionId: suggestionInsert.id,
-            newInfo,
-            yearPackets: yearSubmissionPackets,
-            organizerHasChanged: hasPgOneFieldChanged("selectedOrganizer"),
-          });
+          // PART 1: push to conventions table
+          if (suggestionInsert) {
+            await adminPushConDetailsUpdate({
+              userId: user.id,
+              conId: conDetails.id,
+              suggestionId: suggestionInsert.id,
+              newInfo,
+              organizerHasChanged: hasPgOneFieldChanged("selectedOrganizer"),
+            });
+          }
+
+          // PART 2: push individual years up now
+          for (const packet of yearSubmissionPackets) {
+            if (packet.isNewYear) {
+              await pushNewYear(packet, user.id);
+            } else {
+              await pushExistingYearUpdate(packet, user.id);
+            }
+          }
         }
 
         setRefreshKey((prev) => prev + 1);

@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { fetchSuggestions } from "@/lib/admin/fetch-suggestions";
 import { UnifiedSuggestion } from "@/types/admin-panel-types";
+import { useAdminPanelStore } from "@/stores/admin-panel-store";
 
 export type GroupedSuggestion = {
   conId: number | null;
@@ -16,9 +17,8 @@ export type GroupedSuggestion = {
 };
 
 export default function AdminPage() {
-  const [selectedCon, setSelectedCon] = useState<GroupedSuggestion | null>(
-    null
-  );
+  const selectedCon = useAdminPanelStore((s) => s.selectedCon);
+  const setSelectedCon = useAdminPanelStore((s) => s.setSelectedCon);
 
   const [loading, setLoading] = useState(true);
   const [suggestions, setSuggestions] = useState<GroupedSuggestion[]>([]);
@@ -26,10 +26,8 @@ export default function AdminPage() {
 
   const refreshDetailsPanel = useCallback(() => {
     // refresh details panel
-    if (selectedCon) {
-      panelRef.current?.refetch();
-    }
-  }, [selectedCon]);
+    panelRef.current?.refetch();
+  }, []);
 
   const init = useCallback(async () => {
     setLoading(true);
@@ -80,7 +78,7 @@ export default function AdminPage() {
   }, [init]);
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center gap-12 pt-12 z-10">
+    <div className="w-screen h-screen flex items-center justify-center gap-6 lg:gap-12 pt-12 z-10 px-4">
       <div
         className="flex flex-col w-[70%] max-w-3xl h-[calc(100dvh-16rem)] shadow-lg rounded-lg p-4
       relative"
@@ -95,8 +93,8 @@ export default function AdminPage() {
         />
       </div>
 
-      <div className="relative flex flex-col h-[calc(100dvh-16rem)] w-96 bg-white rounded-lg shadow-xl z-10">
-        {selectedCon && selectedCon.conId && selectedCon.conName ? (
+      <div className="relative hidden md:flex flex-col h-[calc(100dvh-16rem)] w-96 bg-white rounded-lg shadow-xl z-10">
+        {selectedCon ? (
           <DetailsPanel
             ref={panelRef}
             scope="unknown"

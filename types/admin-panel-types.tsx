@@ -15,9 +15,9 @@ export type SuggestionType =
 
 export const suggestionTypeLabels: Record<SuggestionType, string> = {
   artist_alley: "Artist Alley Update",
-  new_year: "Edit a Single Year",
-  edit_con: "Edit Convention Details",
-  new_con: "Add New Convention",
+  new_year: "Single Year Update",
+  edit_con: "Con Details Update",
+  new_con: "New Con",
 };
 
 export const suggestionTableMap: Record<SuggestionType, string> = {
@@ -42,6 +42,7 @@ export type UnifiedSuggestion = {
   currentYearData?: Tables<"convention_years">;
   currentConData?: Tables<"conventions">;
   isCurrentYear?: boolean;
+  isNewYear?: boolean;
   raw:
     | ArtistAlleyInfoFields
     | NewYearInfoFields
