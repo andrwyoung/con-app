@@ -43,7 +43,6 @@ function getDropdownItemClass(item: DropdownItem, isHighlighted: boolean) {
 }
 
 export default function Searchbar({ scope }: { scope: Scope }) {
-  const [searchbarText, setSearchbarText] = useState("");
   const [suggestionResults, setSuggestionResults] = useState<ConventionInfo[]>(
     []
   );
@@ -53,7 +52,8 @@ export default function Searchbar({ scope }: { scope: Scope }) {
 
   const { getCurrentCenter } = useMapStore();
   const { allEvents } = useEventStore();
-  const { setResults, setSearchState } = useScopedSearchStore(scope);
+  const { setResults, setSearchState, searchbarText, setSearchbarText } =
+    useScopedSearchStore(scope);
   const { history, addToHistory } = useSearchHistoryStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -335,7 +335,7 @@ export default function Searchbar({ scope }: { scope: Scope }) {
       });
     });
 
-    if (tooManyResults) {
+    if (tooManyResults && scope != "queue") {
       items.push({
         id: "see-all",
         type: "action",

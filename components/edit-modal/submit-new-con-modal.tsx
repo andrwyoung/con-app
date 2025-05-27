@@ -22,7 +22,7 @@ import { pushNewConvention } from "@/lib/actions/push-new-con";
 
 export type newConPageMode = "general" | "dates_loc" | "confirmation";
 
-export default function SubmitNewConPage() {
+export default function SubmitNewConModal() {
   const isOpen = useModalUIStore((s) => s.newConOpen);
   const setIsOpen = useModalUIStore((s) => s.setNewConOpen);
 

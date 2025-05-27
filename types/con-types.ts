@@ -2,7 +2,7 @@ import { Tables } from "@/types/supabase";
 import { TimeCategory } from "./time-types";
 import { ArtistAlleyStatus } from "./artist-alley-types";
 
-export type Scope = "explore" | "plan" | "share" | "unknown";
+export type Scope = "explore" | "plan" | "share" | "queue" | "unknown";
 export type ConStatus =
   | "EventCancelled"
   | "EventScheduled"

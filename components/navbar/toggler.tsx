@@ -1,13 +1,13 @@
 // this is the little "explor, plan, share" pill box on the top
 
 "use client";
-import { FiMapPin, FiCalendar, FiSend } from "react-icons/fi";
+import { FiMapPin, FiCalendar, FiEdit } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
 
 const tabs = [
   { label: "Explore", link: "/explore", icon: <FiMapPin /> },
   { label: "Plan", link: "/plan", icon: <FiCalendar /> },
-  { label: "Share", link: "/share", icon: <FiSend /> },
+  { label: "Submit", link: "/queue", icon: <FiEdit /> },
 ];
 
 export default function Toggler() {

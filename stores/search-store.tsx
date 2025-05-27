@@ -7,10 +7,16 @@ import { ConventionInfo, Scope } from "@/types/con-types";
 import { create, StateCreator } from "zustand";
 
 export function useScopedSearchStore(scope: Scope): SearchStore {
-  return scope === "explore" ? useExploreSearchStore() : usePlanSearchStore();
+  if (scope === "explore") return useExploreSearchStore();
+  if (scope === "plan") return usePlanSearchStore();
+  if (scope === "queue") return useQueueSearchStore();
+  throw new Error(`Unknown scope: ${scope}`);
 }
 
 type SearchStore = {
+  searchbarText: string;
+  setSearchbarText: (s: string) => void;
+
   results: ConventionInfo[];
   setResults: (r: ConventionInfo[]) => void;
 
@@ -22,6 +28,9 @@ type SearchStore = {
 
 function createSearchStoreInitializer(): StateCreator<SearchStore> {
   return (set) => ({
+    searchbarText: "",
+    setSearchbarText: (s: string) => set({ searchbarText: s }),
+
     results: [],
     setResults: (r) => set({ results: r }),
 
@@ -30,7 +39,8 @@ function createSearchStoreInitializer(): StateCreator<SearchStore> {
     },
     setSearchState: (ctx) => set({ searchState: { context: ctx } }),
 
-    clearSearch: () => set({ results: [], searchState: { context: null } }),
+    clearSearch: () =>
+      set({ results: [], searchState: { context: null }, searchbarText: "" }),
   });
 }
 
@@ -38,6 +48,10 @@ export const useExploreSearchStore = create<SearchStore>(
   createSearchStoreInitializer()
 );
 export const usePlanSearchStore = create<SearchStore>(
+  createSearchStoreInitializer()
+);
+
+export const useQueueSearchStore = create<SearchStore>(
   createSearchStoreInitializer()
 );
 

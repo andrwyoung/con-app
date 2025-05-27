@@ -20,7 +20,7 @@ import PanelBackground from "@/components/sidebar-background";
 import ListWrapper from "@/components/list-panel/list-wrapper";
 import SidebarToggleButton from "@/components/list-panel/toggle-button";
 import { FaPlus } from "react-icons/fa6";
-import SubmitNewConPage from "@/components/edit-modal/submit-new-con-modal";
+import SubmitNewConModal from "@/components/edit-modal/submit-new-con-modal";
 
 export type sidebarModes = "search" | "filter";
 
@@ -110,7 +110,7 @@ export default function Sidebar() {
             <FaPlus className="text-xs" />
             Add a Convention
           </button>
-          <SubmitNewConPage />
+          <SubmitNewConModal />
 
           {!showListPanel && (
             <SidebarToggleButton

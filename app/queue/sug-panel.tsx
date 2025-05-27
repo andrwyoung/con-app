@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { suggestionTypeLabels } from "@/types/admin-panel-types";
 import { formatSubmittedAt } from "@/lib/helpers/time/date-formatters";
 import FormatAASuggestion from "@/components/admin-panel/format-aa-suggestion";
@@ -19,6 +19,11 @@ import FormatNewYearSuggestion from "@/components/admin-panel/format-new-year";
 import FormatNewConSuggestion from "@/components/admin-panel/format-new-con";
 import { MinimumDetailPanelProps } from "@/stores/admin-panel-store";
 import FormatEditDetailsSuggestion from "@/components/admin-panel/format-edit-details";
+import { MdEdit } from "react-icons/md";
+import SubmitNewConModal from "@/components/edit-modal/submit-new-con-modal";
+import { useModalUIStore } from "@/stores/ui-store";
+import Searchbar from "@/components/sidebar-panel/searchbar";
+import { useScopedSearchStore } from "@/stores/search-store";
 
 function ToggleConGroup({
   conName,
@@ -98,6 +103,7 @@ export default function SuggestionPanel({
   removeSuggestion: (id: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const setIsOpen = useModalUIStore((s) => s.setNewConOpen);
 
   const [defaultOpenState, setDefaultOpenState] = useState(true);
   const [resetKey, setResetKey] = useState(0);
@@ -105,62 +111,135 @@ export default function SuggestionPanel({
   const { user, profile } = useUserStore();
   const isAdmin = profile?.role === "ADMIN";
 
+  const { searchbarText, results, clearSearch } = useScopedSearchStore("queue");
+
+  const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
+
+  useEffect(() => {
+    if (!searchbarText) {
+      setFilteredSuggestions(suggestions);
+      return;
+    }
+
+    const lower = searchbarText.toLowerCase();
+    const fuzzyMatch = (text: string) =>
+      text.toLowerCase().includes(lower) || lower.includes(text.toLowerCase());
+
+    const filtered = suggestions.filter((group) => fuzzyMatch(group.conName));
+
+    setFilteredSuggestions(filtered);
+  }, [searchbarText, suggestions]);
+
+  useEffect(() => {
+    if (results.length > 0) {
+      const first = results[0];
+      if (first.id && first.name) {
+        setSelectedCon({
+          conId: first.id,
+          conName: first.name,
+        });
+        setSelectedId(null);
+      }
+    } else {
+      setSelectedCon(null);
+    }
+  }, [results, setSelectedCon]);
+
   return (
     <>
-      <div className="px-2 mb-4 flex justify-between">
+      <div className="px-2 mb-4 flex justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-primary-text">
+          <h1 className="text-2xl font-semibold text-primary-text">
             Suggestions
           </h1>
-          {/* <Searchbar scope={"unknown"} /> */}
+          <p className="text-primary-text text-xs">
+            Submit a suggestion through any of the{" "}
+            <MdEdit className="inline text-secondary-darker -translate-y-[1px]" />{" "}
+            Edit buttons after selecting a con.
+            <br />{" "}
+            <button
+              type="button"
+              className="inline text-secondary-darker cursor-pointer hover:underline"
+              onClick={() => setIsOpen(true)}
+            >
+              Click here
+            </button>{" "}
+            to suggest a new con.
+          </p>
+          <SubmitNewConModal />
         </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="text-primary-muted cursor-pointer px-2 py-1 text-xs bg-primary-lightest rounded-lg
-        hover:text-pimary-text hover:bg-primary-light"
-            onClick={() => {
-              setDefaultOpenState(false);
-              setResetKey((prev) => prev + 1);
-            }}
-          >
-            Collapse All
-          </button>
+        <div className="flex flex-col gap-2">
+          <div className="mr-4">
+            <Searchbar scope="queue" />
+          </div>
 
-          <button
-            type="button"
-            className="hidden lg:block text-primary-muted cursor-pointer px-2 py-1 text-xs bg-primary-lightest rounded-lg
-        hover:text-pimary-text hover:bg-primary-light"
-            onClick={() => {
-              setDefaultOpenState(true);
-              setResetKey((prev) => prev + 1);
-            }}
-          >
-            Open All
-          </button>
-          <button
-            type="button"
-            className="text-primary-muted cursor-pointer px-2 py-1 text-xs rounded-lg
-        hover:text-pimary-text hover:bg-primary-light"
-            onClick={refetchSuggestions}
-          >
-            Reload
-          </button>
+          <div className="flex gap-2 ">
+            <button
+              type="button"
+              className="hidden md:block text-primary-muted cursor-pointer px-2 py-1 text-xs bg-primary-lightest rounded-lg
+            hover:text-pimary-text hover:bg-primary-light h-fit"
+              onClick={() => {
+                setDefaultOpenState(false);
+                setResetKey((prev) => prev + 1);
+              }}
+            >
+              Collapse All
+            </button>
+
+            <button
+              type="button"
+              className="hidden lg:block text-primary-muted cursor-pointer px-2 py-1 text-xs bg-primary-lightest rounded-lg
+            hover:text-pimary-text hover:bg-primary-light h-fit"
+              onClick={() => {
+                setDefaultOpenState(true);
+                setResetKey((prev) => prev + 1);
+              }}
+            >
+              Open All
+            </button>
+            <button
+              type="button"
+              className="hidden md:block text-primary-muted cursor-pointer px-2 py-1 text-xs rounded-lg
+            hover:text-pimary-text hover:bg-primary-light h-fit"
+              onClick={refetchSuggestions}
+            >
+              Reload
+            </button>
+          </div>
         </div>
       </div>
 
       <div
         key={resetKey}
-        className="p-6 flex flex-col 
+        className="p-6 flex flex-col flex-1
       overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
       >
         {loading ? (
           <p>Loading...</p>
         ) : suggestions.length === 0 ? (
-          <p>No pending suggestions!</p>
+          <div className="flex w-full h-full flex-col gap-2 items-center justify-center">
+            <p className="text-primary-text text-md">No pending suggestions!</p>
+            {/* <p className="text-primary-text text-xs">Nice work!</p> */}
+          </div>
+        ) : filteredSuggestions.length === 0 ? (
+          <div className="flex w-full h-full flex-col gap-2 items-center justify-center">
+            <p className="text-primary-text text-md">
+              No matching suggestions found
+            </p>
+            <p className="text-primary-text text-xs text-center">
+              This convention might not have any suggestions yet. <br />
+              <button
+                className="text-secondary-darker hover:underline cursor-pointer font-medium"
+                onClick={() => clearSearch()}
+              >
+                Clear the search bar
+              </button>{" "}
+              to view everything
+            </p>
+          </div>
         ) : (
           <div className="space-y-6">
-            {suggestions.map((group) => (
+            {filteredSuggestions.map((group) => (
               <ToggleConGroup
                 key={
                   group.conId ??

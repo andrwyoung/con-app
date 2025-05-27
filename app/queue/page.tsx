@@ -80,7 +80,7 @@ export default function AdminPage() {
   return (
     <div className="w-screen h-screen flex items-center justify-center gap-6 lg:gap-12 pt-12 z-10 px-4">
       <div
-        className="flex flex-col w-[70%] max-w-3xl h-[calc(100dvh-16rem)] shadow-lg rounded-lg p-4
+        className="flex flex-col w-[70%] max-w-4xl h-[calc(100dvh-12rem)] shadow-lg rounded-lg p-4
       relative"
       >
         <SuggestionPanel
@@ -93,7 +93,7 @@ export default function AdminPage() {
         />
       </div>
 
-      <div className="relative hidden md:flex flex-col h-[calc(100dvh-16rem)] w-96 bg-white rounded-lg shadow-xl z-10">
+      <div className="relative hidden md:flex flex-col h-[calc(100dvh-12rem)] w-96 bg-white rounded-lg shadow-xl z-10">
         {selectedCon ? (
           <DetailsPanel
             ref={panelRef}
