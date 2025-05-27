@@ -4,6 +4,7 @@ import { formatSubmittedAt } from "@/lib/helpers/time/date-formatters";
 import FormatAASuggestion from "@/components/admin-panel/format-aa-suggestion";
 import {
   ArtistAlleyInfoFields,
+  ConDetailsFields,
   NewConFields,
   NewYearInfoFields,
 } from "@/types/suggestion-types";
@@ -17,6 +18,7 @@ import { rejectSuggestion } from "@/lib/admin/reject-suggestion";
 import FormatNewYearSuggestion from "@/components/admin-panel/format-new-year";
 import FormatNewConSuggestion from "@/components/admin-panel/format-new-con";
 import { MinimumDetailPanelProps } from "@/stores/admin-panel-store";
+import FormatEditDetailsSuggestion from "@/components/admin-panel/format-edit-details";
 
 function ToggleConGroup({
   conName,
@@ -279,6 +281,13 @@ export default function SuggestionPanel({
                             {sugg.raw && sugg.type === "new_con" && (
                               <FormatNewConSuggestion
                                 newInfo={sugg.raw as NewConFields}
+                              />
+                            )}
+
+                            {sugg.raw && sugg.type === "edit_con" && (
+                              <FormatEditDetailsSuggestion
+                                newInfo={sugg.raw as ConDetailsFields}
+                                changedFields={sugg.changedFields}
                               />
                             )}
                           </div>

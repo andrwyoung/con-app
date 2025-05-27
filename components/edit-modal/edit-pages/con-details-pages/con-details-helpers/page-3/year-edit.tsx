@@ -54,7 +54,7 @@ export default function YearEdit({
 
   // 7: event status
   const [eventStatus, setEventStatus] = useState<ConStatus>(
-    yearData.event_status
+    yearData.event_status ?? "EventScheduled"
   );
 
   function handleSaveYear() {

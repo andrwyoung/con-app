@@ -88,6 +88,7 @@ export async function fetchSuggestions(): Promise<UnifiedSuggestion[]> {
       submittedBy: sugg.submitted_username,
       approvedBy: sugg.approved_username,
       createdAt: sugg.created_at,
+      changedFields: sugg.changed_fields,
       approvalStatus: sugg.approval_status,
       currentConData: sugg.current_convention_data,
       raw: sugg as ConDetailsFields,
