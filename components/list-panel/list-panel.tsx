@@ -112,7 +112,7 @@ export default function ListPanel({ scope }: { scope: Scope }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Default Lists</SelectLabel>
+                {/* <SelectLabel>Default Lists</SelectLabel> */}
                 {/* always show default lists first */}
                 {SPECIAL_LIST_KEYS.map((key) => (
                   <SelectItem key={key} value={key}>
@@ -120,39 +120,44 @@ export default function ListPanel({ scope }: { scope: Scope }) {
                   </SelectItem>
                 ))}
               </SelectGroup>
-              <SelectGroup>
-                <SelectSeparator />
-                {/* then if they're logged in then show their personal lists */}
-                {profile ? (
-                  <>
-                    <SelectLabel>My Lists</SelectLabel>
+              {false && (
+                <SelectGroup>
+                  <SelectSeparator />
+                  {/* then if they're logged in then show their personal lists */}
+                  {profile ? (
+                    <>
+                      <SelectLabel>My Lists</SelectLabel>
 
-                    {Object.entries(lists)
-                      .filter(([key]) =>
-                        key.startsWith(`${profile.username}-list-`)
-                      )
-                      .map(([key, list]) => (
-                        <SelectItem key={key} value={key}>
-                          {list.label}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(lists)
+                        .filter(([key]) =>
+                          key.startsWith(`${profile?.username}-list-`)
+                        )
+                        .map(([key, list]) => (
+                          <SelectItem key={key} value={key}>
+                            {list.label}
+                          </SelectItem>
+                        ))}
 
-                    {/* we do NEW_ITEM_KEY because we can't do an onClick in SelectItem */}
+                      {/* we do NEW_ITEM_KEY because we can't do an onClick in SelectItem */}
+                      <SelectItem
+                        value={NEW_ITEM_KEY}
+                        className="text-primary-muted"
+                      >
+                        + New List
+                      </SelectItem>
+                    </>
+                  ) : (
+                    // might remove this. kind of redundant, but it's like a CTA
                     <SelectItem
-                      value={NEW_ITEM_KEY}
+                      value={LOGIN_KEY}
                       className="text-primary-muted"
                     >
-                      + New List
+                      Sign in to make <br />
+                      custom lists
                     </SelectItem>
-                  </>
-                ) : (
-                  // might remove this. kind of redundant, but it's like a CTA
-                  <SelectItem value={LOGIN_KEY} className="text-primary-muted">
-                    Sign in to make <br />
-                    custom lists
-                  </SelectItem>
-                )}
-              </SelectGroup>
+                  )}
+                </SelectGroup>
+              )}
             </SelectContent>
           </Select>
 

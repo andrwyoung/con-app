@@ -79,7 +79,7 @@ type SearchStore = {
 
 function createUIStoreInitializer(): StateCreator<SearchStore> {
   return (set) => ({
-    listSortType: "raw",
+    listSortType: "status",
     setListSortType: (sort) => set({listSortType: sort}),
 
     shownFilters: [],

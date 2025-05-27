@@ -112,7 +112,7 @@ const Card = forwardRef<
         </div>
         <div className="absolute right-0 bottom-0 items-end flex text-primary-muted transition-all">
           <div className="flex flex-col mb-1 mr-2 gap-1 items-center">
-            {type != "list" ? (
+            {type != "list" && type != "prediction" ? (
               <FiStar
                 title="Save to List"
                 aria-label="Save to List"

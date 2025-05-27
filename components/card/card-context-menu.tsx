@@ -100,51 +100,53 @@ export default function CardContextMenu({
   return (
     <>
       <>
-        <SharedMenuSub type={menuType}>
-          <SharedMenuSubTrigger type={menuType}>
-            Add To List
-          </SharedMenuSubTrigger>
-          <SharedMenuSubContent
-            type={menuType}
-            className="w-44 max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
-          >
-            {SPECIAL_LIST_KEYS.map((listId) => (
-              <SharedMenuItem
-                type={menuType}
-                key={listId}
-                onClick={() => handleAddToList(listId)}
-              >
-                {lists[listId].label}
-              </SharedMenuItem>
-            ))}
-            {profile && (
-              <>
-                <SharedMenuSeparator type={menuType} />
-                {Object.entries(lists)
-                  .filter(([key]) =>
-                    key.startsWith(`${profile.username}-list-`)
-                  )
-                  .map(([listId, list]) => (
-                    <SharedMenuItem
-                      type={menuType}
-                      key={listId}
-                      onClick={() => handleAddToList(listId)}
-                      className="truncate line-clamp-1"
-                    >
-                      {list.label}
-                    </SharedMenuItem>
-                  ))}
+        {cardType != "prediction" && (
+          <SharedMenuSub type={menuType}>
+            <SharedMenuSubTrigger type={menuType}>
+              Add To List
+            </SharedMenuSubTrigger>
+            <SharedMenuSubContent
+              type={menuType}
+              className="w-44 max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary-lightest scrollbar-track-transparent"
+            >
+              {SPECIAL_LIST_KEYS.map((listId) => (
                 <SharedMenuItem
                   type={menuType}
-                  className="text-primary-muted"
-                  onClick={handleAddToNewList}
+                  key={listId}
+                  onClick={() => handleAddToList(listId)}
                 >
-                  + Add to New List
+                  {lists[listId].label}
                 </SharedMenuItem>
-              </>
-            )}
-          </SharedMenuSubContent>
-        </SharedMenuSub>
+              ))}
+              {false && profile && (
+                <>
+                  <SharedMenuSeparator type={menuType} />
+                  {Object.entries(lists)
+                    .filter(([key]) =>
+                      key.startsWith(`${profile?.username}-list-`)
+                    )
+                    .map(([listId, list]) => (
+                      <SharedMenuItem
+                        type={menuType}
+                        key={listId}
+                        onClick={() => handleAddToList(listId)}
+                        className="truncate line-clamp-1"
+                      >
+                        {list.label}
+                      </SharedMenuItem>
+                    ))}
+                  <SharedMenuItem
+                    type={menuType}
+                    className="text-primary-muted"
+                    onClick={handleAddToNewList}
+                  >
+                    + Add to New List
+                  </SharedMenuItem>
+                </>
+              )}
+            </SharedMenuSubContent>
+          </SharedMenuSub>
+        )}
       </>
       {cardType === "list" && (
         <>
@@ -156,7 +158,7 @@ export default function CardContextMenu({
           </SharedMenuItem>
         </>
       )}
-      <SharedMenuSeparator type={menuType} />
+      {cardType != "prediction" && <SharedMenuSeparator type={menuType} />}
       <SharedMenuItem
         type={menuType}
         onClick={() => {

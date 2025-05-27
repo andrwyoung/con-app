@@ -65,10 +65,10 @@ export const SPECIAL_LIST_KEYS = ["planning", "interested"] as const;
 export const DEFAULT_LIST = "interested";
 export const STAR_LIST = "interested";
 export const DEFAULT_LISTS = {
-    interested: { label: "Saved Items", items: [] },
+    interested: { label: "Starred Cons", items: [] },
     planning: { label: "My Plan", items: [] },
   };
-export const LIST_SORT_OPTIONS = getSortOptionsFor(["raw", "status", "alpha"])
+export const LIST_SORT_OPTIONS = getSortOptionsFor(["status", "alpha"])
 export const SEARCH_SORT_OPTIONS = getSortOptionsFor(["status", "distance-me", "alpha", "chron", "rev-chron"]);
 export const CALENDAR_SORT_OPTIONS = getSortOptionsFor(["distance-me", "alpha"]); // unused yet
 
