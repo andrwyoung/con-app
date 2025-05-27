@@ -108,7 +108,12 @@ export default function SuggestionPanel({
   return (
     <>
       <div className="px-2 mb-4 flex justify-between">
-        <h1 className="text-xl font-semibold text-primary-text">Suggestions</h1>
+        <div>
+          <h1 className="text-xl font-semibold text-primary-text">
+            Suggestions
+          </h1>
+          {/* <Searchbar scope={"unknown"} /> */}
+        </div>
         <div className="flex gap-2">
           <button
             type="button"
@@ -139,7 +144,7 @@ export default function SuggestionPanel({
         hover:text-pimary-text hover:bg-primary-light"
             onClick={refetchSuggestions}
           >
-            Reload Panel
+            Reload
           </button>
         </div>
       </div>
@@ -172,8 +177,15 @@ export default function SuggestionPanel({
                 </div> */}
 
                   <div className="flex flex-col my-2">
-                    {group.suggestions.map((sugg) => (
-                      <>
+                    {group.suggestions
+                      .slice() // avoid mutating original
+                      .sort(
+                        // latest first
+                        (a, b) =>
+                          new Date(b.createdAt).getTime() -
+                          new Date(a.createdAt).getTime()
+                      )
+                      .map((sugg) => (
                         <div
                           key={sugg.id}
                           className={`m-2  px-1 py-2 rounded-lg transition-all
@@ -299,8 +311,7 @@ export default function SuggestionPanel({
                             {/* <p>Status: {sugg.approvalStatus}</p> */}
                           </div>
                         </div>
-                      </>
-                    ))}
+                      ))}
 
                     {isAdmin && user?.id && (
                       <button

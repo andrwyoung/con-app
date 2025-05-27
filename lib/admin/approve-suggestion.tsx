@@ -2,6 +2,7 @@ import { UnifiedSuggestion } from "@/types/admin-panel-types";
 import { pushArtistAlleyUpdate } from "../actions/push-aa-info-update";
 import {
   ArtistAlleyInfoFields,
+  ConDetailsFields,
   NewConFields,
   NewYearInfoFields,
 } from "@/types/suggestion-types";
@@ -12,6 +13,7 @@ import {
 import { buildCompleteYearPayload } from "../editing/build-new-year";
 import { pushNewConvention } from "../actions/push-new-con";
 import { MinimumDetailPanelProps } from "@/stores/admin-panel-store";
+import { adminPushConDetailsUpdate } from "../actions/push-con-details-update";
 
 export async function approveSuggestion(
   suggestion: UnifiedSuggestion,
@@ -123,24 +125,69 @@ export async function approveSuggestion(
 
       return true;
     }
-    // case "edit_con": {
-    //   const { raw } = suggestion;
-    //   updateTarget = await supabaseAnon
-    //     .from("conventions")
-    //     .update({
-    //       name: raw.convention_name,
-    //       website: raw.website,
-    //       location_lat: raw.location_lat,
-    //       location_long: raw.location_long,
-    //       cs_description: raw.cs_description,
-    //       discontinued: raw.discontinued,
-    //       con_size: raw.con_size,
-    //       tags: raw.tags,
-    //       organizer_id: raw.organizer_id,
-    //     })
-    //     .eq("id", raw.convention_id);
-    // return true;
-    // }
+    case "edit_con": {
+      const raw = suggestion.raw as ConDetailsFields;
+      const fieldsToUpdate: ConDetailsFields = {
+        con_size: undefined,
+        organizer_id: undefined,
+        organizer_name: undefined,
+        new_description: undefined,
+        discontinued: undefined,
+        new_tags: undefined,
+        new_social_links: undefined,
+        new_website: undefined,
+        new_lat: undefined,
+        new_long: undefined,
+        notes: undefined,
+      };
+
+      if (suggestion.changedFields?.includes("conSize")) {
+        fieldsToUpdate.con_size = raw.con_size;
+      }
+      if (suggestion.changedFields?.includes("selectedOrganizer")) {
+        fieldsToUpdate.organizer_id = raw.organizer_id;
+        fieldsToUpdate.organizer_name = raw.organizer_name;
+      }
+      if (suggestion.changedFields?.includes("description")) {
+        fieldsToUpdate.new_description = raw.new_description;
+      }
+
+      if (suggestion.changedFields?.includes("discontinued")) {
+        fieldsToUpdate.discontinued = raw.discontinued;
+      }
+
+      if (suggestion.changedFields?.includes("tags")) {
+        fieldsToUpdate.new_tags = raw.new_tags;
+      }
+
+      if (suggestion.changedFields?.includes("socialLinks")) {
+        fieldsToUpdate.new_social_links = raw.new_social_links;
+      }
+      if (suggestion.changedFields?.includes("website")) {
+        fieldsToUpdate.new_website = raw.new_website;
+      }
+
+      if (suggestion.changedFields?.includes("location")) {
+        fieldsToUpdate.new_lat = raw.new_lat;
+        fieldsToUpdate.new_long = raw.new_long;
+      }
+
+      try {
+        await adminPushConDetailsUpdate({
+          userId: adminId,
+          conId: suggestion.conId,
+          suggestionId: suggestion.id,
+          newInfo: fieldsToUpdate,
+          organizerHasChanged:
+            suggestion.changedFields?.includes("selectedOrganizer") ?? false,
+        });
+      } catch (err) {
+        console.error("Convention Edit Error: ", err);
+        return false;
+      }
+
+      return true;
+    }
     case "new_con": {
       const raw = suggestion.raw as NewConFields;
 

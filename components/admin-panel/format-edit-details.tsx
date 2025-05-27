@@ -1,6 +1,7 @@
 import React from "react";
 import { ConDetailsFields } from "@/types/suggestion-types";
 import { FieldRow } from "./admin-helpers";
+import MapboxMiniMap from "../edit-modal/edit-pages/con-details-pages/con-details-helpers/page-3/mini-mapbox";
 
 export default function FormatEditDetailsSuggestion({
   newInfo,
@@ -11,23 +12,21 @@ export default function FormatEditDetailsSuggestion({
 }) {
   return (
     <>
-      {changedFields?.includes("con_size") && (
+      {changedFields?.includes("conSize") && (
         <FieldRow label="Size:">{newInfo.con_size || "Cleared"}</FieldRow>
       )}
 
-      {changedFields?.includes("organizer_id") && (
-        <FieldRow label="Organizer ID:">
-          {newInfo.organizer_id || "Cleared"}
-        </FieldRow>
-      )}
-
-      {changedFields?.includes("organizer_name") && (
+      {changedFields?.includes("selectedOrganizer") && (
         <FieldRow label="Organizer Name:">
-          {newInfo.organizer_name || "Cleared"}
+          {newInfo.organizer_name
+            ? `${newInfo.organizer_name} (${
+                newInfo.organizer_id ? "Existing Organizer" : "New Organizer"
+              })`
+            : "Cleared"}
         </FieldRow>
       )}
 
-      {changedFields?.includes("new_description") && (
+      {changedFields?.includes("description") && (
         <FieldRow label="Description:">
           {newInfo.new_description || "Cleared"}
         </FieldRow>
@@ -39,26 +38,43 @@ export default function FormatEditDetailsSuggestion({
         </FieldRow>
       )}
 
-      {changedFields?.includes("new_tags") && (
+      {changedFields?.includes("tags") && (
         <FieldRow label="Tags:">
           {newInfo.new_tags?.length ? newInfo.new_tags.join(", ") : "Cleared"}
         </FieldRow>
       )}
 
-      {changedFields?.includes("new_social_links") && (
-        <FieldRow label="Social Links:">
-          {newInfo.new_social_links || "Cleared"}
+      {changedFields?.includes("socialLinks") && (
+        <FieldRow label="Extra Links:">
+          {newInfo.new_social_links
+            ? newInfo.new_social_links
+                .split(",")
+                .map((link) => link.trim())
+                .filter((link) => link.length > 0)
+                .map((link, i) => (
+                  <div key={i}>
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary-muted hover:underline transition-all"
+                    >
+                      {link}
+                    </a>
+                  </div>
+                ))
+            : "Cleared"}
         </FieldRow>
       )}
 
-      {changedFields?.includes("new_website") && (
+      {changedFields?.includes("website") && (
         <FieldRow label="Website:">
           {newInfo.new_website ? (
             <a
               href={newInfo.new_website}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline text-blue-600"
+              className="hover:text-primary-muted hover:underline transition-all"
             >
               {newInfo.new_website}
             </a>
@@ -68,20 +84,16 @@ export default function FormatEditDetailsSuggestion({
         </FieldRow>
       )}
 
-      {changedFields?.includes("new_lat") && (
-        <FieldRow label="Latitude:">
-          {newInfo.new_lat !== undefined ? newInfo.new_lat : "Cleared"}
-        </FieldRow>
-      )}
-
-      {changedFields?.includes("new_long") && (
-        <FieldRow label="Longitude:">
-          {newInfo.new_long !== undefined ? newInfo.new_long : "Cleared"}
-        </FieldRow>
-      )}
-
-      {changedFields?.includes("notes") && (
-        <FieldRow label="Notes:">{newInfo.notes || "Cleared"}</FieldRow>
+      {changedFields?.includes("location") && (
+        <>
+          {newInfo.new_lat && newInfo.new_long ? (
+            <MapboxMiniMap lat={newInfo.new_lat} long={newInfo.new_long} />
+          ) : (
+            <FieldRow label="Lat/Long: ">
+              Error! Latitude or Longitude missing in database{" "}
+            </FieldRow>
+          )}
+        </>
       )}
     </>
   );

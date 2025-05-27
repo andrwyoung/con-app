@@ -297,7 +297,11 @@ export default function UpdateConDetailsPage({
               convention_id: conDetails?.id,
               ...initMetadata,
               ...newInfo,
-              changed_fields: Object.keys(pgOneChangedValues()),
+              changed_fields: [
+                ...Object.keys(pgOneChangedValues()),
+                ...Object.keys(pgTwoChangedValues()),
+                ...Object.keys(pgThreeChangedValues()),
+              ],
             })
             .select()
             .single();

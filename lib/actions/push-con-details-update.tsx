@@ -16,11 +16,14 @@ export async function adminPushConDetailsUpdate({
   organizerHasChanged,
 }: {
   userId: string;
-  conId: number;
-  suggestionId: string;
+  conId: number | undefined;
+  suggestionId: string | undefined;
   newInfo: ConDetailsFields;
   organizerHasChanged: boolean;
 }) {
+  if (!suggestionId) {
+    throw new Error("suggestionid or conid missing");
+  }
   // PART 2a: push new convention info up
 
   const conTablePayload: Partial<Convention> = {
