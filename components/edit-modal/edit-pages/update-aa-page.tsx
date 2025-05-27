@@ -205,7 +205,7 @@ export default function UpdateAAPage({
           aa_real_release: deriveIsRealRelease(),
           aa_link: hasChanged("website") ? cleanedWebsite : undefined,
           aa_status_override:
-            hasChanged("aaExistence") && hasChanged("aaStatus")
+            hasChanged("aaExistence") || hasChanged("aaStatus")
               ? (deriveOverRideStatus() as ArtistAlleyStatus)
               : undefined,
         };

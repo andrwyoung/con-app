@@ -7,9 +7,11 @@ import { toast } from "sonner";
 export async function pushArtistAlleyUpdate(
   userId: string,
   suggestionId: string,
-  yearId: string,
+  yearId: string | undefined,
   updates: Partial<ConventionYear>
 ) {
+  if (!yearId) throw new Error("YearId doesn't exist");
+
   // Update real convention_years table
   const { error: updateError } = await supabaseAnon
     .from("convention_years")

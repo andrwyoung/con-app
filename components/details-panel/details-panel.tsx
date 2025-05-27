@@ -3,7 +3,13 @@
 
 import { grabAllDetails } from "@/lib/details/grab-all-details";
 import { FullConventionDetails, Scope } from "@/types/con-types";
-import { useCallback, useEffect, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { FiX } from "react-icons/fi";
 import DetailsSection from "./upper-details-section/details-section";
 import ReviewsSection from "./reviews-section/reviews-section";
@@ -11,17 +17,19 @@ import EditConventionModal from "../edit-modal/edit-con-modal";
 import FocusDot from "./focus-dot";
 import { log } from "@/lib/utils";
 
-export default function DetailsPanel({
-  scope,
-  conId,
-  conName,
-  onClose,
-}: {
-  scope: Scope;
-  conId: number;
-  conName: string;
-  onClose?: () => void;
-}) {
+export type DetailsPanelRef = {
+  refetch: () => void;
+};
+
+function DetailsPanel(
+  {
+    scope,
+    conId,
+    conName,
+    onClose,
+  }: { scope: Scope; conId: number; conName: string; onClose?: () => void },
+  ref: React.Ref<DetailsPanelRef>
+) {
   const [details, setDetails] = useState<FullConventionDetails | null>(null);
 
   const handleRefetch = useCallback(async () => {
@@ -34,6 +42,11 @@ export default function DetailsPanel({
   useEffect(() => {
     handleRefetch();
   }, [conId, handleRefetch]);
+
+  // allow others to use refetch
+  useImperativeHandle(ref, () => ({
+    refetch: handleRefetch,
+  }));
 
   return (
     <>
@@ -77,3 +90,5 @@ export default function DetailsPanel({
     </>
   );
 }
+
+export default forwardRef(DetailsPanel);
