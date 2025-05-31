@@ -150,7 +150,7 @@ export default function SuggestionPanel({
       <div className="px-2 mb-4 flex justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-primary-text">
-            Suggestions
+            Suggestions / Updates
           </h1>
           <p className="text-primary-text text-xs">
             Submit a suggestion through any of the{" "}

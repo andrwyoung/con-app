@@ -48,7 +48,7 @@ export default function HeadersHelper({
   children: React.ReactNode;
   title: React.ReactNode;
   website?: string;
-  description?: string;
+  description?: React.ReactNode;
   name?: string;
 }) {
   return (
@@ -56,9 +56,7 @@ export default function HeadersHelper({
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
-          {description && (
-            <span className="text-primary-muted/80">{description}</span>
-          )}
+          {description && <>{description}</>}
           {website ? (
             <>
               <span className="flex flex-row items-center gap-1 mb-0.5 text-primary-text hover:text-primary-darker">

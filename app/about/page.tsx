@@ -81,17 +81,19 @@ export default function AboutPage() {
           </div>
 
           <div className="max-w-xs text-center text-sm">
-            Thank you for your support! If you have any feedback or suggestions
-            fill out this form{" "}
+            Convention discovery + planning tool for artists.
+            <br /> <br />
+            Form for{" "}
             <a
               href="https://andrwyoung.com"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline cursor-pointer text-secondary-darker hover:text-secondary"
             >
-              here
-            </a>{" "}
-            or shoot me an email{" "}
+              feedback / suggestions:
+            </a>
+            <br />
+            Reach out:{" "}
             <button
               type="button"
               className="w-fit cursor-pointer text-secondary-darker hover:text-secondary hover:underline"
@@ -117,7 +119,7 @@ export default function AboutPage() {
             <BioDropdown name="andrwyoung" icon={<FaMapMarkerAlt />}>
               Did some cons a while back as an{" "}
               <a
-                href="https://andrwyoung.com"
+                href="https://jonadrew.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:underline cursor-pointer text-secondary-darker hover:text-secondary"
